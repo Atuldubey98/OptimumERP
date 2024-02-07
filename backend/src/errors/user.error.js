@@ -1,0 +1,39 @@
+class UserDuplicate extends Error {
+  constructor() {
+    super();
+    this.code = 400;
+    this.message = "User already exists";
+    this.name = "UserDuplicate";
+  }
+}
+
+class UserNotFound extends Error {
+  constructor() {
+    super();
+    this.code = 404;
+    this.message = "User does not exists";
+    this.name = "UserNotFound";
+  }
+}
+class PasswordDoesNotMatch extends Error {
+  constructor() {
+    super();
+    this.code = 400;
+    this.message = "Password does not match";
+    this.name = "PasswordDoesNotMatch";
+  }
+}
+class UnAuthenticated extends Error {
+  constructor() {
+    super();
+    this.code = 401;
+    this.message = "User not authenticated";
+    this.name = "UnAuthenticated";
+  }
+}
+module.exports = {
+  UserDuplicate,
+  UserNotFound,
+  PasswordDoesNotMatch,
+  UnAuthenticated,
+};

@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "prestart": "npm i",
+    "start": "node .",
+    "dev": "export NODE_ENV=development && nodemon ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "joi": "^17.12.1",
+    "mongoose": "^8.1.1",
+    "nodemon": "^3.0.3",
+    "winston": "^3.11.0"
+  }
+}
