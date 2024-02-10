@@ -16,6 +16,7 @@ export default function useAsyncCall() {
           duration: 3000,
           isClosable: true,
         });
+        console.log(err);
         if (values.length > 1) {
           const { setSubmitting } = values[1];
           setSubmitting(false);

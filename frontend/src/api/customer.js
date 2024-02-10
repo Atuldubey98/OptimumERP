@@ -18,3 +18,8 @@ export const updateCustomer = (customer, orgId) => {
   const url = `${getCustomerUrl(orgId)}/${_id}`;
   return instance.patch(url, customerToUpdate);
 };
+
+export const deleteCustomer = (customerId, orgId) => {
+  const url = `${getCustomerUrl(orgId)}/${customerId}`;
+  return instance.delete(url);
+};

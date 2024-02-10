@@ -1,14 +1,21 @@
 import React from "react";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
-export default function CustomerMenu({ customer, onSetCustomer }) {
+export default function CustomerMenu({
+  customer,
+  onOpenDrawerForEditingCustomer,
+  onOpenCustomer,
+  onDeleteCustomer,
+}) {
   return (
     <VertIconMenu
-      showItem={() => {}}
+      showItem={() => {
+        onOpenCustomer(customer);
+      }}
       editItem={() => {
-        onSetCustomer(customer);
+        onOpenDrawerForEditingCustomer(customer);
       }}
       deleteItem={() => {
-        console.log(customer);
+        onDeleteCustomer(customer);
       }}
     />
   );

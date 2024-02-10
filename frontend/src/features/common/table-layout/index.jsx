@@ -65,7 +65,7 @@ export default function TableLayout({
               {Object.entries(selectedKeys).map(([key, value]) => (
                 <Th key={key}>{value}</Th>
               ))}
-              {operations.length ? <Th /> : null}
+              {operations.length ? <Th></Th> : null}
             </Tr>
           </Thead>
           <Tbody>
