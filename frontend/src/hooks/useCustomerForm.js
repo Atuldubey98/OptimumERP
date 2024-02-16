@@ -24,7 +24,6 @@ const customerDto = Yup.object({
 export default function useCustomerForm(onAddedFetch, onCloseDrawer) {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId = "" } = useParams();
-  console.log(orgId);
   const formik = useFormik({
     initialValues: {
       name: "",

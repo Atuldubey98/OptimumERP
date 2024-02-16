@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 
-export default function SearchItem() {
+export default function SearchItem({ placeholder = "Search" }) {
   const [search, setSearch] = useState("");
   const onChangeSearch = (e) => setSearch(e.currentTarget.value);
   const searchRef = useRef(null);
@@ -25,7 +25,7 @@ export default function SearchItem() {
         type="search"
         value={search}
         onChange={onChangeSearch}
-        placeholder="Search customers"
+        placeholder={placeholder}
       />
     </InputGroup>
   );

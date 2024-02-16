@@ -14,7 +14,7 @@ export default function AvatarProfile({ toggleProfilePopup }) {
       alignItems={"center"}
     >
       <Text>{user?.name}</Text>
-      <Avatar name={user?.name} src="https://bit.ly/tioluwani-kolawole" />
+      <Avatar name={user?.name} />
     </Flex>
   );
 }

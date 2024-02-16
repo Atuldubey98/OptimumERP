@@ -9,8 +9,9 @@ const organizationRouter = require("./routes/org.routes");
 
 const app = express();
 const cors = require("cors");
+const productRouter = require("./routes/product.routes");
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 const whitelist = ["http://localhost:5173"];
 const corsOptions = {
   credentials: true,
@@ -48,6 +49,7 @@ app.get("/api/v1/health", (_, res) => {
 });
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations/:orgId/customers", customerRouter);
+app.use("/api/v1/organizations/:orgId/products", productRouter);
 app.use("/api/v1/organizations", organizationRouter);
 app.use("*", (req, res) => {
   return res

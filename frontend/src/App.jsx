@@ -4,6 +4,7 @@ import LoginPage from "./features/login";
 import OrgPage from "./features/organizations";
 import RegisterPage from "./features/register";
 import CustomersPage from "./features/customers";
+import ProductsPage from "./features/products";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/:orgId">
         <Route element={<DashboardPage />} path="dashboard" />
         <Route element={<CustomersPage />} path="customers" />
+        <Route element={<ProductsPage />} path="products" />
       </Route>
       <Route path="/organizations" element={<OrgPage />} />
       <Route path="/register" element={<RegisterPage />} />

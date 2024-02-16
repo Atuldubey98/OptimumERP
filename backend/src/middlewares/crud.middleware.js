@@ -1,9 +1,6 @@
-const { isValidObjectId } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const { EntityNotFound } = require("../errors/entity.error");
 
 exports.updateModel = requestAsyncHandler(async (req, __, next) => {
-  if (!isValidObjectId(req.params.customerId)) throw new EntityNotFound();
   req.body = { ...req.body, updatedBy: req.session.user._id };
   next();
 });

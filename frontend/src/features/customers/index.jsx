@@ -10,6 +10,7 @@ import ShowDrawer from "../common/ShowDrawer";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import { deleteCustomer } from "../../api/customer";
 import { useParams } from "react-router-dom";
+import ProductFormDrawer from "../products/ProductFormDrawer";
 export default function CustomersPage() {
   const {
     isOpen: isCustomerFormOpen,

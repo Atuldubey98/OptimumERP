@@ -43,7 +43,7 @@ exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
   };
   const search = req.query.search || "";
   if (search) filter.$text = { $search: search };
-  const customers = await Customer.find(filter);
+  const customers = await Customer.find(filter).sort({ createdAt: -1 });
   return res.status(200).json({
     data: customers,
   });
