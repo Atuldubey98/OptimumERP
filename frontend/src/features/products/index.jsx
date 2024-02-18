@@ -99,6 +99,7 @@ export default function ProductsPage() {
             sellingPrice: "Selling Price",
             createdAt: "Created At",
             description: "Description",
+            um : "Unit"
           }}
         />
       ) : null}

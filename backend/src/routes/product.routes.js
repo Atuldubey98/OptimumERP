@@ -9,6 +9,7 @@ const {
   updateProduct,
   getProduct,
   deleteProduct,
+  addManyProducts,
 } = require("../controllers/product.controller");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const productRouter = Router({
@@ -16,6 +17,7 @@ const productRouter = Router({
 });
 
 productRouter.get("/", authenticate, checkOrgAuthorization, getAllProducts);
+productRouter.post("/bulk", authenticate, checkOrgAuthorization, addManyProducts);
 productRouter.post(
   "/",
   authenticate,

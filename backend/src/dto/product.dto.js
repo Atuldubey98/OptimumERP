@@ -4,6 +4,7 @@ const createProductDto = Joi.object({
   costPrice: Joi.number().label("Cost Price"),
   sellingPrice: Joi.number().label("Selling Price"),
   description: Joi.string().max(200).allow(""),
+  um : Joi.string().default("NONE").optional(),
   category: Joi.string()
     .valid("goods", "service")
     .required()
@@ -21,6 +22,7 @@ const updateProductDto = Joi.object({
     .required()
     .label("Type of Product")
     .optional(),
+  um : Joi.string().default("NONE").optional(),
   code: Joi.string().label("HSN Code or SAC Code").optional(),
   createdBy: Joi.string().label("Created By"),
   updatedBy: Joi.string().label("Updated By"),

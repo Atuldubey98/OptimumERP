@@ -87,3 +87,12 @@ exports.deleteProduct = requestAsyncHandler(async (req, res) => {
   if (!deletedProduct) throw new ProductNotFound();
   return res.status(200).json({ message: "Product deleted successfully!" });
 });
+
+exports.addManyProducts = requestAsyncHandler(async (req, res)=>{
+  const body = req.body;
+  const orgId = req.params.orgId;
+  if (!orgId) throw new OrgNotFound();
+  const productsToAdd = body.map(product=>({...product, createdBy : req.session.user._id, org : orgId}));
+  await Product.insertMany(productsToAdd);
+  return res.status(200).json({message : "Products saved successfully", productsCreated : body.length})
+})

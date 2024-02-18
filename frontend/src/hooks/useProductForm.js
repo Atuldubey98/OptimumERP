@@ -11,6 +11,7 @@ const productDto = Yup.object({
     .label("Name"),
   costPrice: Yup.number().min(0).required().label("Cost Price"),
   sellingPrice: Yup.number().min(0).required().label("Selling Price"),
+  um : Yup.string().optional().label("Unit of Measurement"),
   description: Yup.string()
     .min(2, "Cannot be less than 2")
     .max(80, "Cannot be greater than 80")
@@ -29,6 +30,7 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
       description: "",
       category: "service",
       code: "",
+      um : "none"
     },
     validationSchema: productDto,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {

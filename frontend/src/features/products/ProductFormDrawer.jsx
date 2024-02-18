@@ -14,7 +14,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
     <FormDrawerLayout
       formBtnLabel={formik.values._id ? "Update" : "Add"}
       formHeading={
-        formik.values._id ? "Update customer form" : "New Customer form"
+        formik.values._id ? "Update product form" : "New Product form"
       }
       handleFormSubmit={formik.handleSubmit}
       isOpen={isOpen}
@@ -74,6 +74,19 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
             <option value="goods">Goods</option>
           </Select>
           <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          isRequired
+          isInvalid={formik.errors.um && formik.touched.um}
+        >
+          <FormLabel>Unit of measurement</FormLabel>
+          <Select onChange={formik.handleChange} name="um" value={formik.values.um}>
+            <option value="none">NONE</option>
+            <option value="m">Meter</option>
+            <option value="km">KM</option>
+            <option value="kg">KG</option>
+          </Select>
+          <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
         </FormControl>
         <FormControl
           isInvalid={formik.errors.code && formik.touched.code}

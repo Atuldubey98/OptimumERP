@@ -31,6 +31,11 @@ const productSchema = new mongoose.Schema(
       ref: "organization",
       required: true,
     },
+    um :{
+      type : String,
+      default : "none",
+      required : true,
+    }
   },
   {
     timestamps: true,
