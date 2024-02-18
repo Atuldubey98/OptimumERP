@@ -32,7 +32,7 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
     },
     validationSchema: productDto,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { _id: productId, org, ...product } = values;
+      const { _id: productId, org, updatedBy, createdBy , createdAt, updatedAt, ...product} = values;
       if (productId) await updateProduct({ product, orgId, productId });
       else await createProduct({ product, orgId });
       onAddedFetch();

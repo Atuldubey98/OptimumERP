@@ -20,3 +20,7 @@ export const updateProduct = ({ product, orgId, productId }) => {
     product
   );
 };
+
+export const deletProduct = (productId, orgId) =>{
+  return instance.delete(`/api/v1/organizations/${orgId}/products/${productId}`)
+}

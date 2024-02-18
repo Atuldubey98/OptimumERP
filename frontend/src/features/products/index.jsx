@@ -8,6 +8,9 @@ import ShowDrawer from "../common/ShowDrawer";
 import useQuery from "../../hooks/useQuery";
 import useProductForm from "../../hooks/useProductForm";
 import ProductFormDrawer from "./ProductFormDrawer";
+import { deletProduct } from "../../api/product";
+import { useParams } from "react-router-dom";
+import useAsyncCall from "../../hooks/useAsyncCall";
 
 export default function ProductsPage() {
   const {
@@ -47,8 +50,12 @@ export default function ProductsPage() {
     formik.setValues(product);
     openProductFormDrawer();
   };
-
-  const onDeleteProduct = (product) => {};
+  const {orgId = ""} = useParams();
+  const {requestAsyncHandler} = useAsyncCall();
+  const onDeleteProduct = requestAsyncHandler(async (product) => {
+    await deletProduct(product._id, orgId);
+    fetchProducts();
+  });
 
   return (
     <MainLayout>

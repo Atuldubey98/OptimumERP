@@ -1,16 +1,15 @@
 import { Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { deleteCustomer } from "../../api/customer";
+import useAsyncCall from "../../hooks/useAsyncCall";
 import useCustomerForm from "../../hooks/useCustomerForm";
 import useCustomers from "../../hooks/useCustomers";
+import ShowDrawer from "../common/ShowDrawer";
 import MainLayout from "../common/main-layout";
 import TableLayout from "../common/table-layout";
 import CustomerFormDrawer from "./CustomerFormDrawer";
 import CustomerMenu from "./CustomerMenu";
-import ShowDrawer from "../common/ShowDrawer";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import { deleteCustomer } from "../../api/customer";
-import { useParams } from "react-router-dom";
-import ProductFormDrawer from "../products/ProductFormDrawer";
 export default function CustomersPage() {
   const {
     isOpen: isCustomerFormOpen,

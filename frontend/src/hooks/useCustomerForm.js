@@ -34,8 +34,10 @@ export default function useCustomerForm(onAddedFetch, onCloseDrawer) {
     },
     validationSchema: customerDto,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      if (formik.values._id) await updateCustomer(values, orgId);
-      else await createCustomer(values, orgId);
+      const {name, shippingAddress, billingAddress, gstNo, panNo, _id} = values;
+      const customer = {name, shippingAddress, billingAddress, gstNo, org : orgId, panNo, _id};
+      if (customer._id) await updateCustomer(customer, orgId);
+      else await createCustomer(customer, orgId);
       setSubmitting(false);
       onCloseDrawer();
       formik.resetForm();

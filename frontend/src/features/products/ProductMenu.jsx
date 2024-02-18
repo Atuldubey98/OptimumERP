@@ -14,8 +14,8 @@ export default function ProductMenu({
       editItem={() => {
         onOpenDrawerForEditingProduct(product);
       }}
-      deleteItem={() => {
-        onDeleteProduct(product);
+      deleteItem={()=>{
+        onDeleteProduct(product)
       }}
     />
   );

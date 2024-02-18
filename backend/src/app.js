@@ -12,7 +12,7 @@ const cors = require("cors");
 const productRouter = require("./routes/product.routes");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const whitelist = ["http://localhost:5173"];
+const whitelist = ["http://localhost:5173", "http://127.0.0.1:5173"];
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
