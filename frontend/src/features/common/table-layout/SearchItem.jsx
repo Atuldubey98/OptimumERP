@@ -14,6 +14,9 @@ export default function SearchItem({ placeholder = "Search" }) {
     searchRef.current = setTimeout(() => {
       navigate(search ? `?query=${search}` : "");
     }, SEARCH_AFTER_TIME);
+    return ()=>{
+      if(searchRef.current) clearTimeout(searchRef.current)
+    }
   }, [search]);
   return (
     <InputGroup>

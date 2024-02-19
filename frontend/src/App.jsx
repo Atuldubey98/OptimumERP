@@ -12,8 +12,8 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/:orgId">
         <Route element={<DashboardPage />} path="dashboard" />
-        <Route element={<CustomersPage />} path="customers" />
         <Route element={<ProductsPage />} path="products" />
+        <Route element={<CustomersPage />} path="customers" />
       </Route>
       <Route path="/organizations" element={<OrgPage />} />
       <Route path="/register" element={<RegisterPage />} />

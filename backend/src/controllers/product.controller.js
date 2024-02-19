@@ -27,7 +27,7 @@ exports.getAllProducts = requestAsyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .exec();
 
-  const totalCount = await Product.countDocuments().exec();
+  const totalCount = await Product.countDocuments(filter).exec();
   const totalPages = Math.ceil(totalCount / limit);
 
   return res.status(200).json({

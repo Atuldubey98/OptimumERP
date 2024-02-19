@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useAsyncCall from "./useAsyncCall";
 import { getCustomers } from "../api/customer";
 import { useParams } from "react-router-dom";
@@ -11,14 +11,14 @@ export default function useCustomers() {
   const { orgId } = useParams();
   const query = useQuery();
   const searchQuery = query.get("query");
-  const fetchCustomers = requestAsyncHandler(async () => {
+  const fetchCustomers = useCallback(requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await getCustomers(orgId, searchQuery);
     setCustomers(data.data);
     setStatus("success");
-  });
+  }),[searchQuery]);
   useEffect(() => {
     fetchCustomers();
-  }, [searchQuery]);
+  }, [searchQuery, fetchCustomers]);
   return { loading: status === "loading", customers, fetchCustomers };
 }

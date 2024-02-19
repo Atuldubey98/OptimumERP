@@ -1,9 +1,9 @@
-import { Container, Icon, List, ListItem, Text } from "@chakra-ui/react";
+import { Container, Icon, List, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
+import { IoSettingsOutline } from "react-icons/io5";
 import { NavLink, useParams } from "react-router-dom";
 import headerLinks from "../../../constants/headerLinks";
-import { IoSettingsOutline } from "react-icons/io5";
-import { FaChevronDown } from "react-icons/fa6";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
 export const SidebarLinksList = () => {

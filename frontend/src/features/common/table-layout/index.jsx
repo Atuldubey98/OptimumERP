@@ -13,7 +13,7 @@ import {
   Text,
   Th,
   Thead,
-  Tr,
+  Tr
 } from "@chakra-ui/react";
 import React from "react";
 import { IoArrowBack } from "react-icons/io5";

@@ -11,6 +11,7 @@ import ProductFormDrawer from "./ProductFormDrawer";
 import { deletProduct } from "../../api/product";
 import { useParams } from "react-router-dom";
 import useAsyncCall from "../../hooks/useAsyncCall";
+import Pagination from "../common/main-layout/Pagination";
 
 export default function ProductsPage() {
   const {
@@ -26,10 +27,10 @@ export default function ProductsPage() {
   const query = useQuery();
   const search = query.get("query");
   const [selectedToShowProduct, setSelectedToShowProduct] = useState(null);
-  const { fetchProducts, loading, products, totalCount } = useProducts();
+  const { fetchProducts, loading, products, totalCount, totalPages, currentPage } = useProducts();
   useEffect(() => {
     fetchProducts();
-  }, [search]);
+  }, [search, fetchProducts]);
   const { formik } = useProductForm(fetchProducts, onCloseProductFormDrawer);
   const onOpenProduct = (product) => {
     setSelectedToShowProduct(product);
@@ -81,9 +82,11 @@ export default function ProductsPage() {
           name: "Name",
           costPrice: "Cost Price",
           category: "Type of Product",
+          um : "Unit of measurement"
         }}
         onAddNewItem={onOpenDrawerForAddingNewProduct}
       />
+      <Pagination total={totalPages} currentPage={currentPage}/>
       {selectedToShowProduct ? (
         <ShowDrawer
           onClickNewItem={onOpenDrawerForAddingNewProduct}

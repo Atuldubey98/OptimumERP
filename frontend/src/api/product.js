@@ -1,15 +1,5 @@
 import instance from "../instance";
 
-export const getProducts = ({ page, limit, search, orgId }) => {
-  return instance.get(`/api/v1/organizations/${orgId}/products`, {
-    params: {
-      page,
-      limit,
-      search,
-    },
-  });
-};
-
 export const createProduct = ({ product, orgId }) => {
   return instance.post(`/api/v1/organizations/${orgId}/products`, product);
 };

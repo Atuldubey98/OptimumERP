@@ -9,9 +9,13 @@ export default function MainLayout({ children }) {
     <PrivateRoute>
       <Flex height={"100svh"}>
         <Sidebar />
-        <Box overflowY={"scroll"} padding={5} width={"100%"}>
-          <Header />
-          {children}
+        <Box width={"100%"}>
+          <Box padding={5}>
+            <Header />
+          </Box>
+         <Box padding={5} overflowY={"auto"} maxH={"90svh"}>
+         {children}
+         </Box>
         </Box>
       </Flex>
     </PrivateRoute>

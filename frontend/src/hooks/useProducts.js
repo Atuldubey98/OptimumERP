@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProducts } from "../api/product";
+import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import useQuery from "./useQuery";
 
@@ -9,6 +9,7 @@ export default function useProducts() {
     products: [],
     totalCount: 0,
     totalPages: 0,
+    page : 0
   });
   const [status, setStatus] = useState("idle");
   const { requestAsyncHandler } = useAsyncCall();
@@ -20,28 +21,36 @@ export default function useProducts() {
   const limit = isNaN(parseInt(query.get("limit")))
     ? 10
     : parseInt(query.get("limit"));
-  const search = query.get("query") || "";
-  const fetchProducts = requestAsyncHandler(async () => {
+  const search = query.get("query");
+  const controller = new AbortController();
+  const fetchProducts =useCallback(requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await getProducts({
-      page,
-      limit,
-      orgId,
-      search,
+    const { data } = await instance.get(`/api/v1/organizations/${orgId}/products`, {
+      signal : controller.signal,
+      params: {
+        page,
+        limit,
+        search,
+      },
+      
     });
     setProductsPaginated({
-      ...productsPaginated,
       products: data.data,
       totalCount: data.totalCount,
-      pages: data.totalPages,
+      totalPages: data.totalPages,
+      page : data.page,
     });
     setStatus("success");
-  });
-  const { products, totalCount, totalPages } = productsPaginated;
+    return ()=>{
+      controller.abort();
+    }
+  }),[search, page]);
+  const { products, totalCount, totalPages, page  : currentPage} = productsPaginated;
   return {
     loading: status === "loading",
     totalCount,
     products,
+    currentPage,
     totalPages,
     fetchProducts,
   };
