@@ -35,6 +35,16 @@ const productSchema = new mongoose.Schema(
       type : String,
       default : "none",
       required : true,
+    },
+    createdBy : {
+      type : mongoose.Types.ObjectId,
+      required : true,
+      ref : "user"
+    },
+    updatedBy : {
+      type : mongoose.Types.ObjectId,
+      required : true,
+      ref : "user"
     }
   },
   {

@@ -13,7 +13,7 @@ export default function AvatarProfile({ toggleProfilePopup }) {
       gap={2}
       alignItems={"center"}
     >
-      <Text>{user?.name}</Text>
+      <Text fontWeight={"bold"}>{user?.name}</Text>
       <Avatar name={user?.name} />
     </Flex>
   );

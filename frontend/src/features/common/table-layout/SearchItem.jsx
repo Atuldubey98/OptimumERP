@@ -1,8 +1,7 @@
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { FcSearch } from "react-icons/fc";
+import { IoSearchOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-
 export default function SearchItem({ placeholder = "Search" }) {
   const [search, setSearch] = useState("");
   const onChangeSearch = (e) => setSearch(e.currentTarget.value);
@@ -21,7 +20,7 @@ export default function SearchItem({ placeholder = "Search" }) {
   return (
     <InputGroup>
       <InputLeftElement pointerEvents="none">
-        <FcSearch color="gray.300" />
+        <IoSearchOutline />
       </InputLeftElement>
       <Input
         required

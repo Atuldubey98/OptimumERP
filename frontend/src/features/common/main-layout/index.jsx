@@ -13,7 +13,7 @@ export default function MainLayout({ children }) {
           <Box padding={5}>
             <Header />
           </Box>
-         <Box padding={5} overflowY={"auto"} maxH={"90svh"}>
+         <Box padding={5} overflowY={"auto"} h={"90svh"}>
          {children}
          </Box>
         </Box>
