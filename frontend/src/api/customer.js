@@ -1,7 +1,7 @@
 import instance from "../instance";
 import { getCustomerUrl } from "./utils";
 
-export const getCustomers = (orgId, search) => {
+export const getCustomers = (orgId, search="") => {
   return instance.get(getCustomerUrl(orgId), {
     params: {
       search,

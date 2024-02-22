@@ -1,12 +1,15 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-export default function SelectList({ options }) {
+export default function SelectList({ options, selectOption }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const Option = ({ option, index }) => {
     return (
       <Box
         cursor={"pointer"}
+        onClick={()=> {
+          selectOption(option.value)
+        }}
         bg={selectedOption === index ? "lightgray" : undefined}
         onMouseOver={() => setSelectedOption(index)}
         p={2}

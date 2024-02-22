@@ -1,38 +1,74 @@
 import {
-    Box,
     FormControl,
     FormLabel,
     Input,
     InputGroup,
     InputRightElement,
-    Spinner,
+    useDisclosure,
 } from "@chakra-ui/react";
-
-export default function SelectCustomer() {
-//   const options = [
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//     { value: "S R Refrigeration and Electricals", label: "DS Group" },
-//   ];
+import { useCallback, useEffect, useState } from "react";
+import { TbEyeSearch } from "react-icons/tb";
+import { useParams } from "react-router-dom";
+import { getCustomers } from "../../../api/customer";
+import useAsyncCall from "../../../hooks/useAsyncCall";
+import useCustomerForm from "../../../hooks/useCustomerForm";
+import CustomerModal from "./CustomerModal";
+export default function SelectCustomer({ formik }) {
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [customers, setCustomers] = useState([]);
+  const { orgId } = useParams();
+  const { requestAsyncHandler } = useAsyncCall();
+  const fetchCustomer = useCallback(
+    requestAsyncHandler(async () => {
+      const { data } = await getCustomers(orgId);
+      setCustomers(data.data);
+    }),
+    []
+  );
+  useEffect(() => {
+      fetchCustomer();
+  }, []);
+  const selectCustomer = (customerId) => {
+    formik.setFieldValue("customer", customerId);
+  };
+  const customerProps = {
+    selectCustomer,
+    selectedCustomer: formik.values.customer,
+  };
+  const customer = customers.find(
+    (customer) => customer._id === formik.values.customer
+  );
+  const {
+    isOpen: isOpenCustomerFormDrawer,
+    onOpen: onOpenCustomerFormDrawer,
+    onClose: onCloseCustomerFormDrawer,
+  } = useDisclosure();
+  const customerFormProps = {
+    isOpenCustomerFormDrawer,
+    onCloseCustomerFormDrawer,
+    onOpenCustomerFormDrawer,
+  };
+  const { formik: customerFormik } = useCustomerForm(fetchCustomer, onCloseCustomerFormDrawer);
   return (
-    <Box position={"relative"}>
-      <FormControl>
-        <FormLabel>Client name</FormLabel>
-        <InputGroup>
-          <Input placeholder="Search for customer" />
-          <InputRightElement>
-            <Spinner color="green.500" />
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      {/* <Box position={"absolute"} width={"100%"} bg={"white"} zIndex={2}>
-        <SelectList options={options} />
-      </Box> */}
-    </Box>
+    <FormControl>
+      <FormLabel>Customer</FormLabel>
+      <InputGroup>
+        <Input
+          placeholder="Select Customer"
+          value={customer ? customer.name : ""}
+        />
+        <InputRightElement>
+          <TbEyeSearch cursor={"pointer"} onClick={onOpen} />
+        </InputRightElement>
+      </InputGroup>
+      <CustomerModal
+        customerFormProps={customerFormProps}
+        customers={customers}
+        onClose={onClose}
+        formik={customerFormik}
+        isOpen={isOpen}
+        customerProps={customerProps}
+      />
+    </FormControl>
   );
 }

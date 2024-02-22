@@ -1,55 +1,87 @@
 import {
-    Button,
-    FormControl,
-    FormLabel,
-    Grid,
-    Input,
-    Select,
-    Stack
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Grid,
+  Input,
+  Textarea,
 } from "@chakra-ui/react";
-import { MdAdd } from "react-icons/md";
+import { FormikProvider } from "formik";
+import useEstimateForm from "../../../hooks/useEstimateForm";
 import MainLayout from "../../common/main-layout";
-import QuoteItem from "./QuoteItem";
+import ItemsList from "./ItemList";
+import SelectStatus from "./SelectStatus";
+import TotalsBox from "./TotalsBox";
 import SelectCustomer from "./SelectCustomer";
 export default function CreateEstimatePage() {
+  const { formik } = useEstimateForm();
   return (
     <MainLayout>
-      <form>
-        <Grid>
-          <Grid gap={2} gridTemplateColumns={"1fr 1fr 1fr"}>
-            <SelectCustomer />
-            <FormControl>
-              <FormLabel>Quotation No.</FormLabel>
-              <Input />
+      <FormikProvider value={formik}>
+        <form onSubmit={formik.handleSubmit}>
+          <Flex justifyContent={"flex-end"} alignItems={"center"}>
+            <Button type="submit" colorScheme="teal" variant="solid">
+              Save
+            </Button>
+          </Flex>
+          <Grid gap={4}>
+            <Grid gap={2} gridTemplateColumns={"1fr 1fr 1fr"}>
+              
+              <FormControl
+                isRequired
+                isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
+              >
+                <FormLabel>Quotation No.</FormLabel>
+                <Input
+                  name="quoteNo"
+                  onChange={formik.handleChange}
+                  value={formik.values.quoteNo}
+                />
+              </FormControl>
+              <FormControl
+                isRequired
+                isInvalid={formik.errors.date && formik.touched.date}
+              >
+                <FormLabel>Date</FormLabel>
+                <Input
+                  type="date"
+                  value={formik.values.date}
+                  onChange={formik.handleChange}
+                />
+              </FormControl>
+              <SelectStatus formik={formik} />
+              <SelectCustomer formik={formik} />
+            </Grid>
+            <ItemsList formik={formik} />
+            <TotalsBox quoteItems={formik.values.items} />
+            <FormControl
+              isInvalid={
+                formik.errors.description && formik.touched.description
+              }
+            >
+              <FormLabel>Description</FormLabel>
+              <Input
+                placeholder="Write any thing to search the quote latere like email id or something to identify the quote."
+                name="description"
+                onChange={formik.handleChange}
+                value={formik.values.description}
+              />
             </FormControl>
-            <FormControl>
-              <FormLabel>Date</FormLabel>
-              <Input type="date" />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Status</FormLabel>
-              <Select>
-                <option>Draft</option>
-                <option>Pending</option>
-                <option>Sent</option>
-                <option>Accepted</option>
-                <option>Declined</option>
-              </Select>
+            <FormControl
+              isInvalid={formik.errors.terms && formik.touched.terms}
+            >
+              <FormLabel>Terms and conditions</FormLabel>
+              <Textarea
+                placeholder="Your terms and conditions for the work."
+                name="terms"
+                onChange={formik.handleChange}
+                value={formik.values.terms}
+              />
             </FormControl>
           </Grid>
-        </Grid>
-        <Stack spacing={2} marginBlock={8}>
-          <QuoteItem />
-        </Stack>
-        <Button
-          width={"100%"}
-          leftIcon={<MdAdd />}
-          colorScheme="blue"
-          variant="outline"
-        >
-          Add Field
-        </Button>
-      </form>
+        </form>
+      </FormikProvider>
     </MainLayout>
   );
 }
