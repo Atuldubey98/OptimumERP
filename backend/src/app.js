@@ -10,6 +10,7 @@ const organizationRouter = require("./routes/org.routes");
 const app = express();
 const cors = require("cors");
 const productRouter = require("./routes/product.routes");
+const quoteRouter = require("./routes/quote.routes");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const whitelist = ["http://localhost:5173", "http://127.0.0.1:5173"];
@@ -44,6 +45,7 @@ if (NODE_ENV === "production") {
   sessionOptions.cookie.secure = true;
 }
 app.use(session(sessionOptions));
+
 app.get("/api/v1/health", (_, res) => {
   return res.status(200).send("Server is running");
 });
@@ -51,6 +53,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations/:orgId/customers", customerRouter);
 app.use("/api/v1/organizations/:orgId/products", productRouter);
 app.use("/api/v1/organizations", organizationRouter);
+app.use("/api/v1/organizations/:orgId/quotes", quoteRouter);
 app.use("*", (req, res) => {
   return res
     .status(404)

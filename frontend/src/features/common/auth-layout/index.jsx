@@ -8,18 +8,21 @@ import {
   ListItem,
   Show,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 import { MdCheckCircle } from "react-icons/md";
 
 import Banner from "../sidebar/Banner";
 export default function AuthLayout({ children, formHeading }) {
-  return (
+  const {colorMode} = useColorMode();
+  
+   return (
     <Flex justifyContent={"center"} alignItems={"center"} height={"100svh"}>
       <Hide below="md">
         <Flex
           height={"100%"}
           flex={"1"}
-          backgroundColor={"#EAEFFB"}
+          backgroundColor={colorMode === "dark" ? undefined :  "#EAEFFB"}
           justifyContent={"center"}
           alignItems={"center"}
         >

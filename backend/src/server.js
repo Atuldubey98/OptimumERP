@@ -9,6 +9,7 @@ const app = require("./app");
 const http = require("http");
 const logger = require("./logger");
 const mongoose = require("mongoose");
+
 mongoose
   .connect("mongodb://127.0.0.1:27017")
   .then(() => logger.info("connected to mongodb"));
