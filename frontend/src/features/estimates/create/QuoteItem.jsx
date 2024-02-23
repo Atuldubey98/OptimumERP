@@ -35,7 +35,7 @@ export default function QuoteItem({
     <Flex gap={2} p={0} m={0} justifyContent={"center"} alignItems={"center"}>
       <Grid gap={2} gridTemplateColumns={"2fr repeat(5,1fr)"}>
         <GridItem>
-          <FormControl isInvalid={errors.name && errors.name}>
+          <FormControl isRequired isInvalid={errors.name && errors.name}>
             <FormLabel>Item</FormLabel>
             <Input
               name={`items[${index}].name`}
@@ -46,10 +46,11 @@ export default function QuoteItem({
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl isInvalid={errors.quantity && errors.quantity}>
-            <FormLabel >
-              Quantity
-            </FormLabel>
+          <FormControl
+            isRequired
+            isInvalid={errors.quantity && errors.quantity}
+          >
+            <FormLabel>Quantity</FormLabel>
             <Input
               type="number"
               name={`items[${index}].quantity`}
@@ -60,7 +61,7 @@ export default function QuoteItem({
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl isInvalid={errors.um && errors.um}>
+          <FormControl isRequired isInvalid={errors.um && errors.um}>
             <FormLabel>Unit of Measurement</FormLabel>
             <Select
               name={`items[${index}].um`}
@@ -77,7 +78,7 @@ export default function QuoteItem({
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl isInvalid={errors.gst && errors.gst}>
+          <FormControl isRequired isInvalid={errors.gst && errors.gst}>
             <FormLabel>GST/IGST</FormLabel>
             <Select
               name={`items[${index}].gst`}
@@ -94,9 +95,7 @@ export default function QuoteItem({
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl
-           isInvalid={errors.price && errors.price}
-          >
+          <FormControl isRequired isInvalid={errors.price && errors.price}>
             <FormLabel>Price</FormLabel>
             <InputGroup>
               <Input
