@@ -44,5 +44,4 @@ quoteRouter.patch(
   checkOrgAuthorization,
   updateQuote
 );
-
 module.exports = quoteRouter;

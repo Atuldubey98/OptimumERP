@@ -5,7 +5,6 @@ const { QuoteNotFound } = require("../errors/quote.error");
 const { CustomerNotFound } = require("../errors/customer.error");
 const { quoteDto } = require("../dto/quotes.dto");
 const Customer = require("../models/customer.model");
-
 const getTotalAndTax = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
@@ -77,6 +76,7 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
     .limit(limit)
     .sort({ createdAt: -1 })
     .populate("customer")
+    .populate("org")
     .exec();
   const totalCount = await Quote.countDocuments(filter).exec();
   const totalPages = Math.ceil(totalCount / limit);
@@ -95,8 +95,9 @@ exports.getQuote = requestAsyncHandler(async (req, res) => {
     _id: req.params.quoteId,
     org: req.params.orgId,
   })
-    .populate("customer")
-    .populate("createdBy", "name email _id");
+    .populate("customer", "name _id")
+    .populate("createdBy", "name email _id")
+    .populate("org", "name address _id");
   if (!quote) throw new QuoteNotFound();
   return res.status(200).json({ data: quote });
 });
