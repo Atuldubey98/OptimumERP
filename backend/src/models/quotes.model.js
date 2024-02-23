@@ -35,7 +35,7 @@ const quoteSchema = new Schema(
           type: String,
           required: true,
         },
-        rate: {
+        price: {
           type: Number,
           required: true,
           default: 0,
@@ -60,7 +60,7 @@ const quoteSchema = new Schema(
       default: new Date(Date.now()),
     },
     quoteNo: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
     },

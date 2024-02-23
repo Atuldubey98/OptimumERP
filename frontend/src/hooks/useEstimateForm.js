@@ -1,11 +1,14 @@
+import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useEffect } from "react";
-import { defaultQuoteItem } from "../features/estimates/create/data";
+import { useParams } from "react-router-dom";
 import * as Yup from "yup";
+import { defaultQuoteItem } from "../features/estimates/create/data";
+import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 export default function useEstimateForm() {
   const quoteSchema = Yup.object().shape({
-    quoteNo: Yup.string().required("Quote number is required"),
+    quoteNo: Yup.number().required("Quote number is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
     items: Yup.array().of(
@@ -25,24 +28,63 @@ export default function useEstimateForm() {
     description: Yup.string(),
   });
   const { requestAsyncHandler } = useAsyncCall();
+  const { orgId, quoteId } = useParams();
+  const toast = useToast();
   const formik = useFormik({
     initialValues: {
-      quoteNo: "",
+      quoteNo: 1,
       date: new Date(Date.now()).toISOString().split("T")[0],
       status: "draft",
-      items: [],
+      items: [defaultQuoteItem],
       terms: "Thanks for business !",
       description: "",
     },
     validationSchema: quoteSchema,
-    onSubmit: requestAsyncHandler((values) => {
-      console.log(values);
+    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
+      const { _id, ...estimate } = values;
+      const items = values.items.map(({ _id, ...item }) => item);
+      await instance[_id ? "patch" : "post"](
+        `/api/v1/organizations/${orgId}/quotes/${_id || ""}`,
+        {
+          ...estimate,
+          items,
+        }
+      );
+      toast({
+        title: "Success",
+        description: _id ? "Quote updated" : "Quotation created",
+        status: _id ? "info" : "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setSubmitting(false);
     }),
   });
-  console.log(formik.errors);
   useEffect(() => {
-    if (!formik.values.items.length)
-      formik.setFieldValue("items", [defaultQuoteItem]);
+    (async () => {
+      if (quoteId) {
+        const { data } = await instance.get(
+          `/api/v1/organizations/${orgId}/quotes/${quoteId}`
+        );
+        const { customer, terms, quoteNo, date, status, items, description } =
+          data.data;
+        formik.setValues({
+          _id: data.data._id,
+          customer: customer._id,
+          terms,
+          quoteNo,
+          date: new Date(date).toISOString().split("T")[0],
+          status,
+          items,
+          description,
+        });
+      } else {
+        const { data } = await instance.get(
+          `/api/v1/organizations/${orgId}/quotes/next-quote-no`
+        );
+        formik.setFieldValue("quoteNo", data.data);
+      }
+    })();
   }, []);
   return { formik };
 }

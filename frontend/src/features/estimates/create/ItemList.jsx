@@ -5,6 +5,7 @@ import QuoteItem from "./QuoteItem";
 import { defaultQuoteItem } from "./data";
 
 export default function ItemsList({ formik }) {
+  const errorsQuoteItems = formik.errors.items;
   return (
     <FieldArray
       name="items"
@@ -14,6 +15,7 @@ export default function ItemsList({ formik }) {
             {formik.values.items.map((quoteItem, index) => (
               <ListItem key={index}>
                 <QuoteItem
+                  errorsQuoteItems={errorsQuoteItems}
                   deleteQuote={() => itemsHelper.remove(index)}
                   index={index}
                   quoteItem={quoteItem}

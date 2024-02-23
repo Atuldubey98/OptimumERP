@@ -19,6 +19,7 @@ export default function App() {
         <Route path="estimates" >
           <Route  element={<EstimatesPage />} path=""/>
           <Route  element={<CreateEstimatePage />} path="create"/>
+          <Route  element={<CreateEstimatePage />} path=":quoteId/edit"/>
         </Route>
       </Route>
       <Route path="/organizations" element={<OrgPage />} />

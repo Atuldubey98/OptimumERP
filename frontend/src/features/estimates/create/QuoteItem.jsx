@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Grid,
   GridItem,
@@ -14,6 +15,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { taxRates, ums } from "./data";
 export default function QuoteItem({
   quoteItem,
+  errorsQuoteItems,
   handleQuoteItemChange,
   index,
   deleteQuote,
@@ -27,33 +29,38 @@ export default function QuoteItem({
     ? 0
     : parseFloat((subtotal * gstPercentage) / 100);
   const total = (subtotal + totalTax).toFixed(2);
+  const errors =
+    errorsQuoteItems && errorsQuoteItems[index] ? errorsQuoteItems[index] : {};
   return (
     <Flex gap={2} p={0} m={0} justifyContent={"center"} alignItems={"center"}>
       <Grid gap={2} gridTemplateColumns={"2fr repeat(5,1fr)"}>
         <GridItem>
-          <FormControl>
+          <FormControl isInvalid={errors.name && errors.name}>
             <FormLabel>Item</FormLabel>
             <Input
               name={`items[${index}].name`}
               value={quoteItem.name}
               onChange={handleQuoteItemChange}
             />
+            <FormErrorMessage>{errors.name}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl>
-            <FormLabel>Quantity</FormLabel>
+          <FormControl isInvalid={errors.quantity && errors.quantity}>
+            <FormLabel >
+              Quantity
+            </FormLabel>
             <Input
-              defaultValue={0}
               type="number"
               name={`items[${index}].quantity`}
               value={quoteItem.quantity}
               onChange={handleQuoteItemChange}
             />
+            <FormErrorMessage>{errors.quantity}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl>
+          <FormControl isInvalid={errors.um && errors.um}>
             <FormLabel>Unit of Measurement</FormLabel>
             <Select
               name={`items[${index}].um`}
@@ -66,10 +73,11 @@ export default function QuoteItem({
                 </option>
               ))}
             </Select>
+            <FormErrorMessage>{errors.um}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl>
+          <FormControl isInvalid={errors.gst && errors.gst}>
             <FormLabel>GST/IGST</FormLabel>
             <Select
               name={`items[${index}].gst`}
@@ -82,10 +90,13 @@ export default function QuoteItem({
                 </option>
               ))}
             </Select>
+            <FormErrorMessage>{errors.gst}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem>
-          <FormControl>
+          <FormControl
+           isInvalid={errors.price && errors.price}
+          >
             <FormLabel>Price</FormLabel>
             <InputGroup>
               <Input
@@ -97,6 +108,7 @@ export default function QuoteItem({
               />
               <InputRightElement>$</InputRightElement>
             </InputGroup>
+            <FormErrorMessage>{errors.price}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem>
@@ -105,7 +117,7 @@ export default function QuoteItem({
             <InputGroup>
               <Input
                 name="total"
-                disabled
+                readOnly
                 value={total}
                 placeholder="Enter total"
               />

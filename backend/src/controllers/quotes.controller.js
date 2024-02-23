@@ -2,22 +2,30 @@ const { isValidObjectId, default: mongoose } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Quote = require("../models/quotes.model");
 const { QuoteNotFound } = require("../errors/quote.error");
+const { CustomerNotFound } = require("../errors/customer.error");
 const { quoteDto } = require("../dto/quotes.dto");
+const Customer = require("../models/customer.model");
+
 const getTotalAndTax = (items = []) => {
   const total = items.reduce(
-    (prev, item) => prev + item.rate * item.quantity,
+    (prev, item) => prev + item.price * item.quantity,
     0
   );
   const totalTax = items.reduce((prev, item) => {
     const taxPercentage =
       item.gst === "none" ? 0 : parseInt(item.gst.split(":")[1]);
-    return prev + (item.rate * item.quantity * taxPercentage) / 100;
+    return prev + (item.price * item.quantity * taxPercentage) / 100;
   }, 0);
   return { total, totalTax };
 };
 exports.createQuote = requestAsyncHandler(async (req, res) => {
   const { total, totalTax } = getTotalAndTax(req.body.items);
   const body = await quoteDto.validateAsync(req.body);
+  const customer = await Customer.findOne({
+    _id: body.customer,
+    org: req.params.orgId,
+  });
+  if (!customer) throw new CustomerNotFound();
   const newQuote = new Quote({
     org: req.params.orgId,
     ...body,
@@ -68,6 +76,7 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .sort({ createdAt: -1 })
+    .populate("customer")
     .exec();
   const totalCount = await Quote.countDocuments(filter).exec();
   const totalPages = Math.ceil(totalCount / limit);
@@ -90,4 +99,15 @@ exports.getQuote = requestAsyncHandler(async (req, res) => {
     .populate("createdBy", "name email _id");
   if (!quote) throw new QuoteNotFound();
   return res.status(200).json({ data: quote });
+});
+
+exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
+  const quote = await Quote.findOne(
+    {
+      org: req.params.orgId,
+    },
+    { quoteNo: 1 },
+    { sort: { quote: -1 } }
+  ).select("quoteNo");
+  return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
 });

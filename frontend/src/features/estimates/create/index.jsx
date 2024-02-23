@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Grid,
   Input,
@@ -21,23 +22,30 @@ export default function CreateEstimatePage() {
       <FormikProvider value={formik}>
         <form onSubmit={formik.handleSubmit}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
-            <Button type="submit" colorScheme="teal" variant="solid">
+            <Button
+              isLoading={formik.isSubmitting}
+              isDisabled={!formik.isValid}
+              type="submit"
+              colorScheme="teal"
+              variant="solid"
+            >
               Save
             </Button>
           </Flex>
           <Grid gap={4}>
             <Grid gap={2} gridTemplateColumns={"1fr 1fr 1fr"}>
-              
               <FormControl
                 isRequired
                 isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
               >
                 <FormLabel>Quotation No.</FormLabel>
                 <Input
+                  type="number"
                   name="quoteNo"
                   onChange={formik.handleChange}
                   value={formik.values.quoteNo}
                 />
+                <FormErrorMessage>{formik.errors.quoteNo}</FormErrorMessage>
               </FormControl>
               <FormControl
                 isRequired
@@ -49,6 +57,7 @@ export default function CreateEstimatePage() {
                   value={formik.values.date}
                   onChange={formik.handleChange}
                 />
+                <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
               </FormControl>
               <SelectStatus formik={formik} />
               <SelectCustomer formik={formik} />
@@ -67,6 +76,7 @@ export default function CreateEstimatePage() {
                 onChange={formik.handleChange}
                 value={formik.values.description}
               />
+              <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
             </FormControl>
             <FormControl
               isInvalid={formik.errors.terms && formik.touched.terms}
@@ -78,6 +88,7 @@ export default function CreateEstimatePage() {
                 onChange={formik.handleChange}
                 value={formik.values.terms}
               />
+              <FormErrorMessage>{formik.errors.terms}</FormErrorMessage>
             </FormControl>
           </Grid>
         </form>

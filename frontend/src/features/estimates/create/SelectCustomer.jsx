@@ -1,10 +1,11 @@
 import {
-    FormControl,
-    FormLabel,
-    Input,
-    InputGroup,
-    InputRightElement,
-    useDisclosure,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { TbEyeSearch } from "react-icons/tb";
@@ -26,7 +27,7 @@ export default function SelectCustomer({ formik }) {
     []
   );
   useEffect(() => {
-      fetchCustomer();
+    fetchCustomer();
   }, []);
   const selectCustomer = (customerId) => {
     formik.setFieldValue("customer", customerId);
@@ -48,19 +49,31 @@ export default function SelectCustomer({ formik }) {
     onCloseCustomerFormDrawer,
     onOpenCustomerFormDrawer,
   };
-  const { formik: customerFormik } = useCustomerForm(fetchCustomer, onCloseCustomerFormDrawer);
+  const { formik: customerFormik } = useCustomerForm(
+    fetchCustomer,
+    onCloseCustomerFormDrawer
+  );
   return (
-    <FormControl>
-      <FormLabel>Customer</FormLabel>
-      <InputGroup>
-        <Input
-          placeholder="Select Customer"
-          value={customer ? customer.name : ""}
-        />
-        <InputRightElement>
-          <TbEyeSearch cursor={"pointer"} onClick={onOpen} />
-        </InputRightElement>
-      </InputGroup>
+    <>
+      <FormControl isReadOnly isRequired>
+        <FormLabel>Customer</FormLabel>
+        <InputGroup>
+          <Input
+            placeholder="Select Customer"
+            value={customer ? customer.name : "Select a customer"}
+            readOnly={true}
+          />
+          <InputRightElement>
+            <TbEyeSearch cursor={"pointer"} onClick={onOpen} size={25} />
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
+      {customer ? (
+        <FormControl isRequired>
+          <FormLabel>Address</FormLabel>
+          <Textarea readOnly value={customer.billingAddress} />
+        </FormControl>
+      ) : null}
       <CustomerModal
         customerFormProps={customerFormProps}
         customers={customers}
@@ -69,6 +82,6 @@ export default function SelectCustomer({ formik }) {
         isOpen={isOpen}
         customerProps={customerProps}
       />
-    </FormControl>
+    </>
   );
 }

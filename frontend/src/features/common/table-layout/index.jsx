@@ -13,7 +13,7 @@ import {
   Text,
   Th,
   Thead,
-  Tr
+  Tr,
 } from "@chakra-ui/react";
 import React from "react";
 import { IoArrowBack } from "react-icons/io5";
@@ -30,7 +30,9 @@ export default function TableLayout({
   const tableRows = tableData.map((row) => {
     const tableRow = {};
     Object.keys(row)
-      .filter((key) => selectedKeys[key])
+      .filter((key) => {
+        return selectedKeys[key];
+      })
       .forEach((element) => (tableRow[element] = row[element]));
     return tableRow;
   });
@@ -71,8 +73,10 @@ export default function TableLayout({
           <Tbody>
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
-                {Object.keys(tableRow).map((col) => (
-                  <Td key={col}>{tableRow[col]}</Td>
+                {Object.keys(selectedKeys).map((col) => (
+                  <Td isNumeric={typeof tableRow[col] === "number"} key={col}>
+                    {tableRow[col]}
+                  </Td>
                 ))}
                 <Td>{operations[index]}</Td>
               </Tr>

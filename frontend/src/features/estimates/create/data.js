@@ -162,7 +162,7 @@ const ums = [
 ];
 const defaultQuoteItem = {
   name: "",
-  quantity: 0,
+  quantity: 1,
   um: "none",
   gst: "none",
   price: 0,

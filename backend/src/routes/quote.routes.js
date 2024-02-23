@@ -13,6 +13,7 @@ const {
   updateQuote,
   getQuote,
   getQuotes,
+  getNextQuotationNumber,
 } = require("../controllers/quotes.controller");
 const quoteRouter = Router({
   mergeParams: true,
@@ -26,6 +27,7 @@ quoteRouter.post(
   createQuote
 );
 
+quoteRouter.get("/next-quote-no", authenticate, checkOrgAuthorization, getNextQuotationNumber);
 quoteRouter.get("/:quoteId", authenticate, checkOrgAuthorization, getQuote);
 quoteRouter.get(
   "/",

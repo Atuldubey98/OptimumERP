@@ -8,7 +8,7 @@ export default function SelectStatus({ formik }) {
       isInvalid={formik.errors.date && formik.touched.date}
     >
       <FormLabel>Status</FormLabel>
-      <Select name="status">
+      <Select value={formik.values.status} onChange={formik.handleChange} name="status">
         {statusList.map((status) => (
           <option key={status.type} value={status.type}>
             {status.label}
