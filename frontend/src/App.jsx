@@ -12,7 +12,6 @@ import NotFoundPage from "./features/common/NotFoundPage";
 export default function App() {
   return (
     <Routes>
-     
       <Route path="/login" element={<LoginPage />} />
       <Route path="/:orgId">
         <Route element={<DashboardPage />} path="dashboard" />
@@ -26,6 +25,7 @@ export default function App() {
       </Route>
       <Route path="/organizations" element={<OrgPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

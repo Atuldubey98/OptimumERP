@@ -11,6 +11,7 @@ import TableLayout from "../common/table-layout";
 import CustomerFormDrawer from "./CustomerFormDrawer";
 import CustomerMenu from "./CustomerMenu";
 import SearchItem from "../common/table-layout/SearchItem";
+import AlertModal from "../common/AlertModal";
 export default function CustomersPage() {
   const {
     isOpen: isCustomerFormOpen,
@@ -112,6 +113,7 @@ export default function CustomersPage() {
           }}
         />
       ) : null}
+      
     </MainLayout>
   );
 }

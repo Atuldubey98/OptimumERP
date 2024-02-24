@@ -29,7 +29,6 @@ export default function ProfilePopup() {
       position={"absolute"}
       padding={4}
       zIndex={5}
-      backgroundColor={"white"}
       right={4}
     >
       <List spacing={3}>

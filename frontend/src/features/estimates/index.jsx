@@ -5,7 +5,7 @@ import {
   Grid,
   Spinner,
   Tag,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +19,7 @@ import VertIconMenu from "../common/table-layout/VertIconMenu";
 import { statusList } from "./create/data";
 import DateFilter from "./list/DateFilter";
 import QuoteModal from "./list/QuoteModal";
+import AlertModal from "../common/AlertModal";
 
 export default function EstimatesPage() {
   const navigate = useNavigate();
@@ -56,10 +57,17 @@ export default function EstimatesPage() {
   };
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
+  const {
+    isOpen: isDeleteModalOpen,
+    onClose: onCloseDeleteModal,
+    onOpen: onOpenDeleteModal,
+  } = useDisclosure();
   const deleteQuote = requestAsyncHandler(async (estimate) => {
+    if (!estimate) return;
     await instance.delete(
       `/api/v1/organizations/${orgId}/quotes/${estimate._id}`
     );
+    onCloseDeleteModal();
     fetchQuotes();
   });
   return (
@@ -94,7 +102,10 @@ export default function EstimatesPage() {
               editItem={() => {
                 navigate(`${estimate._id}/edit`);
               }}
-              deleteItem={() => deleteQuote(estimate)}
+              deleteItem={() => {
+                setQuotation(estimate);
+                onOpenDeleteModal();
+              }}
             />
           ))}
           selectedKeys={{
@@ -111,6 +122,13 @@ export default function EstimatesPage() {
       {quotation ? (
         <QuoteModal isOpen={isOpen} onClose={onClose} quotation={quotation} />
       ) : null}
+      <AlertModal
+        body={"Do you want to delete the estimate"}
+        header={"Delete Quotation"}
+        isOpen={isDeleteModalOpen}
+        onClose={onCloseDeleteModal}
+        onConfirm={() => deleteQuote(quotation)}
+      />
     </MainLayout>
   );
 }

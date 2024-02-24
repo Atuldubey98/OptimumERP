@@ -1,14 +1,11 @@
-import { Box, Button, Flex, Icon, Show, useColorMode } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Box, Button, Flex, Show, useColorMode } from "@chakra-ui/react";
+import React from "react";
 
-import AvatarProfile from "./AvatarProfile";
-import ProfilePopup from "./ProfilePopup";
-import { useNavigate } from "react-router-dom";
 import { CiDark } from "react-icons/ci";
 import { MdMenu, MdOutlineWbSunny } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import AvatarProfile from "./AvatarProfile";
 export default function Header({ onSideNavOpen }) {
-  const [openPopupSettings, setOpenPopupSettings] = useState(false);
-  const toggleProfilePopup = () => setOpenPopupSettings(!openPopupSettings);
   const navigate = useNavigate();
   const onNavigateToOrganizations = () => navigate("/organizations");
   const { colorMode, toggleColorMode } = useColorMode();
@@ -37,12 +34,11 @@ export default function Header({ onSideNavOpen }) {
           ) : (
             <CiDark onClick={toggleColorMode} size={28} cursor={"pointer"} />
           )}
-          <AvatarProfile toggleProfilePopup={toggleProfilePopup} />
+          <AvatarProfile/>
           <Show below="md">
             <MdMenu size={28} cursor={"pointer"} onClick={onSideNavOpen} />
           </Show>
         </Flex>
-        {openPopupSettings ? <ProfilePopup /> : null}
       </Box>
     </Box>
   );
