@@ -9,17 +9,17 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import useEsitamtes from "../../hooks/useEsimates";
-import instance from "../../instance";
-import MainLayout from "../common/main-layout";
-import TableLayout from "../common/table-layout";
-import SearchItem from "../common/table-layout/SearchItem";
-import VertIconMenu from "../common/table-layout/VertIconMenu";
-import { statusList } from "./create/data";
-import DateFilter from "./list/DateFilter";
-import QuoteModal from "./list/QuoteModal";
-import AlertModal from "../common/AlertModal";
+import useAsyncCall from "../../../hooks/useAsyncCall";
+import useEsitamtes from "../../../hooks/useEsimates";
+import instance from "../../../instance";
+import MainLayout from "../../common/main-layout";
+import TableLayout from "../../common/table-layout";
+import SearchItem from "../../common/table-layout/SearchItem";
+import VertIconMenu from "../../common/table-layout/VertIconMenu";
+import { statusList } from "../create/data";
+import DateFilter from "./DateFilter";
+import QuoteModal from "./QuoteModal";
+import AlertModal from "../../common/AlertModal";
 
 export default function EstimatesPage() {
   const navigate = useNavigate();

@@ -5,7 +5,7 @@ import OrgPage from "./features/organizations";
 import RegisterPage from "./features/register";
 import CustomersPage from "./features/customers";
 import ProductsPage from "./features/products";
-import EstimatesPage from "./features/estimates";
+import EstimatesPage from "./features/estimates/list";
 import CreateEstimatePage from "./features/estimates/create";
 import NotFoundPage from "./features/common/NotFoundPage";
 import CreateInvoicePage from "./features/invoices/create";
