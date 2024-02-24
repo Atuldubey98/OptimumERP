@@ -6,8 +6,7 @@ const { CustomerNotFound } = require("../errors/customer.error");
 const { quoteDto } = require("../dto/quotes.dto");
 const Customer = require("../models/customer.model");
 
-const ejs = require("ejs");
-const getTotalAndTax = (items = []) => {
+exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
     0
@@ -20,7 +19,7 @@ const getTotalAndTax = (items = []) => {
   return { total, totalTax };
 };
 exports.createQuote = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax } = getTotalAndTax(req.body.items);
+  const { total, totalTax } = this.getTotalAndTax(req.body.items);
   const body = await quoteDto.validateAsync(req.body);
   const customer = await Customer.findOne({
     _id: body.customer,
@@ -34,7 +33,7 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     totalTax,
   });
   await newQuote.save();
-  return res.status(201).json({ message: "Quote created !", quote: newQuote });
+  return res.status(201).json({ message: "Quote created !", data: newQuote });
 });
 
 exports.updateQuote = requestAsyncHandler(async (req, res) => {
@@ -79,7 +78,7 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
       $lte: new Date(req.query.endDate),
     };
   }
-  
+
   const quotes = await Quote.find(filter)
     .sort({ createdAt: -1 })
     .populate("customer")
@@ -141,4 +140,3 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     grandTotal,
   });
 });
-

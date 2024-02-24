@@ -3,16 +3,16 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const userRouter = require("./routes/users.routes");
 const errorHandler = require("./handlers/error.handler");
-const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
-const customerRouter = require("./routes/customers.routes");
-const organizationRouter = require("./routes/org.routes");
-const app = express();
 const path = require("path");
 const cors = require("cors");
-const productRouter = require("./routes/product.routes");
-const quoteRouter = require("./routes/quote.routes");
+const organizationRouter = require("./routes/org.routes");
+const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
+
+const app = express();
+
 app.set('view engine', 'ejs');
 app.set("views", path.join(__dirname,"/views"))
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(
   express.static(path.join(__dirname, "../../frontend/dist"), {
@@ -67,10 +67,8 @@ app.get("/api/v1/health", (_, res) => {
   return res.status(200).send("Server is running");
 });
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/organizations/:orgId/customers", customerRouter);
-app.use("/api/v1/organizations/:orgId/products", productRouter);
 app.use("/api/v1/organizations", organizationRouter);
-app.use("/api/v1/organizations/:orgId/quotes", quoteRouter);
+
 app.use("*", (req, res) => {
   return res
     .status(404)

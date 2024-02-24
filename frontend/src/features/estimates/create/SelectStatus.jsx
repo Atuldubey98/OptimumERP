@@ -5,7 +5,7 @@ export default function SelectStatus({ formik }) {
   return (
     <FormControl
       isRequired
-      isInvalid={formik.errors.date && formik.touched.date}
+      isInvalid={formik.errors.status && formik.touched.status}
     >
       <FormLabel>Status</FormLabel>
       <Select value={formik.values.status} onChange={formik.handleChange} name="status">

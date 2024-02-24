@@ -8,6 +8,8 @@ import ProductsPage from "./features/products";
 import EstimatesPage from "./features/estimates";
 import CreateEstimatePage from "./features/estimates/create";
 import NotFoundPage from "./features/common/NotFoundPage";
+import CreateInvoicePage from "./features/invoices/create";
+import InvoicesPage from "./features/invoices/list";
 
 export default function App() {
   return (
@@ -21,6 +23,11 @@ export default function App() {
           <Route element={<EstimatesPage />} path="" />
           <Route element={<CreateEstimatePage />} path="create" />
           <Route element={<CreateEstimatePage />} path=":quoteId/edit" />
+        </Route>
+        <Route path="invoices">
+          <Route element={<InvoicesPage/>} path=""/>
+          <Route element={<CreateInvoicePage />} path="create" />
+          <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
         </Route>
       </Route>
       <Route path="/organizations" element={<OrgPage />} />

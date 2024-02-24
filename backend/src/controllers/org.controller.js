@@ -24,7 +24,7 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
 
 exports.getOrg = requestAsyncHandler(async (req, res) => {
   const userId = req.session.user._id;
-  const org = await Org.findByIdAndUserId(userId, req.params.id);
+  const org = await Org.findByIdAndUserId(userId, req.params.orgId);
   if (!org) throw new OrgNotFound();
   return res.status(200).json({ data: org });
 });

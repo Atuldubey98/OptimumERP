@@ -2,9 +2,8 @@ import { Box, Button, ListItem, OrderedList } from "@chakra-ui/react";
 import { FieldArray } from "formik";
 import { MdAdd } from "react-icons/md";
 import QuoteItem from "./QuoteItem";
-import { defaultQuoteItem } from "./data";
 
-export default function ItemsList({ formik }) {
+export default function ItemsList({ formik, defaultItem }) {
   const errorsQuoteItems = formik.errors.items;
   return (
     <FieldArray
@@ -27,7 +26,7 @@ export default function ItemsList({ formik }) {
           <Button
             type="button"
             width={"100%"}
-            onClick={() => itemsHelper.push(defaultQuoteItem)}
+            onClick={() => itemsHelper.push(defaultItem)}
             leftIcon={<MdAdd />}
             colorScheme="blue"
             variant="outline"

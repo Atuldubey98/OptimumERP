@@ -2,27 +2,27 @@ const statusList = [
   {
     type: "draft",
     label: "Draft",
-    colorScheme : "blue"
+    colorScheme: "blue",
   },
   {
     type: "pending",
     label: "Pending",
-    colorScheme : "yellow"
+    colorScheme: "yellow",
   },
   {
     type: "sent",
     label: "Sent",
-    colorScheme : "green"
+    colorScheme: "green",
   },
   {
     type: "accepted",
     label: "Accepted",
-    colorScheme : "teal"
+    colorScheme: "teal",
   },
   {
     type: "declined",
     label: "Declined",
-    colorScheme : "red"
+    colorScheme: "red",
   },
 ];
 const taxRates = [
@@ -180,6 +180,14 @@ const defaultQuoteItem = {
   gst: "none",
   price: 0,
 };
+const defaultInvoiceItem = {
+  name: "",
+  code: "",
+  quantity: 1,
+  um: "none",
+  gst: "none",
+  price: 0,
+};
 function calculateGrandTotalWithTax(quoteItems) {
   let grandTotal = 0;
   let totalTax = 0;
@@ -200,4 +208,11 @@ function calculateGrandTotalWithTax(quoteItems) {
   });
   return { grandTotal, totalTax, total };
 }
-export { statusList, taxRates, ums, defaultQuoteItem, calculateGrandTotalWithTax };
+export {
+  statusList,
+  taxRates,
+  ums,
+  defaultQuoteItem,
+  defaultInvoiceItem,
+  calculateGrandTotalWithTax,
+};

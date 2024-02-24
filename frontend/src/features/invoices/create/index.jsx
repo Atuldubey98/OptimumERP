@@ -1,34 +1,26 @@
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Grid,
-  Input,
-  Spinner,
-  Textarea,
-} from "@chakra-ui/react";
 import { FormikProvider } from "formik";
-import useEstimateForm from "../../../hooks/useEstimateForm";
+import useInvoicesForm from "../../../hooks/useInvoicesForm";
 import MainLayout from "../../common/main-layout";
-import ItemsList from "./ItemList";
-import SelectCustomer from "./SelectCustomer";
-import SelectStatus from "./SelectStatus";
-import TotalsBox from "./TotalsBox";
-import TermsAndCondtions from "./TermsConditions";
-import DescriptionField from "./DescriptionField";
-import DateField from "./DateField";
-import { defaultQuoteItem } from "./data";
-export default function CreateEstimatePage() {
-  const { formik, status } = useEstimateForm();
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Grid, Input, Spinner } from "@chakra-ui/react";
+import SelectStatus from "../../estimates/create/SelectStatus";
+import DateField from "../../estimates/create/DateField";
+import ItemsList from "../../estimates/create/ItemList";
+import TotalsBox from "../../estimates/create/TotalsBox";
+import DescriptionField from "../../estimates/create/DescriptionField";
+import { defaultInvoiceItem } from "../../estimates/create/data";
+import SelectCustomer from "../../estimates/create/SelectCustomer";
+import TermsAndCondtions from "../../estimates/create/TermsConditions";
+
+export default function CreateInvoicePage() {
+  const { formik, status } = useInvoicesForm();
   const loading = status === "loading";
+  console.log(formik.values);
   return (
     <MainLayout>
       <FormikProvider value={formik}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
-            <Spinner />
+            <Spinner size={"md"}/>
           </Flex>
         ) : (
           <form onSubmit={formik.handleSubmit}>
@@ -49,22 +41,22 @@ export default function CreateEstimatePage() {
                   isRequired
                   isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
                 >
-                  <FormLabel>Quotation No.</FormLabel>
+                  <FormLabel>Invoice No.</FormLabel>
                   <Input
                     type="number"
-                    name="quoteNo"
+                    name="invoiceNo"
                     onChange={formik.handleChange}
-                    value={formik.values.quoteNo}
+                    value={formik.values.invoiceNo}
                   />
-                  <FormErrorMessage>{formik.errors.quoteNo}</FormErrorMessage>
+                  <FormErrorMessage>{formik.errors.invoiceNo}</FormErrorMessage>
                 </FormControl>
                 <DateField formik={formik} />
                 <SelectStatus formik={formik} />
                 <SelectCustomer formik={formik} />
               </Grid>
-              <ItemsList formik={formik} defaultItem={defaultQuoteItem}/>
+              <ItemsList formik={formik} defaultItem={defaultInvoiceItem}/>
               <TotalsBox quoteItems={formik.values.items} />
-              <DescriptionField formik={formik} />
+              <DescriptionField formik={formik}/>
               <TermsAndCondtions formik={formik} />
             </Grid>
           </form>
