@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1 class="font-bold text-center text-md">Quotation</h1>
+    <header>
+      <div class="grid grid-cols-2">
+        <div class="grid">
+          <div class="border border-1 p-2">
+            <h1 class="font-bold text-2xl"><%= quote.org.name %></h1>
+            <p><%= quote.org.address %></p>
+            <p><%= quote.org.gstNo %></p>
+            <p><%= quote.org.panNo %></p>
+          </div>
+          <div class="border border-1 p-2">
+            <p>Bill to</p>
+            <h2 class="font-bold text-capitalize">
+              <%= quote.customer.name %>
+            </h2>
+            <p><%= quote.customer.billingAddress %></p>
+            <p><%= quote.customer.gstNo %></p>
+            <p><%= quote.customer.panNo %></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 border border-1">
+          <div class="p-2 border border-1">
+            <p>Q. No.</p>
+            <p class="font-bold"><%= quote.quoteNo %></p>
+          </div>
+          <div class="p-2 border border-1">
+            <p>Q. Date.</p>
+            <p class="font-bold">
+              <%= new Date(quote.date).toISOString().split("T")[0] %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="border border-1">
+        <table class="table-auto w-full">
+          <thead>
+            <tr class="border-1 border">
+              <th class="border border-1 p-2">#</th>
+              <th class="border border-1 p-2">Item Name</th>
+              <th class="border border-1 p-2">HSN/SAC Code</th>
+              <th class="border border-1 p-2">Quantity</th>
+              <th class="border border-1 p-2">Unit</th>
+              <th class="border border-1 p-2">Price/Unit</th>
+              <th class="border border-1 p-2">GST</th>
+              <th class="border border-1 p-2">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% quote.items.forEach((quoteItem, index) => { %>
+            <tr class="border-1 border">
+              <td class="border border-1 p-2"><%= index+1%></td>
+              <td class="border border-1 p-2"><%= quoteItem.name %></td>
+              <td class="border border-1 p-2">
+                <%= quoteItem.code || 995469 %>
+              </td>
+              <td class="text-right border border-1 p-2">
+                <%= quoteItem.quantity %>
+              </td>
+              <td class="border border-1 p-2"><%= quoteItem.um %></td>
+              <td class="text-right border border-1 p-2">
+                <%= quoteItem.price.toFixed(2) %>
+              </td>
+              <td class="text-right border border-1 p-2">
+                <%= quoteItem.gst %>
+              </td>
+              <td class="text-right border border-1 p-2">
+                <%= (quoteItem.price * quoteItem.quantity).toFixed(2) %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </section>
+      <section class="grid grid-cols-2 border border-1">
+        <div class="grid"></div>
+        <div class="grid border border-1 p-2">
+          <div class="grid">
+            <p class="font-bold">Amounts</p>
+            <div class="grid grid-cols-2">
+              <p>Sub-total</p>
+              <p>
+                <%= quote.items.reduce((total, quoteItem)=>quoteItem.price *
+                quoteItem.quantity, 0) %>
+              </p>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="grid grid-cols-2">
+              <p>Grand Total</p>
+              <p>
+                <%= quote.items.reduce((total, quoteItem)=>quoteItem.price *
+                quoteItem.quantity, 0) %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <div class="grid grid-cols-2 border border-1">
+          <div class="grid p-2">
+            <p class="font-bold">Terms & Conditons</p>
+            <p><%= quote.terms %></p>
+          </div>
+          <div class="grid h-36 border border-1 p-2">
+            <p><%= `For, ${quote.org.name}` %></p>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>

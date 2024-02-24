@@ -14,6 +14,8 @@ const {
   getQuote,
   getQuotes,
   getNextQuotationNumber,
+  viewQuote,
+  downloadQuote,
 } = require("../controllers/quotes.controller");
 const quoteRouter = Router({
   mergeParams: true,
@@ -27,7 +29,12 @@ quoteRouter.post(
   createQuote
 );
 
-quoteRouter.get("/next-quote-no", authenticate, checkOrgAuthorization, getNextQuotationNumber);
+quoteRouter.get(
+  "/next-quote-no",
+  authenticate,
+  checkOrgAuthorization,
+  getNextQuotationNumber
+);
 quoteRouter.get("/:quoteId", authenticate, checkOrgAuthorization, getQuote);
 quoteRouter.get(
   "/",
@@ -44,4 +51,11 @@ quoteRouter.patch(
   checkOrgAuthorization,
   updateQuote
 );
+quoteRouter.get(
+  "/:quoteId/download",
+  authenticate,
+  checkOrgAuthorization,
+  viewQuote
+);
+
 module.exports = quoteRouter;

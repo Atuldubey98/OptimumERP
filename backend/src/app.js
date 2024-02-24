@@ -6,14 +6,31 @@ const errorHandler = require("./handlers/error.handler");
 const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
 const customerRouter = require("./routes/customers.routes");
 const organizationRouter = require("./routes/org.routes");
-
 const app = express();
+const path = require("path");
 const cors = require("cors");
 const productRouter = require("./routes/product.routes");
 const quoteRouter = require("./routes/quote.routes");
+app.set('view engine', 'ejs');
+app.set("views", path.join(__dirname,"/views"))
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(
+  express.static(path.join(__dirname, "../../frontend/dist"), {
+    maxAge: "1y",
+  })
+);
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith("/api")) {
+    next();
+  } else {
+    return res.sendFile(
+      path.join(__dirname, "../../frontend/dist/index.html")
+    );
+  }
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const whitelist = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const whitelist = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:9000"];
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {

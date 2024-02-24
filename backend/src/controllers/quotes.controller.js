@@ -5,6 +5,8 @@ const { QuoteNotFound } = require("../errors/quote.error");
 const { CustomerNotFound } = require("../errors/customer.error");
 const { quoteDto } = require("../dto/quotes.dto");
 const Customer = require("../models/customer.model");
+
+const ejs = require("ejs");
 const getTotalAndTax = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
@@ -111,4 +113,32 @@ exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
     { sort: { quote: -1 } }
   ).select("quoteNo");
   return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
+});
+
+exports.viewQuote = requestAsyncHandler(async (req, res) => {
+  const quote = await Quote.findOne({
+    _id: req.params.quoteId,
+    org: req.params.orgId,
+  })
+    .populate("customer")
+    .populate("createdBy", "name email _id")
+    .populate("org");
+  return res.render("pdf/quote", { title: "Quotation", quote });
+});
+
+exports.downloadQuote = requestAsyncHandler(async (req, res) => {
+  const quote = await Quote.findOne({
+    _id: req.params.quoteId,
+    org: req.params.orgId,
+  })
+    .populate("customer")
+    .populate("createdBy", "name email _id")
+    .populate("org");
+  ejs.renderFile(
+    "/home/atul/Development/erp_mern/backend/src/views/pdf/quote.ejs",
+    { title: "Quotation", quote },
+    (err, html) => {
+      if (err) throw err;
+    }
+  );
 });
