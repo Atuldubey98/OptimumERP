@@ -23,7 +23,15 @@ export default function Header() {
           >
             Switch Organization
           </Button>
-          {colorMode === "dark" ? <MdOutlineWbSunny onClick={toggleColorMode} /> : <CiDark onClick={toggleColorMode}/>}
+          {colorMode === "dark" ? (
+            <MdOutlineWbSunny
+              onClick={toggleColorMode}
+              size={28}
+              cursor={"pointer"}
+            />
+          ) : (
+            <CiDark onClick={toggleColorMode} size={28} cursor={"pointer"} />
+          )}
           <AvatarProfile toggleProfilePopup={toggleProfilePopup} />
         </Flex>
         {openPopupSettings ? <ProfilePopup /> : null}

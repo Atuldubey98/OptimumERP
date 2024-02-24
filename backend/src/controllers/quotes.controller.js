@@ -65,30 +65,30 @@ exports.deleteQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getQuotes = requestAsyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
   const filter = {
     org: req.params.orgId,
   };
   const search = req.query.search;
-  if (search) filter.$text = { $search: search };
+  if (search) {
+    filter.$text = { $search: search };
+  }
+
+  if (req.query.startDate && req.query.endDate) {
+    filter.date = {
+      $gte: new Date(req.query.startDate),
+      $lte: new Date(req.query.endDate),
+    };
+  }
+  
   const quotes = await Quote.find(filter)
-    .skip(skip)
-    .limit(limit)
     .sort({ createdAt: -1 })
     .populate("customer")
     .populate("org")
     .exec();
-  const totalCount = await Quote.countDocuments(filter).exec();
-  const totalPages = Math.ceil(totalCount / limit);
+
   return res.status(200).json({
     data: quotes,
-    totalCount,
-    limit,
-    skip,
-    totalPages,
-    message: "Quotes retrived successfully",
+    message: "Quotes retrieved successfully",
   });
 });
 
@@ -110,7 +110,7 @@ exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
     },
     { quoteNo: 1 },
-    { sort: { quote: -1 } }
+    { sort: { quoteNo: -1 } }
   ).select("quoteNo");
   return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
 });
@@ -123,22 +123,21 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     .populate("customer")
     .populate("createdBy", "name email _id")
     .populate("org");
-  return res.render("pdf/quote", { title: "Quotation", quote });
-});
-
-exports.downloadQuote = requestAsyncHandler(async (req, res) => {
-  const quote = await Quote.findOne({
-    _id: req.params.quoteId,
-    org: req.params.orgId,
-  })
-    .populate("customer")
-    .populate("createdBy", "name email _id")
-    .populate("org");
-  ejs.renderFile(
-    "/home/atul/Development/erp_mern/backend/src/views/pdf/quote.ejs",
-    { title: "Quotation", quote },
-    (err, html) => {
-      if (err) throw err;
-    }
+  const grandTotal = quote.items.reduce(
+    (total, quoteItem) =>
+      total +
+      (quoteItem.price *
+        quoteItem.quantity *
+        (100 +
+          (quoteItem.gst === "none"
+            ? 0
+            : parseFloat(quoteItem.gst.split(":")[1])))) /
+        100,
+    0
   );
+  return res.render("pdf/quote", {
+    title: `Quotation-${quote.quoteNo}-${quote.date}`,
+    quote,
+    grandTotal,
+  });
 });

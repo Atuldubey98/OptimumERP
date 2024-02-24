@@ -37,7 +37,9 @@ export default function OrgPage() {
               <FaRegCircleDot color="green" size={24} />
             </Flex>
             {loading ? (
-              <Spinner size={"md"} />
+              <Flex marginBlock={5} justifyContent={"center"} alignItems={"center"}>
+                <Spinner size={"md"} />
+              </Flex>
             ) : (
               <Grid gap={4} marginBlock={4}>
                 {authorizedOrgs.map((authorizedOrg) => (

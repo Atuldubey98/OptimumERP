@@ -1,4 +1,4 @@
-import { Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { deleteCustomer } from "../../api/customer";
@@ -10,6 +10,7 @@ import MainLayout from "../common/main-layout";
 import TableLayout from "../common/table-layout";
 import CustomerFormDrawer from "./CustomerFormDrawer";
 import CustomerMenu from "./CustomerMenu";
+import SearchItem from "../common/table-layout/SearchItem";
 export default function CustomersPage() {
   const {
     isOpen: isCustomerFormOpen,
@@ -61,27 +62,34 @@ export default function CustomersPage() {
         <Flex justifyContent={"center"} alignItems={"center"}>
           <Spinner size={"md"} />
         </Flex>
-      ) : null}
-      <TableLayout
-        heading={"Customers list"}
-        tableData={customers}
-        caption={`Total customers found : ${customers.length}`}
-        operations={customers.map((customer) => (
-          <CustomerMenu
-            onDeleteCustomer={onDeleteCustomer}
-            customer={customer}
-            key={customer._id}
-            onOpenDrawerForEditingCustomer={onOpenDrawerForEditingCustomer}
-            onOpenCustomer={onOpenCustomer}
-          />
-        ))}
-        selectedKeys={{
-          name: "Name",
-          billingAddress: "Billing address",
-          gstNo: "TAX No.",
-        }}
-        onAddNewItem={onOpenDrawerForAddingNewCustomer}
-      />
+      ) : (
+        <TableLayout
+          filter={
+            <Box maxW={"md"}>
+              <SearchItem />
+            </Box>
+          }
+          heading={"Customers list"}
+          tableData={customers}
+          caption={`Total customers found : ${customers.length}`}
+          operations={customers.map((customer) => (
+            <CustomerMenu
+              onDeleteCustomer={onDeleteCustomer}
+              customer={customer}
+              key={customer._id}
+              onOpenDrawerForEditingCustomer={onOpenDrawerForEditingCustomer}
+              onOpenCustomer={onOpenCustomer}
+            />
+          ))}
+          selectedKeys={{
+            name: "Name",
+            billingAddress: "Billing address",
+            gstNo: "TAX No.",
+          }}
+          onAddNewItem={onOpenDrawerForAddingNewCustomer}
+        />
+      )}
+
       <CustomerFormDrawer
         formik={customerFormik}
         isOpen={isCustomerFormOpen}

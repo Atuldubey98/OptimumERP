@@ -2,22 +2,27 @@ const statusList = [
   {
     type: "draft",
     label: "Draft",
+    colorScheme : "blue"
   },
   {
     type: "pending",
     label: "Pending",
+    colorScheme : "yellow"
   },
   {
     type: "sent",
     label: "Sent",
+    colorScheme : "green"
   },
   {
     type: "accepted",
     label: "Accepted",
+    colorScheme : "teal"
   },
   {
     type: "declined",
     label: "Declined",
+    colorScheme : "red"
   },
 ];
 const taxRates = [
@@ -28,6 +33,10 @@ const taxRates = [
   {
     value: "GST:5",
     label: "GST@5%",
+  },
+  {
+    value: "GST:18",
+    label: "GST@18%",
   },
   {
     value: "GST:12",
@@ -54,6 +63,10 @@ const ums = [
   {
     value: "pcs",
     label: "Pieces",
+  },
+  {
+    value: "no",
+    label: "NOS",
   },
   {
     value: "kg",

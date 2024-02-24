@@ -25,6 +25,7 @@ export default function TableLayout({
   selectedKeys,
   tableData,
   caption,
+  filter,
   operations,
 }) {
   const tableRows = tableData.map((row) => {
@@ -56,9 +57,7 @@ export default function TableLayout({
           </Button>
         </ButtonGroup>
       </Flex>
-      <Box maxW={"md"}>
-        <SearchItem />
-      </Box>
+      {filter}
       <TableContainer>
         <Table variant="simple">
           <TableCaption>{caption}</TableCaption>

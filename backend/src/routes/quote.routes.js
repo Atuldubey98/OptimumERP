@@ -40,7 +40,6 @@ quoteRouter.get(
   "/",
   authenticate,
   checkOrgAuthorization,
-  paginateModel,
   getQuotes
 );
 

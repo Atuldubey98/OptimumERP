@@ -48,7 +48,6 @@
             <tr class="border-1 border">
               <th class="border border-1 p-2">#</th>
               <th class="border border-1 p-2">Item Name</th>
-              <th class="border border-1 p-2">HSN/SAC Code</th>
               <th class="border border-1 p-2">Quantity</th>
               <th class="border border-1 p-2">Unit</th>
               <th class="border border-1 p-2">Price/Unit</th>
@@ -61,9 +60,6 @@
             <tr class="border-1 border">
               <td class="border border-1 p-2"><%= index+1%></td>
               <td class="border border-1 p-2"><%= quoteItem.name %></td>
-              <td class="border border-1 p-2">
-                <%= quoteItem.code || 995469 %>
-              </td>
               <td class="text-right border border-1 p-2">
                 <%= quoteItem.quantity %>
               </td>
@@ -72,10 +68,16 @@
                 <%= quoteItem.price.toFixed(2) %>
               </td>
               <td class="text-right border border-1 p-2">
-                <%= quoteItem.gst %>
+                <%= `${(quoteItem.price * quoteItem.quantity * (quoteItem.gst ==
+                "none" ? 0 :
+                parseFloat(quoteItem.gst.split(":")[1]))/100).toFixed(2)}
+                (${quoteItem.gst === "none" ? "0%" :
+                `${quoteItem.gst.split(":")[1]}%`})` %>
               </td>
               <td class="text-right border border-1 p-2">
-                <%= (quoteItem.price * quoteItem.quantity).toFixed(2) %>
+                <%= (quoteItem.price * quoteItem.quantity * (100 +
+                (quoteItem.gst === "none" ? 0 :
+                parseFloat(quoteItem.gst.split(":")[1])))/100) %>
               </td>
             </tr>
             <% }) %>
@@ -98,10 +100,7 @@
           <div class="grid">
             <div class="grid grid-cols-2">
               <p>Grand Total</p>
-              <p>
-                <%= quote.items.reduce((total, quoteItem)=>quoteItem.price *
-                quoteItem.quantity, 0) %>
-              </p>
+              <p><%= grandTotal %></p>
             </div>
           </div>
         </div>

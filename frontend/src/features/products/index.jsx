@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MainLayout from "../common/main-layout";
-import { Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import useProducts from "../../hooks/useProducts";
 import ProductMenu from "./ProductMenu";
 import TableLayout from "../common/table-layout";
@@ -12,6 +12,7 @@ import { deletProduct } from "../../api/product";
 import { useParams } from "react-router-dom";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import Pagination from "../common/main-layout/Pagination";
+import SearchItem from "../common/table-layout/SearchItem";
 
 export default function ProductsPage() {
   const {
@@ -27,7 +28,14 @@ export default function ProductsPage() {
   const query = useQuery();
   const search = query.get("query");
   const [selectedToShowProduct, setSelectedToShowProduct] = useState(null);
-  const { fetchProducts, loading, products, totalCount, totalPages, currentPage } = useProducts();
+  const {
+    fetchProducts,
+    loading,
+    products,
+    totalCount,
+    totalPages,
+    currentPage,
+  } = useProducts();
   useEffect(() => {
     fetchProducts();
   }, [search, fetchProducts]);
@@ -51,8 +59,8 @@ export default function ProductsPage() {
     formik.setValues(product);
     openProductFormDrawer();
   };
-  const {orgId = ""} = useParams();
-  const {requestAsyncHandler} = useAsyncCall();
+  const { orgId = "" } = useParams();
+  const { requestAsyncHandler } = useAsyncCall();
   const onDeleteProduct = requestAsyncHandler(async (product) => {
     await deletProduct(product._id, orgId);
     fetchProducts();
@@ -64,29 +72,36 @@ export default function ProductsPage() {
         <Flex justifyContent={"center"} alignItems={"center"}>
           <Spinner size={"md"} />
         </Flex>
-      ) : null}
-      <TableLayout
-        heading={"Products"}
-        tableData={products}
-        caption={`Total products found : ${totalCount}`}
-        operations={products.map((product) => (
-          <ProductMenu
-            onDeleteProduct={onDeleteProduct}
-            product={product}
-            key={product._id}
-            onOpenProduct={onOpenProduct}
-            onOpenDrawerForEditingProduct={onOpenDrawerForEditingProduct}
-          />
-        ))}
-        selectedKeys={{
-          name: "Name",
-          costPrice: "Cost Price",
-          category: "Type of Product",
-          um : "Unit of measurement"
-        }}
-        onAddNewItem={onOpenDrawerForAddingNewProduct}
-      />
-      <Pagination total={totalPages} currentPage={currentPage}/>
+      ) : (
+        <TableLayout
+          filter={
+            <Box maxW={"md"}>
+              <SearchItem />
+            </Box>
+          }
+          heading={"Products"}
+          tableData={products}
+          caption={`Total products found : ${totalCount}`}
+          operations={products.map((product) => (
+            <ProductMenu
+              onDeleteProduct={onDeleteProduct}
+              product={product}
+              key={product._id}
+              onOpenProduct={onOpenProduct}
+              onOpenDrawerForEditingProduct={onOpenDrawerForEditingProduct}
+            />
+          ))}
+          selectedKeys={{
+            name: "Name",
+            costPrice: "Cost Price",
+            category: "Type of Product",
+            um: "Unit of measurement",
+          }}
+          onAddNewItem={onOpenDrawerForAddingNewProduct}
+        />
+      )}
+
+      <Pagination total={totalPages} currentPage={currentPage} />
       {selectedToShowProduct ? (
         <ShowDrawer
           onClickNewItem={onOpenDrawerForAddingNewProduct}
@@ -102,7 +117,7 @@ export default function ProductsPage() {
             sellingPrice: "Selling Price",
             createdAt: "Created At",
             description: "Description",
-            um : "Unit"
+            um: "Unit",
           }}
         />
       ) : null}

@@ -1,14 +1,16 @@
 import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { defaultQuoteItem } from "../features/estimates/create/data";
 import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 export default function useEstimateForm() {
+  const [status, setStatus] = useState("idle");
   const quoteSchema = Yup.object().shape({
     quoteNo: Yup.number().required("Quote number is required"),
+    customer : Yup.string().required("Customer is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
     items: Yup.array().of(
@@ -30,6 +32,7 @@ export default function useEstimateForm() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, quoteId } = useParams();
   const toast = useToast();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       quoteNo: 1,
@@ -57,12 +60,14 @@ export default function useEstimateForm() {
         duration: 3000,
         isClosable: true,
       });
+      navigate(`/${orgId}/estimates`)
       setSubmitting(false);
     }),
   });
   useEffect(() => {
     (async () => {
       if (quoteId) {
+        setStatus("loading");
         const { data } = await instance.get(
           `/api/v1/organizations/${orgId}/quotes/${quoteId}`
         );
@@ -78,13 +83,16 @@ export default function useEstimateForm() {
           items,
           description,
         });
+        setStatus("success");
       } else {
+        setStatus("loading");
         const { data } = await instance.get(
           `/api/v1/organizations/${orgId}/quotes/next-quote-no`
         );
         formik.setFieldValue("quoteNo", data.data);
+        setStatus("success");
       }
     })();
   }, []);
-  return { formik };
+  return { formik, status };
 }
