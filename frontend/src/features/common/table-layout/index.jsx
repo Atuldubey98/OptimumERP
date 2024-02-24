@@ -59,7 +59,7 @@ export default function TableLayout({
       </Flex>
       {filter}
       <TableContainer>
-        <Table variant="simple">
+        <Table variant="simple">  
           <TableCaption>{caption}</TableCaption>
           <Thead>
             <Tr>

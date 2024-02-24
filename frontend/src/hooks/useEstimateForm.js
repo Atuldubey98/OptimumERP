@@ -25,7 +25,7 @@ export default function useEstimateForm() {
           .required("Price is required")
           .min(0, "Price must be a positive number"),
       })
-    ),
+    ).min(1),
     terms: Yup.string().required("Terms are required"),
     description: Yup.string(),
   });

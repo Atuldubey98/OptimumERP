@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useQuery from "../../../hooks/useQuery";
 export default function SearchItem({ placeholder = "Search" }) {
   const query = useQuery();
-  const [search, setSearch] = useState(query.get("query"));
+  const [search, setSearch] = useState(query.get("query") || "");
   const onChangeSearch = (e) => setSearch(e.currentTarget.value);
   const searchRef = useRef(null);
   const navigate = useNavigate();
@@ -14,9 +14,9 @@ export default function SearchItem({ placeholder = "Search" }) {
     searchRef.current = setTimeout(() => {
       navigate(search ? `?query=${search}` : "");
     }, SEARCH_AFTER_TIME);
-    return ()=>{
-      if(searchRef.current) clearTimeout(searchRef.current)
-    }
+    return () => {
+      if (searchRef.current) clearTimeout(searchRef.current);
+    };
   }, [search, searchRef]);
   return (
     <InputGroup margin={"auto"}>
