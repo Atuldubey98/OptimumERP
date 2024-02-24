@@ -16,6 +16,7 @@ const {
   getNextQuotationNumber,
   viewQuote,
   downloadQuote,
+  deleteQuote,
 } = require("../controllers/quotes.controller");
 const quoteRouter = Router({
   mergeParams: true,
@@ -36,6 +37,7 @@ quoteRouter.get(
   getNextQuotationNumber
 );
 quoteRouter.get("/:quoteId", authenticate, checkOrgAuthorization, getQuote);
+quoteRouter.delete("/:quoteId", authenticate, checkOrgAuthorization, deleteQuote);
 quoteRouter.get(
   "/",
   authenticate,

@@ -42,5 +42,5 @@ export default function useEsitamtes() {
   useEffect(() => {
     fetchQuotes();
   }, [searchQuery, dateFilter]);
-  return { estimates, onChangeDateFilter, dateFilter, status };
+  return { estimates, onChangeDateFilter, dateFilter, status, fetchQuotes };
 }

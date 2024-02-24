@@ -1,32 +1,32 @@
 import {
   Box,
-  Button,
   Divider,
   Flex,
-  FormControl,
-  FormLabel,
   Grid,
-  Input,
   Spinner,
   Tag,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
-import MainLayout from "../common/main-layout";
-import { useNavigate } from "react-router-dom";
-import TableLayout from "../common/table-layout";
-import useEsitamtes from "../../hooks/useEsimates";
-import VertIconMenu from "../common/table-layout/VertIconMenu";
-import QuoteModal from "./list/QuoteModal";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useAsyncCall from "../../hooks/useAsyncCall";
+import useEsitamtes from "../../hooks/useEsimates";
+import instance from "../../instance";
+import MainLayout from "../common/main-layout";
+import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
+import VertIconMenu from "../common/table-layout/VertIconMenu";
 import { statusList } from "./create/data";
+import DateFilter from "./list/DateFilter";
+import QuoteModal from "./list/QuoteModal";
 
 export default function EstimatesPage() {
   const navigate = useNavigate();
   const onClickAddNewQuote = () => {
     navigate(`create`);
   };
-  const { estimates, onChangeDateFilter, dateFilter, status } = useEsitamtes();
+  const { estimates, onChangeDateFilter, dateFilter, status, fetchQuotes } =
+    useEsitamtes();
   const loading = status === "loading";
   const estimateTableMapper = (estimate) => ({
     customerName: estimate.customer.name,
@@ -54,6 +54,14 @@ export default function EstimatesPage() {
     setQuotation(estimate);
     onOpen();
   };
+  const { requestAsyncHandler } = useAsyncCall();
+  const { orgId } = useParams();
+  const deleteQuote = requestAsyncHandler(async (estimate) => {
+    await instance.delete(
+      `/api/v1/organizations/${orgId}/quotes/${estimate._id}`
+    );
+    fetchQuotes();
+  });
   return (
     <MainLayout>
       {loading ? (
@@ -69,26 +77,10 @@ export default function EstimatesPage() {
                 <SearchItem placeholder="Search by description" />
               </Box>
               <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
-                <FormControl>
-                  <FormLabel fontWeight={"bold"}>Start Date</FormLabel>
-                  <Input
-                    name="startDate"
-                    value={dateFilter.startDate}
-                    onChange={onChangeDateFilter}
-                    placeholder="Start date"
-                    type="date"
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel fontWeight={"bold"}>End Date</FormLabel>
-                  <Input
-                    value={dateFilter.endDate}
-                    placeholder="End date"
-                    type="date"
-                    name="endDate"
-                    onChange={onChangeDateFilter}
-                  />
-                </FormControl>
+                <DateFilter
+                  dateFilter={dateFilter}
+                  onChangeDateFilter={onChangeDateFilter}
+                />
               </Grid>
               <Divider />
             </Grid>
@@ -102,7 +94,7 @@ export default function EstimatesPage() {
               editItem={() => {
                 navigate(`${estimate._id}/edit`);
               }}
-              deleteItem={() => {}}
+              deleteItem={() => deleteQuote(estimate)}
             />
           ))}
           selectedKeys={{
