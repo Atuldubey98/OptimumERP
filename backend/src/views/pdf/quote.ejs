@@ -107,9 +107,11 @@
       </section>
       <footer>
         <div class="grid grid-cols-2 border border-1">
-          <div class="grid p-2">
+          <div class="grid p-2 border border-1">
             <p class="font-bold">Terms & Conditons</p>
-            <p><%= quote.terms %></p>
+            <% quote.terms.split("\n").forEach(term => { %>
+              <p class="mx-1"><%= term %></p>
+            <% }) %>
           </div>
           <div class="grid h-36 border border-1 p-2">
             <p><%= `For, ${quote.org.name}` %></p>

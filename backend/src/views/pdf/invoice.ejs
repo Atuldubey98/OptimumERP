@@ -68,8 +68,8 @@
                 <%= invoiceItem.price.toFixed(2) %>
               </td>
               <td class="text-right border border-1 p-2">
-                <%= `${(invoiceItem.price * invoiceItem.quantity * (invoiceItem.gst ==
-                "none" ? 0 :
+                <%= `${(invoiceItem.price * invoiceItem.quantity *
+                (invoiceItem.gst == "none" ? 0 :
                 parseFloat(invoiceItem.gst.split(":")[1]))/100).toFixed(2)}
                 (${invoiceItem.gst === "none" ? "0%" :
                 `${invoiceItem.gst.split(":")[1]}%`})` %>
@@ -92,8 +92,8 @@
             <div class="grid grid-cols-2">
               <p>Sub-total</p>
               <p>
-                <%= invoice.items.reduce((total, invoiceItem)=>invoiceItem.price *
-                invoiceItem.quantity, 0) %>
+                <%= invoice.items.reduce((total, invoiceItem)=>invoiceItem.price
+                * invoiceItem.quantity, 0) %>
               </p>
             </div>
           </div>
@@ -109,7 +109,9 @@
         <div class="grid grid-cols-2 border border-1">
           <div class="grid p-2">
             <p class="font-bold">Terms & Conditons</p>
-            <p><%= invoice.terms %></p>
+            <% invoice.terms.split("\n").forEach(term => { %>
+              <p><%= term %></p>
+            <% }) %>
           </div>
           <div class="grid h-36 border border-1 p-2">
             <p><%= `For, ${invoice.org.name}` %></p>

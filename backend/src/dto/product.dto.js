@@ -24,7 +24,5 @@ const updateProductDto = Joi.object({
     .optional(),
   um : Joi.string().default("NONE").optional(),
   code: Joi.string().label("HSN Code or SAC Code").optional(),
-  createdBy: Joi.string().label("Created By"),
-  updatedBy: Joi.string().label("Updated By"),
 });
 module.exports = { createProductDto, updateProductDto };

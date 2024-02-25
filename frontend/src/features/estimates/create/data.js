@@ -25,6 +25,7 @@ const statusList = [
     colorScheme: "red",
   },
 ];
+
 const taxRates = [
   {
     value: "none",
@@ -60,6 +61,10 @@ const taxRates = [
   },
 ];
 const ums = [
+  {
+    value: "none",
+    label: "None",
+  },
   {
     value: "pcs",
     label: "Pieces",

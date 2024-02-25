@@ -10,11 +10,11 @@ import DescriptionField from "../../estimates/create/DescriptionField";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import SelectCustomer from "../../estimates/create/SelectCustomer";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
+import { invoiceStatusList } from "../../../constants/invoice";
 
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
   const loading = status === "loading";
-  console.log(formik.values);
   return (
     <MainLayout>
       <FormikProvider value={formik}>
@@ -51,7 +51,7 @@ export default function CreateInvoicePage() {
                   <FormErrorMessage>{formik.errors.invoiceNo}</FormErrorMessage>
                 </FormControl>
                 <DateField formik={formik} />
-                <SelectStatus formik={formik} />
+                <SelectStatus formik={formik}  statusList={invoiceStatusList}/>
                 <SelectCustomer formik={formik} />
               </Grid>
               <ItemsList formik={formik} defaultItem={defaultInvoiceItem}/>

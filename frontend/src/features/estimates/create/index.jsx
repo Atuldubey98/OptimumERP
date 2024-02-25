@@ -19,7 +19,7 @@ import TotalsBox from "./TotalsBox";
 import TermsAndCondtions from "./TermsConditions";
 import DescriptionField from "./DescriptionField";
 import DateField from "./DateField";
-import { defaultQuoteItem } from "./data";
+import { defaultQuoteItem, statusList } from "./data";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const loading = status === "loading";
@@ -59,10 +59,10 @@ export default function CreateEstimatePage() {
                   <FormErrorMessage>{formik.errors.quoteNo}</FormErrorMessage>
                 </FormControl>
                 <DateField formik={formik} />
-                <SelectStatus formik={formik} />
+                <SelectStatus formik={formik} statusList={statusList} />
                 <SelectCustomer formik={formik} />
               </Grid>
-              <ItemsList formik={formik} defaultItem={defaultQuoteItem}/>
+              <ItemsList formik={formik} defaultItem={defaultQuoteItem} />
               <TotalsBox quoteItems={formik.values.items} />
               <DescriptionField formik={formik} />
               <TermsAndCondtions formik={formik} />

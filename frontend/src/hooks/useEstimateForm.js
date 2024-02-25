@@ -10,22 +10,24 @@ export default function useEstimateForm() {
   const [status, setStatus] = useState("idle");
   const quoteSchema = Yup.object().shape({
     quoteNo: Yup.number().required("Quote number is required"),
-    customer : Yup.string().required("Customer is required"),
+    customer: Yup.string().required("Customer is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
-    items: Yup.array().of(
-      Yup.object().shape({
-        name: Yup.string().required("Item name is required"),
-        quantity: Yup.number()
-          .required("Quantity is required")
-          .min(1, "Quantity must be at least 1"),
-        um: Yup.string().required("Unit of measure is required"),
-        gst: Yup.string().required("GST is required"),
-        price: Yup.number()
-          .required("Price is required")
-          .min(0, "Price must be a positive number"),
-      })
-    ).min(1),
+    items: Yup.array()
+      .of(
+        Yup.object().shape({
+          name: Yup.string().required("Item name is required"),
+          quantity: Yup.number()
+            .required("Quantity is required")
+            .min(1, "Quantity must be at least 1"),
+          um: Yup.string().required("Unit of measure is required"),
+          gst: Yup.string().required("GST is required"),
+          price: Yup.number()
+            .required("Price is required")
+            .min(0, "Price must be a positive number"),
+        })
+      )
+      .min(1),
     terms: Yup.string().required("Terms are required"),
     description: Yup.string(),
   });
@@ -43,6 +45,7 @@ export default function useEstimateForm() {
       description: "",
     },
     validationSchema: quoteSchema,
+    validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...estimate } = values;
       const items = values.items.map(({ _id, ...item }) => item);
@@ -60,7 +63,7 @@ export default function useEstimateForm() {
         duration: 3000,
         isClosable: true,
       });
-      navigate(`/${orgId}/estimates`)
+      navigate(`/${orgId}/estimates`);
       setSubmitting(false);
     }),
   });

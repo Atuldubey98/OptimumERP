@@ -5,6 +5,7 @@ import { useToast } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import instance from "../instance";
+import { defaultInvoiceItem } from "../features/estimates/create/data";
 
 export default function useInvoicesForm() {
   const [status, setStatus] = useState("idle");
@@ -40,11 +41,12 @@ export default function useInvoicesForm() {
       invoiceNo: 1,
       date: new Date(Date.now()).toISOString().split("T")[0],
       status: "draft",
-      items: [],
+      items: [defaultInvoiceItem],
       terms: "Thanks for business !",
       description: "",
     },
     validationSchema: invoiceSchema,
+    validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...invoice } = values;
       const items = values.items.map(({ _id, ...item }) => item);

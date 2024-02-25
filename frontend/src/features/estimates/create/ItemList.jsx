@@ -18,7 +18,7 @@ export default function ItemsList({ formik, defaultItem }) {
                   deleteQuote={() => itemsHelper.remove(index)}
                   index={index}
                   quoteItem={quoteItem}
-                  handleQuoteItemChange={formik.handleChange}
+                  formik={formik}
                 />
               </ListItem>
             ))}

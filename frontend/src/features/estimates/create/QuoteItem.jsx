@@ -10,16 +10,21 @@ import {
   InputGroup,
   InputRightElement,
   Select,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { taxRates, ums } from "./data";
+import { TbEyeSearch } from "react-icons/tb";
+import SelectProduct from "./SelectProduct";
 export default function QuoteItem({
   quoteItem,
   errorsQuoteItems,
-  handleQuoteItemChange,
+  formik,
   index,
   deleteQuote,
 }) {
+  const { handleChange: handleQuoteItemChange } = formik;
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const subtotal = isNaN(parseFloat(quoteItem.price * quoteItem.quantity))
     ? 0
     : parseFloat(quoteItem.price * quoteItem.quantity);
@@ -31,17 +36,30 @@ export default function QuoteItem({
   const total = (subtotal + totalTax).toFixed(2);
   const errors =
     errorsQuoteItems && errorsQuoteItems[index] ? errorsQuoteItems[index] : {};
+  const onOpenSearchProduct = () => {
+    onOpen();
+  };
   return (
     <Flex gap={2} p={0} m={0} justifyContent={"center"} alignItems={"center"}>
       <Grid gap={2} gridTemplateColumns={"2fr repeat(5,1fr)"}>
         <GridItem>
-          <FormControl isRequired isInvalid={errors.name && errors.name}>
-            <FormLabel>Item</FormLabel>
-            <Input
-              name={`items[${index}].name`}
-              value={quoteItem.name}
-              onChange={handleQuoteItemChange}
-            />
+          <FormControl isRequired>
+            <FormLabel>Item Name</FormLabel>
+            <InputGroup>
+              <Input
+                onChange={handleQuoteItemChange}
+                name={`items[${index}].name`}
+                placeholder="Item name"
+                value={quoteItem.name}
+              />
+              <InputRightElement>
+                <TbEyeSearch
+                  cursor={"pointer"}
+                  size={25}
+                  onClick={onOpenSearchProduct}
+                />
+              </InputRightElement>
+            </InputGroup>
             <FormErrorMessage>{errors.name}</FormErrorMessage>
           </FormControl>
         </GridItem>
@@ -135,6 +153,12 @@ export default function QuoteItem({
       >
         <AiOutlineDelete size={30} />
       </Box>
+      <SelectProduct
+        isOpen={isOpen}
+        onClose={onClose}
+        formik={formik}
+        index={index}
+      />
     </Flex>
   );
 }

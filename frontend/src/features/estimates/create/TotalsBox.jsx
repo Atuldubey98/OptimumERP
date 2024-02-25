@@ -8,9 +8,9 @@ export default function TotalsBox({ quoteItems }) {
   return (
     <Flex justifyContent={"flex-end"} alignItems={"center"}>
       <Stack spacing={2} width={"100%"} maxW={450}>
-        <AmountField amount={total} label={"Sub Total"} />
-        <AmountField amount={totalTax} label={"Total tax"} />
-        <AmountField amount={grandTotal} label={"Grand Total"} />
+        <AmountField amount={total.toFixed(2)} label={"Sub Total"} />
+        <AmountField amount={totalTax.toFixed(2)} label={"Total tax"} />
+        <AmountField amount={grandTotal.toFixed(2)} label={"Grand Total"} />
       </Stack>
     </Flex>
   );

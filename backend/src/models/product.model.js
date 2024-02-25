@@ -43,7 +43,6 @@ const productSchema = new mongoose.Schema(
     },
     updatedBy : {
       type : mongoose.Types.ObjectId,
-      required : true,
       ref : "user"
     }
   },

@@ -46,23 +46,23 @@ export default function CustomerModal({
         <ModalHeader>Select Customers</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex justifyContent={"flex-end"} alignItems={"center"}>
-            <ButtonGroup>
-              <Button
-                variant={"outline"}
-                onClick={() => customerProps.selectCustomer("")}
-              >
-                Clear
-              </Button>
-              <Button
-                variant={"solid"}
-                colorScheme="blue"
-                onClick={onOpenCustomerFormDrawer}
-              >
-                Add
-              </Button>
-            </ButtonGroup>
-          </Flex>
+            <Flex justifyContent={"flex-end"} alignItems={"center"}>
+              <ButtonGroup>
+                <Button
+                  variant={"outline"}
+                  onClick={() => customerProps.selectCustomer("")}
+                >
+                  Clear
+                </Button>
+                <Button
+                  variant={"solid"}
+                  colorScheme="blue"
+                  onClick={onOpenCustomerFormDrawer}
+                >
+                  Add
+                </Button>
+              </ButtonGroup>
+            </Flex>
           {customers.length ? (
             <TableContainer>
               <Table variant="simple">

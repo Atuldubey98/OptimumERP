@@ -37,7 +37,7 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.updateQuote = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax } = getTotalAndTax(req.body.items);
+  const { total, totalTax } = this.getTotalAndTax(req.body.items);
   const body = await quoteDto.validateAsync(req.body);
 
   const updatedQuote = await Quote.findOneAndUpdate(
