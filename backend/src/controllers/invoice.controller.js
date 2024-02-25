@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose");
 const { invoiceDto } = require("../dto/invoice.dto");
 const { CustomerNotFound } = require("../errors/customer.error");
 const { InvoiceNotFound } = require("../errors/invoice.error");
@@ -80,6 +81,7 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getInvoice = requestAsyncHandler(async (req, res) => {
+  if (!isValidObjectId(req.params.invoiceId)) throw new InvoiceNotFound();
   const invoice = await Invoice.findOne({
     _id: req.params.invoiceId,
     org: req.params.orgId,
@@ -100,4 +102,34 @@ exports.getNextInvoiceNumber = requestAsyncHandler(async (req, res) => {
     { sort: { invoiceNo: -1 } }
   ).select("invoiceNo");
   return res.status(200).json({ data: invoice ? invoice.invoiceNo + 1 : 1 });
+});
+
+exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
+  const invoiceId = req.params.invoiceId;
+  if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
+
+  const invoice = await Invoice.findOne({
+    _id: invoiceId,
+    org: req.params.orgId,
+  })
+    .populate("customer", "name _id")
+    .populate("createdBy", "name email _id")
+    .populate("org", "name address _id");
+  const grandTotal = invoice.items.reduce(
+    (total, invoiceItem) =>
+      total +
+      (invoiceItem.price *
+        invoiceItem.quantity *
+        (100 +
+          (invoiceItem.gst === "none"
+            ? 0
+            : parseFloat(invoiceItem.gst.split(":")[1])))) /
+        100,
+    0
+  );
+  return res.render("pdf/invoice", {
+    title: `Invoice-${invoice.invoiceNo}-${invoice.date}`,
+    invoice,
+    grandTotal,
+  });
 });

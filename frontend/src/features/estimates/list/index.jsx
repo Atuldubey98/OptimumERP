@@ -18,16 +18,24 @@ import SearchItem from "../../common/table-layout/SearchItem";
 import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import { statusList } from "../create/data";
 import DateFilter from "./DateFilter";
-import QuoteModal from "./QuoteModal";
+import BillModal from "./BillModal";
 import AlertModal from "../../common/AlertModal";
+import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 
 export default function EstimatesPage() {
   const navigate = useNavigate();
   const onClickAddNewQuote = () => {
     navigate(`create`);
   };
-  const { estimates, onChangeDateFilter, dateFilter, status, fetchQuotes } =
-    useEsitamtes();
+  const {
+    items: estimates,
+    onChangeDateFilter,
+    dateFilter,
+    status,
+    fetchItems: fetchQuotes,
+  } = useDateFilterFetch({
+    entity: "quotes",
+  });
   const loading = status === "loading";
   const estimateTableMapper = (estimate) => ({
     customerName: estimate.customer.name,
@@ -70,6 +78,7 @@ export default function EstimatesPage() {
     onCloseDeleteModal();
     fetchQuotes();
   });
+  //Add Bill modal for print of invoice
   return (
     <MainLayout>
       {loading ? (
@@ -120,7 +129,13 @@ export default function EstimatesPage() {
         />
       )}
       {quotation ? (
-        <QuoteModal isOpen={isOpen} onClose={onClose} quotation={quotation} />
+        <BillModal
+          isOpen={isOpen}
+          onClose={onClose}
+          bill={quotation}
+          entity={"quotes"}
+          heading={"Quotation"}
+        />
       ) : null}
       <AlertModal
         body={"Do you want to delete the estimate"}

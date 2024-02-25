@@ -71,7 +71,7 @@ export default function useInvoicesForm() {
       if (invoiceId) {
         setStatus("loading");
         const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/invoices/${quoteId}`
+          `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
         );
         const { customer, terms, invoiceNo, date, status, items, description } =
           data.data;

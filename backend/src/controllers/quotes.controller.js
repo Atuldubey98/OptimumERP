@@ -114,7 +114,7 @@ exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
 });
 
-exports.viewQuote = requestAsyncHandler(async (req, res) => {
+exports.downloadQuote = requestAsyncHandler(async (req, res) => {
   const quote = await Quote.findOne({
     _id: req.params.quoteId,
     org: req.params.orgId,

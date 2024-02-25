@@ -56,7 +56,7 @@ export default function CustomerModal({
               </Button>
               <Button
                 variant={"solid"}
-                color={"blue"}
+                colorScheme="blue"
                 onClick={onOpenCustomerFormDrawer}
               >
                 Add

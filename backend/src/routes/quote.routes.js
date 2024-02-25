@@ -13,7 +13,7 @@ const {
   getQuote,
   getQuotes,
   getNextQuotationNumber,
-  viewQuote,
+  downloadQuote,
   deleteQuote,
 } = require("../controllers/quotes.controller");
 const quoteRouter = Router({
@@ -54,7 +54,7 @@ quoteRouter.get(
   "/:quoteId/download",
   authenticate,
   checkOrgAuthorization,
-  viewQuote
+  downloadQuote
 );
 
 module.exports = quoteRouter;

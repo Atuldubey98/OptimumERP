@@ -11,6 +11,7 @@ const {
   deleteInvoice,
   getInvoices,
   updateInvoice,
+  downloadInvoice,
 } = require("../controllers/invoice.controller");
 
 const invoiceRouter = Router({
@@ -51,5 +52,11 @@ invoiceRouter.patch(
   updateModel,
   checkOrgAuthorization,
   updateInvoice
+);
+invoiceRouter.get(
+  "/:invoiceId/download",
+  authenticate,
+  checkOrgAuthorization,
+  downloadInvoice
 );
 module.exports = invoiceRouter;

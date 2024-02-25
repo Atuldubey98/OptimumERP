@@ -12,22 +12,21 @@ import {
 import instance from "../../../instance";
 import { useState } from "react";
 import useAsyncCall from "../../../hooks/useAsyncCall";
-export default function QuoteModal({ onClose, isOpen, quotation }) {
+export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
-  const onSaveQuote = requestAsyncHandler(async () => {
+  const downloadBillUrl = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download`;
+  const onSaveBill = requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await instance.get(
-      `/api/v1/organizations/${quotation.org._id}/quotes/${quotation._id}/download`
-    );
+    const { data } = await instance.get(downloadBillUrl);
     setStatus("success");
-    const quotePrint = window.open("", "");
-    quotePrint.document.write(data);
-    quotePrint.document.close();
-    quotePrint.onload = function () {
-      quotePrint.focus();
-      quotePrint.print();
-      quotePrint.close();
+    const billPrint = window.open("", "");
+    billPrint.document.write(data);
+    billPrint.document.close();
+    billPrint.onload = function () {
+      billPrint.focus();
+      billPrint.print();
+      billPrint.close();
     };
   });
   return (
@@ -39,13 +38,13 @@ export default function QuoteModal({ onClose, isOpen, quotation }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Quotation</ModalHeader>
+        <ModalHeader>{heading}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <iframe
             width={"100%"}
             height={720}
-            src={`http://localhost:9000/api/v1/organizations/${quotation.org._id}/quotes/${quotation._id}/download`}
+            src={`http://localhost:9000${downloadBillUrl}`}
             frameBorder="0"
           />
         </ModalBody>
@@ -53,7 +52,7 @@ export default function QuoteModal({ onClose, isOpen, quotation }) {
           <ButtonGroup>
             <Button onClick={onClose}>Close</Button>
             <Button
-              onClick={onSaveQuote}
+              onClick={onSaveBill}
               colorScheme="blue"
               isLoading={status === "loading"}
             >

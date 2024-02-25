@@ -10,7 +10,6 @@ import CreateEstimatePage from "./features/estimates/create";
 import NotFoundPage from "./features/common/NotFoundPage";
 import CreateInvoicePage from "./features/invoices/create";
 import InvoicesPage from "./features/invoices/list";
-
 export default function App() {
   return (
     <Routes>
