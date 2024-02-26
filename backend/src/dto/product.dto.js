@@ -16,7 +16,7 @@ const updateProductDto = Joi.object({
   name: Joi.string().required().label("Name").max(150).optional(),
   costPrice: Joi.number().label("Cost Price").optional(),
   sellingPrice: Joi.number().label("Selling Price").optional(),
-  description: Joi.string().max(200).optional(),
+  description: Joi.string().allow("").max(200).optional(),
   category: Joi.string()
     .valid("goods", "service")
     .required()
@@ -24,5 +24,6 @@ const updateProductDto = Joi.object({
     .optional(),
   um : Joi.string().default("NONE").optional(),
   code: Joi.string().label("HSN Code or SAC Code").optional(),
+  updatedBy : Joi.string().label("Updated By")
 });
 module.exports = { createProductDto, updateProductDto };
