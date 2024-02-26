@@ -79,14 +79,22 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
     };
   }
 
-  const quotes = await Quote.find(filter)
-    .sort({ createdAt: -1 })
-    .populate("customer")
-    .populate("org")
-    .exec();
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10; 
+  const skip = (page - 1) * limit;
+
+  const quotesQuery = Quote.find(filter).populate("customer").populate("org");
+
+  const totalCount = await Quote.countDocuments(filter);
+
+  const quotes = await quotesQuery.sort({ createdAt: -1 }).skip(skip).limit(limit).exec();
 
   return res.status(200).json({
     data: quotes,
+    page: page,
+    limit: limit,
+    total: totalCount,
+    totalPages: Math.ceil(totalCount / limit),
     message: "Quotes retrieved successfully",
   });
 });

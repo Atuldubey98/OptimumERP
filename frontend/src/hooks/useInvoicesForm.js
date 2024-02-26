@@ -71,30 +71,41 @@ export default function useInvoicesForm() {
   useEffect(() => {
     (async () => {
       if (invoiceId) {
-        setStatus("loading");
-        const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
-        );
-        const { customer, terms, invoiceNo, date, status, items, description } =
-          data.data;
-        formik.setValues({
-          _id: data.data._id,
-          customer: customer._id,
-          terms,
-          invoiceNo,
-          date: new Date(date).toISOString().split("T")[0],
-          status,
-          items,
-          description,
-        });
-        setStatus("success");
+        requestAsyncHandler(async () => {
+          setStatus("loading");
+          const { data } = await instance.get(
+            `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
+          );
+          const {
+            customer,
+            terms,
+            invoiceNo,
+            date,
+            status,
+            items,
+            description,
+          } = data.data;
+          formik.setValues({
+            _id: data.data._id,
+            customer: customer._id,
+            terms,
+            invoiceNo,
+            date: new Date(date).toISOString().split("T")[0],
+            status,
+            items,
+            description,
+          });
+          setStatus("success");
+        })();
       } else {
-        setStatus("loading");
-        const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
-        );
-        formik.setFieldValue("invoiceNo", data.data);
-        setStatus("success");
+        requestAsyncHandler(async () => {
+          setStatus("loading");
+          const { data } = await instance.get(
+            `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
+          );
+          formik.setFieldValue("invoiceNo", data.data);
+          setStatus("success");
+        })();
       }
     })();
   }, []);

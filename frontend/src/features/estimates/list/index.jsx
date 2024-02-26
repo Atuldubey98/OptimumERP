@@ -7,7 +7,7 @@ import {
   Tag,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useEsitamtes from "../../../hooks/useEsimates";
@@ -21,18 +21,24 @@ import DateFilter from "./DateFilter";
 import BillModal from "./BillModal";
 import AlertModal from "../../common/AlertModal";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
-
+import Status from "./Status";
+import BillFilter from "./BillFilter";
+import Pagination from "../../common/main-layout/Pagination";
+import useQuery from "../../../hooks/useQuery";
 export default function EstimatesPage() {
   const navigate = useNavigate();
-  const onClickAddNewQuote = () => {
+  const onClickAddNewQuote = useCallback(() => {
     navigate(`create`);
-  };
+  }, []);
   const {
     items: estimates,
     onChangeDateFilter,
     dateFilter,
     status,
+    currentPage,
+    totalPages,
     fetchItems: fetchQuotes,
+    totalCount,
   } = useDateFilterFetch({
     entity: "quotes",
   });
@@ -43,19 +49,7 @@ export default function EstimatesPage() {
     ...estimate,
     date: new Date(estimate.date).toISOString().split("T")[0],
     grandTotal: estimate.total + estimate.totalTax,
-    status: (
-      <Tag
-        textTransform={"capitalize"}
-        size={"md"}
-        variant={"solid"}
-        colorScheme={
-          statusList.find((statusItem) => statusItem.type === estimate.status)
-            .colorScheme || "blue"
-        }
-      >
-        {estimate.status}
-      </Tag>
-    ),
+    status: <Status status={estimate.status} statusList={statusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [quotation, setQuotation] = useState(null);
@@ -78,7 +72,7 @@ export default function EstimatesPage() {
     onCloseDeleteModal();
     fetchQuotes();
   });
-  //Add Bill modal for print of invoice
+  const query = useQuery();
   return (
     <MainLayout>
       {loading ? (
@@ -88,23 +82,14 @@ export default function EstimatesPage() {
       ) : (
         <TableLayout
           filter={
-            <Grid gap={2}>
-              <Divider />
-              <Box>
-                <SearchItem placeholder="Search by description" />
-              </Box>
-              <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
-                <DateFilter
-                  dateFilter={dateFilter}
-                  onChangeDateFilter={onChangeDateFilter}
-                />
-              </Grid>
-              <Divider />
-            </Grid>
+            <BillFilter
+              dateFilter={dateFilter}
+              onChangeDateFilter={onChangeDateFilter}
+            />
           }
           heading={"Quotations"}
           tableData={estimates.map(estimateTableMapper)}
-          caption={`Total estimates found : ${estimates.length}`}
+          caption={`Total estimates found : ${totalCount}`}
           operations={estimates.map((estimate) => (
             <VertIconMenu
               showItem={() => onOpenQuotation(estimate)}
@@ -144,6 +129,7 @@ export default function EstimatesPage() {
         onClose={onCloseDeleteModal}
         onConfirm={() => deleteQuote(quotation)}
       />
+      <Pagination total={totalPages} currentPage={currentPage} />
     </MainLayout>
   );
 }

@@ -3,6 +3,9 @@ import {
   ButtonGroup,
   Checkbox,
   Flex,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,13 +21,24 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
-import useProducts from "../../../hooks/useProducts";
 import { useEffect } from "react";
-import { GoNoEntry } from "react-icons/go";
-
+import useProducts from "../../../hooks/useProducts";
+import useProductForm from "../../../hooks/useProductForm";
+import ProductFormDrawer from "../../products/ProductFormDrawer";
+import { IoSearchOutline } from "react-icons/io5";
 export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const { products, fetchProducts } = useProducts();
+  const {
+    isOpen: isProductFormOpen,
+    onOpen: openProductFormDrawer,
+    onClose: closeProductFormDrawer,
+  } = useDisclosure();
+  const { formik: productsFormFormik } = useProductForm(
+    fetchProducts,
+    closeProductFormDrawer
+  );
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -57,15 +71,27 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
               >
                 Clear
               </Button>
-              <Button variant={"solid"} colorScheme="blue">
+              <Button
+                onClick={openProductFormDrawer}
+                variant={"solid"}
+                colorScheme="blue"
+              >
                 Add
               </Button>
             </ButtonGroup>
           </Flex>
         </ModalBody>
+
         <TableContainer>
           <Table variant="simple">
-            <TableCaption>Imperial to metric conversion factors</TableCaption>
+            <TableCaption>
+              <InputGroup margin={"auto"}>
+                <InputLeftElement pointerEvents="none">
+                  <IoSearchOutline />
+                </InputLeftElement>
+                <Input type="search" />
+              </InputGroup>
+            </TableCaption>
             <Thead>
               <Tr>
                 <Th>#</Th>
@@ -106,6 +132,11 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
           </Button>
         </ModalFooter>
       </ModalContent>
+      <ProductFormDrawer
+        formik={productsFormFormik}
+        isOpen={isProductFormOpen}
+        onClose={closeProductFormDrawer}
+      />
     </Modal>
   );
 }

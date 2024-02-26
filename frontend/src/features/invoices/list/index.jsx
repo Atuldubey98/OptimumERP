@@ -18,12 +18,17 @@ import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import AlertModal from "../../common/AlertModal";
 import BillModal from "../../estimates/list/BillModal";
 import instance from "../../../instance";
-
+import Pagination from "../../common/main-layout/Pagination";
+import Status from "../../estimates/list/Status";
+import { invoiceStatusList } from "../../../constants/invoice";
 export default function InvoicesPage() {
   const {
     items: invoices,
     dateFilter,
     onChangeDateFilter,
+    currentPage,
+    totalPages,
+    totalCount,
     fetchItems: fetchInvoices,
     status,
   } = useDateFilterFetch({
@@ -37,7 +42,7 @@ export default function InvoicesPage() {
     ...invoice,
     date: new Date(invoice.date).toISOString().split("T")[0],
     grandTotal: invoice.total + invoice.totalTax,
-    status: invoice.status,
+    status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [invoice, setInvoice] = useState(null);
@@ -88,7 +93,7 @@ export default function InvoicesPage() {
           }
           heading={"Invoices"}
           tableData={invoices.map(invoiceTableMapper)}
-          caption={`Total invoices found : ${invoices.length}`}
+          caption={`Total invoices found : ${totalCount}`}
           operations={invoices.map((invoice) => (
             <VertIconMenu
               showItem={() => onOpenInvoice(invoice)}
@@ -128,6 +133,7 @@ export default function InvoicesPage() {
         onClose={onCloseDeleteModal}
         onConfirm={() => deleteInvoice(invoice)}
       />
+      <Pagination currentPage={currentPage} total={totalPages} />
     </MainLayout>
   );
 }

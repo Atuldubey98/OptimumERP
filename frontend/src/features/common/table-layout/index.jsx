@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   ButtonGroup,
   Flex,
@@ -15,11 +14,10 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { memo } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import SearchItem from "./SearchItem";
-export default function TableLayout({
+function TableLayoutMemoized({
   heading,
   onAddNewItem,
   selectedKeys,
@@ -59,7 +57,7 @@ export default function TableLayout({
       </Flex>
       {filter}
       <TableContainer>
-        <Table variant="simple">  
+        <Table variant="simple">
           <TableCaption>{caption}</TableCaption>
           <Thead>
             <Tr>
@@ -86,3 +84,6 @@ export default function TableLayout({
     </Stack>
   );
 }
+
+const TableLayout = memo(TableLayoutMemoized);
+export default TableLayout;

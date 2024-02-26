@@ -6,7 +6,6 @@ export default function Sidebar() {
   return (
     <Box
       height={"100svh"}
-      overflowY={"auto"}
       boxShadow={"md"}
       width={"100%"}
       left={0}

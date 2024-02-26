@@ -1,19 +1,38 @@
 import { Button, Flex } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
+import useQuery from "../../../hooks/useQuery";
 
 export default function Pagination({ total, currentPage }) {
   const navigate = useNavigate();
+  const query = useQuery();
   const onClick = (pageNumber) => {
-    navigate(`?page=${pageNumber}`);
+    navigate({
+      pathname: ``,
+      search: createSearchParams({
+        query: query.get("query") || "",
+        page: pageNumber,
+      }).toString(),
+    });
   };
-  return (
+  const start = Math.max(0, currentPage - 2);
+  const end = Math.min(start + 10, total - 1);
+  const paginate = [];
+  for (let i = start; i <= end; i++) paginate.push(i);
+  return  (
     <Flex
       alignItems={"center"}
       gap={5}
+      marginBlock={3}
       flexWrap={"wrap"}
       justifyContent={"center"}
     >
-      {new Array(total).fill(0).map((_, page) => {
+      <Button
+        onClick={() => onClick(--currentPage)}
+        isDisabled={currentPage === 1}
+      >
+        Previous
+      </Button>
+      {paginate.map((page) => {
         return (
           <Button
             isActive={currentPage === page + 1}
@@ -25,6 +44,12 @@ export default function Pagination({ total, currentPage }) {
           </Button>
         );
       })}
+      <Button
+        onClick={() => onClick(++currentPage)}
+        isDisabled={currentPage === total}
+      >
+        Next
+      </Button>
     </Flex>
   );
 }

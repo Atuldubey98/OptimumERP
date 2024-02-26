@@ -4,14 +4,21 @@ import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
 import useQuery from "./useQuery";
 
-export default function useDateFilterFetch({
-  entity
-}) {
-  const [items, setItems] = useState([]);
+export default function useDateFilterFetch({ entity }) {
+  const [billItems, setBillItems] = useState({
+    totalPages: 0,
+    totalCount: 0,
+    currentPage: 0,
+    items: [],
+  });
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
+  const controller = new AbortController();
   const { orgId } = useParams();
   const query = useQuery();
+  const page = isNaN(parseInt(query.get("page")))
+    ? 1
+    : parseInt(query.get("page"));
   const searchQuery = query.get("query");
   const today = new Date();
   const sevenDaysAgo = new Date(today);
@@ -29,12 +36,22 @@ export default function useDateFilterFetch({
           search: searchQuery,
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
+          page,
         },
+        signal: controller.signal,
       }
     );
-    setItems(data.data);
+    setBillItems({
+      items: data.data,
+      totalCount: data.total,
+      currentPage: data.page,
+      totalPages: data.totalPages,
+    });
     setStatus("success");
-  }, [searchQuery, dateFilter]);
+    return () => {
+      controller.abort();
+    };
+  }, [searchQuery, dateFilter, page]);
   const onChangeDateFilter = (e) =>
     setDateFilter({
       ...dateFilter,
@@ -43,6 +60,16 @@ export default function useDateFilterFetch({
 
   useEffect(() => {
     fetchItems();
-  }, [searchQuery, dateFilter]);
-  return { items, onChangeDateFilter, dateFilter, status, fetchItems };
+  }, [searchQuery, dateFilter, page]);
+  const { items, currentPage, totalCount, totalPages } = billItems;
+  return {
+    items,
+    onChangeDateFilter,
+    dateFilter,
+    status,
+    fetchItems,
+    totalPages,
+    currentPage,
+    totalCount,
+  };
 }

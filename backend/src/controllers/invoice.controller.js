@@ -4,7 +4,7 @@ const { CustomerNotFound } = require("../errors/customer.error");
 const { InvoiceNotFound } = require("../errors/invoice.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Customer = require("../models/customer.model");
-const Invoice = require("../models/invoice,.model");
+const Invoice = require("../models/invoice.model");
 const { getTotalAndTax } = require("./quotes.controller");
 
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
@@ -68,17 +68,32 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
     };
   }
 
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
     .populate("customer")
     .populate("org")
+    .skip(skip)
+    .limit(limit)
     .exec();
+
+  const total = await Invoice.countDocuments(filter);
+
+  const totalPages = Math.ceil(total / limit);
 
   return res.status(200).json({
     data: invoices,
+    page,
+    limit,
+    totalPages,
+    total,
     message: "Invoices retrieved successfully",
   });
 });
+
 
 exports.getInvoice = requestAsyncHandler(async (req, res) => {
   if (!isValidObjectId(req.params.invoiceId)) throw new InvoiceNotFound();

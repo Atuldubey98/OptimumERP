@@ -1,6 +1,6 @@
 const { isValidObjectId } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const Invoice = require("../models/invoice,.model");
+const Invoice = require("../models/invoice.model");
 const Quotes = require("../models/quotes.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Customer = require("../models/customer.model");

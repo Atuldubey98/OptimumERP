@@ -5,6 +5,7 @@ const {
 const {
   createModel,
   updateModel,
+  paginateModel,
 } = require("../middlewares/crud.middleware");
 const authenticate = require("../middlewares/authentication.middleware");
 const {
@@ -41,7 +42,13 @@ quoteRouter.delete(
   checkOrgAuthorization,
   deleteQuote
 );
-quoteRouter.get("/", authenticate, checkOrgAuthorization, getQuotes);
+quoteRouter.get(
+  "/",
+  authenticate,
+  checkOrgAuthorization,
+  paginateModel,
+  getQuotes
+);
 
 quoteRouter.patch(
   "/:quoteId",
