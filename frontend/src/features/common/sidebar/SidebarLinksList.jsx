@@ -6,6 +6,7 @@ import { NavLink, useParams } from "react-router-dom";
 import headerLinks from "../../../constants/headerLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 export const SidebarLinksList = () => {
   const [openSettings, setOpenSettings] = useState(false);
   const { orgId = "" } = useParams();
@@ -15,9 +16,15 @@ export const SidebarLinksList = () => {
         {headerLinks.map((headerLink) => (
           <HeaderLink key={headerLink.label}>
             <Icon as={headerLink.icon} />
-            <NavLink to={`/${orgId}${headerLink.link}`}>{headerLink.label}</NavLink>
+            <NavLink to={`/${orgId}${headerLink.link}`}>
+              {headerLink.label}
+            </NavLink>
           </HeaderLink>
         ))}
+        <HeaderLink>
+          <Icon as={HiOutlineDocumentReport} />
+          <NavLink to={`/reports`}>Reports</NavLink>
+        </HeaderLink>
         <HeaderLink>
           <Icon as={IoSettingsOutline} />
           <Text>Settings</Text>
