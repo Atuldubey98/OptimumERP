@@ -17,7 +17,7 @@ export default function LoginPage() {
   });
   const formik = useFormik({
     initialValues: {
-      email: "atuldubey017@gmail.com",
+      email: "mock-user@gmail.com",
       password: "12345678",
     },
     validationSchema: loginSchema,

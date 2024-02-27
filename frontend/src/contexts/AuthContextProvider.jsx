@@ -7,6 +7,7 @@ export default function AuthContextProvider({ children }) {
   useEffect(() => {
     (async () => {
       try {
+        setStatus("loading");
         const { data } = await currentUser();
         setUser(data);
         setStatus("success");
@@ -16,6 +17,7 @@ export default function AuthContextProvider({ children }) {
     })();
   }, []);
   const userLoading = status === "loading";
+  console.log({ status });
   const onSetCurrentUser = (user) => {
     setUser(user);
   };

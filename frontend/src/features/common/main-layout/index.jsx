@@ -10,7 +10,7 @@ export default function MainLayout({ children }) {
   return (
     <PrivateRoute>
       <Flex height={"100svh"}>
-        <Hide below="md">
+        <Hide below="xl">
           <Sidebar />
         </Hide>
         <Box width={"100%"}>

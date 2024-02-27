@@ -1,5 +1,5 @@
 import {
-    AlertDialog,
+  AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
@@ -14,6 +14,7 @@ export default function AlertModal({
   header,
   body,
   onConfirm,
+  buttonLabel = "Delete",
 }) {
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
@@ -28,7 +29,7 @@ export default function AlertModal({
           <AlertDialogFooter>
             <Button onClick={onClose}>Cancel</Button>
             <Button colorScheme="red" onClick={onConfirm} ml={3}>
-              Delete
+              {buttonLabel}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

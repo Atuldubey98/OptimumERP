@@ -1,0 +1,13 @@
+{
+  "name": "erp_mern",
+  "version": "1.0.0",
+  "description": "ERP App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "author": "Atul Dubey",
+  "license": "ISC"
+}

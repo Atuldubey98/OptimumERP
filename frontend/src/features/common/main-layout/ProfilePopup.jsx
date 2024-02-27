@@ -9,20 +9,7 @@ import { logoutUser } from "../../../api/logout";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import { Box, Divider, Icon, List, Text, useToast } from "@chakra-ui/react";
 export default function ProfilePopup() {
-  const { requestAsyncHandler } = useAsyncCall();
-  const navigate = useNavigate();
-  const toast = useToast();
-  const onClickLogout = requestAsyncHandler(async () => {
-    const { data } = await logoutUser();
-    toast({
-      title: "Logout",
-      description: data.message,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-    navigate("/login", { replace: true });
-  });
+  
   return (
     <Box
       boxShadow={"md"}
@@ -43,7 +30,7 @@ export default function ProfilePopup() {
         <Divider />
         <HeaderLink>
           <Icon color={"red"} as={IoIosLogOut} />
-          <Text onClick={onClickLogout}>Logout</Text>
+          <Text>Logout</Text>
         </HeaderLink>
       </List>
     </Box>
