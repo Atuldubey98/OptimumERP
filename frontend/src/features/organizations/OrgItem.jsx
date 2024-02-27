@@ -7,6 +7,7 @@ export default function OrgItem({ org }) {
   const navigate = useNavigate();
   const visitOrganizationDashboard = () => {
     navigate(`/${org._id}/dashboard`);
+    localStorage.setItem("organization", org._id);
   };
   return (
     <Flex

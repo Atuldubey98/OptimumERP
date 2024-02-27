@@ -9,7 +9,7 @@ import SettingLinks from "./SettingLinks";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 export const SidebarLinksList = () => {
   const [openSettings, setOpenSettings] = useState(false);
-  const { orgId = "" } = useParams();
+  const { orgId = localStorage.getItem("organization") || "" } = useParams();
   return (
     <Container marginBlock={3}>
       <List spacing={3}>
