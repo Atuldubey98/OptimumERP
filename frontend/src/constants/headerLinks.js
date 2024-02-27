@@ -5,12 +5,18 @@ import { FaFileInvoice } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
 import { GoTag } from "react-icons/go";
 import { HiOutlineDocumentReport } from "react-icons/hi";
+import { TbCategory } from "react-icons/tb";
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },
   { icon: AiOutlineCustomerService, link: "/customers", label: "Customers" },
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices" },
   { icon: FaFileInvoice, link: "/estimates", label: "Quotations" },
   { icon: GiExpense, link: "/expenses", label: "Expenses" },
+  {
+    icon: TbCategory,
+    link: "/expense-categories",
+    label: "Expense Categories",
+  },
   { icon: HiOutlineDocumentReport, link: "/reports", label: "Reports" },
   { icon: GoTag, link: "/products", label: "Products" },
 ];

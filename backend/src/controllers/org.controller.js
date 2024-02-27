@@ -8,15 +8,35 @@ const OrgUser = require("../models/org_user.model");
 const bcryptjs = require("bcryptjs");
 const { UserDuplicate } = require("../errors/user.error");
 const logger = require("../logger");
+const Setting = require("../models/settings.model");
 exports.createOrg = requestAsyncHandler(async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
   const newOrg = await organization.save();
+
   const orgUser = new OrgUser({
     org: newOrg.id,
     user: req.session.user._id,
     role: "admin",
   });
+  const setting = new Setting({
+    org: newOrg.id,
+    counter: {
+      invoice: 0,
+      quotation: 0,
+    },
+    financialYear: {
+      start: {
+        month: body.financialMonthStart,
+        year: new Date(Date.now()).getFullYear(),
+      },
+      end: {
+        month: body.financialMonthStart + 12 > b,
+        year: new Date(body.financialYearEnd).getFullYear(),
+      },
+    },
+  });
+  await setting.save();
   await orgUser.save();
   logger.info(`Organization created with id ${newOrg.id}`);
   return res.status(200).json({ message: "Organization registered" });

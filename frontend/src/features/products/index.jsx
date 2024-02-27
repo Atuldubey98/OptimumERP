@@ -68,64 +68,66 @@ export default function ProductsPage() {
 
   return (
     <MainLayout>
-      {loading ? (
-        <Flex justifyContent={"center"} alignItems={"center"}>
-          <Spinner size={"md"} />
-        </Flex>
-      ) : (
-        <TableLayout
-          filter={
-            <Box maxW={"md"}>
-              <SearchItem />
-            </Box>
-          }
-          heading={"Products"}
-          tableData={products}
-          caption={`Total products found : ${totalCount}`}
-          operations={products.map((product) => (
-            <ProductMenu
-              onDeleteProduct={onDeleteProduct}
-              product={product}
-              key={product._id}
-              onOpenProduct={onOpenProduct}
-              onOpenDrawerForEditingProduct={onOpenDrawerForEditingProduct}
-            />
-          ))}
-          selectedKeys={{
-            name: "Name",
-            costPrice: "Cost Price",
-            category: "Type of Product",
-            um: "Unit of measurement",
-          }}
-          onAddNewItem={onOpenDrawerForAddingNewProduct}
-        />
-      )}
+      <Box p={5}>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"md"} />
+          </Flex>
+        ) : (
+          <TableLayout
+            filter={
+              <Box maxW={"md"}>
+                <SearchItem />
+              </Box>
+            }
+            heading={"Products"}
+            tableData={products}
+            caption={`Total products found : ${totalCount}`}
+            operations={products.map((product) => (
+              <ProductMenu
+                onDeleteProduct={onDeleteProduct}
+                product={product}
+                key={product._id}
+                onOpenProduct={onOpenProduct}
+                onOpenDrawerForEditingProduct={onOpenDrawerForEditingProduct}
+              />
+            ))}
+            selectedKeys={{
+              name: "Name",
+              costPrice: "Cost Price",
+              category: "Type of Product",
+              um: "Unit of measurement",
+            }}
+            onAddNewItem={onOpenDrawerForAddingNewProduct}
+          />
+        )}
 
-      <Pagination total={totalPages} currentPage={currentPage} />
-      {selectedToShowProduct ? (
-        <ShowDrawer
-          onClickNewItem={onOpenDrawerForAddingNewProduct}
-          heading={"Products"}
-          formBtnLabel={"Add new product"}
-          isOpen={isProductDrawerOpen}
-          item={selectedToShowProduct}
-          onClose={closeProductDrawer}
-          selectedKeys={{
-            name: "Name",
-            costPrice: "Cost Price",
-            category: "Type of Product",
-            sellingPrice: "Selling Price",
-            createdAt: "Created At",
-            description: "Description",
-            um: "Unit",
-          }}
+        <Pagination total={totalPages} currentPage={currentPage} />
+        {selectedToShowProduct ? (
+          <ShowDrawer
+            onClickNewItem={onOpenDrawerForAddingNewProduct}
+            heading={"Products"}
+            formBtnLabel={"Add new product"}
+            isOpen={isProductDrawerOpen}
+            item={selectedToShowProduct}
+            onClose={closeProductDrawer}
+            selectedKeys={{
+              name: "Name",
+              costPrice: "Cost Price",
+              category: "Type of Product",
+              sellingPrice: "Selling Price",
+              createdAt: "Created At",
+              description: "Description",
+              um: "Unit",
+            }}
+          />
+        ) : null}
+        <ProductFormDrawer
+          formik={formik}
+          isOpen={isProductFormOpen}
+          onClose={onCloseProductFormDrawer}
         />
-      ) : null}
-      <ProductFormDrawer
-        formik={formik}
-        isOpen={isProductFormOpen}
-        onClose={onCloseProductFormDrawer}
-      />
+      </Box>
     </MainLayout>
   );
 }
