@@ -1,4 +1,4 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Hide, Text } from "@chakra-ui/react";
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
 
@@ -13,7 +13,9 @@ export default function AvatarProfile({ toggleProfilePopup }) {
       gap={2}
       alignItems={"center"}
     >
-      <Text fontWeight={"bold"}>{user?.name}</Text>
+      <Hide below="md">
+        <Text fontWeight={"bold"}>{user?.name}</Text>
+      </Hide>
       <Avatar name={user?.name} />
     </Flex>
   );
