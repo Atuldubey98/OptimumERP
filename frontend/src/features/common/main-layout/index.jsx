@@ -13,14 +13,14 @@ export default function MainLayout({ children }) {
         <Hide below="xl">
           <Sidebar />
         </Hide>
-        <Box width={"100%"}>
-          <Box boxShadow={"md"} p={5} height={"10svh"}>
+        <Flex flexDirection={"column"} width={"100%"}>
+          <Box boxShadow={"md"} p={5}>
             <Header onSideNavOpen={onOpen} />
           </Box>
           <Box overflowY={"auto"} h={"90svh"}>
             {children}
           </Box>
-        </Box>
+        </Flex>
       </Flex>
       <NavDrawer isOpen={isOpen} onClose={onClose} />
     </PrivateRoute>

@@ -17,7 +17,6 @@ export default function AuthContextProvider({ children }) {
     })();
   }, []);
   const userLoading = status === "loading";
-  console.log({ status });
   const onSetCurrentUser = (user) => {
     setUser(user);
   };
