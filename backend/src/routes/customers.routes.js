@@ -21,6 +21,7 @@ customerRouter.get(
   "/",
   authenticate,
   checkOrgAuthorization,
+  paginateModel,
   getAllCustomer
 );
 customerRouter.post(

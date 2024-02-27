@@ -12,6 +12,7 @@ import CustomerFormDrawer from "./CustomerFormDrawer";
 import CustomerMenu from "./CustomerMenu";
 import SearchItem from "../common/table-layout/SearchItem";
 import AlertModal from "../common/AlertModal";
+import Pagination from "../common/main-layout/Pagination";
 export default function CustomersPage() {
   const {
     isOpen: isCustomerFormOpen,
@@ -23,7 +24,14 @@ export default function CustomersPage() {
     onClose: closeCustomerDrawer,
     onOpen: openCustomerDrawer,
   } = useDisclosure();
-  const { customers, fetchCustomers, loading } = useCustomers();
+  const {
+    customers,
+    fetchCustomers,
+    loading,
+    currentPage,
+    totalCustomers,
+    totalPages,
+  } = useCustomers();
   const { formik: customerFormik } = useCustomerForm(
     fetchCustomers,
     onCloseCustomerFormDrawer
@@ -59,61 +67,63 @@ export default function CustomersPage() {
   };
   return (
     <MainLayout>
-      {loading ? (
-        <Flex justifyContent={"center"} alignItems={"center"}>
-          <Spinner size={"md"} />
-        </Flex>
-      ) : (
-        <TableLayout
-          filter={
-            <Box maxW={"md"}>
-              <SearchItem />
-            </Box>
-          }
-          heading={"Customers list"}
-          tableData={customers}
-          caption={`Total customers found : ${customers.length}`}
-          operations={customers.map((customer) => (
-            <CustomerMenu
-              onDeleteCustomer={onDeleteCustomer}
-              customer={customer}
-              key={customer._id}
-              onOpenDrawerForEditingCustomer={onOpenDrawerForEditingCustomer}
-              onOpenCustomer={onOpenCustomer}
-            />
-          ))}
-          selectedKeys={{
-            name: "Name",
-            billingAddress: "Billing address",
-            gstNo: "TAX No.",
-          }}
-          onAddNewItem={onOpenDrawerForAddingNewCustomer}
-        />
-      )}
+      <Box p={5}>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"md"} />
+          </Flex>
+        ) : (
+          <TableLayout
+            filter={
+              <Box maxW={"md"}>
+                <SearchItem />
+              </Box>
+            }
+            heading={"Customers list"}
+            tableData={customers}
+            caption={`Total customers found : ${totalCustomers}`}
+            operations={customers.map((customer) => (
+              <CustomerMenu
+                onDeleteCustomer={onDeleteCustomer}
+                customer={customer}
+                key={customer._id}
+                onOpenDrawerForEditingCustomer={onOpenDrawerForEditingCustomer}
+                onOpenCustomer={onOpenCustomer}
+              />
+            ))}
+            selectedKeys={{
+              name: "Name",
+              billingAddress: "Billing address",
+              gstNo: "TAX No.",
+            }}
+            onAddNewItem={onOpenDrawerForAddingNewCustomer}
+          />
+        )}
 
-      <CustomerFormDrawer
-        formik={customerFormik}
-        isOpen={isCustomerFormOpen}
-        onClose={onCloseCustomerFormDrawer}
-      />
-      {selectedToShowCustomer ? (
-        <ShowDrawer
-          onClickNewItem={onOpenDrawerForAddingNewCustomer}
-          heading={"Customer"}
-          formBtnLabel={"Create New"}
-          isOpen={isCustomerDrawerOpen}
-          item={selectedToShowCustomer}
-          onClose={onCloseCustomer}
-          selectedKeys={{
-            name: "Name",
-            shippingAddress: "Shipping address",
-            billingAddress: "Billing address",
-            gstNo: "GST No",
-            panNo: "PAN No",
-          }}
+        <CustomerFormDrawer
+          formik={customerFormik}
+          isOpen={isCustomerFormOpen}
+          onClose={onCloseCustomerFormDrawer}
         />
-      ) : null}
-      
+        {selectedToShowCustomer ? (
+          <ShowDrawer
+            onClickNewItem={onOpenDrawerForAddingNewCustomer}
+            heading={"Customer"}
+            formBtnLabel={"Create New"}
+            isOpen={isCustomerDrawerOpen}
+            item={selectedToShowCustomer}
+            onClose={onCloseCustomer}
+            selectedKeys={{
+              name: "Name",
+              shippingAddress: "Shipping address",
+              billingAddress: "Billing address",
+              gstNo: "GST No",
+              panNo: "PAN No",
+            }}
+          />
+        ) : null}
+        <Pagination currentPage={currentPage} total={totalPages}/>
+      </Box>
     </MainLayout>
   );
 }

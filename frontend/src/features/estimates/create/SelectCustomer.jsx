@@ -10,9 +10,9 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { TbEyeSearch } from "react-icons/tb";
 import { useParams } from "react-router-dom";
-import { getCustomers } from "../../../api/customer";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCustomerForm from "../../../hooks/useCustomerForm";
+import instance from "../../../instance";
 import CustomerModal from "./CustomerModal";
 export default function SelectCustomer({ formik }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -21,7 +21,9 @@ export default function SelectCustomer({ formik }) {
   const { requestAsyncHandler } = useAsyncCall();
   const fetchCustomer = useCallback(
     requestAsyncHandler(async () => {
-      const { data } = await getCustomers(orgId);
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/customers`
+      );
       setCustomers(data.data);
     }),
     []

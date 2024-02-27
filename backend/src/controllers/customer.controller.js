@@ -38,16 +38,34 @@ exports.getCustomer = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10; 
+
   const filter = {
     org: req.params.orgId,
   };
   const search = req.query.search || "";
   if (search) filter.$text = { $search: search };
-  const customers = await Customer.find(filter).sort({ createdAt: -1 });
+
+  const totalCustomers = await Customer.countDocuments(filter);
+  const totalPages = Math.ceil(totalCustomers / limit); 
+
+  const skip = (page - 1) * limit; 
+
+  const customers = await Customer.find(filter)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
   return res.status(200).json({
+    page,
+    limit,
+    totalPages,
+    total: totalCustomers,
     data: customers,
   });
 });
+
 
 exports.deleteCustomer = requestAsyncHandler(async (req, res) => {
   if (!req.params.customerId) throw new CustomerNotFound();
