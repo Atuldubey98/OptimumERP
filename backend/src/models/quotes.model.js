@@ -62,7 +62,6 @@ const quoteSchema = new Schema(
     quoteNo: {
       type: Number,
       required: true,
-      unique: true,
     },
     createdBy: {
       type: Types.ObjectId,
@@ -77,6 +76,19 @@ const quoteSchema = new Schema(
       type: String,
       default: "draft",
       enum: ["draft", "pending", "sent", "accepted", "declined"],
+    },
+    financialYear: {
+      type: {
+        start: {
+          type: Date,
+          required: true,
+        },
+        end: {
+          type: Date,
+          required: true,
+        },
+      },
+      required: true,
     },
   },
   {

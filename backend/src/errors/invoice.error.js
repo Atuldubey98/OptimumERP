@@ -6,5 +6,12 @@ class InvoiceNotFound extends Error {
     this.name = "InvoiceNotFound";
   }
 }
-
-module.exports = { InvoiceNotFound };
+class InvoiceDuplicate extends Error {
+  constructor(invoiceId) {
+    super();
+    this.code = 400;
+    this.message = `Invoice already exists with invoice id : ${invoiceId}`;
+    this.name = "InvoiceDuplicate";
+  }
+}
+module.exports = { InvoiceNotFound, InvoiceDuplicate };

@@ -1,10 +1,12 @@
 const { isValidObjectId, default: mongoose } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Quote = require("../models/quotes.model");
-const { QuoteNotFound } = require("../errors/quote.error");
+const { QuoteNotFound, QuotationDuplicate } = require("../errors/quote.error");
 const { CustomerNotFound } = require("../errors/customer.error");
 const { quoteDto } = require("../dto/quotes.dto");
 const Customer = require("../models/customer.model");
+const { OrgNotFound } = require("../errors/org.error");
+const Setting = require("../models/settings.model");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -21,16 +23,27 @@ exports.getTotalAndTax = (items = []) => {
 exports.createQuote = requestAsyncHandler(async (req, res) => {
   const { total, totalTax } = this.getTotalAndTax(req.body.items);
   const body = await quoteDto.validateAsync(req.body);
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  if (!setting) throw new OrgNotFound();
   const customer = await Customer.findOne({
     _id: body.customer,
     org: req.params.orgId,
   });
   if (!customer) throw new CustomerNotFound();
+  const existingQuotation = await Quote.findOne({
+    org: req.params.orgId,
+    quoteNo: body.quoteNo,
+    financialYear: setting.financialYear,
+  });
+  if (existingQuotation) throw QuotationDuplicate(req.params.quoteNo);
   const newQuote = new Quote({
     org: req.params.orgId,
     ...body,
     total,
     totalTax,
+    financialYear: setting.financialYear,
   });
   await newQuote.save();
   return res.status(201).json({ message: "Quote created !", data: newQuote });
@@ -80,14 +93,18 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
   }
 
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10; 
+  const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
   const quotesQuery = Quote.find(filter).populate("customer").populate("org");
 
   const totalCount = await Quote.countDocuments(filter);
 
-  const quotes = await quotesQuery.sort({ createdAt: -1 }).skip(skip).limit(limit).exec();
+  const quotes = await quotesQuery
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
 
   return res.status(200).json({
     data: quotes,
@@ -112,9 +129,11 @@ exports.getQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
+  const setting = await Setting.findOne({ org: req.params.orgId });
   const quote = await Quote.findOne(
     {
       org: req.params.orgId,
+      financialYear: setting.financialYear,
     },
     { quoteNo: 1 },
     { sort: { quoteNo: -1 } }

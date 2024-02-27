@@ -1,5 +1,7 @@
 import {
   Button,
+  Divider,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -17,24 +19,31 @@ import { useFormik } from "formik";
 import React from "react";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import { createOrg } from "../../api/org";
-
+import DateFilter from "../estimates/list/DateFilter";
 export default function NewOrgModal({
   isOpen: isOpenNewOrgModal,
   onCloseNewOrgModal,
   onAddedFetch,
 }) {
   const { requestAsyncHandler } = useAsyncCall();
+  const date = new Date();
   const formik = useFormik({
     initialValues: {
       name: "",
       address: "",
       gstNo: "",
       panNo: "",
+      financialYearStart: `${date.getFullYear()}-04-01`,
+      financialYearEnd: `${date.getFullYear() + 1}-03-31`,
     },
     onSubmit: requestAsyncHandler(async (values) => {
-      await createOrg(values);
+      const { financialYearEnd, financialYearStart, ...resetOrg } = values;
+      await createOrg({
+        ...resetOrg,
+        financialYear: { start: financialYearStart, end: financialYearEnd },
+      });
       onAddedFetch();
-      onCloseNewOrgModal()
+      onCloseNewOrgModal();
       formik.resetForm();
     }),
   });
@@ -103,6 +112,17 @@ export default function NewOrgModal({
                 />
                 <FormErrorMessage>{formik.errors.gstNo}</FormErrorMessage>
               </FormControl>
+              <Divider />
+              <Flex gap={3}>
+                <DateFilter
+                  dateFilter={{
+                    startDate: formik.values.financialYearStart,
+                    endDate: formik.values.financialYearEnd,
+                  }}
+                  onChangeDateFilter={formik.handleChange}
+                />
+              </Flex>
+              <Divider />
             </Grid>
           </ModalBody>
 

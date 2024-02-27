@@ -21,20 +21,7 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
   });
   const setting = new Setting({
     org: newOrg.id,
-    counter: {
-      invoice: 0,
-      quotation: 0,
-    },
-    financialYear: {
-      start: {
-        month: body.financialMonthStart,
-        year: new Date(Date.now()).getFullYear(),
-      },
-      end: {
-        month: body.financialMonthStart + 12 > b,
-        year: new Date(body.financialYearEnd).getFullYear(),
-      },
-    },
+    financialYear: body.financialYear,
   });
   await setting.save();
   await orgUser.save();

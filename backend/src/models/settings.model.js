@@ -30,17 +30,11 @@ const settingSchema = new Schema({
   financialYear: {
     type: {
       start: {
-        type: {
-          month: Number,
-          year: Number,
-        },
+        type: Date,
         required: true,
       },
       end: {
-        type: {
-          month: Number,
-          year: Number,
-        },
+        type: Date,
         required: true,
       },
     },

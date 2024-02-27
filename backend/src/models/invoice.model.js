@@ -65,7 +65,6 @@ const invoiceSchema = new Schema(
     invoiceNo: {
       type: Number,
       required: true,
-      unique: true,
     },
     createdBy: {
       type: Types.ObjectId,
@@ -81,6 +80,19 @@ const invoiceSchema = new Schema(
       default: "sent",
       enum: ["draft", "sent", "paid"],
     },
+    financialYear: {
+      type: {
+        start: {
+          type: Date,
+          required: true,
+        },
+        end: {
+          type: Date,
+          required: true,
+        },
+      },
+      required: true,
+    },
   },
   {
     versionKey: false,
@@ -90,6 +102,5 @@ const invoiceSchema = new Schema(
 const Invoice = model("invoice", invoiceSchema);
 invoiceSchema.index({
   description: "text",
-  invoiceNo: "text",
 });
 module.exports = Invoice;

@@ -1,28 +1,46 @@
 const { isValidObjectId } = require("mongoose");
 const { invoiceDto } = require("../dto/invoice.dto");
 const { CustomerNotFound } = require("../errors/customer.error");
-const { InvoiceNotFound } = require("../errors/invoice.error");
+const {
+  InvoiceNotFound,
+  InvoiceDuplicate,
+} = require("../errors/invoice.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Customer = require("../models/customer.model");
 const Invoice = require("../models/invoice.model");
 const { getTotalAndTax } = require("./quotes.controller");
+const { OrgNotFound } = require("../errors/org.error");
+const Setting = require("../models/settings.model");
 
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
   const { total, totalTax } = getTotalAndTax(body.items);
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  if (!setting) throw new OrgNotFound();
   const customer = await Customer.findOne({
     _id: body.customer,
     org: req.params.orgId,
   });
   if (!customer) throw new CustomerNotFound();
+  const existingInvoice = await Invoice.findOne({
+    org: req.params.orgId,
+    invoiceNo: body.invoiceNo,
+    financialYear: setting.financialYear,
+  });
+  if (existingInvoice) throw InvoiceDuplicate(body.invoiceNo);
   const newInvoice = new Invoice({
     org: req.params.orgId,
     ...body,
     total,
     totalTax,
+    financialYear: setting.financialYear,
   });
   await newInvoice.save();
-  return res.status(201).json({ message: "Quote created !", data: newInvoice });
+  return res
+    .status(201)
+    .json({ message: "Invoice created !", data: newInvoice });
 });
 
 exports.updateInvoice = requestAsyncHandler(async (req, res) => {
@@ -83,7 +101,6 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
   const total = await Invoice.countDocuments(filter);
 
   const totalPages = Math.ceil(total / limit);
-
   return res.status(200).json({
     data: invoices,
     page,
@@ -93,7 +110,6 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
     message: "Invoices retrieved successfully",
   });
 });
-
 
 exports.getInvoice = requestAsyncHandler(async (req, res) => {
   if (!isValidObjectId(req.params.invoiceId)) throw new InvoiceNotFound();
@@ -109,9 +125,11 @@ exports.getInvoice = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getNextInvoiceNumber = requestAsyncHandler(async (req, res) => {
+  const setting = await Setting.findOne({ org: req.params.orgId });
   const invoice = await Invoice.findOne(
     {
       org: req.params.orgId,
+      financialYear: setting.financialYear,
     },
     { invoiceNo: 1 },
     { sort: { invoiceNo: -1 } }
