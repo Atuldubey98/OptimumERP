@@ -75,61 +75,63 @@ export default function EstimatesPage() {
   const query = useQuery();
   return (
     <MainLayout>
-      {loading ? (
-        <Flex justifyContent={"center"} alignItems={"center"}>
-          <Spinner size={"md"} />
-        </Flex>
-      ) : (
-        <TableLayout
-          filter={
-            <BillFilter
-              dateFilter={dateFilter}
-              onChangeDateFilter={onChangeDateFilter}
-            />
-          }
-          heading={"Quotations"}
-          tableData={estimates.map(estimateTableMapper)}
-          caption={`Total estimates found : ${totalCount}`}
-          operations={estimates.map((estimate) => (
-            <VertIconMenu
-              showItem={() => onOpenQuotation(estimate)}
-              editItem={() => {
-                navigate(`${estimate._id}/edit`);
-              }}
-              deleteItem={() => {
-                setQuotation(estimate);
-                onOpenDeleteModal();
-              }}
-            />
-          ))}
-          selectedKeys={{
-            date: "Quotation Date",
-            status: "Status",
-            customerName: "Customer name",
-            quoteNo: "Quote No.",
-            billingAddress: "Billing address",
-            grandTotal: "Total",
-          }}
-          onAddNewItem={onClickAddNewQuote}
+      <Box p={5}>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"md"} />
+          </Flex>
+        ) : (
+          <TableLayout
+            filter={
+              <BillFilter
+                dateFilter={dateFilter}
+                onChangeDateFilter={onChangeDateFilter}
+              />
+            }
+            heading={"Quotations"}
+            tableData={estimates.map(estimateTableMapper)}
+            caption={`Total estimates found : ${totalCount}`}
+            operations={estimates.map((estimate) => (
+              <VertIconMenu
+                showItem={() => onOpenQuotation(estimate)}
+                editItem={() => {
+                  navigate(`${estimate._id}/edit`);
+                }}
+                deleteItem={() => {
+                  setQuotation(estimate);
+                  onOpenDeleteModal();
+                }}
+              />
+            ))}
+            selectedKeys={{
+              date: "Quotation Date",
+              status: "Status",
+              customerName: "Customer name",
+              quoteNo: "Quote No.",
+              billingAddress: "Billing address",
+              grandTotal: "Total",
+            }}
+            onAddNewItem={onClickAddNewQuote}
+          />
+        )}
+        {quotation ? (
+          <BillModal
+            isOpen={isOpen}
+            onClose={onClose}
+            bill={quotation}
+            entity={"quotes"}
+            heading={"Quotation"}
+          />
+        ) : null}
+        <AlertModal
+          body={"Do you want to delete the estimate"}
+          header={"Delete Quotation"}
+          isOpen={isDeleteModalOpen}
+          onClose={onCloseDeleteModal}
+          onConfirm={() => deleteQuote(quotation)}
         />
-      )}
-      {quotation ? (
-        <BillModal
-          isOpen={isOpen}
-          onClose={onClose}
-          bill={quotation}
-          entity={"quotes"}
-          heading={"Quotation"}
-        />
-      ) : null}
-      <AlertModal
-        body={"Do you want to delete the estimate"}
-        header={"Delete Quotation"}
-        isOpen={isDeleteModalOpen}
-        onClose={onCloseDeleteModal}
-        onConfirm={() => deleteQuote(quotation)}
-      />
-      <Pagination total={totalPages} currentPage={currentPage} />
+        <Pagination total={totalPages} currentPage={currentPage} />
+      </Box>
     </MainLayout>
   );
 }

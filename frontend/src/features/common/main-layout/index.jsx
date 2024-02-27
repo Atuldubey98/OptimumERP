@@ -14,10 +14,10 @@ export default function MainLayout({ children }) {
           <Sidebar />
         </Hide>
         <Box width={"100%"}>
-          <Box padding={5}>
+          <Box boxShadow={"md"} p={5} height={"10svh"}>
             <Header onSideNavOpen={onOpen} />
           </Box>
-          <Box padding={5} overflowY={"auto"} h={"90svh"}>
+          <Box overflowY={"auto"} h={"90svh"}>
             {children}
           </Box>
         </Box>

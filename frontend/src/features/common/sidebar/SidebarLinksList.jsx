@@ -16,7 +16,9 @@ export const SidebarLinksList = () => {
         {headerLinks.map((headerLink) => (
           <HeaderLink key={headerLink.label}>
             <Icon as={headerLink.icon} />
-            <NavLink to={`/${orgId}${headerLink.link}`}>
+            <NavLink
+              to={orgId ? `/${orgId}${headerLink.link}` : "/organizations"}
+            >
               {headerLink.label}
             </NavLink>
           </HeaderLink>

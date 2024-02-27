@@ -70,70 +70,72 @@ export default function InvoicesPage() {
   };
   return (
     <MainLayout>
-      {loading ? (
-        <Flex justifyContent={"center"} alignItems={"center"}>
-          <Spinner size={"md"} />
-        </Flex>
-      ) : (
-        <TableLayout
-          filter={
-            <Grid gap={2}>
-              <Divider />
-              <Box>
-                <SearchItem placeholder="Search by description" />
-              </Box>
-              <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
-                <DateFilter
-                  dateFilter={dateFilter}
-                  onChangeDateFilter={onChangeDateFilter}
-                />
+      <Box p={5}>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"md"} />
+          </Flex>
+        ) : (
+          <TableLayout
+            filter={
+              <Grid gap={2}>
+                <Divider />
+                <Box>
+                  <SearchItem placeholder="Search by description" />
+                </Box>
+                <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
+                  <DateFilter
+                    dateFilter={dateFilter}
+                    onChangeDateFilter={onChangeDateFilter}
+                  />
+                </Grid>
+                <Divider />
               </Grid>
-              <Divider />
-            </Grid>
-          }
-          heading={"Invoices"}
-          tableData={invoices.map(invoiceTableMapper)}
-          caption={`Total invoices found : ${totalCount}`}
-          operations={invoices.map((invoice) => (
-            <VertIconMenu
-              showItem={() => onOpenInvoice(invoice)}
-              editItem={() => {
-                navigate(`${invoice._id}/edit`);
-              }}
-              deleteItem={() => {
-                setInvoice(invoice);
-                onOpenDeleteModal();
-              }}
-            />
-          ))}
-          selectedKeys={{
-            date: "Invoice Date",
-            status: "Status",
-            customerName: "Customer name",
-            invoiceNo: "Invoice No.",
-            billingAddress: "Billing address",
-            grandTotal: "Total",
-          }}
-          onAddNewItem={onClickAddNewInvoice}
+            }
+            heading={"Invoices"}
+            tableData={invoices.map(invoiceTableMapper)}
+            caption={`Total invoices found : ${totalCount}`}
+            operations={invoices.map((invoice) => (
+              <VertIconMenu
+                showItem={() => onOpenInvoice(invoice)}
+                editItem={() => {
+                  navigate(`${invoice._id}/edit`);
+                }}
+                deleteItem={() => {
+                  setInvoice(invoice);
+                  onOpenDeleteModal();
+                }}
+              />
+            ))}
+            selectedKeys={{
+              date: "Invoice Date",
+              status: "Status",
+              customerName: "Customer name",
+              invoiceNo: "Invoice No.",
+              billingAddress: "Billing address",
+              grandTotal: "Total",
+            }}
+            onAddNewItem={onClickAddNewInvoice}
+          />
+        )}
+        {invoice ? (
+          <BillModal
+            bill={invoice}
+            entity={"invoices"}
+            heading={"Invoice"}
+            isOpen={isOpen}
+            onClose={onClose}
+          />
+        ) : null}
+        <AlertModal
+          body={"Do you want to delete the invoice ?"}
+          header={"Delete Invoice"}
+          isOpen={isDeleteModalOpen}
+          onClose={onCloseDeleteModal}
+          onConfirm={() => deleteInvoice(invoice)}
         />
-      )}
-      {invoice ? (
-        <BillModal
-          bill={invoice}
-          entity={"invoices"}
-          heading={"Invoice"}
-          isOpen={isOpen}
-          onClose={onClose}
-        />
-      ) : null}
-      <AlertModal
-        body={"Do you want to delete the invoice ?"}
-        header={"Delete Invoice"}
-        isOpen={isDeleteModalOpen}
-        onClose={onCloseDeleteModal}
-        onConfirm={() => deleteInvoice(invoice)}
-      />
-      <Pagination currentPage={currentPage} total={totalPages} />
+        <Pagination currentPage={currentPage} total={totalPages} />
+      </Box>
     </MainLayout>
   );
 }

@@ -5,6 +5,7 @@ const userRouter = require("./routes/users.routes");
 const errorHandler = require("./handlers/error.handler");
 const path = require("path");
 const cors = require("cors");
+const morgan = require("morgan");
 const organizationRouter = require("./routes/org.routes");
 const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
   }
 });
 app.use(express.json());
+app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"))
 app.use(express.urlencoded({ extended: true }));
 const whitelist = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:9000"];
 const corsOptions = {

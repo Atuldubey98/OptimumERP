@@ -36,50 +36,59 @@ export default function DashboardPage() {
   }, []);
   return (
     <MainLayout>
-      <Stack spacing={3}>
-        <StatGroup>
-          <Dashcard dashType="Invoice" dashTotal={dashboard.invoiceThisMonth} />
-          <Dashcard
-            dashType="Quotation"
-            dashTotal={dashboard.quotesThisMonth}
-          />
-          <Dashcard
-            dashType="Customer"
-            dashTotal={dashboard.customersThisMonth}
-          />
-        </StatGroup>
-        <Stack>
-          <DashboardTable
-            heading={"Recent Quotations"}
-            tableRows={dashboard.recentQuotes.map((quote) => ({
-              num: quote.quoteNo,
-              customerName: quote?.customer.name,
-              total: quote.total,
-              totalTax: quote.totalTax,
-              status: <Status status={quote.status} statusList={statusList} />,
-              date: new Date(quote.date).toISOString().split("T")[0],
-            }))}
-            tableHeads={["NUM", "Customer name", "Total", "Status", "Date"]}
-          />
-          <DashboardTable
-            heading={"Recent Invoices"}
-            tableRows={dashboard.recentInvoices.map((invoice) => ({
-              num: invoice.invoiceNo,
-              customerName: invoice?.customer.name,
-              total: invoice.total,
-              totalTax: invoice.totalTax,
-              status: (
-                <Status
-                  status={invoice.status}
-                  statusList={invoiceStatusList}
-                />
-              ),
-              date: new Date(invoice.date).toISOString().split("T")[0],
-            }))}
-            tableHeads={["NUM", "Customer name", "Total", "Status", "Date"]}
-          />
+      <Box p={5}>
+        <Stack spacing={3}>
+          <StatGroup>
+            <Dashcard
+              dashType="Invoice"
+              dashTotal={dashboard.invoiceThisMonth}
+            />
+            <Dashcard
+              dashType="Quotation"
+              dashTotal={dashboard.quotesThisMonth}
+            />
+            <Dashcard
+              dashType="Customer"
+              dashTotal={dashboard.customersThisMonth}
+            />
+          </StatGroup>
+          <Stack>
+            <DashboardTable
+              heading={"Recent Quotations"}
+              tableRows={dashboard.recentQuotes.map((quote) => ({
+                _id: quote._id,
+                num: quote.quoteNo,
+                customerName: quote?.customer.name,
+                total: quote.total,
+                totalTax: quote.totalTax,
+                status: (
+                  <Status status={quote.status} statusList={statusList} />
+                ),
+                date: new Date(quote.date).toISOString().split("T")[0],
+              }))}
+              tableHeads={["NUM", "Customer name", "Total", "Status", "Date"]}
+            />
+            <DashboardTable
+              heading={"Recent Invoices"}
+              tableRows={dashboard.recentInvoices.map((invoice) => ({
+                _id: invoice._id,
+                num: invoice.invoiceNo,
+                customerName: invoice?.customer.name,
+                total: invoice.total,
+                totalTax: invoice.totalTax,
+                status: (
+                  <Status
+                    status={invoice.status}
+                    statusList={invoiceStatusList}
+                  />
+                ),
+                date: new Date(invoice.date).toISOString().split("T")[0],
+              }))}
+              tableHeads={["NUM", "Customer name", "Total", "Status", "Date"]}
+            />
+          </Stack>
         </Stack>
-      </Stack>
+      </Box>
     </MainLayout>
   );
 }
