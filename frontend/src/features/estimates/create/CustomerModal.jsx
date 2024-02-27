@@ -21,8 +21,8 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
+import useDebouncedInput from "../../../hooks/useDeboucedInput";
 
 export default function CustomerModal({
   customers,
@@ -31,9 +31,9 @@ export default function CustomerModal({
   customerProps,
   customerFormProps,
   formik,
+  onChangeInput,
+  search,
 }) {
-  const [search, setSearch] = useState(false);
-
   const {
     isOpenCustomerFormDrawer,
     onCloseCustomerFormDrawer,
@@ -46,23 +46,23 @@ export default function CustomerModal({
         <ModalHeader>Select Customers</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-            <Flex justifyContent={"flex-end"} alignItems={"center"}>
-              <ButtonGroup>
-                <Button
-                  variant={"outline"}
-                  onClick={() => customerProps.selectCustomer("")}
-                >
-                  Clear
-                </Button>
-                <Button
-                  variant={"solid"}
-                  colorScheme="blue"
-                  onClick={onOpenCustomerFormDrawer}
-                >
-                  Add
-                </Button>
-              </ButtonGroup>
-            </Flex>
+          <Flex justifyContent={"flex-end"} alignItems={"center"}>
+            <ButtonGroup>
+              <Button
+                variant={"outline"}
+                onClick={() => customerProps.selectCustomer("")}
+              >
+                Clear
+              </Button>
+              <Button
+                variant={"solid"}
+                colorScheme="blue"
+                onClick={onOpenCustomerFormDrawer}
+              >
+                Add
+              </Button>
+            </ButtonGroup>
+          </Flex>
           {customers.length ? (
             <TableContainer>
               <Table variant="simple">
@@ -70,7 +70,7 @@ export default function CustomerModal({
                   <Input
                     type="search"
                     value={search}
-                    onChange={(e) => setSearch(e.currentTarget.value)}
+                    onChange={onChangeInput}
                     isDisabled={false}
                   />
                 </TableCaption>
@@ -83,31 +83,27 @@ export default function CustomerModal({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {customers
-                    .filter(
-                      (customer) => !search || customer.name.includes(search)
-                    )
-                    .map((customer) => (
-                      <Tr cursor={"pointer"} key={customer._id}>
-                        <Td>
-                          <Checkbox
-                            isChecked={
-                              customerProps.selectedCustomer === customer._id
-                            }
-                            size="lg"
-                            onChange={() => {
-                              customerProps.selectCustomer(customer._id);
-                              onClose();
-                            }}
-                            isDisabled={false}
-                            colorScheme="orange"
-                          />
-                        </Td>
-                        <Td>{customer.name}</Td>
-                        <Td>{customer.billingAddress}</Td>
-                        <Td>{customer.gstNo}</Td>
-                      </Tr>
-                    ))}
+                  {customers.map((customer) => (
+                    <Tr cursor={"pointer"} key={customer._id}>
+                      <Td>
+                        <Checkbox
+                          isChecked={
+                            customerProps.selectedCustomer === customer._id
+                          }
+                          size="lg"
+                          onChange={() => {
+                            customerProps.selectCustomer(customer._id);
+                            onClose();
+                          }}
+                          isDisabled={false}
+                          colorScheme="orange"
+                        />
+                      </Td>
+                      <Td>{customer.name}</Td>
+                      <Td>{customer.billingAddress}</Td>
+                      <Td>{customer.gstNo}</Td>
+                    </Tr>
+                  ))}
                 </Tbody>
               </Table>
             </TableContainer>

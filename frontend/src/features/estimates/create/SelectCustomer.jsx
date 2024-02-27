@@ -14,23 +14,34 @@ import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCustomerForm from "../../../hooks/useCustomerForm";
 import instance from "../../../instance";
 import CustomerModal from "./CustomerModal";
+import useDebouncedInput from "../../../hooks/useDeboucedInput";
 export default function SelectCustomer({ formik }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [customers, setCustomers] = useState([]);
   const { orgId } = useParams();
+  const {
+    input: search,
+    deboucedInput: deboucedSearch,
+    onChangeInput,
+  } = useDebouncedInput();
   const { requestAsyncHandler } = useAsyncCall();
   const fetchCustomer = useCallback(
     requestAsyncHandler(async () => {
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/customers`
+        `/api/v1/organizations/${orgId}/customers`,
+        {
+          params: {
+            search: deboucedSearch,
+          },
+        }
       );
       setCustomers(data.data);
     }),
-    []
+    [deboucedSearch]
   );
   useEffect(() => {
     fetchCustomer();
-  }, []);
+  }, [deboucedSearch]);
   const selectCustomer = (customerId) => {
     formik.setFieldValue("customer", customerId);
   };
@@ -81,6 +92,8 @@ export default function SelectCustomer({ formik }) {
         customers={customers}
         onClose={onClose}
         formik={customerFormik}
+        onChangeInput={onChangeInput}
+        search={search}
         isOpen={isOpen}
         customerProps={customerProps}
       />

@@ -38,11 +38,6 @@ export default function useCustomers() {
   useEffect(() => {
     fetchCustomers();
   }, [searchQuery, fetchCustomers, page]);
-  console.log({
-    totalCustomers,
-    totalPages,
-    currentPage,
-  });
   return {
     loading: status === "loading",
     customers,
