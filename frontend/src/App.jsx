@@ -13,6 +13,7 @@ const NotFoundPage = lazy(() => import('./features/common/NotFoundPage'));
 const CreateInvoicePage = lazy(() => import('./features/invoices/create'));
 const InvoicesPage = lazy(() => import('./features/invoices/list'));
 const ReportsPage = lazy(() => import('./features/reports'));
+const ExpensesPage = lazy(() => import('./features/expenses'));
 export default function App() {
   return (
     <Suspense
@@ -33,6 +34,7 @@ export default function App() {
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
           <Route element={<CustomersPage />} path="customers" />
+          <Route element={<ExpensesPage />} path="expenses" />
           <Route path="estimates">
             <Route element={<EstimatesPage />} path="" />
             <Route element={<CreateEstimatePage />} path="create" />

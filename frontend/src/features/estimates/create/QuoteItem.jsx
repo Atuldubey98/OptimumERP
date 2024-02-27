@@ -80,7 +80,7 @@ export default function QuoteItem({
         </GridItem>
         <GridItem>
           <FormControl isRequired isInvalid={errors.um && errors.um}>
-            <FormLabel>Unit of Measurement</FormLabel>
+            <FormLabel>UM</FormLabel>
             <Select
               name={`items[${index}].um`}
               onChange={handleQuoteItemChange}
