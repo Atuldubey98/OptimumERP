@@ -1,33 +1,24 @@
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { Flex, Spinner } from "@chakra-ui/react";
-const DashboardPage = lazy(() => import('./features/dashboard'));
-const LoginPage = lazy(() => import('./features/login'));
-const OrgPage = lazy(() => import('./features/organizations'));
-const RegisterPage = lazy(() => import('./features/register'));
-const CustomersPage = lazy(() => import('./features/customers'));
-const ProductsPage = lazy(() => import('./features/products'));
-const EstimatesPage = lazy(() => import('./features/estimates/list'));
-const CreateEstimatePage = lazy(() => import('./features/estimates/create'));
-const NotFoundPage = lazy(() => import('./features/common/NotFoundPage'));
-const CreateInvoicePage = lazy(() => import('./features/invoices/create'));
-const InvoicesPage = lazy(() => import('./features/invoices/list'));
-const ReportsPage = lazy(() => import('./features/reports'));
-const ExpensesPage = lazy(() => import('./features/expenses'));
+import FullLoader from "./features/common/FullLoader";
+import ExpenseCategoriePage from "./features/expense-categories";
+const DashboardPage = lazy(() => import("./features/dashboard"));
+const LoginPage = lazy(() => import("./features/login"));
+const OrgPage = lazy(() => import("./features/organizations"));
+const RegisterPage = lazy(() => import("./features/register"));
+const CustomersPage = lazy(() => import("./features/customers"));
+const ProductsPage = lazy(() => import("./features/products"));
+const EstimatesPage = lazy(() => import("./features/estimates/list"));
+const CreateEstimatePage = lazy(() => import("./features/estimates/create"));
+const NotFoundPage = lazy(() => import("./features/common/NotFoundPage"));
+const CreateInvoicePage = lazy(() => import("./features/invoices/create"));
+const InvoicesPage = lazy(() => import("./features/invoices/list"));
+const ReportsPage = lazy(() => import("./features/reports"));
+const ExpensesPage = lazy(() => import("./features/expenses"));
 export default function App() {
   return (
-    <Suspense
-      fallback={
-        <Flex
-          justifyContent={"center"}
-          height={"80svh"}
-          width={"100%"}
-          alignItems={"center"}
-        >
-          <Spinner size={"xl"} />
-        </Flex>
-      }
-    >
+    <Suspense fallback={<FullLoader />}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/:orgId">
@@ -35,6 +26,7 @@ export default function App() {
           <Route element={<ProductsPage />} path="products" />
           <Route element={<CustomersPage />} path="customers" />
           <Route element={<ExpensesPage />} path="expenses" />
+          <Route element={<ExpenseCategoriePage />} path="expense-categories" />
           <Route path="estimates">
             <Route element={<EstimatesPage />} path="" />
             <Route element={<CreateEstimatePage />} path="create" />
