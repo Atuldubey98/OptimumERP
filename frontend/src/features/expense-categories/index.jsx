@@ -8,6 +8,7 @@ import ExpenseCategoryForm from "./ExpenseCategoryForm";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import instance from "../../instance";
 import { useParams } from "react-router-dom";
+import useAsyncCall from "../../hooks/useAsyncCall";
 export default function ExpenseCategoriePage() {
   const { fetchExpenseCategories, expenseCategories, status } =
     useExpenseCategories();
@@ -41,6 +42,8 @@ export default function ExpenseCategoriePage() {
     });
     openExpenseCategoryForm();
   };
+  const { requestAsyncHandler } = useAsyncCall();
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -54,12 +57,12 @@ export default function ExpenseCategoriePage() {
           onAddNewItem={onAddNewExpenseCategory}
           operations={expenseCategories.map((category) => (
             <VertIconMenu
-              deleteItem={async () => {
+              deleteItem={requestAsyncHandler(async () => {
                 await instance.delete(
                   `/api/v1/organizations/${orgId}/expenses/categories/${category._id}`
                 );
                 fetchExpenseCategories();
-              }}
+              })}
               editItem={() => {
                 formik.setValues(category);
                 openExpenseCategoryForm();

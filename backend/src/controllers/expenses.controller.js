@@ -1,3 +1,6 @@
+const {
+  ExpenseCategoryNotDeleted,
+} = require("../errors/expense_category.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Expense = require("../models/expense.model");
 const ExpenseCategory = require("../models/expense_category");
@@ -33,6 +36,14 @@ exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: category });
 });
 exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
+  const expense = await Expense.findOne({
+    org: req.params.orgId,
+    category: req.params.categoryId,
+  });
+  if (expense)
+    throw new ExpenseCategoryNotDeleted({
+      reason: "Expense category linked to expense",
+    });
   const category = await ExpenseCategory.findOneAndDelete({
     org: req.params.orgId,
     _id: req.params.categoryId,
@@ -52,8 +63,8 @@ exports.getAllExpenseCategories = requestAsyncHandler(async (req, res) => {
 });
 
 exports.createExpense = requestAsyncHandler(async (req, res) => {
-  const expense = await Expense.create({ org: req.params.orgId });
-  res.status(201).json(expense);
+  const expense = await Expense.create({ org: req.params.orgId, ...req.body });
+  return res.status(201).json(expense);
 });
 
 exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
@@ -63,17 +74,15 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
     limit: parseInt(limit),
     populate: "category",
   };
-
-  const totalCount = await Expense.countDocuments({
+  const filter = {
     org: req.params.orgId,
-  });
+  };
+  const search = req.query.search || "";
+  if (search) filter.$text = { $search: search };
+  const totalCount = await Expense.countDocuments(filter);
   const totalPages = Math.ceil(totalCount / limit);
 
-  if (options.page > totalPages) {
-    return res.status(400).json({ message: "Invalid page number" });
-  }
-
-  const expenses = await Expense.find({ org: req.params.orgId })
+  const expenses = await Expense.find(filter)
     .skip((options.page - 1) * options.limit)
     .limit(options.limit)
     .populate("category")

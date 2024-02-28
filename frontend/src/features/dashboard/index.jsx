@@ -17,6 +17,7 @@ export default function DashboardPage() {
     customersThisMonth: 0,
     recentInvoices: [],
     recentQuotes: [],
+    expensesThisMonth: 0,
   });
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
@@ -56,6 +57,10 @@ export default function DashboardPage() {
             <Dashcard
               dashType="Customer"
               dashTotal={dashboard.customersThisMonth}
+            />
+             <Dashcard
+              dashType="Expenses"
+              dashTotal={dashboard.expensesThisMonth}
             />
           </StatGroup>
           <Stack>

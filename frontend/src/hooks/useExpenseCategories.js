@@ -7,10 +7,10 @@ import useQuery from "./useQuery";
 export default function useExpenseCategories() {
   const [expenseCategories, setExpenseCategories] = useState([]);
   const [status, setStatus] = useState("idle");
-  const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
   const query = useQuery();
   const search = query.get("query") || "";
+  const { requestAsyncHandler } = useAsyncCall(); 
   const fetchExpenseCategories = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");

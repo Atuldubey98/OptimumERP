@@ -32,5 +32,7 @@ const expenseSchema = new mongoose.Schema(
 );
 
 const Expense = mongoose.model("expense", expenseSchema);
-
+expenseSchema.index({
+  description: "text",
+});
 module.exports = Expense;

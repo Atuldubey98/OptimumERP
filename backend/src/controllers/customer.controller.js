@@ -1,8 +1,13 @@
 const { createCustomerDto, updateCustomerDto } = require("../dto/customer.dto");
-const { CustomerNotFound } = require("../errors/customer.error");
+const {
+  CustomerNotFound,
+  CustomerNotDelete,
+} = require("../errors/customer.error");
 const { OrgNotFound } = require("../errors/org.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Customer = require("../models/customer.model");
+const Invoice = require("../models/invoice.model");
+const Quotation = require("../models/quotes.model");
 
 exports.createCustomer = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
@@ -39,7 +44,7 @@ exports.getCustomer = requestAsyncHandler(async (req, res) => {
 
 exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10; 
+  const limit = parseInt(req.query.limit) || 10;
 
   const filter = {
     org: req.params.orgId,
@@ -48,9 +53,9 @@ exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
   if (search) filter.$text = { $search: search };
 
   const totalCustomers = await Customer.countDocuments(filter);
-  const totalPages = Math.ceil(totalCustomers / limit); 
+  const totalPages = Math.ceil(totalCustomers / limit);
 
-  const skip = (page - 1) * limit; 
+  const skip = (page - 1) * limit;
 
   const customers = await Customer.find(filter)
     .sort({ createdAt: -1 })
@@ -66,9 +71,18 @@ exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
   });
 });
 
-
 exports.deleteCustomer = requestAsyncHandler(async (req, res) => {
   if (!req.params.customerId) throw new CustomerNotFound();
+  const invoice = await Invoice.findOneAndDelete({
+    customer: req.params.customerId,
+    org: req.params.orgId,
+  });
+  if (invoice) throw new CustomerNotDelete({ reason: `Invoice is linked` });
+  const quotation = await Quotation.findOneAndDelete({
+    customer: req.params.customerId,
+    org: req.params.orgId,
+  });
+  if (quotation) throw new CustomerNotDelete({ reason: `Quotation is linked` });
   const customer = await Customer.findOneAndDelete({
     _id: req.params.customerId,
     org: req.params.orgId,

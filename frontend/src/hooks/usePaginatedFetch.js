@@ -13,12 +13,17 @@ const usePaginatedFetch = ({ url }) => {
   const query = useQuery();
   const [status, setStatus] = useState("idle");
   const page = query.get("page") || 1;
-  const search = query.get("query");
+  const search = query.get("query") || "";
   const { requestAsyncHandler } = useAsyncCall();
   const fetchFn = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");
-      const { data } = await instance.get(url);
+      const { data } = await instance.get(url, {
+        params: {
+          page,
+          search,
+        },
+      });
       setData({
         items: data.data,
         totalPages: data.totalPages,
