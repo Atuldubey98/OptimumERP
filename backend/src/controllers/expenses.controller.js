@@ -19,16 +19,43 @@ exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
   });
   return res.status(201).json(category);
 });
+exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {
+  const category = await ExpenseCategory.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      _id: req.params.categoryId,
+    },
+    req.body,
+    {
+      new: true,
+    }
+  );
+  return res.status(200).json({ data: category });
+});
+exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
+  const category = await ExpenseCategory.findOneAndDelete({
+    org: req.params.orgId,
+    _id: req.params.categoryId,
+  });
+  if (!category) throw new Error("Expense category not found");
+  return res.status(200).json({ data: category });
+});
 
 exports.getAllExpenseCategories = requestAsyncHandler(async (req, res) => {
-  const categories = await ExpenseCategory.find({ org: req.params.orgId });
-  return res.status(200).json(categories);
+  const filter = {
+    org: req.params.orgId,
+  };
+  const search = req.query.search || "";
+  if (search) filter.$text = { $search: search };
+  const categories = await ExpenseCategory.find(filter);
+  return res.status(200).json({ data: categories });
 });
 
 exports.createExpense = requestAsyncHandler(async (req, res) => {
   const expense = await Expense.create({ org: req.params.orgId });
   res.status(201).json(expense);
 });
+
 exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const options = {

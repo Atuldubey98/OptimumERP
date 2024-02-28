@@ -21,13 +21,15 @@ export default function VertIconMenu({ showItem, editItem, deleteItem }) {
         variant="outline"
       />
       <MenuList>
-        <MenuItem
-          icon={<LiaEyeSolid size={20} />}
-          onClick={showItem}
-          command="⌘S"
-        >
-          Show
-        </MenuItem>
+        {showItem ? (
+          <MenuItem
+            icon={<LiaEyeSolid size={20} />}
+            onClick={showItem}
+            command="⌘S"
+          >
+            Show
+          </MenuItem>
+        ) : null}
         <MenuItem icon={<CiEdit size={20} />} onClick={editItem} command="⌘E">
           Edit
         </MenuItem>

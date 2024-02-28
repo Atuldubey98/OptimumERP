@@ -27,4 +27,8 @@ const ExpenseCategory = mongoose.model(
   expenseCategorySchema
 );
 
+expenseCategorySchema.index({
+  name: "text",
+});
+
 module.exports = ExpenseCategory;
