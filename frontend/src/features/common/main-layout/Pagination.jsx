@@ -18,7 +18,7 @@ export default function Pagination({ total, currentPage }) {
   const end = Math.min(start + 10, total - 1);
   const paginate = [];
   for (let i = start; i <= end; i++) paginate.push(i);
-  return  (
+  return (
     <Flex
       alignItems={"center"}
       gap={5}
@@ -46,7 +46,7 @@ export default function Pagination({ total, currentPage }) {
       })}
       <Button
         onClick={() => onClick(++currentPage)}
-        isDisabled={currentPage === total}
+        isDisabled={currentPage >= total}
       >
         Next
       </Button>

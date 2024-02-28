@@ -17,13 +17,13 @@ export default function LoginPage() {
   });
   const formik = useFormik({
     initialValues: {
-      email: "mock-user@gmail.com",
+      email: "test@test.com",
       password: "12345678",
     },
     validationSchema: loginSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { data } = await loginUser(values);
-      localStorage.setItem("user", data.data);
+      localStorage.setItem("user", JSON.stringify(data.data));
       if (auth.onSetCurrentUser) {
         auth.onSetCurrentUser(data.data);
         setSubmitting(false);

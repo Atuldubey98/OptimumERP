@@ -4,6 +4,7 @@ const settingSchema = new Schema({
     type: Types.ObjectId,
     required: true,
     ref: "organization",
+    unique: true,
   },
   transactionPrefix: {
     type: {

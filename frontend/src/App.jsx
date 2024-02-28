@@ -1,8 +1,11 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { Flex, Spinner } from "@chakra-ui/react";
 import FullLoader from "./features/common/FullLoader";
 import ExpenseCategoriePage from "./features/expense-categories";
+import AdminPage from "./features/admin";
+import TransactionSettingsPage from "./features/common/transaction-settings";
+import SettingContextProvider from "./contexts/SettingContextProvider";
 const DashboardPage = lazy(() => import("./features/dashboard"));
 const LoginPage = lazy(() => import("./features/login"));
 const OrgPage = lazy(() => import("./features/organizations"));
@@ -21,6 +24,11 @@ export default function App() {
     <Suspense fallback={<FullLoader />}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route
+          path="/transaction-settings"
+          element={<TransactionSettingsPage />}
+        />
         <Route path="/:orgId">
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />

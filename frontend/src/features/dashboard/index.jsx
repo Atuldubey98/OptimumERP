@@ -1,5 +1,5 @@
 import { Box, Flex, Stack, StatGroup, Tag } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import MainLayout from "../common/main-layout";
 import Dashcard from "./Dashcard";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import DashboardTable from "./DashboardTable";
 import { statusList } from "../estimates/create/data";
 import Status from "../estimates/list/Status";
 import { invoiceStatusList } from "../../constants/invoice";
+import SettingContext from "../../contexts/SettingContext";
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -34,6 +35,11 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchDashboard();
   }, []);
+  const settingContext = useContext(SettingContext);
+  const transactionPrefixInvoice =
+    settingContext?.setting?.transactionPrefix.invoice || "";
+  const transactionPrefixQuotation =
+    settingContext?.setting?.transactionPrefix.quotation || "";
   return (
     <MainLayout>
       <Box p={5}>
@@ -57,7 +63,7 @@ export default function DashboardPage() {
               heading={"Recent Quotations"}
               tableRows={dashboard.recentQuotes.map((quote) => ({
                 _id: quote._id,
-                num: quote.quoteNo,
+                num: `${transactionPrefixQuotation}${quote.quoteNo}`,
                 customerName: quote?.customer.name,
                 total: quote.total,
                 totalTax: quote.totalTax,
@@ -72,7 +78,7 @@ export default function DashboardPage() {
               heading={"Recent Invoices"}
               tableRows={dashboard.recentInvoices.map((invoice) => ({
                 _id: invoice._id,
-                num: invoice.invoiceNo,
+                num: `${transactionPrefixInvoice}${invoice.invoiceNo}`,
                 customerName: invoice?.customer.name,
                 total: invoice.total,
                 totalTax: invoice.totalTax,

@@ -1,10 +1,7 @@
-import { AiOutlineDashboard } from "react-icons/ai";
-import { AiOutlineCustomerService } from "react-icons/ai";
-import { FaFileInvoiceDollar } from "react-icons/fa6";
-import { FaFileInvoice } from "react-icons/fa6";
+import { AiOutlineCustomerService, AiOutlineDashboard } from "react-icons/ai";
+import { FaFileInvoice, FaFileInvoiceDollar } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
 import { GoTag } from "react-icons/go";
-import { HiOutlineDocumentReport } from "react-icons/hi";
 import { TbCategory } from "react-icons/tb";
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },
@@ -17,7 +14,6 @@ const headerLinks = [
     link: "/expense-categories",
     label: "Expense Categories",
   },
-  { icon: HiOutlineDocumentReport, link: "/reports", label: "Reports" },
   { icon: GoTag, link: "/products", label: "Products" },
 ];
 

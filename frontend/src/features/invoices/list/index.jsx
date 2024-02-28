@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 import MainLayout from "../../common/main-layout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TableLayout from "../../common/table-layout";
 import SearchItem from "../../common/table-layout/SearchItem";
 import DateFilter from "../../estimates/list/DateFilter";
@@ -21,6 +21,7 @@ import instance from "../../../instance";
 import Pagination from "../../common/main-layout/Pagination";
 import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
+import SettingContext from "../../../contexts/SettingContext";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -35,11 +36,15 @@ export default function InvoicesPage() {
     entity: "invoices",
   });
   const loading = status === "loading";
+  const settingContext = useContext(SettingContext);
+  const transactionPrefixInvoice =
+    settingContext?.setting?.transactionPrefix.invoice || "";
   const navigate = useNavigate();
   const invoiceTableMapper = (invoice) => ({
     customerName: invoice.customer.name,
     billingAddress: invoice.customer.billingAddress,
     ...invoice,
+    invoiceNo: transactionPrefixInvoice + invoice.invoiceNo,
     date: new Date(invoice.date).toISOString().split("T")[0],
     grandTotal: invoice.total + invoice.totalTax,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,

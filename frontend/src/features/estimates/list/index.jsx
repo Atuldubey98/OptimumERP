@@ -1,30 +1,19 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Grid,
-  Spinner,
-  Tag,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { useCallback, useState } from "react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { useCallback, useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncCall from "../../../hooks/useAsyncCall";
-import useEsitamtes from "../../../hooks/useEsimates";
+import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 import instance from "../../../instance";
+import AlertModal from "../../common/AlertModal";
 import MainLayout from "../../common/main-layout";
+import Pagination from "../../common/main-layout/Pagination";
 import TableLayout from "../../common/table-layout";
-import SearchItem from "../../common/table-layout/SearchItem";
 import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import { statusList } from "../create/data";
-import DateFilter from "./DateFilter";
-import BillModal from "./BillModal";
-import AlertModal from "../../common/AlertModal";
-import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
-import Status from "./Status";
 import BillFilter from "./BillFilter";
-import Pagination from "../../common/main-layout/Pagination";
-import useQuery from "../../../hooks/useQuery";
+import BillModal from "./BillModal";
+import Status from "./Status";
+import SettingContext from "../../../contexts/SettingContext";
 export default function EstimatesPage() {
   const navigate = useNavigate();
   const onClickAddNewQuote = useCallback(() => {
@@ -43,10 +32,14 @@ export default function EstimatesPage() {
     entity: "quotes",
   });
   const loading = status === "loading";
+  const settingContext = useContext(SettingContext);
+  const transactionPrefixQuotation =
+    settingContext?.setting?.transactionPrefix.quotation || "";
   const estimateTableMapper = (estimate) => ({
     customerName: estimate.customer.name,
     billingAddress: estimate.customer.billingAddress,
     ...estimate,
+    quoteNo: `${transactionPrefixQuotation}${estimate.quoteNo}`,
     date: new Date(estimate.date).toISOString().split("T")[0],
     grandTotal: estimate.total + estimate.totalTax,
     status: <Status status={estimate.status} statusList={statusList} />,
@@ -72,7 +65,7 @@ export default function EstimatesPage() {
     onCloseDeleteModal();
     fetchQuotes();
   });
-  const query = useQuery();
+
   return (
     <MainLayout>
       <Box p={5}>
