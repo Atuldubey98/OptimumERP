@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Select,
@@ -37,7 +38,10 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <FormControl isRequired>
+      <FormControl
+        isInvalid={formik.errors.amount && formik.touched.amount}
+        isRequired
+      >
         <FormLabel>Amount</FormLabel>
         <Input
           type="number"
@@ -45,17 +49,24 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           name="amount"
           onChange={formik.handleChange}
         />
+        <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
       </FormControl>
-      <FormControl isRequired>
+      <FormControl
+        isInvalid={formik.errors.description && formik.touched.description}
+        isRequired
+      >
         <FormLabel>Description</FormLabel>
         <Textarea
           value={formik.values.description}
           name="description"
           onChange={formik.handleChange}
         />
+        <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
       </FormControl>
       {status === "loading" ? null : (
-        <FormControl>
+        <FormControl
+          isInvalid={formik.errors.category && formik.touched.category}
+        >
           <FormLabel>Expense Category</FormLabel>
           <Select
             onChange={formik.handleChange}
@@ -69,9 +80,15 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
               </option>
             ))}
           </Select>
+          <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
         </FormControl>
       )}
-      <FormControl>
+      <FormControl
+        isInvalid={
+          formik.errors.date && formik.touched.date
+        }
+        isRequired
+      >
         <FormLabel>Date</FormLabel>
         <Input
           name="date"
@@ -79,6 +96,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           onChange={formik.handleChange}
           value={formik.values.date}
         />
+         <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
       </FormControl>
     </FormDrawerLayout>
   );

@@ -115,6 +115,7 @@ export default function NewOrgModal({
               <Divider />
               <Flex gap={3}>
                 <DateFilter
+                  isRequired={true}
                   dateFilter={{
                     startDate: formik.values.financialYearStart,
                     endDate: formik.values.financialYearEnd,

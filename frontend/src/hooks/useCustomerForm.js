@@ -11,9 +11,9 @@ const customerDto = Yup.object({
     .required("Please give customer name")
     .label("Name"),
   shippingAddress: Yup.string()
-    .min(2)
     .max(80, "Cannot be greater than 80")
-    .label("Shipping address"),
+    .label("Shipping address")
+    .optional(),
   billingAddress: Yup.string()
     .min(2)
     .max(80, "Cannot be greater than 80")
@@ -34,8 +34,17 @@ export default function useCustomerForm(onAddedFetch, onCloseDrawer) {
     },
     validationSchema: customerDto,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const {name, shippingAddress, billingAddress, gstNo, panNo, _id} = values;
-      const customer = {name, shippingAddress, billingAddress, gstNo, org : orgId, panNo, _id};
+      const { name, shippingAddress, billingAddress, gstNo, panNo, _id } =
+        values;
+      const customer = {
+        name,
+        shippingAddress,
+        billingAddress,
+        gstNo,
+        org: orgId,
+        panNo,
+        _id,
+      };
       if (customer._id) await updateCustomer(customer, orgId);
       else await createCustomer(customer, orgId);
       setSubmitting(false);

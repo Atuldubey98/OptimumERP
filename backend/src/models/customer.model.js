@@ -10,7 +10,6 @@ const customerSchema = new Schema(
     },
     shippingAddress: {
       type: String,
-      minLength: 2,
       maxLength: 80,
     },
     billingAddress: {

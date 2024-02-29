@@ -116,7 +116,11 @@ export default function TransactionPrefix() {
             />
           </FormControl>
           <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
-            <Button type="submit" colorScheme="blue">
+            <Button
+              isDisabled={!formik.values.organization}
+              type="submit"
+              colorScheme="blue"
+            >
               Update
             </Button>
           </Flex>

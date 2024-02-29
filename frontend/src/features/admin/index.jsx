@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Fade,
   Flex,
   FormControl,
   FormLabel,
@@ -136,27 +137,29 @@ export default function AdminPage() {
           </Flex>
         </Box>
         {loading || !organization ? null : (
-          <TableContainer>
-            <Table variant="simple">
-              <TableCaption></TableCaption>
-              <Thead>
-                <Tr>
-                  <Th>Name</Th>
-                  <Th>Email</Th>
-                  <Th>Role</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {orgUsers.map((orgUser) => (
-                  <Tr key={orgUser._id}>
-                    <Td>{orgUser.name}</Td>
-                    <Td>{orgUser.email}</Td>
-                    <Td textTransform={"capitalize"}>{orgUser.role}</Td>
+          <Fade in={!loading && organization}>
+            <TableContainer>
+              <Table variant="simple">
+                <TableCaption></TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Email</Th>
+                    <Th>Role</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {orgUsers.map((orgUser) => (
+                    <Tr key={orgUser._id}>
+                      <Td>{orgUser.name}</Td>
+                      <Td>{orgUser.email}</Td>
+                      <Td textTransform={"capitalize"}>{orgUser.role}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Fade>
         )}
       </Box>
       {organization ? (

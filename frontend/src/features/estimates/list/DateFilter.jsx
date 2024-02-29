@@ -1,9 +1,13 @@
 import { FormControl, FormLabel, Grid, Input } from "@chakra-ui/react";
 
-export default function DateFilter({ dateFilter, onChangeDateFilter }) {
+export default function DateFilter({
+  dateFilter,
+  onChangeDateFilter,
+  isRequired,
+}) {
   return (
     <>
-      <FormControl>
+      <FormControl isRequired={isRequired}>
         <FormLabel fontWeight={"bold"}>Start Date</FormLabel>
         <Input
           name="startDate"
@@ -13,7 +17,7 @@ export default function DateFilter({ dateFilter, onChangeDateFilter }) {
           type="date"
         />
       </FormControl>
-      <FormControl>
+      <FormControl isRequired={isRequired}>
         <FormLabel fontWeight={"bold"}>End Date</FormLabel>
         <Input
           value={dateFilter.endDate}

@@ -51,7 +51,6 @@ export default function CustomerFormDrawer({ isOpen, onClose, formik }) {
           <FormErrorMessage>{formik.errors.billingAddress}</FormErrorMessage>
         </FormControl>
         <FormControl
-          isRequired
           isInvalid={
             formik.errors.shippingAddress && formik.touched.shippingAddress
           }
