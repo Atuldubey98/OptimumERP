@@ -31,9 +31,18 @@ class UnAuthenticated extends Error {
     this.name = "UnAuthenticated";
   }
 }
+class UnAuthorizedUser extends Error {
+  constructor() {
+    super();
+    this.code = 403;
+    this.message = "User not authorized";
+    this.name = "UnAuthorizedUser";
+  }
+}
 module.exports = {
   UserDuplicate,
   UserNotFound,
   PasswordDoesNotMatch,
   UnAuthenticated,
+  UnAuthorizedUser,
 };

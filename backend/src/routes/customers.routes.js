@@ -6,7 +6,7 @@ const {
   deleteCustomer,
   createCustomer,
 } = require("../controllers/customer.controller");
-const authenticate = require("../middlewares/authentication.middleware");
+const {authenticate} = require("../middlewares/auth.middleware");
 const {
   createModel,
   updateModel,

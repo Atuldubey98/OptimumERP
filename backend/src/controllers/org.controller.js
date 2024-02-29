@@ -51,9 +51,9 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
     name,
   });
   const orgUser = new OrgUser({
-    org: req.session.org,
+    org: req.params.orgId,
     user: registeredUser.id,
-    role: "user",
+    role: body.role,
   });
   await orgUser.save();
   logger.info(`Organization user created with id ${orgUser.id}`);
@@ -69,4 +69,13 @@ exports.getOrgsOfUser = requestAsyncHandler(async (req, res) => {
     .populate("org")
     .select("org role");
   return res.status(200).json({ data: organizations });
+});
+
+exports.getAllUsersOfOrganization = requestAsyncHandler(async (req, res) => {
+  const organizationUsers = await OrgUser.find({
+    org: req.params.orgId,
+  })
+    .populate("org")
+    .populate("user", "name email active role");
+  return res.status(200).json({ data: organizationUsers });
 });

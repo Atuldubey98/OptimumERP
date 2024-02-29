@@ -2,12 +2,7 @@ import {
   Button,
   Link as ChakraLink,
   Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Grid,
-  Input,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
@@ -16,7 +11,7 @@ import * as Yup from "yup";
 import { registerUser } from "../../api/register";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import AuthLayout from "../common/auth-layout";
-import AuthFields from "../login/AuthFields";
+import RegisterUserFields from "./RegisterUserFields";
 export default function RegisterPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const toast = useToast();
@@ -52,35 +47,17 @@ export default function RegisterPage() {
   return (
     <AuthLayout formHeading={"Sign up"}>
       <form onSubmit={formik.handleSubmit}>
-        <Grid gap={4}>
-          <AuthFields
-            formikErrors={formik.errors}
-            formikTouched={formik.touched}
-            formikHandleChange={formik.handleChange}
-            formikValues={formik.values}
-          />
-          <FormControl isRequired isInvalid={formik.errors.name && formik.touched.name}>
-            <FormLabel>Name</FormLabel>
-            <Input
-              onChange={formik.handleChange}
-              name="name"
-              type="text"
-              value={formik.values.name}
-              placeholder="Name"
-            />
-            <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
-          </FormControl>
-          <Flex justifyContent={"center"} alignItems={"center"}>
-            <Button
-              isLoading={formik.isSubmitting}
-              mt={4}
-              colorScheme="blue"
-              type="submit"
-            >
-              Register
-            </Button>
-          </Flex>
-        </Grid>
+        <RegisterUserFields formik={formik} />
+        <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
+          <Button
+            isLoading={formik.isSubmitting}
+            mt={4}
+            colorScheme="blue"
+            type="submit"
+          >
+            Register
+          </Button>
+        </Flex>
         <ChakraLink color="blue.500" as={ReactRouterLink} to={"/login"}>
           Login Now ?
         </ChakraLink>

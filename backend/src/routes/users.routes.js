@@ -6,7 +6,7 @@ const {
   logoutUser,
   deactivateUser,
 } = require("../controllers/user.controller");
-const authenticate = require("../middlewares/authentication.middleware");
+const {authenticate} = require("../middlewares/auth.middleware");
 const userRoutes = Router();
 
 userRoutes.post("/register", registerUser);

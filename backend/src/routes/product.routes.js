@@ -2,7 +2,7 @@ const { Router } = require("express");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
-const authenticate = require("../middlewares/authentication.middleware");
+const {authenticate} = require("../middlewares/auth.middleware");
 const {
   getAllProducts,
   createProduct,

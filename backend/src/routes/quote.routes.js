@@ -7,7 +7,7 @@ const {
   updateModel,
   paginateModel,
 } = require("../middlewares/crud.middleware");
-const authenticate = require("../middlewares/authentication.middleware");
+const {authenticate} = require("../middlewares/auth.middleware");
 const {
   createQuote,
   updateQuote,

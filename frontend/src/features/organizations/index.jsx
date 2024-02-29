@@ -12,10 +12,8 @@ import { FaRegCircleDot } from "react-icons/fa6";
 import { IoAdd } from "react-icons/io5";
 import useOrganizations from "../../hooks/useOrganizations";
 import PrivateRoute from "../common/PrivateRoute";
-import AvatarProfile from "../common/main-layout/AvatarProfile";
 import NewOrgModal from "./NewOrgModal";
 import OrgItem from "./OrgItem";
-import Header from "../common/main-layout/Header";
 export default function OrgPage() {
   const {
     isOpen,

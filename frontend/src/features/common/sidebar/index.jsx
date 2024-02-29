@@ -2,6 +2,7 @@ import { Box, Divider } from "@chakra-ui/react";
 import React from "react";
 import Banner from "./Banner";
 import { SidebarLinksList } from "./SidebarLinksList";
+import CurrentOrganization from "../main-layout/CurrentOrganization";
 export default function Sidebar() {
   return (
     <Box
@@ -14,6 +15,8 @@ export default function Sidebar() {
       <Box marginBlock={4}>
         <Banner />
       </Box>
+      <Divider />
+      <CurrentOrganization />
       <Divider />
       <SidebarLinksList />
     </Box>

@@ -35,7 +35,11 @@ exports.loginUser = requestAsyncHandler(async (req, res) => {
   if (!user || !user.active) throw new UserNotFound();
   const isPasswordMatching = await bcryptjs.compare(password, user.password);
   if (!isPasswordMatching) throw new PasswordDoesNotMatch();
-  const loggedInUser = { email, name: user.name, _id: user._id };
+  const loggedInUser = {
+    email,
+    name: user.name,
+    _id: user._id,
+  };
   req.session.user = loggedInUser;
   return res.status(200).json({ data: loggedInUser });
 });
