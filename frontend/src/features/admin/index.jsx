@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -143,8 +144,6 @@ export default function AdminPage() {
                   <Th>Name</Th>
                   <Th>Email</Th>
                   <Th>Role</Th>
-                  <Th>Active</Th>
-                  <Th>Change</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -153,10 +152,6 @@ export default function AdminPage() {
                     <Td>{orgUser.name}</Td>
                     <Td>{orgUser.email}</Td>
                     <Td textTransform={"capitalize"}>{orgUser.role}</Td>
-                    <Td>
-                      <GoDotFill color={orgUser.active ? "green" : "red"} />
-                    </Td>
-                    <Td><CiEdit size={20} /></Td>
                   </Tr>
                 ))}
               </Tbody>

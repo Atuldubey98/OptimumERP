@@ -69,6 +69,14 @@ export default function CreateInvoicePage() {
                     statusList={invoiceStatusList}
                   />
                   <SelectCustomer formik={formik} />
+                  <FormControl>
+                    <FormLabel>PO Number</FormLabel>
+                    <Input value={formik.values.poNo} onChange={formik.handleChange} name="poNo"/>
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>PO Date</FormLabel>
+                    <Input value={formik.values.poDate} onChange={formik.handleChange} name="poDate" type="date"/>
+                  </FormControl>
                 </Grid>
                 <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
                 <TotalsBox quoteItems={formik.values.items} />

@@ -14,6 +14,8 @@ export default function useInvoicesForm() {
     customer: Yup.string().required("Customer is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
+    poNo: Yup.string().optional(),
+    poDate: Yup.string().optional(),
     items: Yup.array()
       .of(
         Yup.object().shape({
@@ -44,6 +46,8 @@ export default function useInvoicesForm() {
       items: [defaultInvoiceItem],
       terms: "Thanks for business !",
       description: "",
+      poNo: "",
+      poDate: "",
     },
     validationSchema: invoiceSchema,
     validateOnChange: false,
@@ -84,6 +88,8 @@ export default function useInvoicesForm() {
             status,
             items,
             description,
+            poDate = "",
+            poNo = "",
           } = data.data;
           formik.setValues({
             _id: data.data._id,
@@ -94,6 +100,8 @@ export default function useInvoicesForm() {
             status,
             items,
             description,
+            poDate: poDate ? poDate.split("T")[0] : "",
+            poNo,
           });
           setStatus("success");
         })();

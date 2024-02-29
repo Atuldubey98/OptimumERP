@@ -5,6 +5,7 @@ const {
   createOrg,
   getOrgsOfUser,
   getAllUsersOfOrganization,
+  updateOrganizationUser,
 } = require("../controllers/org.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const { createModel } = require("../middlewares/crud.middleware");
@@ -31,6 +32,12 @@ organizationRouter.post(
   authenticate,
   authorize,
   createNewUserForOrg
+);
+organizationRouter.patch(
+  "/:orgId/users/:userId",
+  authenticate,
+  authorize,
+  updateOrganizationUser
 );
 organizationRouter.use("/:orgId/customers", customerRouter);
 organizationRouter.use("/:orgId/products", productRouter);

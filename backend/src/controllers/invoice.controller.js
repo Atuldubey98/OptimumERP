@@ -145,9 +145,9 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
     _id: invoiceId,
     org: req.params.orgId,
   })
-    .populate("customer", "name _id")
-    .populate("createdBy", "name email _id")
-    .populate("org", "name address _id");
+    .populate("customer", "name gstNo panNo")
+    .populate("createdBy", "name email")
+    .populate("org", "name address gstNo panNo");
   const grandTotal = invoice.items.reduce(
     (total, invoiceItem) =>
       total +

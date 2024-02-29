@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -10,13 +11,14 @@ import {
   FormControl,
   FormLabel,
   Select,
+  Stack,
 } from "@chakra-ui/react";
 import React from "react";
 import RegisterUserFields from "../register/RegisterUserFields";
 
 export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+    <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -24,18 +26,28 @@ export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
 
         <form onSubmit={formik.handleSubmit}>
           <DrawerBody>
-            <RegisterUserFields formik={formik} />
-            <FormControl isRequired mt={4}>
-              <FormLabel>User role</FormLabel>
-              <Select
-                value={formik.values.role}
+            <Stack spacing={4}>
+              <RegisterUserFields formik={formik} />
+              <FormControl isRequired>
+                <FormLabel>User role</FormLabel>
+                <Select
+                  value={formik.values.role}
+                  onChange={formik.handleChange}
+                  name="role"
+                >
+                  <option value={"user"}>User</option>
+                  <option value={"admin"}>Admin</option>
+                </Select>
+              </FormControl>
+              <Checkbox
+                isChecked={formik.values.active}
                 onChange={formik.handleChange}
-                name="role"
+                colorScheme="green"
+                defaultChecked
               >
-                <option value={"user"}>User</option>
-                <option value={"admin"}>Admin</option>
-              </Select>
-            </FormControl>
+                Is the user active ?
+              </Checkbox>
+            </Stack>
           </DrawerBody>
 
           <DrawerFooter>

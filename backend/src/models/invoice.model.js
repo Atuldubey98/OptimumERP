@@ -12,6 +12,13 @@ const invoiceSchema = new Schema(
       default: 0,
       required: true,
     },
+    poNo: {
+      type: String,
+      default: "",
+    },
+    poDate: {
+      type: Date,
+    },
     totalTax: {
       type: Number,
       default: 0,

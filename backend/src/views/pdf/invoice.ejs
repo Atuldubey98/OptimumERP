@@ -38,6 +38,20 @@
               <%= new Date(invoice.date).toISOString().split("T")[0] %>
             </p>
           </div>
+          <% if (invoice.poNo) { %>
+          <div class="p-2 border border-1">
+            <p>PO Number</p>
+            <p class="font-bold"><%= invoice.poNo %></p>
+          </div>
+          <% } %> 
+          <% if (invoice.poDate) { %>
+          <div class="p-2 border border-1">
+            <p>PO Date</p>
+            <p class="font-bold">
+              <%= new Date(invoice.poDate).toISOString().split("T")[0] %>
+            </p>
+          </div>
+          <% } %>
         </div>
       </div>
     </header>
@@ -110,7 +124,7 @@
           <div class="grid p-2">
             <p class="font-bold">Terms & Conditons</p>
             <% invoice.terms.split("\n").forEach(term => { %>
-              <p><%= term %></p>
+            <p><%= term %></p>
             <% }) %>
           </div>
           <div class="grid h-36 border border-1 p-2">

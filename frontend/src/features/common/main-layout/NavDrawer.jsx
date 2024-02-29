@@ -1,6 +1,15 @@
-import { Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay } from "@chakra-ui/react";
-import { SidebarLinksList } from "../sidebar/SidebarLinksList";
+import {
+  Divider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+} from "@chakra-ui/react";
 import Banner from "../sidebar/Banner";
+import { SidebarLinksList } from "../sidebar/SidebarLinksList";
+import CurrentOrganization from "./CurrentOrganization";
 
 export default function NavDrawer({ isOpen, onClose }) {
   return (
@@ -11,7 +20,9 @@ export default function NavDrawer({ isOpen, onClose }) {
         <DrawerHeader>
           <Banner />
         </DrawerHeader>
-
+        <Divider />
+        <CurrentOrganization />
+        <Divider />
         <DrawerBody>
           <SidebarLinksList />
         </DrawerBody>
