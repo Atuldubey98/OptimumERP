@@ -122,7 +122,9 @@ export default function CustomersPage() {
             }}
           />
         ) : null}
-        <Pagination currentPage={currentPage} total={totalPages}/>
+        {loading ? null : (
+          <Pagination currentPage={currentPage} total={totalPages} />
+        )}
       </Box>
     </MainLayout>
   );

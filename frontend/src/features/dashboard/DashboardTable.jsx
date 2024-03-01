@@ -15,7 +15,7 @@ export default function DashboardTable({ heading, tableHeads, tableRows }) {
   return (
     <Box>
       <Box paddingBlock={5}>
-        <Heading>{heading}</Heading>
+        <Heading fontSize={"2xl"}>{heading}</Heading>
       </Box>
       <TableContainer>
         <Table variant="simple">

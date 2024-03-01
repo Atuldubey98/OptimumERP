@@ -1,15 +1,20 @@
-import { Box, Flex, Skeleton, Stack, StatGroup, Tag } from "@chakra-ui/react";
+import {
+  Box,
+  Skeleton,
+  Stack,
+  StatGroup
+} from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import MainLayout from "../common/main-layout";
-import Dashcard from "./Dashcard";
 import { useParams } from "react-router-dom";
-import instance from "../../instance";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import DashboardTable from "./DashboardTable";
-import { statusList } from "../estimates/create/data";
-import Status from "../estimates/list/Status";
 import { invoiceStatusList } from "../../constants/invoice";
 import SettingContext from "../../contexts/SettingContext";
+import useAsyncCall from "../../hooks/useAsyncCall";
+import instance from "../../instance";
+import MainLayout from "../common/main-layout";
+import { statusList } from "../estimates/create/data";
+import Status from "../estimates/list/Status";
+import DashboardTable from "./DashboardTable";
+import Dashcard from "./Dashcard";
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,

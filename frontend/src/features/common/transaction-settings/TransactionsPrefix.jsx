@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import useOrganizations from "../../../hooks/useOrganizations";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import SettingContext from "../../../contexts/SettingContext";
 import instance from "../../../instance";
 
@@ -20,13 +20,14 @@ export default function TransactionPrefix() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
   const toast = useToast();
+  const [status, setStatus] = useState("idle");
   const formik = useFormik({
     initialValues: {
       organization: "",
       invoice: "",
       quotation: "",
     },
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setSubmitting }) => {
       if (!values.organization) return;
       const { data } = await instance.patch(
         `/api/v1/organizations/${values.organization}/settings`,
@@ -51,6 +52,7 @@ export default function TransactionPrefix() {
         duration: 3000,
         isClosable: true,
       });
+      setSubmitting(false);
     },
   });
   useEffect(() => {
@@ -63,6 +65,7 @@ export default function TransactionPrefix() {
         });
         return;
       }
+      setStatus("loading");
       const { data } = await instance.get(
         `/api/v1/organizations/${formik.values.organization}/settings`
       );
@@ -71,11 +74,12 @@ export default function TransactionPrefix() {
         invoice: data.data.transactionPrefix.invoice,
         quotation: data.data.transactionPrefix.quotation,
       });
+      setStatus("success");
     })();
   }, [formik.values.organization]);
   return (
     <Stack spacing={6}>
-      <Heading>Transaction Prefixes</Heading>
+      <Heading fontSize={"lg"}>Transaction Prefixes</Heading>
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
           <FormControl>
@@ -117,6 +121,7 @@ export default function TransactionPrefix() {
           </FormControl>
           <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
             <Button
+              isLoading={formik.isSubmitting || loading}
               isDisabled={!formik.values.organization}
               type="submit"
               colorScheme="blue"

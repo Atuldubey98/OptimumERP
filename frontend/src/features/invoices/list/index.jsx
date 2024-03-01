@@ -139,7 +139,9 @@ export default function InvoicesPage() {
           onClose={onCloseDeleteModal}
           onConfirm={() => deleteInvoice(invoice)}
         />
-        <Pagination currentPage={currentPage} total={totalPages} />
+        {loading ? null : (
+          <Pagination currentPage={currentPage} total={totalPages} />
+        )}
       </Box>
     </MainLayout>
   );

@@ -123,7 +123,9 @@ export default function EstimatesPage() {
           onClose={onCloseDeleteModal}
           onConfirm={() => deleteQuote(quotation)}
         />
-        <Pagination total={totalPages} currentPage={currentPage} />
+        {loading ? null : (
+          <Pagination total={totalPages} currentPage={currentPage} />
+        )}
       </Box>
     </MainLayout>
   );
