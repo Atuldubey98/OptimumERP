@@ -10,7 +10,7 @@ export default function useAsyncCall() {
         toast({
           title: "Error",
           description: isAxiosError(err)
-            ? err.response.data.message
+            ? err?.response?.data.message || "Network error occured"
             : "Network error occured",
           status: "error",
           duration: 3000,

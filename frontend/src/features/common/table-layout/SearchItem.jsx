@@ -1,5 +1,5 @@
 import { Button, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import useQuery from "../../../hooks/useQuery";

@@ -1,4 +1,4 @@
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
 
 const instance = axios.create({
   baseURL: "http://localhost:9000",
@@ -11,12 +11,6 @@ instance.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (
-      error?.response.status === 401 &&
-      window.location.pathname !== "/login"
-    ) {
-      window.location.href = "/login";
-    }
     return Promise.reject(error);
   }
 );

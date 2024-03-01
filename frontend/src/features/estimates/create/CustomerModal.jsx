@@ -5,6 +5,8 @@ import {
   Flex,
   Heading,
   Input,
+  InputGroup,
+  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,6 +14,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Skeleton,
   Table,
   TableCaption,
   TableContainer,
@@ -21,24 +24,35 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import PaginateButtons from "../../common/PaginateButtons";
 import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
-import useDebouncedInput from "../../../hooks/useDeboucedInput";
-
+import { IoSearchOutline } from "react-icons/io5";
+import { useEffect, useRef } from "react";
 export default function CustomerModal({
-  customers,
+  response,
   onClose,
   isOpen,
   customerProps,
   customerFormProps,
   formik,
+  loading,
   onChangeInput,
+  nextPage,
+  previousPage,
   search,
 }) {
+  const { items: customers, page, totalPages } = response;
   const {
     isOpenCustomerFormDrawer,
     onCloseCustomerFormDrawer,
     onOpenCustomerFormDrawer,
   } = customerFormProps;
+  const searchRef = useRef(null);
+  useEffect(() => {
+    if (searchRef.current) {
+      searchRef.current.focus();
+    }
+  }, [searchRef]);
   return (
     <Modal size={"2xl"} onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
@@ -46,7 +60,13 @@ export default function CustomerModal({
         <ModalHeader>Select Customers</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex justifyContent={"flex-end"} alignItems={"center"}>
+          <Flex justifyContent={"space-around"} alignItems={"center"}>
+            <PaginateButtons
+              nextPage={nextPage}
+              previousPage={previousPage}
+              page={page}
+              totalPages={totalPages}
+            />
             <ButtonGroup>
               <Button
                 variant={"outline"}
@@ -63,23 +83,29 @@ export default function CustomerModal({
               </Button>
             </ButtonGroup>
           </Flex>
-          {customers.length ? (
+          <Skeleton isLoaded={!loading}>
             <TableContainer>
               <Table variant="simple">
                 <TableCaption>
-                  <Input
-                    type="search"
-                    value={search}
-                    onChange={onChangeInput}
-                    isDisabled={false}
-                  />
+                  <InputGroup margin={"auto"}>
+                    <InputLeftElement pointerEvents="none">
+                      <IoSearchOutline />
+                    </InputLeftElement>
+                    <Input
+                      disabled={loading}
+                      ref={searchRef}
+                      type="search"
+                      value={search}
+                      onChange={onChangeInput}
+                      isDisabled={false}
+                    />
+                  </InputGroup>
                 </TableCaption>
                 <Thead>
                   <Tr>
                     <Th>Select</Th>
                     <Th>Customer Name</Th>
                     <Th>Billing address</Th>
-                    <Th>GST</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -101,15 +127,12 @@ export default function CustomerModal({
                       </Td>
                       <Td>{customer.name}</Td>
                       <Td>{customer.billingAddress}</Td>
-                      <Td>{customer.gstNo}</Td>
                     </Tr>
                   ))}
                 </Tbody>
               </Table>
             </TableContainer>
-          ) : (
-            <Heading textAlign={"center"}>No customer found </Heading>
-          )}
+          </Skeleton>
         </ModalBody>
         <ModalFooter>
           <Button onClick={onClose}>Close</Button>
