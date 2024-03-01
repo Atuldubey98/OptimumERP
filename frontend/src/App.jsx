@@ -45,7 +45,7 @@ export default function App() {
             <Route element={<CreateInvoicePage />} path="create" />
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
           </Route>
-          <Route path="purchase">
+          <Route path="purchases">
             <Route element={<PurchasePage />} path="" />
             <Route element={<CreatePurchasePage />} path="create" />
             <Route element={<CreatePurchasePage />} path=":purchaseId/edit" />

@@ -11,7 +11,7 @@ const headerLinks = [
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices" },
   { icon: FaFileInvoice, link: "/estimates", label: "Quotations" },
   { icon: GiExpense, link: "/expenses", label: "Expenses" },
-  { icon: FaMoneyBillTrendUp, link: "/purchase", label: "Purchase" },
+  { icon: FaMoneyBillTrendUp, link: "/purchases", label: "Purchase" },
   {
     icon: TbCategory,
     link: "/expense-categories",
