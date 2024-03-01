@@ -27,8 +27,8 @@ export default function CustomerMenu({
         header={"Delete customer"}
         isOpen={isOpen}
         onClose={onClose}
-        onConfirm={() => {
-          onDeleteCustomer(customer);
+        onConfirm={async () => {
+          await onDeleteCustomer(customer);
           onClose();
         }}
       />

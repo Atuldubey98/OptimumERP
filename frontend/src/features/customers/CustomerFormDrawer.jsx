@@ -11,6 +11,7 @@ import FormDrawerLayout from "../common/form-drawer-layout";
 export default function CustomerFormDrawer({ isOpen, onClose, formik }) {
   return (
     <FormDrawerLayout
+      isSubmitting={formik.isSubmitting}
       formBtnLabel={formik.values._id ? "Update" : "Add"}
       formHeading={
         formik.values._id ? "Update customer form" : "New Customer form"

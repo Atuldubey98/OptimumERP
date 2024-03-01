@@ -17,6 +17,7 @@ export default function FormDrawerLayout({
   isOpen,
   formBtnLabel,
   handleFormSubmit,
+  isSubmitting = false,
 }) {
   return (
     <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
@@ -31,7 +32,7 @@ export default function FormDrawerLayout({
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" colorScheme="blue">
+            <Button isLoading={isSubmitting} type="submit" colorScheme="blue">
               {formBtnLabel}
             </Button>
           </DrawerFooter>

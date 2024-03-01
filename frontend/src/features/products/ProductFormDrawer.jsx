@@ -8,10 +8,12 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import FormDrawerLayout from "../common/form-drawer-layout";
+import { ums } from "../estimates/create/data";
 
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
   return (
     <FormDrawerLayout
+      isSubmitting={formik.isSubmitting}
       formBtnLabel={formik.values._id ? "Update" : "Add"}
       formHeading={
         formik.values._id ? "Update product form" : "New Product form"
@@ -69,7 +71,11 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isInvalid={formik.errors.category && formik.touched.category}
         >
           <FormLabel>Category</FormLabel>
-          <Select onChange={formik.handleChange} name="category" value={formik.values.category}>
+          <Select
+            onChange={formik.handleChange}
+            name="category"
+            value={formik.values.category}
+          >
             <option value="service">Service</option>
             <option value="goods">Goods</option>
           </Select>
@@ -80,17 +86,20 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isInvalid={formik.errors.um && formik.touched.um}
         >
           <FormLabel>Unit of measurement</FormLabel>
-          <Select onChange={formik.handleChange} name="um" value={formik.values.um}>
-            <option value="none">NONE</option>
-            <option value="m">Meter</option>
-            <option value="km">KM</option>
-            <option value="kg">KG</option>
+          <Select
+            onChange={formik.handleChange}
+            name="um"
+            value={formik.values.um}
+          >
+            {ums.map((um) => (
+              <option key={um.value} value={um.value}>
+                {um.label}
+              </option>
+            ))}
           </Select>
           <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
         </FormControl>
-        <FormControl
-          isInvalid={formik.errors.code && formik.touched.code}
-        >
+        <FormControl isInvalid={formik.errors.code && formik.touched.code}>
           <FormLabel>HSN Code or SAC Code</FormLabel>
           <Input
             onChange={formik.handleChange}
