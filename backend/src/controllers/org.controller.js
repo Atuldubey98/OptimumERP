@@ -26,7 +26,9 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
   await setting.save();
   await orgUser.save();
   logger.info(`Organization created with id ${newOrg.id}`);
-  return res.status(200).json({ message: "Organization registered" });
+  return res
+    .status(201)
+    .json({ message: "Organization registered", data: organization });
 });
 
 exports.getOrg = requestAsyncHandler(async (req, res) => {
@@ -91,5 +93,7 @@ exports.updateOrganizationUser = requestAsyncHandler(async (req, res) => {
       new: true,
     }
   );
-  return res.status(200).json({data : organizationUser, message : "User updated"})
+  return res
+    .status(200)
+    .json({ data: organizationUser, message: "User updated" });
 });

@@ -1,11 +1,11 @@
-import { Route, Routes, useParams } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import { Flex, Spinner } from "@chakra-ui/react";
-import FullLoader from "./features/common/FullLoader";
-import ExpenseCategoriePage from "./features/expense-categories";
+import { Route, Routes } from "react-router-dom";
 import AdminPage from "./features/admin";
+import FullLoader from "./features/common/FullLoader";
 import TransactionSettingsPage from "./features/common/transaction-settings";
-import SettingContextProvider from "./contexts/SettingContextProvider";
+import ExpenseCategoriePage from "./features/expense-categories";
+import CreatePurchasePage from "./features/purchase/create";
+import PurchasePage from "./features/purchase/list";
 const DashboardPage = lazy(() => import("./features/dashboard"));
 const LoginPage = lazy(() => import("./features/login"));
 const OrgPage = lazy(() => import("./features/organizations"));
@@ -44,6 +44,11 @@ export default function App() {
             <Route element={<InvoicesPage />} path="" />
             <Route element={<CreateInvoicePage />} path="create" />
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
+          </Route>
+          <Route path="purchase">
+            <Route element={<PurchasePage />} path="" />
+            <Route element={<CreatePurchasePage />} path="create" />
+            <Route element={<CreatePurchasePage />} path=":purchaseId/edit" />
           </Route>
         </Route>
         <Route path="/organizations" element={<OrgPage />} />

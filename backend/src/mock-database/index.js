@@ -1,24 +1,46 @@
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017");
-const customer = require("./customers");
-const organization = require("./organization");
-const user = require("./user");
-const { createQuotes } = require("./quotes");
-const LoremIpsum = require("lorem-ipsum").LoremIpsum;
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4,
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4,
-  },
+const axios = require("axios").default;
+
+const instance = axios.create({
+  baseURL: `http://127.0.0.1:9000`,
 });
+const userApi = require("./api/users");
+const orgApi = require("./api/organization");
+const productApi = require("./api/products");
+const customersApi = require("./api/customers");
+
+const users = userApi(instance);
 (async () => {
-  const mockUser = await user.createMockUser();
-  const newOrg = await organization.createOrganization(mockUser.id);
-  const customers = await customer.createManyCustomers(lorem, newOrg.org, mockUser.id);
-  await createQuotes(lorem, customers, mockUser.id, newOrg.org);
-  mongoose.disconnect();
+  await users.registerManyUsers();
+  const cookie = await users
+    .loginUser({
+      email: "pcurnock0@cpanel.net",
+      password: "12345678",
+    })
+    .then((data) => {
+      return data.headers["set-cookie"];
+    });
+  const org = orgApi(instance, cookie);
+
+  const { data } = await org.createOrganization({
+    name: "S R Refrigeration and Electricals",
+    address: "6-G Nyaykhand-1 GZB Noida UP",
+    gstNo: "89899JHAJKSH78",
+    panNo: "AHSJAS87897",
+    financialYear: {
+      start: "2023-04-01",
+      end: "2024-03-31",
+    },
+  });
+  const products = productApi({
+    axios: instance,
+    cookie,
+    orgId: data.data._id,
+  });
+  const customers = customersApi({
+    axios: instance,
+    cookie,
+    orgId: data.data._id,
+  });
+  await products.createManyProducts();
+  await customers.createManyCustomers();
 })();
