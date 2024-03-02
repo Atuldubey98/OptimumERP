@@ -46,7 +46,7 @@ export default function InvoicesPage() {
     ...invoice,
     invoiceNo: transactionPrefixInvoice + invoice.invoiceNo,
     date: new Date(invoice.date).toISOString().split("T")[0],
-    grandTotal: invoice.total + invoice.totalTax,
+    grandTotal: (invoice.total + invoice.totalTax).toFixed(2),
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

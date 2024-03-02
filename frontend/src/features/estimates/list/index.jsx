@@ -41,7 +41,7 @@ export default function EstimatesPage() {
     ...estimate,
     quoteNo: `${transactionPrefixQuotation}${estimate.quoteNo}`,
     date: new Date(estimate.date).toISOString().split("T")[0],
-    grandTotal: estimate.total + estimate.totalTax,
+    grandTotal: (estimate.total + estimate.totalTax).toFixed(2),
     status: <Status status={estimate.status} statusList={statusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -6,7 +6,7 @@ export default function Banner() {
     <Flex justifyContent={"center"} alignItems={"center"}>
       <Image src="/favicon.svg" width={100} height={150}/>
       <Text fontSize={"3xl"} textAlign={"center"} fontWeight={"bold"}>
-        Open ERP
+        OptimumERP
       </Text>
     </Flex>
   );

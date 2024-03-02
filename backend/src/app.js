@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"))
 app.use(express.urlencoded({ extended: true }));
-const whitelist = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:9000"];
+const whitelist = ["http://localhost:5173", "http://localhost:4173", "http://127.0.0.1:5173", "http://localhost:9000"];
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {

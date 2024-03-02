@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   Fade,
   Flex,
   FormControl,
@@ -16,10 +15,9 @@ import {
   Thead,
   Tr,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
-import { GoDotFill } from "react-icons/go";
 import * as Yup from "yup";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
@@ -28,7 +26,6 @@ import MainLayout from "../common/main-layout";
 import { useFormik } from "formik";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import RegisteUserDrawer from "./RegisteUserDrawer";
-import { CiEdit } from "react-icons/ci";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -86,13 +83,11 @@ export default function AdminPage() {
     [organization]
   );
   useEffect(() => {
-    (async () => {
-      if (!organization) {
-        setOrgUsers([]);
-        return;
-      }
-      fetchOrgUsers();
-    })();
+    if (!organization) {
+      setOrgUsers([]);
+      return;
+    }
+    fetchOrgUsers();
   }, [organization]);
   return (
     <MainLayout>

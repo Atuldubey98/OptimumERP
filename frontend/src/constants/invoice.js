@@ -12,6 +12,6 @@ export const invoiceStatusList = [
   {
     type : "paid",
     label : "Paid",
-    colorScheme : "Yellow"
+    colorScheme : "yellow"
   }
 ];
