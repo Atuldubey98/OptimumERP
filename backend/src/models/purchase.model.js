@@ -59,7 +59,7 @@ const purchaseInvoice = new Schema(
       type: Date,
       default: new Date(Date.now()),
     },
-    invoiceNo: {
+    purchaseNo: {
       type: String,
       required: true,
     },

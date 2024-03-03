@@ -8,16 +8,16 @@ const itemSchema = Joi.object({
   gst: Joi.string().default("none").label("GST applicable"),
 });
 
-const purchaseInvoice = Joi.object({
+const purchaseDto = Joi.object({
   customer: Joi.string().required().label("Customer"),
   description: Joi.string().optional().allow("").label("Description"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
-  date: Joi.date().required().label("Invoice date"),
-  invoiceNo: Joi.string().label("Invoice No.").required(),
+  date: Joi.date().required().label("Purchase Invoice date"),
+  purchaseNo: Joi.string().label("Purchase No.").required(),
   status: Joi.string()
     .default("unpaid")
     .valid("unpaid", "paid")
     .label("Status"),
 }).options({ stripUnknown: true });
 
-module.exports = { purchaseInvoice };
+module.exports = { purchaseDto };

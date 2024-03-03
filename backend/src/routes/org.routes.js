@@ -16,6 +16,7 @@ const invoiceRouter = require("./invoice.routes");
 const dashboardRouter = require("./dashboard.routes");
 const expenseRouter = require("./expense.routes");
 const settingRouter = require("./settings.router");
+const purchaseRouter = require("./purchase.routes");
 
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
@@ -46,5 +47,6 @@ organizationRouter.use("/:orgId/invoices", invoiceRouter);
 organizationRouter.use("/:orgId/dashboard", dashboardRouter);
 organizationRouter.use("/:orgId/expenses", expenseRouter);
 organizationRouter.use("/:orgId/settings", settingRouter);
+organizationRouter.use("/:orgId/purchases", purchaseRouter);
 
 module.exports = organizationRouter;
