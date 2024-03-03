@@ -11,7 +11,7 @@ export const reportTypes = [
         label: "Purchase",
       },
       {
-        tab: "day-book",
+        tab: "day_book",
         label: "Day book",
       },
       {
@@ -28,7 +28,7 @@ export const reportTypes = [
         label: "Party statement",
       },
       {
-        tab: "sale-purchase",
+        tab: "sale_purchase",
         label: "Sale Purchase By party",
       },
     ],

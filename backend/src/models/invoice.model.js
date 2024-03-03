@@ -113,5 +113,6 @@ const invoiceSchema = new Schema(
 const Invoice = model("invoice", invoiceSchema);
 invoiceSchema.index({
   description: "text",
+  num: "text",
 });
 module.exports = Invoice;

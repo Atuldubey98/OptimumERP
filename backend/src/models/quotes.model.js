@@ -103,6 +103,6 @@ const quoteSchema = new Schema(
 const Quotes = model("quotes", quoteSchema);
 quoteSchema.index({
   description: "text",
-  quoteNo: "text",
+  num: "text",
 });
 module.exports = Quotes;
