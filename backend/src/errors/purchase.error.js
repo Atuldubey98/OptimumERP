@@ -10,7 +10,7 @@ class PurchaseNotFound extends Error {
     constructor(purchaseId) {
       super();
       this.code = 400;
-      this.message = `Purchase already exists with purchase id : ${purchaseId}`;
+      this.message = `Purchase already exists with purchase no : ${purchaseId} and customer`;
       this.name = "PurchaseDuplicate";
     }
   }

@@ -22,6 +22,7 @@ import Pagination from "../../common/main-layout/Pagination";
 import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
 import SettingContext from "../../../contexts/SettingContext";
+import TableDateFilter from "./TableDateFilter";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -83,19 +84,10 @@ export default function InvoicesPage() {
         ) : (
           <TableLayout
             filter={
-              <Grid gap={2}>
-                <Divider />
-                <Box>
-                  <SearchItem placeholder="Search by description" />
-                </Box>
-                <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
-                  <DateFilter
-                    dateFilter={dateFilter}
-                    onChangeDateFilter={onChangeDateFilter}
-                  />
-                </Grid>
-                <Divider />
-              </Grid>
+              <TableDateFilter
+                dateFilter={dateFilter}
+                onChangeDateFilter={onChangeDateFilter}
+              />
             }
             heading={"Invoices"}
             tableData={invoices.map(invoiceTableMapper)}

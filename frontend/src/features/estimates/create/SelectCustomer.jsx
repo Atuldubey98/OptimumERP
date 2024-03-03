@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   InputGroup,
@@ -85,12 +86,18 @@ export default function SelectCustomer({ formik }) {
     fetchCustomer,
     onCloseCustomerFormDrawer
   );
+
   return (
     <>
-      <FormControl isReadOnly isRequired>
+      <FormControl
+        isInvalid={!!formik.errors.password && formik.touched.password}
+        isReadOnly
+        isRequired
+      >
         <FormLabel>Customer</FormLabel>
         <InputGroup>
           <Input
+            required
             placeholder="Select Customer"
             value={customer ? customer.name : "Select a customer"}
             readOnly={true}
@@ -99,6 +106,7 @@ export default function SelectCustomer({ formik }) {
             <TbEyeSearch cursor={"pointer"} onClick={onOpen} size={25} />
           </InputRightElement>
         </InputGroup>
+        <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
       </FormControl>
       {customer ? (
         <FormControl isRequired>

@@ -28,9 +28,10 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
     purchaseNo: body.purchaseNo,
     financialYear: setting.financialYear,
+    customer: body.customer,
   });
-  if (existingInvoice) throw PurchaseDuplicate(body.purchaseNo);
-  const newInvoice = new Purchase({
+  if (existingInvoice) throw new PurchaseDuplicate(body.purchaseNo);
+  const newPurchase = new Purchase({
     org: req.params.orgId,
     ...body,
     total,
@@ -38,10 +39,10 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     createdBy: req.body.createdBy,
     financialYear: setting.financialYear,
   });
-  await newInvoice.save();
+  await newPurchase.save();
   return res
     .status(201)
-    .json({ message: "Purchase created !", data: newInvoice });
+    .json({ message: "Purchase created !", data: newPurchase });
 });
 
 exports.updatePurchase = requestAsyncHandler(async (req, res) => {
@@ -90,7 +91,6 @@ exports.getPurchases = requestAsyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })
     .populate("customer")
