@@ -1,5 +1,5 @@
 import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
@@ -13,7 +13,6 @@ import { statusList } from "../create/data";
 import BillFilter from "./BillFilter";
 import BillModal from "./BillModal";
 import Status from "./Status";
-import SettingContext from "../../../contexts/SettingContext";
 export default function EstimatesPage() {
   const navigate = useNavigate();
   const onClickAddNewQuote = useCallback(() => {
@@ -32,14 +31,12 @@ export default function EstimatesPage() {
     entity: "quotes",
   });
   const loading = status === "loading";
-  const settingContext = useContext(SettingContext);
-  const transactionPrefixQuotation =
-    settingContext?.setting?.transactionPrefix.quotation || "";
+  
   const estimateTableMapper = (estimate) => ({
     customerName: estimate.customer.name,
     billingAddress: estimate.customer.billingAddress,
     ...estimate,
-    quoteNo: `${transactionPrefixQuotation}${estimate.quoteNo}`,
+    quoteNo: estimate.num,
     date: new Date(estimate.date).toISOString().split("T")[0],
     grandTotal: (estimate.total + estimate.totalTax).toFixed(2),
     status: <Status status={estimate.status} statusList={statusList} />,

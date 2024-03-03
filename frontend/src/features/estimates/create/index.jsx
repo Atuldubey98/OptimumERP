@@ -37,7 +37,6 @@ export default function CreateEstimatePage() {
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 <Button
                   isLoading={formik.isSubmitting || loading}
-                  isDisabled={!formik.isValid}
                   type="submit"
                   colorScheme="teal"
                   variant="solid"

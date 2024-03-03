@@ -50,13 +50,13 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
 
   const recentInvoices = await Invoice.find({ org: orgId })
     .sort({ createdAt: -1 })
-    .select("name invoiceNo total totalTax status customer date")
+    .select("name invoiceNo total totalTax status customer date num")
     .populate("customer", "name")
     .limit(5)
     .exec();
   const recentQuotes = await Quotes.find({ org: orgId })
     .sort({ createdAt: -1 })
-    .select("name quoteNo total totalTax status customer date")
+    .select("name quoteNo total totalTax status customer date num")
     .populate("customer", "name")
     .limit(5)
     .exec();

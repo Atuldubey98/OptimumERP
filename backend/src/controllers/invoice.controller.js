@@ -29,11 +29,13 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     invoiceNo: body.invoiceNo,
     financialYear: setting.financialYear,
   });
+  const invoicePrefix = setting.transactionPrefix.invoice;
   if (existingInvoice) throw InvoiceDuplicate(body.invoiceNo);
   const newInvoice = new Invoice({
     org: req.params.orgId,
     ...body,
     total,
+    num: invoicePrefix + body.invoiceNo,
     totalTax,
     financialYear: setting.financialYear,
   });
@@ -46,12 +48,16 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
 exports.updateInvoice = requestAsyncHandler(async (req, res) => {
   const { total, totalTax } = getTotalAndTax(req.body.items);
   const body = await invoiceDto.validateAsync(req.body);
-
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  }).select("transactionPrefix");
+  if (!setting) throw new OrgNotFound();
   const updatedInvoice = await Invoice.findOneAndUpdate(
     { _id: req.params.invoiceId, org: req.params.orgId },
     {
       ...body,
       total,
+      num: setting.transactionPrefix.invoice + body.invoiceNo,
       totalTax,
     }
   );

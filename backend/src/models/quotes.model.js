@@ -17,6 +17,10 @@ const quoteSchema = new Schema(
       default: 0,
       required: true,
     },
+    num: {
+      type: String,
+      default: "",
+    },
     description: {
       type: String,
       default: "Thanks for the business.",

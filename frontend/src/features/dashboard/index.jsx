@@ -1,9 +1,4 @@
-import {
-  Box,
-  Skeleton,
-  Stack,
-  StatGroup
-} from "@chakra-ui/react";
+import { Box, Skeleton, Stack, StatGroup } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
@@ -83,7 +78,7 @@ export default function DashboardPage() {
                 heading={"Recent Quotations"}
                 tableRows={dashboard.recentQuotes.map((quote) => ({
                   _id: quote._id,
-                  num: `${transactionPrefixQuotation}${quote.quoteNo}`,
+                  num: quote.num,
                   customerName: quote?.customer.name,
                   total: quote.total,
                   totalTax: quote.totalTax,
@@ -100,7 +95,7 @@ export default function DashboardPage() {
                 heading={"Recent Invoices"}
                 tableRows={dashboard.recentInvoices.map((invoice) => ({
                   _id: invoice._id,
-                  num: `${transactionPrefixInvoice}${invoice.invoiceNo}`,
+                  num: invoice.num,
                   customerName: invoice?.customer.name,
                   total: invoice.total,
                   totalTax: invoice.totalTax,

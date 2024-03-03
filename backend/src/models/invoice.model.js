@@ -69,6 +69,10 @@ const invoiceSchema = new Schema(
       type: Date,
       default: new Date(Date.now()),
     },
+    num: {
+      type: String,
+      default: "",
+    },
     invoiceNo: {
       type: Number,
       required: true,

@@ -1,27 +1,22 @@
 import {
   Box,
-  Divider,
   Flex,
-  Grid,
   Spinner,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
-import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
-import MainLayout from "../../common/main-layout";
-import { useContext, useState } from "react";
-import TableLayout from "../../common/table-layout";
-import SearchItem from "../../common/table-layout/SearchItem";
-import DateFilter from "../../estimates/list/DateFilter";
-import useAsyncCall from "../../../hooks/useAsyncCall";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import VertIconMenu from "../../common/table-layout/VertIconMenu";
-import AlertModal from "../../common/AlertModal";
-import BillModal from "../../estimates/list/BillModal";
-import instance from "../../../instance";
-import Pagination from "../../common/main-layout/Pagination";
-import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
-import SettingContext from "../../../contexts/SettingContext";
+import useAsyncCall from "../../../hooks/useAsyncCall";
+import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
+import instance from "../../../instance";
+import AlertModal from "../../common/AlertModal";
+import MainLayout from "../../common/main-layout";
+import Pagination from "../../common/main-layout/Pagination";
+import TableLayout from "../../common/table-layout";
+import VertIconMenu from "../../common/table-layout/VertIconMenu";
+import BillModal from "../../estimates/list/BillModal";
+import Status from "../../estimates/list/Status";
 import TableDateFilter from "./TableDateFilter";
 export default function InvoicesPage() {
   const {
@@ -37,15 +32,12 @@ export default function InvoicesPage() {
     entity: "invoices",
   });
   const loading = status === "loading";
-  const settingContext = useContext(SettingContext);
-  const transactionPrefixInvoice =
-    settingContext?.setting?.transactionPrefix.invoice || "";
   const navigate = useNavigate();
   const invoiceTableMapper = (invoice) => ({
     customerName: invoice.customer.name,
     billingAddress: invoice.customer.billingAddress,
     ...invoice,
-    invoiceNo: transactionPrefixInvoice + invoice.invoiceNo,
+    invoiceNo: invoice.num,
     date: new Date(invoice.date).toISOString().split("T")[0],
     grandTotal: (invoice.total + invoice.totalTax).toFixed(2),
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,

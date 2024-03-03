@@ -37,12 +37,14 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     quoteNo: body.quoteNo,
     financialYear: setting.financialYear,
   });
+  const transactionPrefix = setting.transactionPrefix.quotation;
   if (existingQuotation) throw QuotationDuplicate(req.params.quoteNo);
   const newQuote = new Quote({
     org: req.params.orgId,
     ...body,
     total,
     totalTax,
+    num: transactionPrefix + body.quoteNo,
     financialYear: setting.financialYear,
   });
   await newQuote.save();
@@ -52,12 +54,18 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
 exports.updateQuote = requestAsyncHandler(async (req, res) => {
   const { total, totalTax } = this.getTotalAndTax(req.body.items);
   const body = await quoteDto.validateAsync(req.body);
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  if (!setting) throw new OrgNotFound();
+  const transactionPrefix = setting.transactionPrefix.quotation;
 
   const updatedQuote = await Quote.findOneAndUpdate(
     { _id: req.params.quoteId, org: req.params.orgId },
     {
       ...body,
       total,
+      num: transactionPrefix + body.quoteNo,
       totalTax,
     }
   );
