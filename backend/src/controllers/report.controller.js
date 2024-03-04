@@ -1,11 +1,11 @@
-import Purchase from "../models/purchase.model";
-
 const Invoice = require("../models/invoice.model");
+const Transaction = require("../models/transaction.model");
+const Purchase = require("../models/purchase.model");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 function generateReportByReportType(reportType) {
   const reportMap = {
     sale: getSaleReport,
     purchase: getPurchaseReport,
-    day_book: getDayBookReport,
     transactions: getTransactions,
     parties: getAllPartyStatements,
     sale_purchase: getSalePurchaseByParty,
@@ -14,9 +14,9 @@ function generateReportByReportType(reportType) {
   };
   return reportMap[reportType];
 }
-async function getSaleReport(queryParams) {
+async function getSaleReport(queryParams, orgId) {
   const filter = {
-    org: queryParams.orgId,
+    org: orgId,
   };
   const search = queryParams.search;
   if (search) {
@@ -54,15 +54,48 @@ async function getSaleReport(queryParams) {
     limit,
   };
 }
-function getDayBookReport(queryParams) {}
-function getTransactions(queryParams) {}
-function getAllPartyStatements(queryParams) {}
-function getSalePurchaseByParty(queryParams) {}
-function getGSTR1Report(queryParams) {}
-function getGSTR2Report(queryParams) {}
-async function getPurchaseReport(queryParams) {
+async function getTransactions(queryParams, orgId) {
   const filter = {
-    org: queryParams.orgId,
+    org: orgId,
+  };
+
+  if (queryParams.startDate && queryParams.endDate) {
+    filter.createdAt = {
+      $gte: new Date(queryParams.startDate),
+      $lte: new Date(queryParams.endDate),
+    };
+  }
+  if (queryParams.type) filter.docModel = queryParams.type;
+  const page = parseInt(queryParams.page) || 1;
+  const limit = parseInt(queryParams.limit) || 10;
+  const skip = (page - 1) * limit;
+  const transactions = await Transaction.find(filter)
+    .sort({ createdAt: -1 })
+    .populate("doc")
+    .skip(skip)
+    .limit(limit)
+    .exec();
+  const total = await Transaction.countDocuments(filter);
+
+  const totalPages = Math.ceil(total / limit);
+  return {
+    data: transactions,
+    page,
+    limit,
+    totalPages,
+    total,
+    message: "Transactions retrieved successfully",
+  };
+}
+function getAllPartyStatements(queryParams, orgId) {
+  
+}
+function getSalePurchaseByParty(queryParams, orgId) {}
+function getGSTR1Report(queryParams, orgId) {}
+function getGSTR2Report(queryParams, orgId) {}
+async function getPurchaseReport(queryParams, orgId) {
+  const filter = {
+    org: orgId,
   };
   const search = queryParams.search;
   if (search) {
@@ -99,9 +132,10 @@ async function getPurchaseReport(queryParams) {
     message: "Purchases retrieved successfully",
   };
 }
-export default getReportByType = requestAsyncHandler(async (req, res) => {
+exports.getReportByType = requestAsyncHandler(async (req, res) => {
   const reportType = req.params.reportType;
+  const orgId = req.params.orgId;
   const reportFn = generateReportByReportType(reportType);
-  const response = await reportFn(req.query);
+  const response = await reportFn(req.query, orgId);
   return res.status(200).json(response);
 });

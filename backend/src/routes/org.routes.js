@@ -17,6 +17,7 @@ const dashboardRouter = require("./dashboard.routes");
 const expenseRouter = require("./expense.routes");
 const settingRouter = require("./settings.router");
 const purchaseRouter = require("./purchase.routes");
+const reportRouter = require("./report.routes");
 
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
@@ -48,5 +49,6 @@ organizationRouter.use("/:orgId/dashboard", dashboardRouter);
 organizationRouter.use("/:orgId/expenses", expenseRouter);
 organizationRouter.use("/:orgId/settings", settingRouter);
 organizationRouter.use("/:orgId/purchases", purchaseRouter);
+organizationRouter.use("/:orgId/reports", reportRouter);
 
 module.exports = organizationRouter;
