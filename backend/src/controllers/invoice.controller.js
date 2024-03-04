@@ -11,6 +11,7 @@ const Invoice = require("../models/invoice.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
+const Transaction = require("../models/transaction.model");
 
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
@@ -39,7 +40,16 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     totalTax,
     financialYear: setting.financialYear,
   });
+
   await newInvoice.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "invoice",
+    financialYear: setting.financialYear,
+    doc: newInvoice._id,
+  });
+  await transaction.save();
   return res
     .status(201)
     .json({ message: "Invoice created !", data: newInvoice });
@@ -61,7 +71,15 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       totalTax,
     }
   );
-  if (!updatedInvoice) throw new InvoiceNotFound();
+  const updateTransaction = await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "invoice",
+      doc: updatedInvoice.id,
+    },
+    { updatedBy: req.body.updatedBy }
+  );
+  if (!updatedInvoice || !updateTransaction) throw new InvoiceNotFound();
   return res.status(200).json({ message: "Invoice updated !" });
 });
 
@@ -73,6 +91,12 @@ exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!invoice) throw new InvoiceNotFound();
+  const transaction = await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "invoice",
+    doc: invoiceId,
+  });
+  if (!transaction) throw new InvoiceNotFound();
   return res.status(200).json({ message: "Invoice deleted !" });
 });
 

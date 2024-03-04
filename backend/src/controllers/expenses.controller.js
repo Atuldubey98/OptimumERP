@@ -5,6 +5,10 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Expense = require("../models/expense.model");
 const ExpenseCategory = require("../models/expense_category");
 const mongoose = require("mongoose");
+const Transaction = require("../models/transaction.model");
+const Setting = require("../models/settings.model");
+const { OrgNotFound } = require("../errors/org.error");
+const { ExpenseNotFound } = require("../errors/expense.error");
 const { Types } = mongoose;
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
@@ -64,6 +68,18 @@ exports.getAllExpenseCategories = requestAsyncHandler(async (req, res) => {
 
 exports.createExpense = requestAsyncHandler(async (req, res) => {
   const expense = await Expense.create({ org: req.params.orgId, ...req.body });
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  if (!setting) throw new OrgNotFound();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "expense",
+    financialYear: setting.financialYear,
+    doc: expense._id,
+  });
+  await transaction.save();
   return res.status(201).json(expense);
 });
 
@@ -108,9 +124,15 @@ exports.updateExpense = requestAsyncHandler(async (req, res) => {
       new: true,
     }
   );
-  if (!updatedExpense) {
-    return res.status(404).json({ message: "Expense not found" });
-  }
+  const updateTransaction = await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "expense",
+      doc: updatedExpense._id,
+    },
+    { updatedBy: req.body.updatedBy }
+  );
+  if (!updatedExpense || !updateTransaction) throw new ExpenseNotFound();
   res.status(200).json(updatedExpense);
 });
 
@@ -123,8 +145,13 @@ exports.deleteExpense = requestAsyncHandler(async (req, res) => {
     _id: expenseId,
     org: req.params.orgId,
   });
-  if (!deletedExpense) {
-    return res.status(404).json({ message: "Expense not found" });
-  }
+
+  if (!deletedExpense) throw new ExpenseNotFound();
+  const transaction = await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "expense",
+    doc: expenseId,
+  });
+  if (!transaction) throw new ExpenseNotFound();
   return res.status(200).json({ message: "Expense deleted successfully" });
 });

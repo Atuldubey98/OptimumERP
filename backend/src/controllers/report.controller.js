@@ -1,3 +1,5 @@
+import Purchase from "../models/purchase.model";
+
 const Invoice = require("../models/invoice.model");
 function generateReportByReportType(reportType) {
   const reportMap = {
@@ -58,10 +60,48 @@ function getAllPartyStatements(queryParams) {}
 function getSalePurchaseByParty(queryParams) {}
 function getGSTR1Report(queryParams) {}
 function getGSTR2Report(queryParams) {}
-function getPurchaseReport(queryParams) {}
+async function getPurchaseReport(queryParams) {
+  const filter = {
+    org: queryParams.orgId,
+  };
+  const search = queryParams.search;
+  if (search) {
+    filter.$text = { $search: search };
+  }
+
+  if (queryParams.startDate && queryParams.endDate) {
+    filter.date = {
+      $gte: new Date(queryParams.startDate),
+      $lte: new Date(queryParams.endDate),
+    };
+  }
+
+  const page = parseInt(queryParams.page) || 1;
+  const limit = parseInt(queryParams.limit) || 10;
+  const skip = (page - 1) * limit;
+  const purchases = await Purchase.find(filter)
+    .sort({ createdAt: -1 })
+    .populate("customer")
+    .populate("org")
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+  const total = await Purchase.countDocuments(filter);
+
+  const totalPages = Math.ceil(total / limit);
+  return {
+    data: purchases,
+    page,
+    limit,
+    totalPages,
+    total,
+    message: "Purchases retrieved successfully",
+  };
+}
 export default getReportByType = requestAsyncHandler(async (req, res) => {
   const reportType = req.params.reportType;
   const reportFn = generateReportByReportType(reportType);
-  const report = await reportFn(req.query);
-  return res.status(200).json(report);
+  const response = await reportFn(req.query);
+  return res.status(200).json(response);
 });

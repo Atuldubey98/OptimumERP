@@ -3,7 +3,11 @@ const { authenticate } = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
-const { paginateModel } = require("../middlewares/crud.middleware");
+const {
+  paginateModel,
+  createModel,
+  updateModel,
+} = require("../middlewares/crud.middleware");
 const {
   getAllExpenses,
   getAllExpenseCategories,
@@ -26,7 +30,13 @@ expenseRouter.get(
   getAllExpenses
 );
 
-expenseRouter.post("/", authenticate, checkOrgAuthorization, createExpense);
+expenseRouter.post(
+  "/",
+  authenticate,
+  createModel,
+  checkOrgAuthorization,
+  createExpense
+);
 
 expenseRouter.get(
   "/categories",
@@ -46,6 +56,7 @@ expenseRouter.patch(
   "/categories/:categoryId",
   authenticate,
   checkOrgAuthorization,
+  updateModel,
   updateExpenseCategory
 );
 expenseRouter.delete(

@@ -7,6 +7,7 @@ const { quoteDto } = require("../dto/quotes.dto");
 const Customer = require("../models/customer.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
+const Transaction = require("../models/transaction.model");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -39,6 +40,7 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
   });
   const transactionPrefix = setting.transactionPrefix.quotation;
   if (existingQuotation) throw QuotationDuplicate(req.params.quoteNo);
+  
   const newQuote = new Quote({
     org: req.params.orgId,
     ...body,
@@ -48,6 +50,14 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   await newQuote.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "quotes",
+    financialYear: setting.financialYear,
+    doc: newQuote._id,
+  });
+  await transaction.save();
   return res.status(201).json({ message: "Quote created !", data: newQuote });
 });
 
@@ -69,6 +79,14 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
       totalTax,
     }
   );
+  const updateTransaction = await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "quotes",
+      doc: updatedQuote.id,
+    },
+    { updatedBy: req.body.updatedBy }
+  );
   if (!updatedQuote) throw new QuoteNotFound();
   return res.status(200).json({ message: "Quote updated !" });
 });
@@ -81,6 +99,12 @@ exports.deleteQuote = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!quote) throw new QuoteNotFound();
+  const transaction = await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "quotes",
+    doc: quoteId,
+  });
+  if (!transaction) throw new QuoteNotFound();
   return res.status(200).json({ message: "Quote deleted !" });
 });
 

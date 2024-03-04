@@ -11,6 +11,7 @@ const Purchase = require("../models/purchase.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
+const Transaction = require("../models/transaction.model");
 
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
@@ -40,6 +41,14 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   await newPurchase.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "purchase",
+    financialYear: setting.financialYear,
+    doc: newPurchase._id,
+  });
+  await transaction.save();
   return res
     .status(201)
     .json({ message: "Purchase created !", data: newPurchase });
@@ -57,7 +66,15 @@ exports.updatePurchase = requestAsyncHandler(async (req, res) => {
       totalTax,
     }
   );
-  if (!updatedInvoice) throw new PurchaseNotFound();
+  const updateTransaction = await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "purchase",
+      doc: updatedInvoice.id,
+    },
+    { updatedBy: req.body.updatedBy }
+  );
+  if (!updatedInvoice || !updateTransaction) throw new PurchaseNotFound();
   return res.status(200).json({ message: "Purchase updated !" });
 });
 
@@ -68,6 +85,12 @@ exports.deletePurchase = requestAsyncHandler(async (req, res) => {
     _id: purchaseId,
     org: req.params.orgId,
   });
+  const transaction = await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "purchase",
+    doc: purchaseId,
+  });
+  if (!transaction) throw new PurchaseNotFound();
   if (!purchase) throw new PurchaseNotFound();
   return res.status(200).json({ message: "Purchase deleted !" });
 });
