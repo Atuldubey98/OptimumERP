@@ -23,10 +23,10 @@ export const SidebarLinksList = () => {
             </NavLink>
           </HeaderLink>
         ))}
-        <HeaderLink>
+        {/* <HeaderLink>
           <Icon as={HiOutlineDocumentReport} />
           <NavLink to={`/reports`}>Reports</NavLink>
-        </HeaderLink>
+        </HeaderLink> */}
         <HeaderLink>
           <Icon as={IoSettingsOutline} />
           <Text>Settings</Text>
