@@ -11,6 +11,7 @@ import {
 export default function AlertModal({
   isOpen,
   onClose,
+  confirmDisable = false,
   header,
   body,
   onConfirm,
@@ -28,7 +29,12 @@ export default function AlertModal({
 
           <AlertDialogFooter>
             <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="red" onClick={onConfirm} ml={3}>
+            <Button
+              isLoading={confirmDisable}
+              colorScheme="red"
+              onClick={onConfirm}
+              ml={3}
+            >
               {buttonLabel}
             </Button>
           </AlertDialogFooter>

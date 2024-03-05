@@ -6,7 +6,6 @@ import { NavLink, useParams } from "react-router-dom";
 import headerLinks from "../../../constants/headerLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
-import { HiOutlineDocumentReport } from "react-icons/hi";
 export const SidebarLinksList = () => {
   const [openSettings, setOpenSettings] = useState(false);
   const { orgId = localStorage.getItem("organization") || "" } = useParams();

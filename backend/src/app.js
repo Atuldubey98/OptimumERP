@@ -11,10 +11,10 @@ const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
 
 const app = express();
 
-app.set('view engine', 'ejs');
-app.set("views", path.join(__dirname,"/views"))
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "/views"));
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, "public")));
 app.use(
   express.static(path.join(__dirname, "../../frontend/dist"), {
     maxAge: "1y",
@@ -24,26 +24,20 @@ app.use((req, res, next) => {
   if (req.originalUrl.startsWith("/api")) {
     next();
   } else {
-    return res.sendFile(
-      path.join(__dirname, "../../frontend/dist/index.html")
-    );
+    return res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
   }
 });
 app.use(express.json());
-app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"))
+app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
-const whitelist = ["http://localhost:5173", "http://localhost:4173", "http://127.0.0.1:5173", "http://localhost:9000"];
-const corsOptions = {
-  credentials: true,
-  origin: function (origin, callback) {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
-app.use(cors(corsOptions));
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    maxAge: 86400,
+  })
+);
 
 const sessionOptions = {
   secret: SESSION_SECRET,
@@ -52,6 +46,7 @@ const sessionOptions = {
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
     ttl: 14 * 24 * 60 * 60,
+    dbName : "erp"
   }),
   cookie: {
     sameSite: "strict",
@@ -68,6 +63,7 @@ app.use(session(sessionOptions));
 app.get("/api/v1/health", (_, res) => {
   return res.status(200).send("Server is running");
 });
+app.options('*', cors())
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations", organizationRouter);
 

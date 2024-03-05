@@ -1,7 +1,7 @@
 import MainLayout from "../common/main-layout";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 import { useParams } from "react-router-dom";
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
@@ -12,6 +12,7 @@ import Pagination from "../common/main-layout/Pagination";
 import { useState } from "react";
 import ShowDrawer from "../common/ShowDrawer";
 import useAsyncCall from "../../hooks/useAsyncCall";
+import AlertModal from "../common/AlertModal";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
@@ -30,7 +31,17 @@ export default function ExpensesPage() {
     onOpen: openExpense,
     onClose: closeExpense,
   } = useDisclosure();
+  const {
+    isOpen: isDeleteModalOpen,
+    onClose: closeDeleteModal,
+    onOpen: openDeleteModal,
+  } = useDisclosure();
   const [expenseSelected, setExpenseSelected] = useState(null);
+  const onOpenDeleteExpenseModal = (expense) => {
+    setExpenseSelected(expense);
+    openDeleteModal();
+  };
+  const [expenseStatus, setExpenseStatus] = useState("idle");
   const formik = useFormik({
     initialValues: {
       description: "",
@@ -39,7 +50,7 @@ export default function ExpensesPage() {
       date: new Date().toISOString().split("T")[0],
     },
 
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setSubmitting }) => {
       const { _id, ...expense } = values;
       await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/expenses${_id ? `/${_id}` : ``}`,
@@ -47,6 +58,7 @@ export default function ExpensesPage() {
       );
       fetchFn();
       closeExpenseForm();
+      setSubmitting(false);
     },
   });
   const onAddNewExpense = () => {
@@ -58,59 +70,75 @@ export default function ExpensesPage() {
     });
     openExpenseForm();
   };
+  const deleteExpense = requestAsyncHandler(async () => {
+    if (!expenseSelected) return;
+    setExpenseStatus("deleting");
+    await instance.delete(
+      `/api/v1/organizations/${orgId}/expenses/${expenseSelected._id}`
+    );
+    fetchFn();
+    closeDeleteModal();
+    setExpenseStatus("idle");
+  });
+  const deleting = expenseStatus === "deleting";
   return (
     <MainLayout>
       <Box p={5}>
-        <TableLayout
-          onAddNewItem={onAddNewExpense}
-          filter={
-            <Box maxW={"md"}>
-              <SearchItem />
-            </Box>
-          }
-          heading={"Expenses"}
-          tableData={expenses.map((expense) => ({
-            ...expense,
-            category: expense.category ? expense.category.name : "Miscellenous",
-            date: new Date(expense.date).toISOString().split("T")[0],
-          }))}
-          caption={`Total expenses found : ${totalCount}`}
-          operations={expenses.map((expense) => (
-            <VertIconMenu
-              editItem={() => {
-                formik.setValues({
-                  _id: expense._id,
-                  description: expense.description,
-                  amount: expense.amount,
-                  category: expense.category ? expense.category._id : "",
-                  date: new Date(expense.date).toISOString().split("T")[0],
-                });
-                openExpenseForm();
-              }}
-              showItem={() => {
-                setExpenseSelected(expense);
-                openExpense();
-              }}
-              deleteItem={requestAsyncHandler(async () => {
-                await instance.delete(
-                  `/api/v1/organizations/${orgId}/expenses/${expense._id}`
-                );
-                fetchFn();
-              })}
-            />
-          ))}
-          selectedKeys={{
-            date: "Date",
-            category: "Category",
-            description: "Description",
-          }}
-        />
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"md"} />
+          </Flex>
+        ) : (
+          <TableLayout
+            onAddNewItem={onAddNewExpense}
+            filter={
+              <Box maxW={"md"}>
+                <SearchItem />
+              </Box>
+            }
+            heading={"Expenses"}
+            tableData={expenses.map((expense) => ({
+              ...expense,
+              category: expense.category
+                ? expense.category.name
+                : "Miscellenous",
+              date: new Date(expense.date).toISOString().split("T")[0],
+            }))}
+            caption={`Total expenses found : ${totalCount}`}
+            operations={expenses.map((expense) => (
+              <VertIconMenu
+                editItem={() => {
+                  formik.setValues({
+                    _id: expense._id,
+                    description: expense.description,
+                    amount: expense.amount,
+                    category: expense.category ? expense.category._id : "",
+                    date: new Date(expense.date).toISOString().split("T")[0],
+                  });
+                  openExpenseForm();
+                }}
+                showItem={() => {
+                  setExpenseSelected(expense);
+                  openExpense();
+                }}
+                deleteItem={() => {
+                  onOpenDeleteExpenseModal(expense);
+                }}
+              />
+            ))}
+            selectedKeys={{
+              date: "Date",
+              category: "Category",
+              description: "Description",
+            }}
+          />
+        )}
         <ExpenseForm
           isOpen={isExpenseFormOpen}
           formik={formik}
           onClose={closeExpenseForm}
         />
-        <Pagination currentPage={currentPage} total={totalPages} />
+
         {expenseSelected ? (
           <ShowDrawer
             onClickNewItem={onAddNewExpense}
@@ -131,6 +159,17 @@ export default function ExpensesPage() {
             }}
           />
         ) : null}
+        <AlertModal
+          confirmDisable={deleting}
+          body={"Do you want to delete the expense ?"}
+          header={"Delete expense"}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={deleteExpense}
+        />
+        {loading ? null : (
+          <Pagination currentPage={currentPage} total={totalPages} />
+        )}
       </Box>
     </MainLayout>
   );

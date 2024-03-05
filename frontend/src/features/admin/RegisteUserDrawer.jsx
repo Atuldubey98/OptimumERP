@@ -54,7 +54,7 @@ export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" colorScheme="blue">
+            <Button isLoading={formik.isSubmitting} type="submit" colorScheme="blue">
               Register
             </Button>
           </DrawerFooter>

@@ -15,6 +15,11 @@ import AlertModal from "../common/AlertModal";
 import Pagination from "../common/main-layout/Pagination";
 export default function CustomersPage() {
   const {
+    isOpen: isDeleteModalOpen,
+    onOpen: openDeleteModal,
+    onClose: closeDeleteModal,
+  } = useDisclosure();
+  const {
     isOpen: isCustomerFormOpen,
     onClose: onCloseCustomerFormDrawer,
     onOpen: openCustomerFormDrawer,
@@ -43,9 +48,18 @@ export default function CustomersPage() {
   };
   const { orgId = "" } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
-  const onDeleteCustomer = requestAsyncHandler(async (customer) => {
-    await deleteCustomer(customer._id, orgId);
+  const [status, setStatus] = useState("idle");
+  const deleting = status === "deleting";
+  const onOpenCustomerToDelete = (customer)=>{
+    setSelectedToShowCustomer(customer);
+    openDeleteModal();
+  }
+  const onDeleteCustomer = requestAsyncHandler(async () => {
+    setStatus("deleting");
+    await deleteCustomer(selectedToShowCustomer._id, orgId);
     fetchCustomers();
+    setStatus("idle");
+    closeDeleteModal();
   });
   const onCloseCustomer = () => {
     closeCustomerDrawer();
@@ -84,7 +98,7 @@ export default function CustomersPage() {
             caption={`Total customers found : ${totalCustomers}`}
             operations={customers.map((customer) => (
               <CustomerMenu
-                onDeleteCustomer={onDeleteCustomer}
+                onDeleteCustomer={onOpenCustomerToDelete}
                 customer={customer}
                 key={customer._id}
                 onOpenDrawerForEditingCustomer={onOpenDrawerForEditingCustomer}
@@ -99,7 +113,14 @@ export default function CustomersPage() {
             onAddNewItem={onOpenDrawerForAddingNewCustomer}
           />
         )}
-
+        <AlertModal
+          confirmDisable={deleting}
+          body={"Do you want to delete the customer ?"}
+          header={"Delete customer"}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={onDeleteCustomer}
+        />
         <CustomerFormDrawer
           formik={customerFormik}
           isOpen={isCustomerFormOpen}

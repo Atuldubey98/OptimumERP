@@ -1,7 +1,0 @@
-Reports working
-Dashboard more esthetic.
-Quick invoice
-Quick Quotes
-Quick purchase invoice
-Bulk import products
-Chatbot

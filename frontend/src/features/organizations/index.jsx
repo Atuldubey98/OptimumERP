@@ -5,15 +5,17 @@ import {
   Grid,
   Spinner,
   Text,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { FaRegCircleDot } from "react-icons/fa6";
 import { IoAdd } from "react-icons/io5";
 import useOrganizations from "../../hooks/useOrganizations";
 import PrivateRoute from "../common/PrivateRoute";
 import NewOrgModal from "./NewOrgModal";
 import OrgItem from "./OrgItem";
+import SettingContext from "../../contexts/SettingContext";
 export default function OrgPage() {
   const {
     isOpen,
@@ -21,6 +23,10 @@ export default function OrgPage() {
     onClose: onCloseNewOrgModal,
   } = useDisclosure();
   const { authorizedOrgs, loading, fetchOrgs } = useOrganizations();
+  const settingContext = useContext(SettingContext);
+  const currentRole = settingContext.role || "";
+  const hoverBg = useColorModeValue("gray.200", "gray.700");
+
   return (
     <PrivateRoute>
       <Box padding={4}>
@@ -44,22 +50,24 @@ export default function OrgPage() {
               {authorizedOrgs.map((authorizedOrg) => (
                 <OrgItem org={authorizedOrg.org} key={authorizedOrg.org._id} />
               ))}
-              <Flex
-                cursor={"pointer"}
-                _hover={{
-                  backgroundColor: "lightgray",
-                  transition: "all ease-in 300ms",
-                }}
-                borderRadius={4}
-                onClick={onOpenNewOrganizationModal}
-                padding={3}
-                justifyContent={"center"}
-                gap={4}
-                boxShadow={"md"}
-                alignItems={"center"}
-              >
-                <IoAdd size={34} />
-              </Flex>
+              {currentRole === "admin" ? (
+                <Flex
+                  cursor={"pointer"}
+                  _hover={{
+                    backgroundColor: hoverBg,
+                    transition: "all ease-in 300ms",
+                  }}
+                  borderRadius={4}
+                  onClick={onOpenNewOrganizationModal}
+                  padding={3}
+                  justifyContent={"center"}
+                  gap={4}
+                  boxShadow={"md"}
+                  alignItems={"center"}
+                >
+                  <IoAdd size={34} />
+                </Flex>
+              ) : null}
             </Grid>
           )}
         </Container>

@@ -1,9 +1,4 @@
-import {
-  Box,
-  Flex,
-  Spinner,
-  useDisclosure
-} from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { purchaseStatusList } from "../../../constants/purchase";
@@ -59,14 +54,18 @@ export default function InvoicesPage() {
     onClose: onCloseDeleteModal,
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
+  const [purchaseStatus, setPurchaseStatus] = useState("idle");
   const deleteInvoice = requestAsyncHandler(async (purchase) => {
     if (!purchase) return;
+    setPurchaseStatus("deleting");
     await instance.delete(
       `/api/v1/organizations/${orgId}/purchases/${purchase._id}`
     );
     onCloseDeleteModal();
     fetchPurchases();
+    setPurchaseStatus("idle");
   });
+  const deleting = purchaseStatus === "deleting";
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
@@ -121,6 +120,8 @@ export default function InvoicesPage() {
           />
         ) : null}
         <AlertModal
+          confirmDisable={deleting}
+          buttonLabel="Delete"
           body={"Do you want to delete the purchase ?"}
           header={"Delete Purchase"}
           isOpen={isDeleteModalOpen}

@@ -11,6 +11,7 @@ import {
 export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
   return (
     <FormDrawerLayout
+      isSubmitting={formik.isSubmitting}
       formBtnLabel={formik.values._id ? "Update" : "Save"}
       formHeading={"Expense Category"}
       handleFormSubmit={formik.handleSubmit}

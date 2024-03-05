@@ -73,12 +73,12 @@ exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
 
 exports.deleteCustomer = requestAsyncHandler(async (req, res) => {
   if (!req.params.customerId) throw new CustomerNotFound();
-  const invoice = await Invoice.findOneAndDelete({
+  const invoice = await Invoice.findOne({
     customer: req.params.customerId,
     org: req.params.orgId,
   });
   if (invoice) throw new CustomerNotDelete({ reason: `Invoice is linked` });
-  const quotation = await Quotation.findOneAndDelete({
+  const quotation = await Quotation.findOne({
     customer: req.params.customerId,
     org: req.params.orgId,
   });

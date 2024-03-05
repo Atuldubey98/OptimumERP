@@ -2,23 +2,21 @@ import {
   Box,
   Button,
   Flex,
-  Icon,
   Show,
-  Text,
   useColorMode,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import React from "react";
 
 import { CiDark } from "react-icons/ci";
+import { IoIosLogOut } from "react-icons/io";
 import { MdMenu, MdOutlineWbSunny } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import AvatarProfile from "./AvatarProfile";
-import AlertModal from "../AlertModal";
-import { IoIosLogOut } from "react-icons/io";
-import useAsyncCall from "../../../hooks/useAsyncCall";
 import { logoutUser } from "../../../api/logout";
+import useAsyncCall from "../../../hooks/useAsyncCall";
+import AlertModal from "../AlertModal";
+import AvatarProfile from "./AvatarProfile";
 export default function Header({ onSideNavOpen }) {
   const onNavigateToOrganizations = () => navigate("/organizations");
   const { colorMode, toggleColorMode } = useColorMode();

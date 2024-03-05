@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import Pagination from "../common/main-layout/Pagination";
 import SearchItem from "../common/table-layout/SearchItem";
+import AlertModal from "../common/AlertModal";
 
 export default function ProductsPage() {
   const {
@@ -61,9 +62,24 @@ export default function ProductsPage() {
   };
   const { orgId = "" } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
-  const onDeleteProduct = requestAsyncHandler(async (product) => {
-    await deletProduct(product._id, orgId);
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: openDeleteModal,
+    onClose: closeDeleteModal,
+  } = useDisclosure();
+  const onOpenDeleteModal = (currentProduct) => {
+    setSelectedToShowProduct(currentProduct);
+    openDeleteModal();
+  };
+  const [productStatus, setProductStatus] = useState("idle");
+  const deleting = productStatus === "deleting";
+  const onDeleteProduct = requestAsyncHandler(async () => {
+    if (!selectedToShowProduct) return;
+    setProductStatus("deleting");
+    await deletProduct(selectedToShowProduct._id, orgId);
     fetchProducts();
+    closeDeleteModal();
+    setProductStatus("idle");
   });
 
   return (
@@ -85,7 +101,9 @@ export default function ProductsPage() {
             caption={`Total products found : ${totalCount}`}
             operations={products.map((product) => (
               <ProductMenu
-                onDeleteProduct={onDeleteProduct}
+                onDeleteProduct={() => {
+                  onOpenDeleteModal(product);
+                }}
                 product={product}
                 key={product._id}
                 onOpenProduct={onOpenProduct}
@@ -101,8 +119,9 @@ export default function ProductsPage() {
             onAddNewItem={onOpenDrawerForAddingNewProduct}
           />
         )}
-
-        <Pagination total={totalPages} currentPage={currentPage} />
+        {loading ? null : (
+          <Pagination total={totalPages} currentPage={currentPage} />
+        )}
         {selectedToShowProduct ? (
           <ShowDrawer
             onClickNewItem={onOpenDrawerForAddingNewProduct}
@@ -122,6 +141,14 @@ export default function ProductsPage() {
             }}
           />
         ) : null}
+        <AlertModal
+          confirmDisable={deleting}
+          body={"Do you want to delete the product ?"}
+          header={"Delete product"}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={onDeleteProduct}
+        />
         <ProductFormDrawer
           formik={formik}
           isOpen={isProductFormOpen}

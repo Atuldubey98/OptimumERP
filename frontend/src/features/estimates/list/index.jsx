@@ -54,15 +54,18 @@ export default function EstimatesPage() {
     onClose: onCloseDeleteModal,
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
+  const [estimateStatus, setEstimateStatus] = useState("idle");
   const deleteQuote = requestAsyncHandler(async (estimate) => {
     if (!estimate) return;
+    setEstimateStatus("deleting");
     await instance.delete(
       `/api/v1/organizations/${orgId}/quotes/${estimate._id}`
     );
     onCloseDeleteModal();
     fetchQuotes();
+    setEstimateStatus("idle");
   });
-
+  const deleting = estimateStatus === "deleting";
   return (
     <MainLayout>
       <Box p={5}>
@@ -114,6 +117,7 @@ export default function EstimatesPage() {
           />
         ) : null}
         <AlertModal
+          confirmDisable={deleting}
           body={"Do you want to delete the estimate"}
           header={"Delete Quotation"}
           isOpen={isDeleteModalOpen}

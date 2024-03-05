@@ -55,14 +55,18 @@ export default function InvoicesPage() {
     onClose: onCloseDeleteModal,
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
+  const [invoiceStatus, setInvoiceStatus] = useState("idle");
   const deleteInvoice = requestAsyncHandler(async (invoice) => {
     if (!invoice) return;
+    setInvoiceStatus("deleting");
     await instance.delete(
       `/api/v1/organizations/${orgId}/invoices/${invoice._id}`
     );
     onCloseDeleteModal();
+    setInvoiceStatus("idle");
     fetchInvoices();
   });
+  const deleting = invoiceStatus === "deleting";
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
@@ -117,6 +121,7 @@ export default function InvoicesPage() {
           />
         ) : null}
         <AlertModal
+          confirmDisable={deleting}
           body={"Do you want to delete the invoice ?"}
           header={"Delete Invoice"}
           isOpen={isDeleteModalOpen}

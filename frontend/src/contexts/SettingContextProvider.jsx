@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function SettingContextProvider({ children }) {
   const [setting, setSetting] = useState(null);
   const onSetSettingForOrganization = (newSetting) => setSetting(newSetting);
+  const [currentOrgRole, setCurrentOrgRole] = useState("");
   const userContext = useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function SettingContextProvider({ children }) {
         `/api/v1/organizations/${storedOrgId}/settings`
       );
       setSetting(data.data);
+      setCurrentOrgRole(data.role);
     })();
   }, [userContext.user]);
   return (
@@ -26,6 +28,7 @@ export default function SettingContextProvider({ children }) {
       value={{
         setting,
         onSetSettingForOrganization,
+        role: currentOrgRole,
       }}
     >
       {children}

@@ -1,14 +1,11 @@
 import React from "react";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
-import { useDisclosure } from "@chakra-ui/react";
-import AlertModal from "../common/AlertModal";
 export default function CustomerMenu({
   customer,
   onOpenDrawerForEditingCustomer,
   onOpenCustomer,
   onDeleteCustomer,
 }) {
-  const { isOpen, onClose, onOpen } = useDisclosure();
   return (
     <>
       <VertIconMenu
@@ -19,17 +16,7 @@ export default function CustomerMenu({
           onOpenDrawerForEditingCustomer(customer);
         }}
         deleteItem={() => {
-          onOpen();
-        }}
-      />
-      <AlertModal
-        body={"Do you want to delete the customer ?"}
-        header={"Delete customer"}
-        isOpen={isOpen}
-        onClose={onClose}
-        onConfirm={async () => {
-          await onDeleteCustomer(customer);
-          onClose();
+          onDeleteCustomer(customer)
         }}
       />
     </>
