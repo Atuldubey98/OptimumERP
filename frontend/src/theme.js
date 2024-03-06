@@ -1,5 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
-import "@fontsource/raleway"
+import "@fontsource/poppins"
 const config = {
   initialColorMode: "dark",
   useSystemColorMode: true,
@@ -8,8 +8,8 @@ const config = {
 const theme = extendTheme({
   config,
   fonts: {
-    heading: `'Raleway', sans-serif`,
-    body: `'Raleway', sans-serif`,
+    heading: `'Poppins', sans-serif`,
+    body: `'Poppins', sans-serif`,
   },
 });
 
