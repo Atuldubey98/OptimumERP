@@ -10,6 +10,7 @@ import {
   FormLabel,
   Grid,
   Input,
+  SimpleGrid,
   Spinner,
 } from "@chakra-ui/react";
 import SelectStatus from "../../estimates/create/SelectStatus";
@@ -47,7 +48,7 @@ export default function CreateInvoicePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Grid gap={2} gridTemplateColumns={"1fr 1fr 1fr"}>
+                <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
                     isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
@@ -77,7 +78,7 @@ export default function CreateInvoicePage() {
                     <FormLabel>PO Date</FormLabel>
                     <Input value={formik.values.poDate} onChange={formik.handleChange} name="poDate" type="date"/>
                   </FormControl>
-                </Grid>
+                </SimpleGrid>
                 <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
                 <TotalsBox quoteItems={formik.values.items} />
                 <DescriptionField formik={formik} />

@@ -10,8 +10,9 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 export default function DashboardTable({ heading, tableHeads, tableRows }) {
+  const { symbol } = useCurrentOrgCurrency();
   return (
     <Box>
       <Box paddingBlock={5}>
@@ -34,7 +35,9 @@ export default function DashboardTable({ heading, tableHeads, tableRows }) {
               <Tr key={tableRow._id}>
                 <Td>{tableRow.num}</Td>
                 <Td>{tableRow.customerName}</Td>
-                <Td>{(tableRow.total + tableRow.totalTax).toFixed(2)}</Td>
+                <Td>{`${symbol} ${(tableRow.total + tableRow.totalTax).toFixed(
+                  2
+                )}`}</Td>
                 <Td>{tableRow.status}</Td>
                 <Td>{tableRow.date}</Td>
               </Tr>

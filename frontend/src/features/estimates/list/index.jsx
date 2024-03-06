@@ -13,7 +13,11 @@ import { statusList } from "../create/data";
 import BillFilter from "./BillFilter";
 import BillModal from "./BillModal";
 import Status from "./Status";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+
 export default function EstimatesPage() {
+  const { symbol } = useCurrentOrgCurrency();
+
   const navigate = useNavigate();
   const onClickAddNewQuote = useCallback(() => {
     navigate(`create`);
@@ -31,14 +35,13 @@ export default function EstimatesPage() {
     entity: "quotes",
   });
   const loading = status === "loading";
-  
   const estimateTableMapper = (estimate) => ({
     customerName: estimate.customer.name,
     billingAddress: estimate.customer.billingAddress,
     ...estimate,
     quoteNo: estimate.num,
     date: new Date(estimate.date).toISOString().split("T")[0],
-    grandTotal: (estimate.total + estimate.totalTax).toFixed(2),
+    grandTotal: `${symbol} ${(estimate.total + estimate.totalTax).toFixed(2)}`,
     status: <Status status={estimate.status} statusList={statusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -14,6 +14,7 @@ import useAsyncCall from "../../hooks/useAsyncCall";
 import Pagination from "../common/main-layout/Pagination";
 import SearchItem from "../common/table-layout/SearchItem";
 import AlertModal from "../common/AlertModal";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 export default function ProductsPage() {
   const {
@@ -81,7 +82,7 @@ export default function ProductsPage() {
     closeDeleteModal();
     setProductStatus("idle");
   });
-
+  const { symbol } = useCurrentOrgCurrency();
   return (
     <MainLayout>
       <Box p={5}>
@@ -97,7 +98,10 @@ export default function ProductsPage() {
               </Box>
             }
             heading={"Products"}
-            tableData={products}
+            tableData={products.map((product) => ({
+              ...product,
+              costPrice: `${symbol} ${product.costPrice}`,
+            }))}
             caption={`Total products found : ${totalCount}`}
             operations={products.map((product) => (
               <ProductMenu

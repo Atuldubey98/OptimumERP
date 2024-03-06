@@ -6,11 +6,21 @@ const errorHandler = require("./handlers/error.handler");
 const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
 const organizationRouter = require("./routes/org.routes");
 const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
+const logger = require("./logger");
 
 const app = express();
 
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    logger.info("Connected to mongodb");
+  })
+  .catch(() => {
+    logger.error("Some error occured in connecting to mongodb");
+  });
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 
@@ -46,7 +56,6 @@ const sessionOptions = {
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
     ttl: 14 * 24 * 60 * 60,
-    dbName : "erp"
   }),
   cookie: {
     sameSite: "strict",
@@ -63,7 +72,7 @@ app.use(session(sessionOptions));
 app.get("/api/v1/health", (_, res) => {
   return res.status(200).send("Server is running");
 });
-app.options('*', cors())
+app.options("*", cors());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations", organizationRouter);
 

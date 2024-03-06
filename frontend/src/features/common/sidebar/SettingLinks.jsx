@@ -10,7 +10,9 @@ export default function SettingLinks() {
   return (
     <List marginLeft={3} spacing={3}>
       {settingsLinks
-        .filter((setting) => setting.role === currentRole)
+        .filter(
+          (setting) => setting.role === currentRole || currentRole === "admin"
+        )
         .map((setting) => (
           <HeaderLink key={setting.label}>
             <Icon as={setting.icon} />

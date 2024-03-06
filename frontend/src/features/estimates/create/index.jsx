@@ -7,6 +7,7 @@ import {
   FormLabel,
   Grid,
   Input,
+  SimpleGrid,
   Spinner,
   Textarea,
 } from "@chakra-ui/react";
@@ -45,7 +46,7 @@ export default function CreateEstimatePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Grid gap={2} gridTemplateColumns={"1fr 1fr 1fr"}>
+                <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
                     isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
@@ -62,7 +63,7 @@ export default function CreateEstimatePage() {
                   <DateField formik={formik} />
                   <SelectStatus formik={formik} statusList={statusList} />
                   <SelectCustomer formik={formik} />
-                </Grid>
+                </SimpleGrid>
                 <ItemsList formik={formik} defaultItem={defaultQuoteItem} />
                 <TotalsBox quoteItems={formik.values.items} />
                 <DescriptionField formik={formik} />

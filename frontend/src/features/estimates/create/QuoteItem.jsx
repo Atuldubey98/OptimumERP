@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -10,12 +11,14 @@ import {
   InputGroup,
   InputRightElement,
   Select,
+  SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { taxRates, ums } from "./data";
 import { TbEyeSearch } from "react-icons/tb";
 import SelectProduct from "./SelectProduct";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function QuoteItem({
   quoteItem,
   errorsQuoteItems,
@@ -23,6 +26,7 @@ export default function QuoteItem({
   index,
   deleteQuote,
 }) {
+  const { symbol } = useCurrentOrgCurrency();
   const { handleChange: handleQuoteItemChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const subtotal = isNaN(parseFloat(quoteItem.price * quoteItem.quantity))
@@ -40,8 +44,8 @@ export default function QuoteItem({
     onOpen();
   };
   return (
-    <Flex gap={2} p={0} m={0} justifyContent={"center"} alignItems={"center"}>
-      <Grid gap={2} gridTemplateColumns={"2fr repeat(5,1fr)"}>
+    <Box marginBlock={5}>
+      <SimpleGrid gap={2} minChildWidth={200}>
         <GridItem>
           <FormControl isRequired>
             <FormLabel>Item Name</FormLabel>
@@ -123,13 +127,17 @@ export default function QuoteItem({
                 onChange={handleQuoteItemChange}
                 placeholder="Enter amount"
               />
-              <InputRightElement>$</InputRightElement>
+              <InputRightElement>{symbol}</InputRightElement>
             </InputGroup>
             <FormErrorMessage>{errors.price}</FormErrorMessage>
           </FormControl>
         </GridItem>
-        <GridItem>
-          <FormControl>
+        <GridItem
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <FormControl flex={1}>
             <FormLabel>Total</FormLabel>
             <InputGroup>
               <Input
@@ -138,27 +146,27 @@ export default function QuoteItem({
                 value={total}
                 placeholder="Enter total"
               />
-              <InputRightElement>$</InputRightElement>
+              <InputRightElement>{symbol}</InputRightElement>
             </InputGroup>
           </FormControl>
+          <Box
+            onClick={deleteQuote}
+            cursor={"pointer"}
+            transition={"300ms ease-in"}
+            _hover={{
+              color: "red",
+            }}
+          >
+            <AiOutlineDelete size={30} />
+          </Box>
         </GridItem>
-      </Grid>
-      <Box
-        onClick={deleteQuote}
-        cursor={"pointer"}
-        transition={"300ms ease-in"}
-        _hover={{
-          color: "red",
-        }}
-      >
-        <AiOutlineDelete size={30} />
-      </Box>
+      </SimpleGrid>
       <SelectProduct
         isOpen={isOpen}
         onClose={onClose}
         formik={formik}
         index={index}
       />
-    </Flex>
+    </Box>
   );
 }

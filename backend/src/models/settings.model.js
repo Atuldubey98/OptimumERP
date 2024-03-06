@@ -16,6 +16,11 @@ const settingSchema = new Schema({
       quotation: "",
     },
   },
+  currency: {
+    type: String,
+    default: "INR",
+    required: true,
+  },
   counter: {
     type: {
       invoice: {

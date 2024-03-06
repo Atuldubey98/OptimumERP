@@ -10,7 +10,7 @@ export default function ItemsList({ formik, defaultItem }) {
       name="items"
       render={(itemsHelper) => (
         <Box>
-          <OrderedList spacing={4} marginBlock={8}>
+          <OrderedList  marginBlock={8}>
             {formik.values.items.map((quoteItem, index) => (
               <ListItem key={index}>
                 <QuoteItem

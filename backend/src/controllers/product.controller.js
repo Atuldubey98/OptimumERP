@@ -18,7 +18,9 @@ exports.getAllProducts = requestAsyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-  const filter = {};
+  const filter = {
+    org: req.params.orgId,
+  };
   const search = req.query.search;
   if (search) filter.$text = { $search: search };
   const products = await Product.find(filter)
@@ -88,11 +90,20 @@ exports.deleteProduct = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Product deleted successfully!" });
 });
 
-exports.addManyProducts = requestAsyncHandler(async (req, res)=>{
+exports.addManyProducts = requestAsyncHandler(async (req, res) => {
   const body = req.body;
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
-  const productsToAdd = body.map(product=>({...product, createdBy : req.session.user._id, org : orgId}));
+  const productsToAdd = body.map((product) => ({
+    ...product,
+    createdBy: req.session.user._id,
+    org: orgId,
+  }));
   await Product.insertMany(productsToAdd);
-  return res.status(200).json({message : "Products saved successfully", productsCreated : body.length})
-})
+  return res
+    .status(200)
+    .json({
+      message: "Products saved successfully",
+      productsCreated: body.length,
+    });
+});

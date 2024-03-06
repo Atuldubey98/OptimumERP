@@ -13,6 +13,7 @@ import { useState } from "react";
 import ShowDrawer from "../common/ShowDrawer";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import AlertModal from "../common/AlertModal";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
@@ -81,6 +82,7 @@ export default function ExpensesPage() {
     setExpenseStatus("idle");
   });
   const deleting = expenseStatus === "deleting";
+  const { symbol } = useCurrentOrgCurrency();
   return (
     <MainLayout>
       <Box p={5}>
@@ -99,6 +101,7 @@ export default function ExpensesPage() {
             heading={"Expenses"}
             tableData={expenses.map((expense) => ({
               ...expense,
+              amount: `${symbol} ${expense.amount}`,
               category: expense.category
                 ? expense.category.name
                 : "Miscellenous",
@@ -130,6 +133,7 @@ export default function ExpensesPage() {
               date: "Date",
               category: "Category",
               description: "Description",
+              amount: "Amount",
             }}
           />
         )}

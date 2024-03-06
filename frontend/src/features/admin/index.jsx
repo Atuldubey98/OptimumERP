@@ -5,7 +5,11 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Grid,
+  Heading,
+  Input,
   Select,
+  Stack,
   Table,
   TableCaption,
   TableContainer,
@@ -15,7 +19,7 @@ import {
   Thead,
   Tr,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import * as Yup from "yup";
@@ -89,6 +93,9 @@ export default function AdminPage() {
     }
     fetchOrgUsers();
   }, [organization]);
+  const currentSelectedOrganization = authorizedOrgs.find(
+    (orgUser) => orgUser.org._id === organization
+  );
   return (
     <MainLayout>
       <Box p={5}>
@@ -111,28 +118,80 @@ export default function AdminPage() {
               ))}
             </Select>
           </FormControl>
-          <Flex justifyContent={"flex-end"} alignItems={"center"}>
-            {organization ? (
-              <Button
-                colorScheme="blue"
-                onClick={() => {
-                  formik.setValues({
-                    name: "",
-                    email: "",
-                    password: "",
-                    role: "user",
-                  });
-                  onOpen();
-                }}
-                size={"sm"}
-              >
-                Add new
-              </Button>
-            ) : null}
-          </Flex>
         </Box>
-        {loading || !organization ? null : (
+        {loading || !organization || !currentSelectedOrganization ? null : (
           <Fade in={!loading && organization}>
+            <Stack marginBlock={3} spacing={1}>
+              <Box>
+                <Heading fontSize={"lg"}>Current Organization Details</Heading>
+              </Box>
+              <Box>
+                <form>
+                  <Stack
+                    marginBlock={3}
+                    boxShadow={"md"}
+                    borderRadius={"md"}
+                    p={4}
+                    spacing={4}
+                    maxW={"xl"}
+                  >
+                    <FormControl>
+                      <FormLabel>Name</FormLabel>
+                      <Input
+                        readOnly
+                        defaultValue={currentSelectedOrganization.org.name}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Address</FormLabel>
+                      <Input
+                        readOnly
+                        defaultValue={currentSelectedOrganization.org.address}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>GST No</FormLabel>
+                      <Input
+                        readOnly
+                        defaultValue={currentSelectedOrganization.org.gstNo}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>PAN No</FormLabel>
+                      <Input
+                        readOnly
+                        defaultValue={currentSelectedOrganization.org.panNo}
+                      />
+                    </FormControl>
+                    <Flex justifyContent={"center"} alignItems={"center"}>
+                      <Button colorScheme="blue">Update</Button>
+                    </Flex>
+                  </Stack>
+                </form>
+              </Box>
+              <Box>
+                <Heading fontSize={"lg"}>Users</Heading>
+              </Box>
+              <Flex justifyContent={"flex-end"} alignItems={"center"}>
+                {organization ? (
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => {
+                      formik.setValues({
+                        name: "",
+                        email: "",
+                        password: "",
+                        role: "user",
+                      });
+                      onOpen();
+                    }}
+                    size={"sm"}
+                  >
+                    Add new
+                  </Button>
+                ) : null}
+              </Flex>
+            </Stack>
             <TableContainer>
               <Table variant="simple">
                 <TableCaption></TableCaption>

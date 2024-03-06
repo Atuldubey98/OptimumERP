@@ -8,7 +8,7 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Customer = require("../models/customer.model");
 const Invoice = require("../models/invoice.model");
 const Quotation = require("../models/quotes.model");
-
+const logger = require("../logger");
 exports.createCustomer = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -18,6 +18,7 @@ exports.createCustomer = requestAsyncHandler(async (req, res) => {
   });
   const customer = new Customer(body);
   await customer.save();
+  logger.info(`created customer ${customer.id}`);
   return res.status(201).json({ message: "Customer created !" });
 });
 

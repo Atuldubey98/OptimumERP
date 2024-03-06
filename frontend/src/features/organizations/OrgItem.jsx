@@ -16,6 +16,7 @@ export default function OrgItem({ org }) {
     );
     if (settingContext.onSetSettingForOrganization) {
       settingContext.onSetSettingForOrganization(data.data);
+      settingContext.onSetCurrentOrgRole(data.role)
     }
     navigate(`/${org._id}/dashboard`);
     localStorage.setItem("organization", org._id);

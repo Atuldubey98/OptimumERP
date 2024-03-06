@@ -9,6 +9,7 @@ const Transaction = require("../models/transaction.model");
 const Setting = require("../models/settings.model");
 const { OrgNotFound } = require("../errors/org.error");
 const { ExpenseNotFound } = require("../errors/expense.error");
+const logger = require("../logger");
 const { Types } = mongoose;
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
@@ -24,6 +25,7 @@ exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
     ...req.body,
     org: req.params.orgId,
   });
+  logger.info(`created expense category ${category.id}`);
   return res.status(201).json(category);
 });
 exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {

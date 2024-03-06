@@ -15,7 +15,7 @@ import useOrganizations from "../../../hooks/useOrganizations";
 import { useContext, useEffect, useState } from "react";
 import SettingContext from "../../../contexts/SettingContext";
 import instance from "../../../instance";
-
+import currencies from "../../../assets/currency.json";
 export default function TransactionPrefix() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
@@ -26,6 +26,7 @@ export default function TransactionPrefix() {
       organization: "",
       invoice: "",
       quotation: "",
+      currency: "INR",
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (!values.organization) return;
@@ -36,6 +37,7 @@ export default function TransactionPrefix() {
             invoice: values.invoice,
             quotation: values.quotation,
           },
+          currency: values.currency,
         }
       );
       const currentOrg = localStorage.getItem("organization");
@@ -61,6 +63,7 @@ export default function TransactionPrefix() {
         formik.setValues({
           organization: "",
           invoice: "",
+          currency: "INR",
           quotation: "",
         });
         return;
@@ -73,10 +76,12 @@ export default function TransactionPrefix() {
         organization: formik.values.organization,
         invoice: data.data.transactionPrefix.invoice,
         quotation: data.data.transactionPrefix.quotation,
+        currency: data.data.currency || "INR",
       });
       setStatus("success");
     })();
   }, [formik.values.organization]);
+  const currencyCodes = Object.keys(currencies);
   return (
     <Stack spacing={6}>
       <Heading fontSize={"lg"}>Transaction Prefixes</Heading>
@@ -98,6 +103,21 @@ export default function TransactionPrefix() {
                 >
                   {organization.org.name}
                 </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl isDisabled={!formik.values.organization}>
+            <FormLabel>Currency</FormLabel>
+            <Select
+              name="currency"
+              value={formik.values.currency}
+              onChange={formik.handleChange}
+            >
+              {currencyCodes.map((currency) => (
+                <option
+                  key={currency}
+                  value={currency}
+                >{`${currency} - ${currencies[currency].symbol}`}</option>
               ))}
             </Select>
           </FormControl>

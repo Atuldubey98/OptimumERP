@@ -7,6 +7,7 @@ export default function SettingContextProvider({ children }) {
   const [setting, setSetting] = useState(null);
   const onSetSettingForOrganization = (newSetting) => setSetting(newSetting);
   const [currentOrgRole, setCurrentOrgRole] = useState("");
+  const onSetCurrentOrgRole = (currentRole) => setCurrentOrgRole(currentRole);
   const userContext = useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function SettingContextProvider({ children }) {
         setting,
         onSetSettingForOrganization,
         role: currentOrgRole,
+        onSetCurrentOrgRole,
       }}
     >
       {children}

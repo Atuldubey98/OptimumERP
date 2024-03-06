@@ -1,8 +1,7 @@
 import { Box, Skeleton, Stack, StatGroup } from "@chakra-ui/react";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
-import SettingContext from "../../contexts/SettingContext";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
@@ -37,11 +36,6 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
   const loading = status === "loading";
-  const settingContext = useContext(SettingContext);
-  const transactionPrefixInvoice =
-    settingContext?.setting?.transactionPrefix.invoice || "";
-  const transactionPrefixQuotation =
-    settingContext?.setting?.transactionPrefix.quotation || "";
   return (
     <MainLayout>
       <Box p={5}>
