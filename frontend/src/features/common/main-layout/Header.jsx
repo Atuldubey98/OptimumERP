@@ -5,9 +5,9 @@ import {
   Show,
   useColorMode,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 
 import { CiDark } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
@@ -24,7 +24,9 @@ export default function Header({ onSideNavOpen }) {
   const { requestAsyncHandler } = useAsyncCall();
   const navigate = useNavigate();
   const toast = useToast();
+  const [status, setStatus] = useState("idle");
   const onClickLogout = requestAsyncHandler(async () => {
+    setStatus("loggingOut");
     const { data } = await logoutUser();
     toast({
       title: "Logout",
@@ -34,7 +36,9 @@ export default function Header({ onSideNavOpen }) {
       isClosable: true,
     });
     navigate("/login", { replace: true });
+    setStatus("idle");
   });
+  const loggingOut = status === "loggingOut";
   return (
     <Box width={"100%"}>
       <Box position={"relative"}>
@@ -75,6 +79,7 @@ export default function Header({ onSideNavOpen }) {
         </Flex>
       </Box>
       <AlertModal
+        confirmDisable={loggingOut}
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={onClickLogout}
