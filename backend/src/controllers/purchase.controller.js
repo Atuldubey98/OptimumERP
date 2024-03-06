@@ -15,7 +15,7 @@ const Transaction = require("../models/transaction.model");
 
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
-  const { total, totalTax } = getTotalAndTax(body.items);
+  const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(body.items);
   const setting = await Setting.findOne({
     org: req.params.orgId,
   });
@@ -39,6 +39,9 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     totalTax,
     createdBy: req.body.createdBy,
     financialYear: setting.financialYear,
+    sgst,
+    cgst,
+    igst,
   });
   await newPurchase.save();
   const transaction = new Transaction({
@@ -47,6 +50,9 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     docModel: "purchase",
     financialYear: setting.financialYear,
     doc: newPurchase._id,
+    total,
+    totalTax,
+    customer: body.customer,
   });
   await transaction.save();
   return res
@@ -64,6 +70,9 @@ exports.updatePurchase = requestAsyncHandler(async (req, res) => {
       ...body,
       total,
       totalTax,
+      sgst,
+      igst,
+      cgst,
     }
   );
   const updateTransaction = await Transaction.findOneAndUpdate(
@@ -72,7 +81,7 @@ exports.updatePurchase = requestAsyncHandler(async (req, res) => {
       docModel: "purchase",
       doc: updatedInvoice.id,
     },
-    { updatedBy: req.body.updatedBy }
+    { updatedBy: req.body.updatedBy, total, totalTax, customer: body.customer }
   );
   if (!updatedInvoice || !updateTransaction) throw new PurchaseNotFound();
   return res.status(200).json({ message: "Purchase updated !" });

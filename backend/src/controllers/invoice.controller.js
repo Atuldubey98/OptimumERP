@@ -15,7 +15,7 @@ const Transaction = require("../models/transaction.model");
 
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
-  const { total, totalTax } = getTotalAndTax(body.items);
+  const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
   const setting = await Setting.findOne({
     org: req.params.orgId,
   });
@@ -38,6 +38,9 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     total,
     num: invoicePrefix + body.invoiceNo,
     totalTax,
+    igst,
+    sgst,
+    cgst,
     financialYear: setting.financialYear,
   });
 
@@ -48,6 +51,9 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     docModel: "invoice",
     financialYear: setting.financialYear,
     doc: newInvoice._id,
+    total,
+    totalTax,
+    customer: body.customer,
   });
   await transaction.save();
   return res
@@ -56,7 +62,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
 });
 
 exports.updateInvoice = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax } = getTotalAndTax(req.body.items);
+  const { total, totalTax, cgst, sgst, igst } = getTotalAndTax(req.body.items);
   const body = await invoiceDto.validateAsync(req.body);
   const setting = await Setting.findOne({
     org: req.params.orgId,
@@ -69,6 +75,9 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       total,
       num: setting.transactionPrefix.invoice + body.invoiceNo,
       totalTax,
+      sgst,
+      cgst,
+      igst,
     }
   );
   const updateTransaction = await Transaction.findOneAndUpdate(
@@ -77,7 +86,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       docModel: "invoice",
       doc: updatedInvoice.id,
     },
-    { updatedBy: req.body.updatedBy }
+    { updatedBy: req.body.updatedBy, total, totalTax, customer: body.customer }
   );
   if (!updatedInvoice || !updateTransaction) throw new InvoiceNotFound();
   return res.status(200).json({ message: "Invoice updated !" });

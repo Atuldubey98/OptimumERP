@@ -14,15 +14,25 @@ exports.getTotalAndTax = (items = []) => {
     (prev, item) => prev + item.price * item.quantity,
     0
   );
+  let cgst = 0,
+    sgst = 0,
+    igst = 0;
+
   const totalTax = items.reduce((prev, item) => {
-    const taxPercentage =
-      item.gst === "none" ? 0 : parseInt(item.gst.split(":")[1]);
-    return prev + (item.price * item.quantity * taxPercentage) / 100;
+    const [typeOfGST, gstPercentage] = item.gst.split(":");
+    const taxPercentage = item.gst === "none" ? 0 : parseInt(gstPercentage);
+    const tax = prev + (item.price * item.quantity * taxPercentage) / 100;
+    cgst += typeOfGST === "GST" ? tax / 2 : 0;
+    sgst += typeOfGST === "GST" ? tax / 2 : 0;
+    igst += typeOfGST === "IGST" ? tax : 0;
+    return tax;
   }, 0);
-  return { total, totalTax };
+  return { total, totalTax, cgst, sgst, igst };
 };
 exports.createQuote = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax } = this.getTotalAndTax(req.body.items);
+  const { total, totalTax, sgst, cgst, igst } = this.getTotalAndTax(
+    req.body.items
+  );
   const body = await quoteDto.validateAsync(req.body);
   const setting = await Setting.findOne({
     org: req.params.orgId,
@@ -40,7 +50,7 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
   });
   const transactionPrefix = setting.transactionPrefix.quotation;
   if (existingQuotation) throw QuotationDuplicate(req.params.quoteNo);
-  
+
   const newQuote = new Quote({
     org: req.params.orgId,
     ...body,
@@ -48,6 +58,9 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     totalTax,
     num: transactionPrefix + body.quoteNo,
     financialYear: setting.financialYear,
+    sgst,
+    cgst,
+    igst,
   });
   await newQuote.save();
   const transaction = new Transaction({
@@ -56,13 +69,18 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     docModel: "quotes",
     financialYear: setting.financialYear,
     doc: newQuote._id,
+    total,
+    totalTax,
+    customer: body.customer,
   });
   await transaction.save();
   return res.status(201).json({ message: "Quote created !", data: newQuote });
 });
 
 exports.updateQuote = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax } = this.getTotalAndTax(req.body.items);
+  const { total, totalTax, sgst, igst, cgst } = this.getTotalAndTax(
+    req.body.items
+  );
   const body = await quoteDto.validateAsync(req.body);
   const setting = await Setting.findOne({
     org: req.params.orgId,
@@ -77,13 +95,19 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
       total,
       num: transactionPrefix + body.quoteNo,
       totalTax,
+      cgst,
+      igst,
+      sgst,
     }
   );
-  const updateTransaction = await Transaction.findOneAndUpdate(
+  await Transaction.findOneAndUpdate(
     {
       org: req.params.orgId,
       docModel: "quotes",
       doc: updatedQuote.id,
+      total,
+      totalTax,
+      customer: body.customer,
     },
     { updatedBy: req.body.updatedBy }
   );

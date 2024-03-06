@@ -20,6 +20,18 @@ const transactionSchema = new Schema(
       enum: ["invoice", "purchase", "expense", "quotes"],
       required: true,
     },
+    total: {
+      type: Number,
+      default: 0,
+    },
+    totalTax: {
+      type: Number,
+      default: 0,
+    },
+    customer: {
+      type: Types.ObjectId,
+      ref: "customer",
+    },
     financialYear: {
       type: {
         start: {
@@ -36,7 +48,7 @@ const transactionSchema = new Schema(
     doc: {
       type: Types.ObjectId,
       required: true,
-      refPath : "docModel"
+      refPath: "docModel",
     },
   },
   { timestamps: true, versionKey: false }

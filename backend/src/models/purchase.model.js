@@ -17,6 +17,21 @@ const purchaseInvoice = new Schema(
       default: 0,
       required: true,
     },
+    sgst: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    cgst: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    igst: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     description: {
       type: String,
       default: "Thanks for the business.",

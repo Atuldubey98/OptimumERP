@@ -78,6 +78,7 @@ exports.createExpense = requestAsyncHandler(async (req, res) => {
     docModel: "expense",
     financialYear: setting.financialYear,
     doc: expense._id,
+    total: req.body.amount,
   });
   await transaction.save();
   return res.status(201).json(expense);
@@ -129,6 +130,7 @@ exports.updateExpense = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       docModel: "expense",
       doc: updatedExpense._id,
+      total: req.body.amount,
     },
     { updatedBy: req.body.updatedBy }
   );

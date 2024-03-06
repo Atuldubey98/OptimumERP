@@ -8,7 +8,6 @@ function generateReportByReportType(reportType) {
     purchase: getPurchaseReport,
     transactions: getTransactions,
     parties: getAllPartyStatements,
-    sale_purchase: getSalePurchaseByParty,
     gstr1: getGSTR1Report,
     gstr2: getGSTR2Report,
   };
@@ -87,10 +86,59 @@ async function getTransactions(queryParams, orgId) {
     message: "Transactions retrieved successfully",
   };
 }
-function getAllPartyStatements(queryParams, orgId) {
-  
+async function getAllPartyStatements(queryParams, orgId) {
+  const filter = {
+    org: orgId,
+    docModel: { $in: ["invoice", "purchase"] },
+  };
+  if (queryParams.startDate && queryParams.endDate) {
+    filter.createdAt = {
+      $gte: new Date(queryParams.startDate),
+      $lte: new Date(queryParams.endDate),
+    };
+  }
+  const page = parseInt(queryParams.page) || 1;
+  const limit = parseInt(queryParams.limit) || 10;
+  const skip = (page - 1) * limit;
+  const transactions = await Transaction.aggregate([
+    {
+      $match: filter,
+      $group: {
+        _id: "$customer",
+        total: {
+          $sum: {
+            $cond: [
+              { $eq: ["$docModel", "purchase"] },
+              { $subtract: ["$total", "$total"] },
+              "$total",
+            ],
+          },
+        },
+        totalTax: {
+          $sum: {
+            $cond: [
+              { $eq: ["$docModel", "purchase"] },
+              { $subtract: ["$totalTax", "$totalTax"] },
+              "$totalTax",
+            ],
+          },
+        },
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+  ]);
+  return {
+    data: transactions,
+    skip,
+    limit,
+    page
+  };
 }
-function getSalePurchaseByParty(queryParams, orgId) {}
 function getGSTR1Report(queryParams, orgId) {}
 function getGSTR2Report(queryParams, orgId) {}
 async function getPurchaseReport(queryParams, orgId) {
