@@ -67,3 +67,21 @@ exports.deactivateUser = requestAsyncHandler(async (req, res) => {
   if (!deactivatedUser) throw new UserNotFound();
   return res.status(200).json({ message: "User deactivated" });
 });
+
+exports.resetPassword = requestAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.session.user._id);
+  const { currentPassword = "", newPassword = "" } = req.body;
+  const isPasswordMatching = await bcryptjs.compare(
+    currentPassword,
+    user.password
+  );
+  if (!isPasswordMatching) throw new PasswordDoesNotMatch();
+  const hashedPassword = await bcryptjs.hash(
+    newPassword,
+    await bcryptjs.genSalt(10)
+  );
+  await User.findByIdAndUpdate(req.session.user._id, {
+    password: hashedPassword,
+  });
+  return res.status(201).json({ message: "Done password resetting !" });
+});

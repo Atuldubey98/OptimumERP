@@ -1,4 +1,11 @@
-import { Box, Skeleton, Stack, StatGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Skeleton,
+  Stack,
+  StatGroup,
+  useDisclosure,
+} from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
@@ -9,6 +16,7 @@ import { statusList } from "../estimates/create/data";
 import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
+import GuideTourModal from "./GuideTourModal";
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -36,10 +44,19 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
   const loading = status === "loading";
+  const { isOpen: isGuideTourOpen, onClose: closeGuideTour } = useDisclosure({
+    defaultIsOpen: !localStorage.getItem("guide"),
+  });
+  const onCloseGuidedTour = () => {
+    closeGuideTour();
+    localStorage.setItem("guide", false);
+  };
   return (
     <MainLayout>
       <Box p={5}>
-        <Stack spacing={3}>
+        <Heading>Dashboard</Heading>
+        <Stack marginBlock={2} spacing={3}>
+          <Heading fontSize={"2xl"}>{"This Month"}</Heading>
           <StatGroup>
             <Skeleton isLoaded={!loading}>
               <Dashcard
@@ -107,6 +124,7 @@ export default function DashboardPage() {
           </Stack>
         </Stack>
       </Box>
+      <GuideTourModal isOpen={isGuideTourOpen} onClose={onCloseGuidedTour} />
     </MainLayout>
   );
 }

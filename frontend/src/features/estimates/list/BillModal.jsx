@@ -42,6 +42,10 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
         <ModalCloseButton />
         <ModalBody>
           <iframe
+            style={{
+              padding : 2,
+              borderRadius : 10
+            }}
             width={"100%"}
             height={720}
             src={`http://localhost:9000${downloadBillUrl}`}
