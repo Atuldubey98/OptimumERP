@@ -19,6 +19,7 @@ import DateFilter from "../../features/estimates/list/DateFilter";
 import { useParams } from "react-router-dom";
 import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import { useState } from "react";
+import Pagination from "../common/main-layout/Pagination";
 const reportDataByType = {
   sale: {
     header: {
@@ -93,20 +94,18 @@ const reportDataByType = {
     header: {
       gstNo: "Customer GST No",
       customerName: "Customer Name",
-      total: "Total",
-      cgst: "Centeral Goods and Services",
-      sgst: "State Goods and Services",
-      igst: "Integerated Goods and Services",
+      cgst: "CGST",
+      sgst: "SGST",
+      igst: "IGST",
       grandTotal: "Grand Total",
     },
     bodyMapper: (item) => ({
       _id: item._id,
       customerName: item.customer?.name,
       gstNo: item.customer?.gstNo,
-      total: item.total,
-      cgst: item.cgst,
-      sgst: item.sgst,
-      igst: item.igst,
+      cgst: item.cgst.toFixed(2),
+      sgst: item.sgst.toFixed(2),
+      igst: item.igst.toFixed(2),
       grandTotal: (item?.total + item?.totalTax).toFixed(2),
     }),
   },
@@ -114,20 +113,18 @@ const reportDataByType = {
     header: {
       gstNo: "Customer GST No",
       customerName: "Customer Name",
-      total: "Total",
-      cgst: "Centeral Goods and Services",
-      sgst: "State Goods and Services",
-      igst: "Integerated Goods and Services",
+      cgst: "IGST",
+      sgst: "IGST",
+      igst: "IGST",
       grandTotal: "Grand Total",
     },
     bodyMapper: (item) => ({
       _id: item._id,
       customerName: item.customer?.name,
       gstNo: item.customer?.gstNo,
-      total: item.total,
-      cgst: item.cgst,
-      sgst: item.sgst,
-      igst: item.igst,
+      cgst: item.cgst.toFixed(2),
+      sgst: item.sgst.toFixed(2),
+      igst: item.igst.toFixed(2),
       grandTotal: (item?.total + item?.totalTax).toFixed(2),
     }),
   },
@@ -137,18 +134,14 @@ export default function ReportItem() {
   const { onSetDateFilter, ...response } = useDateFilterFetch({
     entity: `reports/${reportType}`,
   });
-  const { status } = response;
+  const { status, totalCount, totalPages, currentPage } = response;
   const currentReport = reportDataByType[reportType];
   const [customerFilter, setCustomerFilter] = useState({ lastDays: 0 });
   const onChangeCustomerFilterDays = (e) => {
     setCustomerFilter({ lastDays: e.currentTarget.value });
     const newEndDate = new Date();
     const newStartDate = new Date();
-    newStartDate.setDate(
-      newEndDate.getDate() - e.currentTarget.value === 0
-        ? 7
-        : e.currentTarget.value
-    );
+    newStartDate.setDate(newEndDate.getDate() - e.currentTarget.value);
     onSetDateFilter({
       start: newStartDate.toISOString().split("T")[0],
       end: newEndDate.toISOString().split("T")[0],
@@ -158,7 +151,7 @@ export default function ReportItem() {
     <Box>
       <Flex
         boxShadow={"md"}
-        p={3}
+        p={5}
         justifyContent={"center"}
         alignItems={"center"}
       >
@@ -186,11 +179,11 @@ export default function ReportItem() {
           <Spinner />
         </Flex>
       ) : (
-        <Box p={5}>
+        <Box>
           {reportType && currentReport ? (
             <TableContainer>
               <Table variant="simple">
-                <TableCaption>{reportType.toLocaleUpperCase()}</TableCaption>
+                <TableCaption>{`Total Found ${reportType.toLocaleUpperCase()} : ${totalCount}`}</TableCaption>
                 <Thead>
                   <Tr>
                     {Object.entries(currentReport.header).map(
@@ -216,6 +209,7 @@ export default function ReportItem() {
           ) : null}
         </Box>
       )}
+      <Pagination currentPage={currentPage} total={totalPages} />
     </Box>
   );
 }

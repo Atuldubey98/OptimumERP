@@ -20,7 +20,7 @@ const headerLinks = [
   },
   {
     icon: HiOutlineDocumentReport,
-    link: "/reports",
+    link: "/reports/sale",
     label: "Reports",
   },
   { icon: GoTag, link: "/products", label: "Products" },

@@ -13,7 +13,7 @@ instance.interceptors.response.use(
   function (error) {
     if (
       isAxiosError(error) &&
-      error.response.status === 401 &&
+      error.response?.status === 401 &&
       window.location.pathname !== "/login"
     ) {
       window.location.href = "/login";

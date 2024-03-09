@@ -9,28 +9,19 @@ export default function Reportspage() {
   const {
     isOpen: isMenuOpen,
     onClose: closeMenu,
-    onOpen: openMenu, 
+    onOpen: openMenu,
   } = useDisclosure({
     defaultIsOpen: false,
   });
   const { reportType } = useParams();
   return (
     <MainLayout>
-      <Flex height={"100%"}>
-        <Box flex={2} boxShadow={"md"}>
-          <Show above="lg">
-            <ReportTabs />
-          </Show>
+      <Box>
+        <Box p={5} width={"100%"} boxShadow={"md"}>
+          <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />
         </Box>
-        <Box flex={10} w={"100%"}>
-          <Show below="lg">
-            <Box p={5} width={"100%"} boxShadow={"md"}>
-              <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />
-            </Box>
-          </Show>
-          {reportType ? <ReportItem /> : null}
-        </Box>
-      </Flex>
+        {reportType ? <ReportItem /> : null}
+      </Box>
       <SideReportDrawer isOpen={isMenuOpen} onClose={closeMenu} />
     </MainLayout>
   );
