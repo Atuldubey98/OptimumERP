@@ -44,9 +44,9 @@ export default function TransactionPrefix() {
       if (
         currentOrg === values.organization &&
         settingContext.onSetSettingForOrganization
-      ) {
+      )
         settingContext.onSetSettingForOrganization(data.data);
-      }
+
       toast({
         title: "Success",
         description: "Setting updated",
