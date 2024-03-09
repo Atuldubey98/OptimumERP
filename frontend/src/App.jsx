@@ -1,5 +1,5 @@
-import { Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AdminPage from "./features/admin";
 import FullLoader from "./features/common/FullLoader";
 import TransactionSettingsPage from "./features/common/transaction-settings";
@@ -21,6 +21,11 @@ const InvoicesPage = lazy(() => import("./features/invoices/list"));
 const ReportsPage = lazy(() => import("./features/reports"));
 const ExpensesPage = lazy(() => import("./features/expenses"));
 export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (location.pathname === "/") navigate("/login", { replace: true });
+  }, [location.pathname]);
   return (
     <Suspense fallback={<FullLoader />}>
       <Routes>
