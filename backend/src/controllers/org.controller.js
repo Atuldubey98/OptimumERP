@@ -97,3 +97,10 @@ exports.updateOrganizationUser = requestAsyncHandler(async (req, res) => {
     .status(200)
     .json({ data: organizationUser, message: "User updated" });
 });
+
+exports.updateOrganization = requestAsyncHandler(async (req, res) => {
+  const updatedOrg = await Org.findByIdAndUpdate(req.params.orgId, req.body, {
+    new: true,
+  });
+  return res.status(200).json({ message: "Organization updated.", data : updatedOrg });
+});

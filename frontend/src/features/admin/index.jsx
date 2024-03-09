@@ -22,7 +22,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
@@ -31,6 +31,7 @@ import MainLayout from "../common/main-layout";
 import { useFormik } from "formik";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import RegisteUserDrawer from "./RegisteUserDrawer";
+import SettingContext from "../../contexts/SettingContext";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -94,9 +95,30 @@ export default function AdminPage() {
     }
     fetchOrgUsers();
   }, [organization]);
-  const currentSelectedOrganization = authorizedOrgs.find(
-    (orgUser) => orgUser.org._id === organization
-  );
+  const settingContext = useContext(SettingContext);
+  const {
+    values: currentSelectedOrganization,
+    handleChange,
+    isSubmitting,
+    handleSubmit,
+    setValues,
+  } = useFormik({
+    initialValues: {
+      name: "",
+      address: "",
+      gstNo: "",
+      panNo: "",
+    },
+    onSubmit: async (data, { setSubmitting }) => {
+      const { _id, ...restOrg } = data;
+      await instance.patch(
+        `/api/v1/organizations/${organization}`,
+        restOrg
+      );
+      window.location.reload();
+      setSubmitting(false);
+    },
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -111,7 +133,15 @@ export default function AdminPage() {
               <Select
                 fontFamily={`"Poppins", sans-serif`}
                 value={organization}
-                onChange={(e) => setOrganization(e.currentTarget.value)}
+                onChange={(e) => {
+                  setOrganization(e.currentTarget.value);
+                  setValues(
+                    authorizedOrgs.find(
+                      (authorizedOrg) =>
+                        authorizedOrg.org._id === e.currentTarget.value
+                    ).org
+                  );
+                }}
               >
                 <option value={""}>Select an organization</option>
                 {authorizedOrgs.map((authorizedOrg) => (
@@ -134,7 +164,7 @@ export default function AdminPage() {
                 <Heading fontSize={"lg"}>Current Organization Details</Heading>
               </Box>
               <Box>
-                <form>
+                <form onSubmit={handleSubmit}>
                   <Stack
                     marginBlock={3}
                     boxShadow={"md"}
@@ -146,33 +176,43 @@ export default function AdminPage() {
                     <FormControl>
                       <FormLabel>Name</FormLabel>
                       <Input
-                        readOnly
-                        defaultValue={currentSelectedOrganization.org.name}
+                        onChange={handleChange}
+                        name="name"
+                        value={currentSelectedOrganization.name}
                       />
                     </FormControl>
                     <FormControl>
                       <FormLabel>Address</FormLabel>
                       <Input
-                        readOnly
-                        defaultValue={currentSelectedOrganization.org.address}
+                        onChange={handleChange}
+                        name="address"
+                        value={currentSelectedOrganization.address}
                       />
                     </FormControl>
                     <FormControl>
                       <FormLabel>GST No</FormLabel>
                       <Input
-                        readOnly
-                        defaultValue={currentSelectedOrganization.org.gstNo}
+                        onChange={handleChange}
+                        name="gstNo"
+                        value={currentSelectedOrganization.gstNo}
                       />
                     </FormControl>
                     <FormControl>
                       <FormLabel>PAN No</FormLabel>
                       <Input
-                        readOnly
-                        defaultValue={currentSelectedOrganization.org.panNo}
+                        onChange={handleChange}
+                        name="panNo"
+                        value={currentSelectedOrganization.panNo}
                       />
                     </FormControl>
                     <Flex justifyContent={"center"} alignItems={"center"}>
-                      <Button colorScheme="blue">Update</Button>
+                      <Button
+                        type="submit"
+                        isLoading={isSubmitting}
+                        colorScheme="blue"
+                      >
+                        Update
+                      </Button>
                     </Flex>
                   </Stack>
                 </form>
