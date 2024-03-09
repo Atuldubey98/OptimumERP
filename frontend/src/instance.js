@@ -17,8 +17,6 @@ instance.interceptors.response.use(
       window.location.pathname !== "/login"
     )
       window.location.href = "/login";
-    if (isAxiosError(error) && error.response?.data.name === "OrgNotFound")
-      window.location.pathname = "/organizations";
     return Promise.reject(error);
   }
 );

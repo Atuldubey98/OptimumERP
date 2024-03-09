@@ -12,7 +12,6 @@ const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
 const logger = require("./logger");
 
 const app = express();
-
 mongoose
   .connect(MONGO_URI)
   .then(() => {

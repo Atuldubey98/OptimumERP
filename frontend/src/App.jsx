@@ -1,13 +1,19 @@
-import { Suspense, lazy, useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import AdminPage from "./features/admin";
+import { Suspense, lazy } from "react";
+import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-import TransactionSettingsPage from "./features/common/transaction-settings";
-import ExpenseCategoriePage from "./features/expense-categories";
-import CreatePurchasePage from "./features/purchase/create";
-import PurchasePage from "./features/purchase/list";
-import ProfileSettingsPage from "./features/profile/ProfileSettingsPage";
+const AdminPage = lazy(() => import("./features/admin"));
+const TransactionSettingsPage = lazy(() =>
+  import("./features/common/transaction-settings")
+);
+const ExpenseCategoriePage = lazy(() =>
+  import("./features/expense-categories")
+);
+const ProfileSettingsPage = lazy(() =>
+  import("./features/profile/ProfileSettingsPage")
+);
+const CreatePurchasePage = lazy(() => import("./features/purchase/create"));
 const DashboardPage = lazy(() => import("./features/dashboard"));
+const PurchasePage = lazy(() => import("./features/purchase/list"));
 const LoginPage = lazy(() => import("./features/login"));
 const OrgPage = lazy(() => import("./features/organizations"));
 const RegisterPage = lazy(() => import("./features/register"));
@@ -21,11 +27,6 @@ const InvoicesPage = lazy(() => import("./features/invoices/list"));
 const ReportsPage = lazy(() => import("./features/reports"));
 const ExpensesPage = lazy(() => import("./features/expenses"));
 export default function App() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (location.pathname === "/") navigate("/login", { replace: true });
-  }, [location.pathname]);
   return (
     <Suspense fallback={<FullLoader />}>
       <Routes>
