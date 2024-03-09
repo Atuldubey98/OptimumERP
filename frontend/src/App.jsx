@@ -6,6 +6,7 @@ import TransactionSettingsPage from "./features/common/transaction-settings";
 import ExpenseCategoriePage from "./features/expense-categories";
 import CreatePurchasePage from "./features/purchase/create";
 import PurchasePage from "./features/purchase/list";
+import ProfileSettingsPage from "./features/profile/ProfileSettingsPage";
 const DashboardPage = lazy(() => import("./features/dashboard"));
 const LoginPage = lazy(() => import("./features/login"));
 const OrgPage = lazy(() => import("./features/organizations"));
@@ -56,6 +57,7 @@ export default function App() {
           </Route>
         </Route>
         <Route path="/organizations" element={<OrgPage />} />
+        <Route path="/profile-settings" element={<ProfileSettingsPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

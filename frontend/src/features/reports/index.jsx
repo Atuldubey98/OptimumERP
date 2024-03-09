@@ -17,12 +17,12 @@ export default function Reportspage() {
   return (
     <MainLayout>
       <Flex height={"100%"}>
-        <Box boxShadow={"md"}>
+        <Box flex={2} boxShadow={"md"}>
           <Show above="lg">
             <ReportTabs />
           </Show>
         </Box>
-        <Box flex={1} w={"100%"}>
+        <Box flex={10} w={"100%"}>
           <Show below="lg">
             <Box p={5} width={"100%"} boxShadow={"md"}>
               <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />

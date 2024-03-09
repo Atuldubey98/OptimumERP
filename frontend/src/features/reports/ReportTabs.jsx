@@ -8,7 +8,7 @@ export default function ReportTabs() {
   const { reportType: tab, orgId } = useParams();
   const navigate = useNavigate();
   return (
-    <Box fontSize={"lg"} width={"100%"} maxWidth={"300px"}>
+    <Box fontSize={"lg"} width={"100%"}>
       {reportTypes.map((reportType) => (
         <Box key={reportType.type}>
           <Box fontWeight={"bold"} p={3} color={"gray"}>

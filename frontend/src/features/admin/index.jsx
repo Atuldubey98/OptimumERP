@@ -103,6 +103,7 @@ export default function AdminPage() {
           <FormControl maxW={"md"}>
             <FormLabel>Organization</FormLabel>
             <Select
+              fontFamily={`"Poppins", sans-serif`}
               value={organization}
               onChange={(e) => setOrganization(e.currentTarget.value)}
             >
