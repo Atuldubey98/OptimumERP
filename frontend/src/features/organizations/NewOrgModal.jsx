@@ -114,14 +114,26 @@ export default function NewOrgModal({
               </FormControl>
               <Divider />
               <Flex gap={3}>
-                <DateFilter
-                  isRequired={true}
-                  dateFilter={{
-                    startDate: formik.values.financialYearStart,
-                    endDate: formik.values.financialYearEnd,
-                  }}
-                  onChangeDateFilter={formik.handleChange}
-                />
+                <FormControl isRequired>
+                  <FormLabel fontWeight={"bold"}>Start Date</FormLabel>
+                  <Input
+                    name="financialYearStart"
+                    value={formik.values.financialYearStart}
+                    onChange={formik.handleChange}
+                    placeholder="dd-mm-yyyy"
+                    type="date"
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel fontWeight={"bold"}>End Date</FormLabel>
+                  <Input
+                    value={formik.values.financialYearEnd}
+                    placeholder="dd-mm-yyyy"
+                    type="date"
+                    name="financialYearEnd"
+                    onChange={formik.handleChange}
+                  />  
+                </FormControl>
               </Flex>
               <Divider />
             </Grid>
