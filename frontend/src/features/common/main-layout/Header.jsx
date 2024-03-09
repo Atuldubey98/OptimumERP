@@ -37,6 +37,7 @@ export default function Header({ onSideNavOpen }) {
     });
     navigate("/login", { replace: true });
     setStatus("idle");
+    localStorage.clear();
   });
   const loggingOut = status === "loggingOut";
   return (

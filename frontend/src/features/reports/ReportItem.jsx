@@ -6,6 +6,7 @@ import {
   Input,
   Select,
   Spinner,
+  Stack,
   Table,
   TableCaption,
   TableContainer,
@@ -20,6 +21,7 @@ import { useParams } from "react-router-dom";
 import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import { useState } from "react";
 import Pagination from "../common/main-layout/Pagination";
+import ReportOperation from "./ReportOperation";
 const reportDataByType = {
   sale: {
     header: {
@@ -103,9 +105,9 @@ const reportDataByType = {
       _id: item._id,
       customerName: item.customer?.name,
       gstNo: item.customer?.gstNo,
-      cgst: item.cgst.toFixed(2),
-      sgst: item.sgst.toFixed(2),
-      igst: item.igst.toFixed(2),
+      cgst: item.cgst?.toFixed(2),
+      sgst: item.sgst?.toFixed(2),
+      igst: item.igst?.toFixed(2),
       grandTotal: (item?.total + item?.totalTax).toFixed(2),
     }),
   },
@@ -122,9 +124,9 @@ const reportDataByType = {
       _id: item._id,
       customerName: item.customer?.name,
       gstNo: item.customer?.gstNo,
-      cgst: item.cgst.toFixed(2),
-      sgst: item.sgst.toFixed(2),
-      igst: item.igst.toFixed(2),
+      cgst: item.cgst?.toFixed(2),
+      sgst: item.sgst?.toFixed(2),
+      igst: item.igst?.toFixed(2),
       grandTotal: (item?.total + item?.totalTax).toFixed(2),
     }),
   },
@@ -149,13 +151,15 @@ export default function ReportItem() {
   };
   return (
     <Box>
-      <Flex
-        boxShadow={"md"}
-        p={5}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <Flex gap={3} width={"100%"} maxW={"xl"}>
+      <Stack spacing={3} boxShadow={"md"} p={5}>
+        <Flex
+          justifyContent={"center"}
+          alignItems={"center"}
+          gap={3}
+          margin={"auto"}
+          width={"100%"}
+          maxW={"xl"}
+        >
           <FormControl>
             <FormLabel fontWeight={"bold"}>Custom</FormLabel>
             <Select
@@ -173,7 +177,10 @@ export default function ReportItem() {
             onChangeDateFilter={response.onChangeDateFilter}
           />
         </Flex>
-      </Flex>
+        <Flex justifyContent={"center"} alignItems={"center"}>
+          <ReportOperation dateFilter={response.dateFilter} />
+        </Flex>
+      </Stack>
       {status === "loading" ? (
         <Flex marginBlock={5} justifyContent={"center"} alignItems={"center"}>
           <Spinner />
@@ -209,7 +216,9 @@ export default function ReportItem() {
           ) : null}
         </Box>
       )}
-      <Pagination currentPage={currentPage} total={totalPages} />
+      {status === "loading" ? null : (
+        <Pagination currentPage={currentPage} total={totalPages} />
+      )}
     </Box>
   );
 }

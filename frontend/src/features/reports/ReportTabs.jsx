@@ -2,11 +2,12 @@ import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 import { reportTypes } from "../../constants/reports";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function ReportTabs() {
+export default function ReportTabs({ onClose }) {
   const hoverBg = useColorModeValue("gray.200", "gray.700");
   const selectedBg = useColorModeValue("gray.300", "gray.600");
   const { reportType: tab, orgId } = useParams();
   const navigate = useNavigate();
+
   return (
     <Box fontSize={"lg"} width={"100%"}>
       {reportTypes.map((reportType) => (
@@ -17,14 +18,12 @@ export default function ReportTabs() {
           <Box>
             {reportType.children.map((reportTypeChild) => (
               <Box
-                onClick={() =>
-                  navigate(`/${orgId}/reports/${reportTypeChild.tab}`)
-                }
+                onClick={() => {
+                  navigate(`/${orgId}/reports/${reportTypeChild.tab}`);
+                  if (onClose) onClose();
+                }}
                 bg={tab === reportTypeChild.tab ? selectedBg : undefined}
                 cursor={"pointer"}
-                _hover={{
-                  bg: hoverBg,
-                }}
                 p={3}
                 key={reportTypeChild.tab}
               >

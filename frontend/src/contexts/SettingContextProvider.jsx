@@ -17,11 +17,15 @@ export default function SettingContextProvider({ children }) {
         navigate("/organizations");
         return;
       }
-      const { data } = await instance.get(
-        `/api/v1/organizations/${storedOrgId}/settings`
-      );
-      setSetting(data.data);
-      setCurrentOrgRole(data.role);
+      try {
+        const { data } = await instance.get(
+          `/api/v1/organizations/${storedOrgId}/settings`
+        );
+        setSetting(data.data);
+        setCurrentOrgRole(data.role);
+      } catch (error) {
+        if (storedOrgId) navigate("/login");
+      }
     })();
   }, [userContext.user]);
   return (
