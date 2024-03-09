@@ -2,6 +2,7 @@ import { Link, Text } from "@chakra-ui/react";
 import React from "react";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { useParams } from "react-router-dom";
+import { baseURL } from "../../instance";
 
 export default function ExportButton({ dateFilter }) {
   const { orgId, reportType } = useParams();
@@ -23,7 +24,7 @@ export default function ExportButton({ dateFilter }) {
         padding={2}
         colorScheme="green"
         fontSize={"md"}
-        href={`http://localhost:9000/api/v1/organizations/${orgId}/reports/${reportType}/download?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
+        href={`${baseURL}/api/v1/organizations/${orgId}/reports/${reportType}/download?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
       >
         <Text>Export</Text>
         <SiMicrosoftexcel />

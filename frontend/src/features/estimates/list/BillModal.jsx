@@ -9,7 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import instance from "../../../instance";
+import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
@@ -48,7 +48,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
             }}
             width={"100%"}
             height={720}
-            src={`http://localhost:9000${downloadBillUrl}`}
+            src={`${baseURL}${downloadBillUrl}`}
             frameBorder="0"
           />
         </ModalBody>

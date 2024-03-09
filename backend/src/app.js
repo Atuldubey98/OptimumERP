@@ -39,14 +39,23 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
-
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-    maxAge: 86400,
-  })
-);
+const whitelist = [
+  "http://localhost:5173",
+  "https://erp-mern.onrender.com",
+  "http://localhost:9000",
+];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  maxAge: 86400,
+};
+app.use(cors(corsOptions));
 
 const sessionOptions = {
   secret: SESSION_SECRET,

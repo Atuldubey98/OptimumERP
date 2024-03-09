@@ -1,7 +1,8 @@
 import axios, { isAxiosError } from "axios";
 
+export const baseURL = import.meta.env.PROD ? "" : "http://localhost:9000";
 const instance = axios.create({
-  baseURL: "http://localhost:9000",
+  baseURL,
   withCredentials: true,
 });
 export default instance;
