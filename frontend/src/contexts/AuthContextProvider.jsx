@@ -3,20 +3,20 @@ import { currentUser } from "../api/login";
 import AuthContext from "./AuthContext";
 export default function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState("loading");
+  const [userLoading, setUserLoading] = useState(true);
   useEffect(() => {
+    setUserLoading(true);
     (async () => {
       try {
-        setStatus("loading");
         const { data } = await currentUser();
         setUser(data);
-        setStatus("success");
       } catch (error) {
-        setStatus("failure");
+        setUser(null);
+      } finally {
+        setUserLoading(false);
       }
     })();
   }, []);
-  const userLoading = status === "loading";
   const onSetCurrentUser = (user) => {
     setUser(user);
   };
