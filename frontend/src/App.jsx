@@ -50,13 +50,13 @@ export default function App() {
             <Route element={<CreatePurchasePage />} path="create" />
             <Route element={<CreatePurchasePage />} path=":purchaseId/edit" />
           </Route>
+          <Route path="reports">
+            <Route path="" element={<ReportsPage />} />
+            <Route path=":reportType" element={<ReportsPage />} />
+          </Route>
         </Route>
         <Route path="/organizations" element={<OrgPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/reports">
-          <Route path="" element={<ReportsPage />} />
-          <Route path=":reportType" element={<ReportsPage />} />
-        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>

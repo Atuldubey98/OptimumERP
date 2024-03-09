@@ -51,16 +51,21 @@ export default function useDateFilterFetch({ entity }) {
     return () => {
       controller.abort();
     };
-  }, [searchQuery, dateFilter, page]);
+  }, [searchQuery, dateFilter, page, entity]);
   const onChangeDateFilter = (e) =>
     setDateFilter({
       ...dateFilter,
       [e.currentTarget.name]: e.currentTarget.value,
     });
-
+  const onSetDateFilter = ({ start, end }) => {
+    setDateFilter({
+      endDate: end,
+      startDate: start,
+    });
+  };
   useEffect(() => {
-    fetchItems();
-  }, [searchQuery, dateFilter, page]);
+    if (entity) fetchItems();
+  }, [searchQuery, dateFilter, page, entity]);
   const { items, currentPage, totalCount, totalPages } = billItems;
   return {
     items,
@@ -68,6 +73,7 @@ export default function useDateFilterFetch({ entity }) {
     dateFilter,
     status,
     fetchItems,
+    onSetDateFilter,
     totalPages,
     currentPage,
     totalCount,

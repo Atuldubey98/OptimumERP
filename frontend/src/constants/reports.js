@@ -11,28 +11,20 @@ export const reportTypes = [
         label: "Purchase",
       },
       {
-        tab: "day_book",
-        label: "Day book",
-      },
-      {
         tab: "transactions",
         label: "Transactions",
       },
     ],
   },
-  {
-    type: "Part Wise",
-    children: [
-      {
-        tab: "parties",
-        label: "Party statement",
-      },
-      {
-        tab: "sale_purchase",
-        label: "Sale Purchase By party",
-      },
-    ],
-  },
+  // {
+  //   type: "Part Wise",
+  //   children: [
+  //     {
+  //       tab: "parties",
+  //       label: "Party statement",
+  //     },
+  //   ],
+  // },
   {
     type: "GST reports",
     children: [

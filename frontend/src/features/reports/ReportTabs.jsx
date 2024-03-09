@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function ReportTabs() {
   const hoverBg = useColorModeValue("gray.200", "gray.700");
   const selectedBg = useColorModeValue("gray.300", "gray.600");
-  const { reportType : tab } = useParams();
+  const { reportType: tab, orgId } = useParams();
   const navigate = useNavigate();
   return (
     <Box fontSize={"lg"} width={"100%"} maxWidth={"300px"}>
@@ -17,7 +17,9 @@ export default function ReportTabs() {
           <Box>
             {reportType.children.map((reportTypeChild) => (
               <Box
-                onClick={()=>navigate(`/reports/${reportTypeChild.tab}`)}
+                onClick={() =>
+                  navigate(`/${orgId}/reports/${reportTypeChild.tab}`)
+                }
                 bg={tab === reportTypeChild.tab ? selectedBg : undefined}
                 cursor={"pointer"}
                 _hover={{

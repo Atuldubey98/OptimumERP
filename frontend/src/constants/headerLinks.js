@@ -4,6 +4,7 @@ import { GiExpense } from "react-icons/gi";
 import { GoTag } from "react-icons/go";
 import { TbCategory } from "react-icons/tb";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },
@@ -16,6 +17,11 @@ const headerLinks = [
     icon: TbCategory,
     link: "/expense-categories",
     label: "Expense Categories",
+  },
+  {
+    icon: HiOutlineDocumentReport,
+    link: "/reports",
+    label: "Reports",
   },
   { icon: GoTag, link: "/products", label: "Products" },
 ];
