@@ -7,7 +7,7 @@ const userApi = require("./api/users");
 const orgApi = require("./api/organization");
 const productApi = require("./api/products");
 const customersApi = require("./api/customers");
-
+const billsApi = require("./api/bills");
 const users = userApi(instance);
 (async () => {
   await users.registerManyUsers();
@@ -41,6 +41,13 @@ const users = userApi(instance);
     cookie,
     orgId: data.data._id,
   });
+  const invoices = billsApi({
+    axios: instance,
+    cookie,
+    orgId: data.data._id,
+    entity: "invoices",
+  });
   await products.createManyProducts();
   await customers.createManyCustomers();
+  await invoices.createManyBills();
 })();
