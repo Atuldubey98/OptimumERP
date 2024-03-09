@@ -9,6 +9,7 @@ import {
   Heading,
   Input,
   Select,
+  Spinner,
   Stack,
   Table,
   TableCaption,
@@ -99,27 +100,33 @@ export default function AdminPage() {
   return (
     <MainLayout>
       <Box p={5}>
-        <Box>
-          <FormControl maxW={"md"}>
-            <FormLabel>Organization</FormLabel>
-            <Select
-              fontFamily={`"Poppins", sans-serif`}
-              value={organization}
-              onChange={(e) => setOrganization(e.currentTarget.value)}
-            >
-              <option value={""}>Select an organization</option>
-              {authorizedOrgs.map((authorizedOrg) => (
-                <option
-                  disabled={authorizedOrg.role === "user"}
-                  key={authorizedOrg.org._id}
-                  value={authorizedOrg.org._id}
-                >
-                  {authorizedOrg.org.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"} marginBlock={3}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <Box>
+            <FormControl maxW={"md"}>
+              <FormLabel>Organization</FormLabel>
+              <Select
+                fontFamily={`"Poppins", sans-serif`}
+                value={organization}
+                onChange={(e) => setOrganization(e.currentTarget.value)}
+              >
+                <option value={""}>Select an organization</option>
+                {authorizedOrgs.map((authorizedOrg) => (
+                  <option
+                    disabled={authorizedOrg.role === "user"}
+                    key={authorizedOrg.org._id}
+                    value={authorizedOrg.org._id}
+                  >
+                    {authorizedOrg.org.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        )}
         {loading || !organization || !currentSelectedOrganization ? null : (
           <Fade in={!loading && organization}>
             <Stack marginBlock={3} spacing={1}>

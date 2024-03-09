@@ -17,6 +17,7 @@ import { logoutUser } from "../../../api/logout";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import AlertModal from "../AlertModal";
 import AvatarProfile from "./AvatarProfile";
+import useAuth from "../../../hooks/useAuth";
 export default function Header({ onSideNavOpen }) {
   const onNavigateToOrganizations = () => navigate("/organizations");
   const { colorMode, toggleColorMode } = useColorMode();
@@ -25,6 +26,7 @@ export default function Header({ onSideNavOpen }) {
   const navigate = useNavigate();
   const toast = useToast();
   const [status, setStatus] = useState("idle");
+  const authContext = useAuth();
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
     const { data } = await logoutUser();
@@ -37,7 +39,8 @@ export default function Header({ onSideNavOpen }) {
     });
     navigate("/login", { replace: true });
     setStatus("idle");
-    localStorage.clear();
+    if (authContext.onSetCurrentUser) authContext.onSetCurrentUser(null);
+    localStorage.removeItem("organization");
   });
   const loggingOut = status === "loggingOut";
   return (

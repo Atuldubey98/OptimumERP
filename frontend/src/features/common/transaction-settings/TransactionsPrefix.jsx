@@ -87,58 +87,60 @@ export default function TransactionPrefix() {
       <Heading fontSize={"lg"}>Transaction Prefixes</Heading>
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
-          <FormControl>
-            <FormLabel>Organization</FormLabel>
-            <Select
-              value={formik.values.organization}
-              onChange={formik.handleChange}
-              name="organization"
-            >
-              <option value={""}>Select an organization</option>
-              {organizations.map((organization) => (
-                <option
-                  disabled={organization.role !== "admin"}
-                  value={organization.org._id}
-                  key={organization.org._id}
-                >
-                  {organization.org.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl isDisabled={!formik.values.organization}>
-            <FormLabel>Currency</FormLabel>
-            <Select
-              name="currency"
-              value={formik.values.currency}
-              onChange={formik.handleChange}
-            >
-              {currencyCodes.map((currency) => (
-                <option
-                  key={currency}
-                  value={currency}
-                >{`${currency} - ${currencies[currency].symbol}`}</option>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl isDisabled={!formik.values.organization}>
-            <FormLabel>Invoice Prefix</FormLabel>
-            <Input
-              name="invoice"
-              value={formik.values.invoice}
-              onChange={formik.handleChange}
-              placeholder="ABC-ORG/23-24/XXXX"
-            />
-          </FormControl>
-          <FormControl isDisabled={!formik.values.organization}>
-            <FormLabel>Quotation Prefix</FormLabel>
-            <Input
-              name="quotation"
-              value={formik.values.quotation}
-              onChange={formik.handleChange}
-              placeholder="ABC-ORG/23-24/XXXX"
-            />
-          </FormControl>
+          <Stack spacing={3}>
+            <FormControl>
+              <FormLabel>Organization</FormLabel>
+              <Select
+                value={formik.values.organization}
+                onChange={formik.handleChange}
+                name="organization"
+              >
+                <option value={""}>Select an organization</option>
+                {organizations.map((organization) => (
+                  <option
+                    disabled={organization.role !== "admin"}
+                    value={organization.org._id}
+                    key={organization.org._id}
+                  >
+                    {organization.org.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Currency</FormLabel>
+              <Select
+                name="currency"
+                value={formik.values.currency}
+                onChange={formik.handleChange}
+              >
+                {currencyCodes.map((currency) => (
+                  <option
+                    key={currency}
+                    value={currency}
+                  >{`${currency} - ${currencies[currency].symbol}`}</option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Invoice Prefix</FormLabel>
+              <Input
+                name="invoice"
+                value={formik.values.invoice}
+                onChange={formik.handleChange}
+                placeholder="ABC-ORG/23-24/XXXX"
+              />
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Quotation Prefix</FormLabel>
+              <Input
+                name="quotation"
+                value={formik.values.quotation}
+                onChange={formik.handleChange}
+                placeholder="ABC-ORG/23-24/XXXX"
+              />
+            </FormControl>
+          </Stack>
           <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
             <Button
               isLoading={formik.isSubmitting || loading}

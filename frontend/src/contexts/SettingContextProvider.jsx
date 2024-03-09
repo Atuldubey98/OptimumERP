@@ -13,10 +13,7 @@ export default function SettingContextProvider({ children }) {
   useEffect(() => {
     const storedOrgId = localStorage.getItem("organization");
     (async () => {
-      if (!storedOrgId && userContext.user) {
-        navigate("/organizations");
-        return;
-      }
+      if (!storedOrgId && userContext.user) return;
       try {
         const { data } = await instance.get(
           `/api/v1/organizations/${storedOrgId}/settings`
