@@ -93,7 +93,7 @@ export default function CustomersPage() {
                 <SearchItem />
               </Box>
             }
-            heading={"Customers list"}
+            heading={"Customers"}
             tableData={customers}
             caption={`Total customers found : ${totalCustomers}`}
             operations={customers.map((customer) => (

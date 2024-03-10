@@ -22,7 +22,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <Grid gap={4}>
+      <Grid maxH={"80svh"} overflowY={"auto"} gap={4}>
         <FormControl
           isRequired
           isInvalid={formik.errors.name && formik.touched.name}
