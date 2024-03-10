@@ -24,18 +24,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(
-  express.static(path.join(__dirname, "../../frontend/dist"), {
-    maxAge: "1y",
-  })
-);
-app.use((req, res, next) => {
-  if (req.originalUrl.startsWith("/api")) {
-    next();
-  } else {
-    return res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
-  }
-});
+
 app.use(express.json());
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
