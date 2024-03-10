@@ -1,4 +1,4 @@
-import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import useExpenseCategories from "../../hooks/useExpenseCategories";
 import MainLayout from "../common/main-layout";
 import TableLayout from "../common/table-layout";
@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import AlertModal from "../common/AlertModal";
 import { useState } from "react";
+import { isAxiosError } from "axios";
 export default function ExpenseCategoriePage() {
   const { fetchExpenseCategories, expenseCategories, status } =
     useExpenseCategories();
@@ -57,17 +58,30 @@ export default function ExpenseCategoriePage() {
     });
     openExpenseCategoryForm();
   };
-  const { requestAsyncHandler } = useAsyncCall();
-  const deleteExpenseCategory = requestAsyncHandler(async () => {
-    if (!expenseCategory) return;
-    setExpenseCategoryStatus("deleting");
-    await instance.delete(
-      `/api/v1/organizations/${orgId}/expenses/categories/${expenseCategory._id}`
-    );
-    fetchExpenseCategories();
-    setExpenseCategoryStatus("idle");
-    closeDeleteModal()
-  });
+  const toast = useToast();
+  const deleteExpenseCategory = async () => {
+    try {
+      if (!expenseCategory) return;
+      setExpenseCategoryStatus("deleting");
+      await instance.delete(
+        `/api/v1/organizations/${orgId}/expenses/categories/${expenseCategory._id}`
+      );
+      fetchExpenseCategories();
+    } catch (err) {
+      toast({
+        title: isAxiosError(err) ? err.response?.data?.name : "Error",
+        description: isAxiosError(err)
+          ? err?.response?.data.message || "Network error occured"
+          : "Network error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setExpenseCategoryStatus("idle");
+      closeDeleteModal();
+    }
+  };
   const deleting = expenseCategoryStatus === "deleting";
 
   return (

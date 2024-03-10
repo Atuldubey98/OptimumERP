@@ -1,18 +1,18 @@
-import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { deleteCustomer } from "../../api/customer";
-import useAsyncCall from "../../hooks/useAsyncCall";
 import useCustomerForm from "../../hooks/useCustomerForm";
 import useCustomers from "../../hooks/useCustomers";
+import AlertModal from "../common/AlertModal";
 import ShowDrawer from "../common/ShowDrawer";
 import MainLayout from "../common/main-layout";
+import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
+import SearchItem from "../common/table-layout/SearchItem";
 import CustomerFormDrawer from "./CustomerFormDrawer";
 import CustomerMenu from "./CustomerMenu";
-import SearchItem from "../common/table-layout/SearchItem";
-import AlertModal from "../common/AlertModal";
-import Pagination from "../common/main-layout/Pagination";
+import { isAxiosError } from "axios";
 export default function CustomersPage() {
   const {
     isOpen: isDeleteModalOpen,
@@ -47,20 +47,34 @@ export default function CustomersPage() {
     openCustomerDrawer();
   };
   const { orgId = "" } = useParams();
-  const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const deleting = status === "deleting";
-  const onOpenCustomerToDelete = (customer)=>{
+  const onOpenCustomerToDelete = (customer) => {
     setSelectedToShowCustomer(customer);
     openDeleteModal();
-  }
-  const onDeleteCustomer = requestAsyncHandler(async () => {
-    setStatus("deleting");
-    await deleteCustomer(selectedToShowCustomer._id, orgId);
-    fetchCustomers();
-    setStatus("idle");
-    closeDeleteModal();
-  });
+  };
+  const toast = useToast();
+  const onDeleteCustomer = async () => {
+    try {
+      setStatus("deleting");
+      await deleteCustomer(selectedToShowCustomer._id, orgId);
+      fetchCustomers();
+      setStatus("idle");
+    } catch (err) {
+      toast({
+        title: isAxiosError(err) ? err.response?.data?.name : "Error",
+        description: isAxiosError(err)
+          ? err?.response?.data.message || "Network error occured"
+          : "Network error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setStatus("idle");
+      closeDeleteModal()
+    }
+  };
   const onCloseCustomer = () => {
     closeCustomerDrawer();
     setSelectedToShowCustomer(null);

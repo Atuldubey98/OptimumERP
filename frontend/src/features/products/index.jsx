@@ -132,7 +132,12 @@ export default function ProductsPage() {
             heading={"Products"}
             formBtnLabel={"Add new product"}
             isOpen={isProductDrawerOpen}
-            item={selectedToShowProduct}
+            item={{
+              ...selectedToShowProduct,
+              createdAt: new Date(selectedToShowProduct.createdAt)
+                .toISOString()
+                .split("T")[0],
+            }}
             onClose={closeProductDrawer}
             selectedKeys={{
               name: "Name",

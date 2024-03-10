@@ -9,6 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
+import { CiSaveDown2 } from "react-icons/ci";
 import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
 import useAsyncCall from "../../../hooks/useAsyncCall";
@@ -56,6 +57,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
           <ButtonGroup>
             <Button onClick={onClose}>Close</Button>
             <Button
+              leftIcon={<CiSaveDown2/>}
               onClick={onSaveBill}
               colorScheme="blue"
               isLoading={status === "loading"}
