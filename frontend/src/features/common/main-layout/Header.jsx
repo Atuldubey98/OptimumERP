@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Show,
+  Text,
   useColorMode,
   useDisclosure,
   useToast,
@@ -54,12 +55,14 @@ export default function Header({ onSideNavOpen }) {
           alignItems={"center"}
         >
           <Button
-            leftIcon={<GoArrowSwitch />}
             colorScheme="blue"
             onClick={onNavigateToOrganizations}
             variant="outline"
           >
-            Switch Organization
+            <GoArrowSwitch />
+            <Show above="xl">
+              <Text marginLeft={3}>Switch Organization</Text>
+            </Show>
           </Button>
           {colorMode === "dark" ? (
             <MdOutlineWbSunny
