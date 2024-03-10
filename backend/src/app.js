@@ -30,8 +30,8 @@ app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
 const whitelist = [
   "http://localhost:5173",
-  "https://erp-mern.onrender.com",
   "http://localhost:9000",
+  "https://erp-d6iu.onrender.com",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
