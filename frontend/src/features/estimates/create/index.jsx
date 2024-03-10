@@ -6,22 +6,23 @@ import {
   FormErrorMessage,
   FormLabel,
   Grid,
+  Heading,
   Input,
   SimpleGrid,
   Spinner,
-  Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import useEstimateForm from "../../../hooks/useEstimateForm";
 import MainLayout from "../../common/main-layout";
+import DateField from "./DateField";
+import DescriptionField from "./DescriptionField";
 import ItemsList from "./ItemList";
 import SelectCustomer from "./SelectCustomer";
 import SelectStatus from "./SelectStatus";
-import TotalsBox from "./TotalsBox";
 import TermsAndCondtions from "./TermsConditions";
-import DescriptionField from "./DescriptionField";
-import DateField from "./DateField";
+import TotalsBox from "./TotalsBox";
 import { defaultQuoteItem, statusList } from "./data";
+import { AiOutlineSave } from "react-icons/ai";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const loading = status === "loading";
@@ -37,6 +38,7 @@ export default function CreateEstimatePage() {
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 <Button
+                  leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"
                   colorScheme="teal"
@@ -45,6 +47,7 @@ export default function CreateEstimatePage() {
                   Save
                 </Button>
               </Flex>
+              <Heading fontSize={"xl"}>Estimate Details</Heading>
               <Grid gap={4}>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
@@ -64,6 +67,7 @@ export default function CreateEstimatePage() {
                   <SelectStatus formik={formik} statusList={statusList} />
                   <SelectCustomer formik={formik} />
                 </SimpleGrid>
+                <Heading fontSize={"xl"}>Items</Heading>
                 <ItemsList formik={formik} defaultItem={defaultQuoteItem} />
                 <TotalsBox quoteItems={formik.values.items} />
                 <DescriptionField formik={formik} />

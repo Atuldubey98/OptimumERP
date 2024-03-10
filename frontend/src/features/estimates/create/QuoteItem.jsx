@@ -46,9 +46,8 @@ export default function QuoteItem({
   return (
     <Box marginBlock={5}>
       <SimpleGrid gap={2} minChildWidth={200}>
-        <GridItem>
+        <GridItem colSpan={2}>
           <FormControl isRequired>
-            <FormLabel>Item Name</FormLabel>
             <InputGroup>
               <Input
                 onChange={handleQuoteItemChange}
@@ -67,12 +66,11 @@ export default function QuoteItem({
             <FormErrorMessage>{errors.name}</FormErrorMessage>
           </FormControl>
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={1}>
           <FormControl
             isRequired
             isInvalid={errors.quantity && errors.quantity}
           >
-            <FormLabel>Quantity</FormLabel>
             <Input
               type="number"
               name={`items[${index}].quantity`}
@@ -82,9 +80,8 @@ export default function QuoteItem({
             <FormErrorMessage>{errors.quantity}</FormErrorMessage>
           </FormControl>
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.um && errors.um}>
-            <FormLabel>UM</FormLabel>
             <Select
               name={`items[${index}].um`}
               onChange={handleQuoteItemChange}
@@ -99,9 +96,8 @@ export default function QuoteItem({
             <FormErrorMessage>{errors.um}</FormErrorMessage>
           </FormControl>
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.gst && errors.gst}>
-            <FormLabel>GST/IGST</FormLabel>
             <Select
               name={`items[${index}].gst`}
               value={quoteItem.gst}
@@ -116,9 +112,8 @@ export default function QuoteItem({
             <FormErrorMessage>{errors.gst}</FormErrorMessage>
           </FormControl>
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.price && errors.price}>
-            <FormLabel>Price</FormLabel>
             <InputGroup>
               <Input
                 type="number"
@@ -133,12 +128,12 @@ export default function QuoteItem({
           </FormControl>
         </GridItem>
         <GridItem
+          colSpan={1}
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
         >
           <FormControl flex={1}>
-            <FormLabel>Total</FormLabel>
             <InputGroup>
               <Input
                 name="total"

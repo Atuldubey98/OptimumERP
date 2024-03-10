@@ -9,6 +9,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Grid,
+  Heading,
   Input,
   SimpleGrid,
   Spinner,
@@ -22,6 +23,7 @@ import { defaultInvoiceItem } from "../../estimates/create/data";
 import SelectCustomer from "../../estimates/create/SelectCustomer";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import { purchaseStatusList } from "../../../constants/purchase";
+import { AiOutlineSave } from "react-icons/ai";
 
 export default function CreatePurchasePage() {
   const { formik, status } = usePurchaseForm();
@@ -38,6 +40,7 @@ export default function CreatePurchasePage() {
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 <Button
+                  leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"
                   colorScheme="teal"
@@ -47,6 +50,7 @@ export default function CreatePurchasePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
+                <Heading fontSize={"xl"}>Purchase Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
@@ -70,6 +74,7 @@ export default function CreatePurchasePage() {
                   />
                   <SelectCustomer formik={formik} />
                 </SimpleGrid>
+                <Heading fontSize={"xl"}>Items</Heading>
                 <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
                 <TotalsBox quoteItems={formik.values.items} />
                 <DescriptionField formik={formik} />

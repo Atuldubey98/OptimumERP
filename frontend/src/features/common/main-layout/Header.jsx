@@ -18,6 +18,7 @@ import useAsyncCall from "../../../hooks/useAsyncCall";
 import AlertModal from "../AlertModal";
 import AvatarProfile from "./AvatarProfile";
 import useAuth from "../../../hooks/useAuth";
+import { GoArrowSwitch } from "react-icons/go";
 export default function Header({ onSideNavOpen }) {
   const onNavigateToOrganizations = () => navigate("/organizations");
   const { colorMode, toggleColorMode } = useColorMode();
@@ -53,6 +54,7 @@ export default function Header({ onSideNavOpen }) {
           alignItems={"center"}
         >
           <Button
+            leftIcon={<GoArrowSwitch />}
             colorScheme="blue"
             onClick={onNavigateToOrganizations}
             variant="outline"

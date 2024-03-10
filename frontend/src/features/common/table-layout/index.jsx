@@ -15,7 +15,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import React, { memo } from "react";
-import { IoArrowBack } from "react-icons/io5";
+import { IoAdd, IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 function TableLayoutMemoized({
   heading,
@@ -50,7 +50,12 @@ function TableLayoutMemoized({
           </Text>
         </Flex>
         <ButtonGroup gap="4">
-          <Button onClick={onAddNewItem} size={"sm"} colorScheme="blue">
+          <Button
+            leftIcon={<IoAdd />}
+            onClick={onAddNewItem}
+            size={"sm"}
+            colorScheme="blue"
+          >
             Add new
           </Button>
         </ButtonGroup>

@@ -56,6 +56,10 @@ const taxRates = [
     label: "IGST@12%",
   },
   {
+    value: "IGST:18",
+    label: "IGST@18%",
+  },
+  {
     value: "IGST:28",
     label: "IGST@28%",
   },
@@ -63,7 +67,7 @@ const taxRates = [
 const ums = [
   {
     value: "none",
-    label: "None",
+    label: "NONE",
   },
   {
     value: "pcs",

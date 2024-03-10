@@ -36,7 +36,7 @@ export default function NewOrgModal({
       financialYearStart: `${date.getFullYear()}-04-01`,
       financialYearEnd: `${date.getFullYear() + 1}-03-31`,
     },
-    onSubmit: requestAsyncHandler(async (values) => {
+    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { financialYearEnd, financialYearStart, ...resetOrg } = values;
       await createOrg({
         ...resetOrg,
@@ -45,6 +45,7 @@ export default function NewOrgModal({
       onAddedFetch();
       onCloseNewOrgModal();
       formik.resetForm();
+      setSubmitting(false);
     }),
   });
   return (
@@ -132,7 +133,7 @@ export default function NewOrgModal({
                     type="date"
                     name="financialYearEnd"
                     onChange={formik.handleChange}
-                  />  
+                  />
                 </FormControl>
               </Flex>
               <Divider />
@@ -148,7 +149,11 @@ export default function NewOrgModal({
             >
               Close
             </Button>
-            <Button type="submit" colorScheme="blue">
+            <Button
+              isLoading={formik.isSubmitting}
+              type="submit"
+              colorScheme="blue"
+            >
               Save
             </Button>
           </ModalFooter>

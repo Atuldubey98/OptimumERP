@@ -9,6 +9,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Grid,
+  Heading,
   Input,
   SimpleGrid,
   Spinner,
@@ -22,6 +23,7 @@ import { defaultInvoiceItem } from "../../estimates/create/data";
 import SelectCustomer from "../../estimates/create/SelectCustomer";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import { invoiceStatusList } from "../../../constants/invoice";
+import { AiOutlineSave } from "react-icons/ai";
 
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
@@ -38,6 +40,7 @@ export default function CreateInvoicePage() {
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 <Button
+                  leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"
                   colorScheme="teal"
@@ -47,6 +50,7 @@ export default function CreateInvoicePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
+                <Heading fontSize={"xl"}>Invoice Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
@@ -71,13 +75,23 @@ export default function CreateInvoicePage() {
                   <SelectCustomer formik={formik} />
                   <FormControl>
                     <FormLabel>PO Number</FormLabel>
-                    <Input value={formik.values.poNo} onChange={formik.handleChange} name="poNo"/>
+                    <Input
+                      value={formik.values.poNo}
+                      onChange={formik.handleChange}
+                      name="poNo"
+                    />
                   </FormControl>
                   <FormControl>
                     <FormLabel>PO Date</FormLabel>
-                    <Input value={formik.values.poDate} onChange={formik.handleChange} name="poDate" type="date"/>
+                    <Input
+                      value={formik.values.poDate}
+                      onChange={formik.handleChange}
+                      name="poDate"
+                      type="date"
+                    />
                   </FormControl>
                 </SimpleGrid>
+                <Heading fontSize={"xl"}>Items</Heading>
                 <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
                 <TotalsBox quoteItems={formik.values.items} />
                 <DescriptionField formik={formik} />

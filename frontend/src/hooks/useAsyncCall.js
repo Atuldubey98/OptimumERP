@@ -8,7 +8,7 @@ export default function useAsyncCall() {
     (...values) => {
       Promise.resolve(fn(...values)).catch((err) => {
         toast({
-          title: "Error",
+          title: isAxiosError(err) ? err.response?.data?.name : "Error",
           description: isAxiosError(err)
             ? err?.response?.data.message || "Network error occured"
             : "Network error occured",
@@ -16,7 +16,6 @@ export default function useAsyncCall() {
           duration: 3000,
           isClosable: true,
         });
-        console.log(err);
         if (values.length > 1) {
           const { setSubmitting } = values[1];
           setSubmitting(false);

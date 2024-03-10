@@ -151,7 +151,6 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-  console.log(filter);
   const quotesQuery = Quote.find(filter).populate("customer").populate("org");
 
   const totalCount = await Quote.countDocuments(filter);
