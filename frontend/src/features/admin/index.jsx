@@ -32,6 +32,7 @@ import { useFormik } from "formik";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import RegisteUserDrawer from "./RegisteUserDrawer";
 import SettingContext from "../../contexts/SettingContext";
+import { IoAdd } from "react-icons/io5";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -111,10 +112,7 @@ export default function AdminPage() {
     },
     onSubmit: async (data, { setSubmitting }) => {
       const { _id, ...restOrg } = data;
-      await instance.patch(
-        `/api/v1/organizations/${organization}`,
-        restOrg
-      );
+      await instance.patch(`/api/v1/organizations/${organization}`, restOrg);
       window.location.reload();
       setSubmitting(false);
     },
@@ -223,6 +221,7 @@ export default function AdminPage() {
               <Flex justifyContent={"flex-end"} alignItems={"center"}>
                 {organization ? (
                   <Button
+                    leftIcon={<IoAdd />}
                     colorScheme="blue"
                     onClick={() => {
                       formik.setValues({
