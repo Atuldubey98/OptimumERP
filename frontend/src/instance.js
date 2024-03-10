@@ -1,7 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
 export const baseURL = import.meta.env.VITE_API_URL;
-console.log(baseURL);
 const instance = axios.create({
   baseURL,
   withCredentials: true,

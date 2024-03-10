@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 const whitelist = [
   "http://localhost:5173",
   "http://localhost:9000",
-  "https://erp-d6iu.onrender.com",
+  "https://erp-mern-frontend.onrender.com",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
