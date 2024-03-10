@@ -5,6 +5,7 @@ import {
   FormLabel,
   Input,
   Select,
+  SimpleGrid,
   Spinner,
   Stack,
   Table,
@@ -152,14 +153,7 @@ export default function ReportItem() {
   return (
     <Box>
       <Stack spacing={3} boxShadow={"md"} p={5}>
-        <Flex
-          justifyContent={"center"}
-          alignItems={"center"}
-          gap={3}
-          margin={"auto"}
-          width={"100%"}
-          maxW={"xl"}
-        >
+        <SimpleGrid minChildWidth={300} gap={3} width={"100%"}>
           <FormControl>
             <FormLabel fontWeight={"bold"}>Custom</FormLabel>
             <Select
@@ -176,7 +170,7 @@ export default function ReportItem() {
             dateFilter={response.dateFilter}
             onChangeDateFilter={response.onChangeDateFilter}
           />
-        </Flex>
+        </SimpleGrid>
         <Flex justifyContent={"center"} alignItems={"center"}>
           <ReportOperation dateFilter={response.dateFilter} />
         </Flex>
