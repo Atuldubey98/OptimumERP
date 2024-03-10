@@ -17,8 +17,8 @@ export default function LoginPage() {
   });
   const formik = useFormik({
     initialValues: {
-      email: "pcurnock0@cpanel.net",
-      password: "12345678",
+      email: "",
+      password: "",
     },
     validationSchema: loginSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
