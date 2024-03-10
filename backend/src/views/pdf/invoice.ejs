@@ -91,7 +91,7 @@
               <td class="text-right border border-1 p-2">
                 <%= (invoiceItem.price * invoiceItem.quantity * (100 +
                 (invoiceItem.gst === "none" ? 0 :
-                parseFloat(invoiceItem.gst.split(":")[1])))/100) %>
+                parseFloat(invoiceItem.gst.split(":")[1])))/100).toFixed(2) %>
               </td>
             </tr>
             <% }) %>
@@ -107,7 +107,7 @@
               <p>Sub-total</p>
               <p>
                 <%= invoice.items.reduce((total, invoiceItem)=>invoiceItem.price
-                * invoiceItem.quantity, 0) %>
+                * invoiceItem.quantity, 0).toFixed(2) %>
               </p>
             </div>
           </div>

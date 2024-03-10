@@ -201,6 +201,6 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
   return res.render("pdf/invoice", {
     title: `Invoice-${invoice.invoiceNo}-${invoice.date}`,
     invoice,
-    grandTotal,
+    grandTotal: grandTotal.toFixed(2),
   });
 });
