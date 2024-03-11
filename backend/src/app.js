@@ -57,6 +57,7 @@ const sessionOptions = {
   cookie: {
     sameSite: "none",
     secure: false,
+    partitioned : true,
   },
 };
 
