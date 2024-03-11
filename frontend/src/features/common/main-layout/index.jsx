@@ -14,7 +14,7 @@ export default function MainLayout({ children }) {
           <Sidebar />
         </Hide>
         <Flex flexDirection={"column"} width={"100%"}>
-          <Box boxShadow={"md"} p={5}>
+          <Box boxShadow={"md"} p={2}>
             <Header onSideNavOpen={onOpen} />
           </Box>
           <Box overflowY={"auto"} h={"90svh"}>
