@@ -21,7 +21,7 @@ export default function SettingContextProvider({ children }) {
         setSetting(data.data);
         setCurrentOrgRole(data.role);
       } catch (error) {
-        localStorage.clear();
+        localStorage.removeItem("organization");
       }
     })();
   }, [userContext.user]);

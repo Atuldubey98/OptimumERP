@@ -57,7 +57,7 @@ const sessionOptions = {
   cookie: {
     sameSite: "none",
     secure: false,
-    partitioned : true,
+    partitioned: true,
   },
 };
 
@@ -67,10 +67,9 @@ if (NODE_ENV === "production") {
 }
 app.use(session(sessionOptions));
 
-app.get("/api/v1/health", (_, res) => {
-  return res.status(200).send("Server is running");
-});
-app.options("*", cors());
+app.get("/api/v1/health", (_, res) =>
+  res.status(200).send("Server is running")
+);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations", organizationRouter);
 

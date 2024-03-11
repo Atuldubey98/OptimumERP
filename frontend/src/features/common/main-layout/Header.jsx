@@ -3,12 +3,10 @@ import React from "react";
 import { AiOutlineDashboard } from "react-icons/ai";
 
 import { CiDark } from "react-icons/ci";
-import { GoArrowSwitch } from "react-icons/go";
 import { MdMenu, MdOutlineWbSunny } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import AvatarProfileWithOptions from "../sidebar/AvatarProfileWithOptions";
 export default function Header({ onSideNavOpen }) {
-  const onNavigateToOrganizations = () => navigate("/organizations");
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
 
