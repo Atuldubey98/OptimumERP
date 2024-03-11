@@ -23,9 +23,12 @@ export default function Header({ onSideNavOpen }) {
             colorScheme="blue"
             onClick={() => {
               navigate(
-                `/${
-                  (localStorage.getItem("organization") || "") + "/dashboard"
-                }`
+                localStorage.getItem("organization")
+                  ? `/${
+                      (localStorage.getItem("organization") || "") +
+                      "/dashboard"
+                    }`
+                  : "/organizations"
               );
             }}
             variant="outline"

@@ -14,7 +14,7 @@ import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 export default function DashboardTable({ heading, tableHeads, tableRows }) {
   const { symbol } = useCurrentOrgCurrency();
   return (
-    <Box>
+    <Box borderRadius={"md"}>
       <Box paddingBlock={5}>
         <Heading fontSize={"2xl"}>{heading}</Heading>
       </Box>
