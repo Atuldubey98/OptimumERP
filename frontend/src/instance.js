@@ -1,6 +1,8 @@
 import axios, { isAxiosError } from "axios";
 
-export const baseURL = import.meta.env.VITE_API_URL;
+export const baseURL = import.meta.env.PROD
+  ? "https://erp-mern.onrender.com"
+  : "http://localhost:9000";
 const instance = axios.create({
   baseURL,
   withCredentials: true,
