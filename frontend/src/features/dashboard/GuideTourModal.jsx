@@ -111,7 +111,7 @@ export default function GuideTourModal({ isOpen, onClose }) {
   ];
   return (
     <Modal
-      size={"2xl"}
+      size={"3xl"}
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={onClose}
