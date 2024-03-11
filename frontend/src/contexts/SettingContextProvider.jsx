@@ -21,7 +21,7 @@ export default function SettingContextProvider({ children }) {
         setSetting(data.data);
         setCurrentOrgRole(data.role);
       } catch (error) {
-        if (storedOrgId) navigate("/login");
+        localStorage.clear();
       }
     })();
   }, [userContext.user]);
