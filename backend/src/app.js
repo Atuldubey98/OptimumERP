@@ -55,7 +55,7 @@ const sessionOptions = {
     ttl: 14 * 24 * 60 * 60,
   }),
   cookie: {
-    sameSite: "strict",
+    sameSite: false,
     secure: false,
   },
 };
