@@ -5,8 +5,9 @@ const {
   updateCustomer,
   deleteCustomer,
   createCustomer,
+  searchCustomer,
 } = require("../controllers/customer.controller");
-const {authenticate} = require("../middlewares/auth.middleware");
+const { authenticate } = require("../middlewares/auth.middleware");
 const {
   createModel,
   updateModel,
@@ -23,6 +24,12 @@ customerRouter.get(
   checkOrgAuthorization,
   paginateModel,
   getAllCustomer
+);
+customerRouter.get(
+  "/search",
+  authenticate,
+  checkOrgAuthorization,
+  searchCustomer
 );
 customerRouter.post(
   "/",

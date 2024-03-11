@@ -7,6 +7,9 @@ export default function useAsyncCall() {
     (fn) =>
     (...values) => {
       Promise.resolve(fn(...values)).catch((err) => {
+        if (import.meta.env.DEV) {
+          console.log(err);
+        }
         toast({
           title: isAxiosError(err) ? err.response?.data?.name : "Error",
           description: isAxiosError(err)

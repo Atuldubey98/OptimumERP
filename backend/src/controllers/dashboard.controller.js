@@ -5,6 +5,7 @@ const Quotes = require("../models/quotes.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Customer = require("../models/customer.model");
 const Expense = require("../models/expense.model");
+const Purchase = require("../models/purchase.model");
 exports.getDashboard = requestAsyncHandler(async (req, res) => {
   const currentDate = new Date();
   const startOfMonth = new Date(
@@ -47,6 +48,13 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
     },
     org: orgId,
   });
+  const purchasesThisMonth = await Purchase.countDocuments({
+    date: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+    org: orgId,
+  });
 
   const recentInvoices = await Invoice.find({ org: orgId })
     .sort({ createdAt: -1 })
@@ -68,6 +76,7 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
       customersThisMonth,
       recentInvoices,
       recentQuotes,
+      purchasesThisMonth,
     },
   });
 });

@@ -1,24 +1,31 @@
-import { Box, Divider } from "@chakra-ui/react";
+import { Box, Divider, Flex } from "@chakra-ui/react";
 import React from "react";
+import CurrentOrganization from "../main-layout/CurrentOrganization";
 import Banner from "./Banner";
 import { SidebarLinksList } from "./SidebarLinksList";
-import CurrentOrganization from "../main-layout/CurrentOrganization";
+import AvatarProfileWithOptions from "./AvatarProfileWithOptions";
 export default function Sidebar() {
   return (
-    <Box
+    <Flex
+      flexDirection={"column"}
+      alignItems={"center"}
+      justifyContent={"space-between"}
       height={"100svh"}
       boxShadow={"md"}
       width={"100%"}
       left={0}
       maxWidth={350}
     >
-      <Box marginBlock={4}>
-        <Banner />
+      <Box w={"100%"}>
+        <Box marginBlock={4}>
+          <Banner />
+        </Box>
+        <Divider />
+        <CurrentOrganization />
+        <Divider />
+        <SidebarLinksList />
       </Box>
-      <Divider />
-      <CurrentOrganization />
-      <Divider />
-      <SidebarLinksList />
-    </Box>
+      <AvatarProfileWithOptions />
+    </Flex>
   );
 }

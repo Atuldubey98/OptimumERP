@@ -22,9 +22,10 @@ export default function DashboardPage() {
     invoiceThisMonth: 0,
     quotesThisMonth: 0,
     customersThisMonth: 0,
+    purchasesThisMonth: 0,
+    expensesThisMonth: 0,
     recentInvoices: [],
     recentQuotes: [],
-    expensesThisMonth: 0,
   });
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
@@ -80,6 +81,12 @@ export default function DashboardPage() {
               <Dashcard
                 dashType="Quotation"
                 dashTotal={dashboard.quotesThisMonth}
+              />
+            </Skeleton>
+            <Skeleton isLoaded={!loading}>
+              <Dashcard
+                dashType="Purchase"
+                dashTotal={dashboard.purchasesThisMonth}
               />
             </Skeleton>
           </StatGroup>

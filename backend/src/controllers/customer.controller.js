@@ -91,3 +91,13 @@ exports.deleteCustomer = requestAsyncHandler(async (req, res) => {
   if (!customer) throw new CustomerNotFound();
   return res.status(200).json({ message: "Customer deleted" });
 });
+
+exports.searchCustomer = requestAsyncHandler(async (req, res) => {
+  const filter = {
+    org: req.params.orgId,
+  };
+  const search = req.query.keyword || "";
+  if (search) filter.$text = { $search: search };
+  const customers = await Customer.find(filter).sort({ createdAt: -1 });
+  return res.status(200).json({ data: customers });
+});

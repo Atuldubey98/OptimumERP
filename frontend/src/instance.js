@@ -20,6 +20,7 @@ instance.interceptors.response.use(
       window.location.pathname !== "/login"
     )
       window.location.href = "/login";
+    
     return Promise.reject(error);
   }
 );
