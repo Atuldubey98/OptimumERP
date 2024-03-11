@@ -58,7 +58,7 @@ export default function DashboardPage() {
         <Heading>Dashboard</Heading>
         <Stack marginBlock={2} spacing={3}>
           <Heading fontSize={"2xl"}>{"This Month"}</Heading>
-          <StatGroup>
+          <StatGroup gap={3}>
             <Skeleton isLoaded={!loading}>
               <Dashcard
                 dashType="Invoice"
