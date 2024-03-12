@@ -13,6 +13,7 @@ import {
   Input,
   SimpleGrid,
   Spinner,
+  Textarea,
 } from "@chakra-ui/react";
 import SelectStatus from "../../estimates/create/SelectStatus";
 import DateField from "../../estimates/create/DateField";
@@ -24,6 +25,7 @@ import SelectCustomer from "../../estimates/create/SelectCustomer";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import { purchaseStatusList } from "../../../constants/purchase";
 import { AiOutlineSave } from "react-icons/ai";
+import CustomerSelectBill from "../../invoices/create/CustomerSelectBill";
 
 export default function CreatePurchasePage() {
   const { formik, status } = usePurchaseForm();
@@ -50,6 +52,18 @@ export default function CreatePurchasePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
+                <Heading fontSize={"xl"}>Customer</Heading>
+                <CustomerSelectBill formik={formik} />
+                {formik.values.customer ? (
+                  <FormControl isRequired>
+                    <FormLabel>Billing Address</FormLabel>
+                    <Textarea
+                      name="billingAddress"
+                      onChange={formik.handleChange}
+                      value={formik.values.billingAddress}
+                    />
+                  </FormControl>
+                ) : null}
                 <Heading fontSize={"xl"}>Purchase Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl

@@ -4,6 +4,7 @@ import MainLayout from "../../common/main-layout";
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -13,6 +14,9 @@ import {
   Input,
   SimpleGrid,
   Spinner,
+  Text,
+  Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
 import SelectStatus from "../../estimates/create/SelectStatus";
 import DateField from "../../estimates/create/DateField";
@@ -24,10 +28,31 @@ import SelectCustomer from "../../estimates/create/SelectCustomer";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import { invoiceStatusList } from "../../../constants/invoice";
 import { AiOutlineSave } from "react-icons/ai";
-
+import AsyncCreatableSelect from "react-select/async-creatable";
+import instance from "../../../instance";
+import { useParams } from "react-router-dom";
+import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
+import useCustomerForm from "../../../hooks/useCustomerForm";
+import CustomerSelectBill from "./CustomerSelectBill";
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
+  const { orgId } = useParams();
   const loading = status === "loading";
+  const promiseOptions = async (searchQuery) => {
+    const { data } = await instance.get(
+      `/api/v1/organizations/${orgId}/customers/search`,
+      {
+        params: {
+          keyword: searchQuery,
+        },
+      }
+    );
+    return data.data.map((customer) => ({
+      value: customer,
+      label: customer.name,
+    }));
+  };
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -50,6 +75,18 @@ export default function CreateInvoicePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
+                <Heading fontSize={"xl"}>Customer</Heading>
+                <CustomerSelectBill formik={formik} />
+                {formik.values.customer ? (
+                  <FormControl isRequired>
+                    <FormLabel>Billing Address</FormLabel>
+                    <Textarea
+                      name="billingAddress"
+                      onChange={formik.handleChange}
+                      value={formik.values.billingAddress}
+                    />
+                  </FormControl>
+                ) : null}
                 <Heading fontSize={"xl"}>Invoice Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
@@ -72,7 +109,6 @@ export default function CreateInvoicePage() {
                     formik={formik}
                     statusList={invoiceStatusList}
                   />
-                  <SelectCustomer formik={formik} />
                   <FormControl>
                     <FormLabel>PO Number</FormLabel>
                     <Input

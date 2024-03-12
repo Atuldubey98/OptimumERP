@@ -11,6 +11,7 @@ export default function usePurchaseForm() {
   const [status, setStatus] = useState("idle");
   const purchaseSchema = Yup.object().shape({
     purchaseNo: Yup.string().required("Purchase number is required"),
+    billingAddress: Yup.string().required("Party Address is required"),
     customer: Yup.string().required("Customer is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
@@ -38,6 +39,7 @@ export default function usePurchaseForm() {
   const formik = useFormik({
     initialValues: {
       purchaseNo: "",
+      billingAddress: "",
       date: new Date(Date.now()).toISOString().split("T")[0],
       status: "paid",
       items: [defaultInvoiceItem],
@@ -78,7 +80,7 @@ export default function usePurchaseForm() {
           );
           const {
             customer,
-
+            billingAddress = "",
             purchaseNo,
             date,
             status,
@@ -88,9 +90,10 @@ export default function usePurchaseForm() {
             poNo = "",
           } = data.data;
           formik.setValues({
+            billingAddress,
             _id: data.data._id,
             customer: customer._id,
-
+            customerDetails: customer,
             purchaseNo,
             date: new Date(date).toISOString().split("T")[0],
             status,

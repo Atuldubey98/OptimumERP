@@ -10,6 +10,7 @@ const itemSchema = Joi.object({
 const quoteDto = Joi.object({
   customer: Joi.string().required().label("Customer"),
   description: Joi.string().optional().allow("").label("Description"),
+  billingAddress: Joi.string().required().label("Party Address"),
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   items: Joi.array().items(itemSchema).required().label("Quotation Items"),
   date: Joi.date().required().label("Quotation date"),

@@ -11,6 +11,7 @@ const itemSchema = Joi.object({
 const purchaseDto = Joi.object({
   customer: Joi.string().required().label("Customer"),
   description: Joi.string().optional().allow("").label("Description"),
+  billingAddress: Joi.string().required().label("Party Address"),
   terms: Joi.string().optional().allow("").label("Terms & Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Purchase Invoice date"),

@@ -12,6 +12,7 @@ export default function useInvoicesForm() {
   const invoiceSchema = Yup.object().shape({
     invoiceNo: Yup.number().required("Invoice number is required"),
     customer: Yup.string().required("Customer is required"),
+    billingAddress: Yup.string().required("Billing Address is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
     poNo: Yup.string().optional(),
@@ -47,6 +48,7 @@ export default function useInvoicesForm() {
       terms: "Thanks for business !",
       description: "",
       poNo: "",
+      billingAddress: "",
       poDate: "",
     },
     validationSchema: invoiceSchema,
@@ -88,6 +90,7 @@ export default function useInvoicesForm() {
             status,
             items,
             description,
+            billingAddress = "",
             poDate = "",
             poNo = "",
           } = data.data;
@@ -98,10 +101,12 @@ export default function useInvoicesForm() {
             invoiceNo,
             date: new Date(date).toISOString().split("T")[0],
             status,
+            customerDetails: customer,
             items,
             description,
             poDate: poDate ? poDate.split("T")[0] : "",
             poNo,
+            billingAddress,
           });
           setStatus("success");
         })();

@@ -7,6 +7,10 @@ const invoiceSchema = new Schema(
       required: true,
       ref: "customer",
     },
+    billingAddress: {
+      type: String,
+      required: true,
+    },
     total: {
       type: Number,
       default: 0,

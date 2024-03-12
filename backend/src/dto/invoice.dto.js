@@ -10,13 +10,14 @@ const itemSchema = Joi.object({
 
 const invoiceDto = Joi.object({
   customer: Joi.string().required().label("Customer"),
+  billingAddress: Joi.string().required().label("Billing Address"),
   description: Joi.string().optional().allow("").label("Description"),
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Invoice date"),
   invoiceNo: Joi.number().label("Invoice No.").required(),
-  poNo : Joi.string().label("PO Number").allow("").optional(),
-  poDate : Joi.string().label("PO Date").allow("").optional(),
+  poNo: Joi.string().label("PO Number").allow("").optional(),
+  poDate: Joi.string().label("PO Date").allow("").optional(),
   status: Joi.string()
     .default("draft")
     .valid("draft", "sent", "paid")
