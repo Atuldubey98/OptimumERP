@@ -1,10 +1,10 @@
-import React from "react";
-import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
 import { useDisclosure } from "@chakra-ui/react";
-import useCustomerForm from "../../../hooks/useCustomerForm";
-import AsyncCreatableSelect from "react-select/async-creatable";
-import instance from "../../../instance";
+import { AsyncCreatableSelect } from "chakra-react-select";
+import React from "react";
 import { useParams } from "react-router-dom";
+import useCustomerForm from "../../../hooks/useCustomerForm";
+import instance from "../../../instance";
+import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
 
 export default function CustomerSelectBill({ formik }) {
   const { orgId } = useParams();
@@ -46,7 +46,6 @@ export default function CustomerSelectBill({ formik }) {
           formik.setFieldValue("billingAddress", customer.billingAddress);
           formik.setFieldValue("customerDetails", customer);
         }}
-        isClearable
         onCreateOption={(input) => {
           customerFormik.setFieldValue("name", input);
           openCustomerFormDrawer();

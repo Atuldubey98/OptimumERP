@@ -1,10 +1,6 @@
-import { FormikProvider } from "formik";
-import useInvoicesForm from "../../../hooks/useInvoicesForm";
-import MainLayout from "../../common/main-layout";
 import {
   Box,
   Button,
-  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -14,25 +10,22 @@ import {
   Input,
   SimpleGrid,
   Spinner,
-  Text,
-  Textarea,
-  useDisclosure,
+  Textarea
 } from "@chakra-ui/react";
-import SelectStatus from "../../estimates/create/SelectStatus";
-import DateField from "../../estimates/create/DateField";
-import ItemsList from "../../estimates/create/ItemList";
-import TotalsBox from "../../estimates/create/TotalsBox";
-import DescriptionField from "../../estimates/create/DescriptionField";
-import { defaultInvoiceItem } from "../../estimates/create/data";
-import SelectCustomer from "../../estimates/create/SelectCustomer";
-import TermsAndCondtions from "../../estimates/create/TermsConditions";
-import { invoiceStatusList } from "../../../constants/invoice";
+import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
-import AsyncCreatableSelect from "react-select/async-creatable";
-import instance from "../../../instance";
 import { useParams } from "react-router-dom";
-import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
-import useCustomerForm from "../../../hooks/useCustomerForm";
+import { invoiceStatusList } from "../../../constants/invoice";
+import useInvoicesForm from "../../../hooks/useInvoicesForm";
+import instance from "../../../instance";
+import MainLayout from "../../common/main-layout";
+import DateField from "../../estimates/create/DateField";
+import DescriptionField from "../../estimates/create/DescriptionField";
+import ItemsList from "../../estimates/create/ItemList";
+import SelectStatus from "../../estimates/create/SelectStatus";
+import TermsAndCondtions from "../../estimates/create/TermsConditions";
+import TotalsBox from "../../estimates/create/TotalsBox";
+import { defaultInvoiceItem } from "../../estimates/create/data";
 import CustomerSelectBill from "./CustomerSelectBill";
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
@@ -76,7 +69,11 @@ export default function CreateInvoicePage() {
               </Flex>
               <Grid gap={4}>
                 <Heading fontSize={"xl"}>Customer</Heading>
-                <CustomerSelectBill formik={formik} />
+                <FormControl isRequired>
+                  <FormLabel>Bill to</FormLabel>
+                  <CustomerSelectBill formik={formik} />
+                  <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+                </FormControl>
                 {formik.values.customer ? (
                   <FormControl isRequired>
                     <FormLabel>Billing Address</FormLabel>

@@ -51,7 +51,11 @@ export default function CreateEstimatePage() {
               </Flex>
               <Grid gap={4}>
                 <Heading fontSize={"xl"}>Customer</Heading>
-                <CustomerSelectBill formik={formik} />
+                <FormControl isRequired>
+                  <FormLabel>Bill To</FormLabel>
+                  <CustomerSelectBill formik={formik} />
+                  <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+                </FormControl>
                 {formik.values.customer ? (
                   <FormControl isRequired>
                     <FormLabel>Billing Address</FormLabel>

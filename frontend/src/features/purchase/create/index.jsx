@@ -1,6 +1,3 @@
-import { FormikProvider } from "formik";
-import usePurchaseForm from "../../../hooks/usePurchaseForm";
-import MainLayout from "../../common/main-layout";
 import {
   Box,
   Button,
@@ -15,16 +12,17 @@ import {
   Spinner,
   Textarea,
 } from "@chakra-ui/react";
-import SelectStatus from "../../estimates/create/SelectStatus";
-import DateField from "../../estimates/create/DateField";
-import ItemsList from "../../estimates/create/ItemList";
-import TotalsBox from "../../estimates/create/TotalsBox";
-import DescriptionField from "../../estimates/create/DescriptionField";
-import { defaultInvoiceItem } from "../../estimates/create/data";
-import SelectCustomer from "../../estimates/create/SelectCustomer";
-import TermsAndCondtions from "../../estimates/create/TermsConditions";
-import { purchaseStatusList } from "../../../constants/purchase";
+import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
+import { purchaseStatusList } from "../../../constants/purchase";
+import usePurchaseForm from "../../../hooks/usePurchaseForm";
+import MainLayout from "../../common/main-layout";
+import DateField from "../../estimates/create/DateField";
+import DescriptionField from "../../estimates/create/DescriptionField";
+import ItemsList from "../../estimates/create/ItemList";
+import SelectStatus from "../../estimates/create/SelectStatus";
+import TotalsBox from "../../estimates/create/TotalsBox";
+import { defaultInvoiceItem } from "../../estimates/create/data";
 import CustomerSelectBill from "../../invoices/create/CustomerSelectBill";
 
 export default function CreatePurchasePage() {
@@ -53,7 +51,11 @@ export default function CreatePurchasePage() {
               </Flex>
               <Grid gap={4}>
                 <Heading fontSize={"xl"}>Customer</Heading>
-                <CustomerSelectBill formik={formik} />
+                <FormControl isRequired>
+                  <FormLabel>Bill from</FormLabel>
+                  <CustomerSelectBill formik={formik} />
+                  <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+                </FormControl>
                 {formik.values.customer ? (
                   <FormControl isRequired>
                     <FormLabel>Billing Address</FormLabel>
@@ -86,7 +88,6 @@ export default function CreatePurchasePage() {
                     formik={formik}
                     statusList={purchaseStatusList}
                   />
-                  <SelectCustomer formik={formik} />
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
                 <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
