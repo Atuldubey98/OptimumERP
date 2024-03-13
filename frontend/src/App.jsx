@@ -30,7 +30,7 @@ export default function App() {
   return (
     <Suspense fallback={<FullLoader />}>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route
           path="/transaction-settings"

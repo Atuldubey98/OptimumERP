@@ -11,6 +11,6 @@ export default function PrivateRoute({ children }) {
   ) : user ? (
     children
   ) : (
-    <Navigate to={"/login"} />
+    <Navigate to={"/"} />
   );
 }

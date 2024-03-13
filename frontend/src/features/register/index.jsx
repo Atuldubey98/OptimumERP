@@ -58,7 +58,7 @@ export default function RegisterPage() {
             Register
           </Button>
         </Flex>
-        <ChakraLink color="blue.500" as={ReactRouterLink} to={"/login"}>
+        <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
           Login Now ?
         </ChakraLink>
       </form>

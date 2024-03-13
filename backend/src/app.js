@@ -66,7 +66,17 @@ if (NODE_ENV === "production") {
   sessionOptions.cookie.secure = true;
 }
 app.use(session(sessionOptions));
-
+app.get("/", (req, res) => {
+  const user = req.session.user;
+  res.render("landing", {
+    title: "Optimum ERP",
+    user,
+    baseUrl:
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:5173"
+        : "https://erp-mern-frontend.onrender.com",
+  });
+});
 app.get("/api/v1/health", (_, res) =>
   res.status(200).send("Server is running")
 );

@@ -37,7 +37,7 @@ export default function AvatarProfileWithOptions() {
       duration: 3000,
       isClosable: true,
     });
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
     setStatus("idle");
     if (authContext.onSetCurrentUser) authContext.onSetCurrentUser(null);
     localStorage.removeItem("organization");

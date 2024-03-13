@@ -17,9 +17,9 @@ instance.interceptors.response.use(
     if (
       isAxiosError(error) &&
       error.response?.status === 401 &&
-      window.location.pathname !== "/login"
+      window.location.pathname !== "/"
     )
-      window.location.href = "/login";
+      window.location.href = "/";
     
     return Promise.reject(error);
   }
