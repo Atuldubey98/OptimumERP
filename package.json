@@ -7,7 +7,7 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "build:frontend": "cd frontend && npm i && npm run build",
-    "build:backend": "cd backend && npm i && npm run tailwind:css",
+    "build:backend": "cd backend && npm i",
     "build": "npm run build:frontend && npm run build:backend",
     "start": "cd backend && npm start"
   },

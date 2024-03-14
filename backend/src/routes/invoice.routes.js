@@ -12,6 +12,7 @@ const {
   getInvoices,
   updateInvoice,
   downloadInvoice,
+  viewInvoice,
 } = require("../controllers/invoice.controller");
 
 const invoiceRouter = Router({
@@ -52,6 +53,12 @@ invoiceRouter.patch(
   updateModel,
   checkOrgAuthorization,
   updateInvoice
+);
+invoiceRouter.get(
+  "/:invoiceId/view",
+  authenticate,
+  checkOrgAuthorization,
+  viewInvoice
 );
 invoiceRouter.get(
   "/:invoiceId/download",
