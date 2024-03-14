@@ -18,7 +18,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
-  const downloadBillUrl = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download`;
+  const downloadBillUrl = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=simple`;
   const onSaveBill = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(downloadBillUrl);
@@ -53,11 +53,11 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
               style={{
                 padding: 2,
                 borderRadius: 10,
+                border : "none"
               }}
               width={"100%"}
               height={720}
               src={`${baseURL}${downloadBillUrl}`}
-              frameBorder="0"
             />
           </Skeleton>
         </ModalBody>
