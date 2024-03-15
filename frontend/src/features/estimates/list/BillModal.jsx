@@ -13,15 +13,16 @@ import {
 import { CiSaveDown2 } from "react-icons/ci";
 import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
+import { IoPrintOutline } from "react-icons/io5";
 import useAsyncCall from "../../../hooks/useAsyncCall";
-export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
+export default function BillModal({ onClose, isOpen, bill, entity, heading, onSaveBill }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
-  const downloadBillUrl = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=simple`;
-  const onSaveBill = requestAsyncHandler(async () => {
+  const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=simple`;
+  const onPrintBill = requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await instance.get(downloadBillUrl);
+    const { data } = await instance.get(viewBill);
     setStatus("success");
     const billPrint = window.open("", "");
     billPrint.document.write(data);
@@ -53,11 +54,11 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
               style={{
                 padding: 2,
                 borderRadius: 10,
-                border : "none"
+                border: "none",
               }}
               width={"100%"}
               height={720}
-              src={`${baseURL}${downloadBillUrl}`}
+              src={`${baseURL}${viewBill}`}
             />
           </Skeleton>
         </ModalBody>
@@ -67,6 +68,13 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
             <Button
               leftIcon={<CiSaveDown2 />}
               onClick={onSaveBill}
+              colorScheme="green"
+            >
+              Download
+            </Button>
+            <Button
+              leftIcon={<IoPrintOutline />}
+              onClick={onPrintBill}
               colorScheme="blue"
               isLoading={status === "loading"}
             >

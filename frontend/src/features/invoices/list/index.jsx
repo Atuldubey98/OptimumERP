@@ -1,9 +1,4 @@
-import {
-  Box,
-  Flex,
-  Spinner,
-  useDisclosure
-} from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../../constants/invoice";
@@ -70,6 +65,19 @@ export default function InvoicesPage() {
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
+  const onSaveBill = async (item) => {
+    const downloadBill = `/api/v1/organizations/${item.org._id}/invoices/${item._id}/download?template=simple`;
+    const { data } = await instance.get(downloadBill, {
+      responseType: "blob",
+    });
+    const href = URL.createObjectURL(data);
+    const link = document.createElement("a");
+    link.setAttribute("download", "file.pdf");
+    link.href = href;
+    link.click();
+    URL.revokeObjectURL(href);
+  };
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -91,6 +99,9 @@ export default function InvoicesPage() {
             operations={invoices.map((invoice) => (
               <VertIconMenu
                 showItem={() => onOpenInvoice(invoice)}
+                onDownloadItem={() => {
+                  onSaveBill(invoice);
+                }}
                 editItem={() => {
                   navigate(`${invoice._id}/edit`);
                 }}
@@ -117,6 +128,7 @@ export default function InvoicesPage() {
             entity={"invoices"}
             heading={"Invoice"}
             isOpen={isOpen}
+            onSaveBill={onSaveBill}
             onClose={onClose}
           />
         ) : null}

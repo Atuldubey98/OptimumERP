@@ -7,11 +7,16 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import React from "react";
-import { CiEdit } from "react-icons/ci";
+import { CiEdit, CiSaveDown2 } from "react-icons/ci";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
-export default function VertIconMenu({ showItem, editItem, deleteItem }) {
+export default function VertIconMenu({
+  showItem,
+  editItem,
+  deleteItem,
+  onDownloadItem,
+}) {
   return (
     <Menu>
       <MenuButton
@@ -33,6 +38,15 @@ export default function VertIconMenu({ showItem, editItem, deleteItem }) {
         <MenuItem icon={<CiEdit size={20} />} onClick={editItem} command="⌘E">
           Edit
         </MenuItem>
+        {onDownloadItem ? (
+          <MenuItem
+            onClick={onDownloadItem}
+            icon={<CiSaveDown2 size={20} />}
+            command="⌘D"
+          >
+            Download
+          </MenuItem>
+        ) : null}
         <Divider />
         <MenuItem
           icon={<RiDeleteBin2Line color="red" size={20} />}

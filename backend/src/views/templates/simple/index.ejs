@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+
+      .invoice-container {
+        margin: 0 auto;
+        padding: 3px;
+      }
+
+      /* Header Styles */
+      .company-info {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .invoice-header {
+        margin-bottom: 20px;
+      }
+
+      /* Customer and Shipping Info Styles */
+      .customer-info,
+      .shipping-info {
+        margin-right: 20px;
+        margin-bottom: 20px;
+      }
+
+      /* Item Table Styles */
+      .item-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      .item-table th,
+      .item-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .item-table th {
+        background-color: #f2f2f2;
+      }
+
+      .total-section {
+        margin-bottom: 20px;
+      }
+
+      .total-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .total-table th,
+      .total-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .total-table th {
+        background-color: #f2f2f2;
+      }
+
+      /* Terms and Bank Details Styles */
+      .terms,
+      .bank-details {
+        margin-bottom: 20px;
+      }
+      .invoice-head {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container">
+      <div class="company-info">
+        <h1><%= entity.org.name %></h1>
+        <p><%= entity.org.address %></p>
+        <p>GSTIN: <%= entity.org.gstNo %></p>
+        <p>PAN: <%= entity.org.panNo %></p>
+      </div>
+      <div
+        style="
+          display: -webkit-box;
+          -webkit-box-orient: horizontal;
+          -webkit-box-pack: space-between;
+        "
+      >
+        <div class="customer-info">
+          <h3><%= partyMetaHeading %></h3>
+          <p><%= entity.customer.name %></p>
+          <p><%= entity.billingAddress %></p>
+          <p>GSTIN: <%= entity.customer.gstNo %></p>
+          <p>PAN: <%= entity.customer.panNo %></p>
+        </div>
+        <div class="invoice-header">
+          <h3><%= billMetaHeading %></h3>
+          <p>Date: <%= entity.date.toDateString() %></p>
+          <p>Invoice Number: <%= num %></p>
+          <% if (entity.poNo) { %>
+          <p>PO No: <%= entity?.poNo %></p>
+          <% } %> <% if (entity.poDate) { %>
+          <p>PO Date: <%= entity.poDate.toDateString() %></p>
+          <% } %>
+        </div>
+      </div>
+      <table class="item-table">
+        <thead>
+          <tr>
+            <th>Line no.</th>
+            <th>Item</th>
+            <th>GST</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>GST Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% entity.items.forEach(function(item, index) { %>
+          <tr>
+            <td><%= index+1 %></td>
+            <td><%= item.name %></td>
+            <td><%= item.gst %></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.price %></td>
+            <td>
+              <%= (item.price * item.quantity + (item.price * item.quantity *
+              (item.gst === "none" ? 0 : parseFloat(item.gst.split(":")[1]) /
+              100))).toFixed(2) %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+
+      <div class="total-section">
+        <table class="total-table">
+          <tr>
+            <th>Subtotal:</th>
+            <td><%= entity.total %></td>
+          </tr>
+          <tr>
+            <th>Discount:</th>
+            <td><!-- Add discount amount here --></td>
+          </tr>
+          <tr>
+            <th>
+              SGST (<%= ((entity.sgst / entity.total) * 100).toFixed(2) %> %):
+            </th>
+            <td><%= entity.sgst.toFixed(2) %></td>
+          </tr>
+          <tr>
+            <th>
+              CGST (<%= ((entity.cgst / entity.total) * 100).toFixed(2) %> %):
+            </th>
+            <td><%= entity.cgst.toFixed(2) %></td>
+          </tr>
+          <tr>
+            <th>
+              IGST (<%= ((entity.igst / entity.total) * 100).toFixed(2) %> %):
+            </th>
+            <td><%= entity.igst.toFixed(2) %></td>
+          </tr>
+          <tr>
+            <th>Total:</th>
+            <td><%= grandTotal.toFixed(2) %></td>
+          </tr>
+        </table>
+      </div>
+
+      <% if (entity.terms) { %>
+      <div class="terms">
+        <p style="font-weight: bold">Terms and Condtions</p>
+        <% entity.terms.split("\n").forEach(term => { %>
+        <p><%= term %></p>
+        <% }) %>
+      </div>
+      <% } %> <% if (entity.org.bankDetails) { %>
+      <div class="bank-details">
+        <h3>Bank Account Details:</h3>
+        <p>
+          Account Holder:
+          <!-- Add account holder name here -->
+        </p>
+        <p>
+          Account Number:
+          <!-- Add account number here -->
+        </p>
+        <p>
+          IFSC Code:
+          <!-- Add IFSC code here -->
+        </p>
+      </div>
+      <% } %>
+    </div>
+  </body>
+</html>

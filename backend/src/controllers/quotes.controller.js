@@ -8,7 +8,8 @@ const Customer = require("../models/customer.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
-
+const ejs = require("ejs");
+const wkhtmltopdf = require("wkhtmltopdf");
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
@@ -196,6 +197,39 @@ exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
 });
 
+exports.viewQuote = requestAsyncHandler(async (req, res) => {
+  const quote = await Quote.findOne({
+    _id: req.params.quoteId,
+    org: req.params.orgId,
+  })
+    .populate("customer")
+    .populate("createdBy", "name email _id")
+    .populate("org");
+  const grandTotal = quote.items.reduce(
+    (total, quoteItem) =>
+      total +
+      (quoteItem.price *
+        quoteItem.quantity *
+        (100 +
+          (quoteItem.gst === "none"
+            ? 0
+            : parseFloat(quoteItem.gst.split(":")[1])))) /
+        100,
+    0
+  );
+  const templateName = req.query.template || "simple";
+  const locationTemplate = `templates/${templateName}`;
+  const data = {
+    entity: quote,
+    num: quote.num,
+    grandTotal,
+    title: "Quotation",
+    billMetaHeading: "Estimate Information",
+    partyMetaHeading: "Estimate to",
+  };
+  return res.render(locationTemplate, data);
+});
+
 exports.downloadQuote = requestAsyncHandler(async (req, res) => {
   const quote = await Quote.findOne({
     _id: req.params.quoteId,
@@ -216,9 +250,25 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
-  return res.render("pdf/quote", {
-    title: `Quotation-${quote.quoteNo}-${quote.date}`,
-    quote,
+  const data = {
+    entity: quote,
+    num: quote.num,
     grandTotal,
+    title: "Quotation",
+    billMetaHeading: "Estimate Information",
+    partyMetaHeading: "Estimate to",
+  };
+  const templateName = req.query.template || "simple";
+  const locationTemplate = `./src/views/templates/${templateName}/index.ejs`;
+  ejs.renderFile(locationTemplate, data, (err, html) => {
+    if (err) throw err;
+    res.writeHead(200, {
+      "Content-Type": "application/pdf",
+      "Content-disposition": `attachment;filename=quote - ${quote.date}.pdf`,
+    });
+    wkhtmltopdf(html, {
+      enableLocalFileAccess: true,
+      pageSize: "A4",
+    }).pipe(res);
   });
 });

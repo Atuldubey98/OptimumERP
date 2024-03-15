@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const {authenticate} = require("../middlewares/auth.middleware");
+const { authenticate } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const {
   checkOrgAuthorization,
@@ -10,7 +10,8 @@ const {
   deletePurchase,
   getPurchases,
   updatePurchase,
-  downloadPurchase,
+  viewPurchaseBill,
+  downloadPurchaseInvoice,
 } = require("../controllers/purchase.controller");
 
 const purchaseRouter = Router({
@@ -46,9 +47,15 @@ purchaseRouter.patch(
   updatePurchase
 );
 purchaseRouter.get(
+  "/:purchaseId/view",
+  authenticate,
+  checkOrgAuthorization,
+  viewPurchaseBill
+);
+purchaseRouter.get(
   "/:purchaseId/download",
   authenticate,
   checkOrgAuthorization,
-  downloadPurchase
+  downloadPurchaseInvoice
 );
 module.exports = purchaseRouter;

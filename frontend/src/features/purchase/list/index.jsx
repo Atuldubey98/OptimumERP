@@ -69,6 +69,19 @@ export default function InvoicesPage() {
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
+  const onSaveBill = async (item) => {
+    const downloadBill = `/api/v1/organizations/${item.org._id}/purchases/${item._id}/download?template=simple`;
+    const { data } = await instance.get(downloadBill, {
+      responseType: "blob",
+    });
+    const href = URL.createObjectURL(data);
+    const link = document.createElement("a");
+    link.setAttribute("download", "file.pdf");
+    link.href = href;
+    link.click();
+    URL.revokeObjectURL(href);
+  };
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -89,6 +102,9 @@ export default function InvoicesPage() {
             caption={`Total purchases found : ${totalCount}`}
             operations={purchases.map((purchase) => (
               <VertIconMenu
+                onDownloadItem={() => {
+                  onSaveBill(purchase);
+                }}
                 showItem={() => onOpenInvoice(purchase)}
                 editItem={() => {
                   navigate(`${purchase._id}/edit`);
@@ -113,6 +129,7 @@ export default function InvoicesPage() {
         {purchase ? (
           <BillModal
             bill={purchase}
+            onSaveBill={onSaveBill}
             entity={"purchases"}
             heading={"Purchase"}
             isOpen={isOpen}

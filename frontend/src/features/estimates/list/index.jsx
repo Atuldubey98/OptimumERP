@@ -68,6 +68,19 @@ export default function EstimatesPage() {
     fetchQuotes();
     setEstimateStatus("idle");
   });
+  const onSaveBill = async (item) => {
+    const downloadBill = `/api/v1/organizations/${item.org._id}/quotes/${item._id}/download?template=simple`;
+    const { data } = await instance.get(downloadBill, {
+      responseType: "blob",
+    });
+    const href = URL.createObjectURL(data);
+    const link = document.createElement("a");
+    link.setAttribute("download", "file.pdf");
+    link.href = href;
+    link.click();
+    URL.revokeObjectURL(href);
+  };
+
   const deleting = estimateStatus === "deleting";
   return (
     <MainLayout>
@@ -89,6 +102,9 @@ export default function EstimatesPage() {
             caption={`Total estimates found : ${totalCount}`}
             operations={estimates.map((estimate) => (
               <VertIconMenu
+                onDownloadItem={() => {
+                  onSaveBill(estimate);
+                }}
                 showItem={() => onOpenQuotation(estimate)}
                 editItem={() => {
                   navigate(`${estimate._id}/edit`);
@@ -112,6 +128,7 @@ export default function EstimatesPage() {
         )}
         {quotation ? (
           <BillModal
+            onSaveBill={onSaveBill}
             isOpen={isOpen}
             onClose={onClose}
             bill={quotation}

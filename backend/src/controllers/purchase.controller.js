@@ -12,6 +12,8 @@ const { getTotalAndTax } = require("./quotes.controller");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
+const ejs = require("ejs");
+const wkhtmltopdf = require("wkhtmltopdf");
 
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
@@ -157,7 +159,7 @@ exports.getPurchase = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: purchase });
 });
 
-exports.downloadPurchase = requestAsyncHandler(async (req, res) => {
+exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
   const purchaseId = req.params.purchaseId;
   if (!isValidObjectId(purchaseId)) throw new PurchaseNotFound();
 
@@ -180,9 +182,61 @@ exports.downloadPurchase = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
-  return res.render("pdf/purchase", {
-    title: `Purchase-${purchase.purchaseNo}-${purchase.date}`,
-    purchase,
+  const templateName = req.query.template || "simple";
+  const locationTemplate = `templates/${templateName}`;
+  const data = {
+    entity: purchase,
+    num: purchase.purchaseNo,
     grandTotal,
+    title: "Purchase",
+    billMetaHeading: "Purchase Information",
+    partyMetaHeading: "Bill From",
+  };
+  return res.render(locationTemplate, data);
+});
+
+exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
+  const purchaseId = req.params.purchaseId;
+  if (!isValidObjectId(purchaseId)) throw new PurchaseNotFound();
+
+  const purchase = await Purchase.findOne({
+    _id: purchaseId,
+    org: req.params.orgId,
+  })
+    .populate("customer", "name gstNo panNo")
+    .populate("createdBy", "name email")
+    .populate("org", "name address gstNo panNo");
+  const grandTotal = purchase.items.reduce(
+    (total, purchaseItem) =>
+      total +
+      (purchaseItem.price *
+        purchaseItem.quantity *
+        (100 +
+          (purchaseItem.gst === "none"
+            ? 0
+            : parseFloat(purchaseItem.gst.split(":")[1])))) /
+        100,
+    0
+  );
+  const data = {
+    entity: purchase,
+    num: purchase.purchaseNo,
+    grandTotal,
+    title: "Purchase",
+    billMetaHeading: "Purchase Information",
+    partyMetaHeading: "Bill From",
+  };
+  const templateName = req.query.template || "simple";
+  const locationTemplate = `./src/views/templates/${templateName}/index.ejs`;
+  ejs.renderFile(locationTemplate, data, (err, html) => {
+    if (err) throw err;
+    res.writeHead(200, {
+      "Content-Type": "application/pdf",
+      "Content-disposition": `attachment;filename=purchase - ${purchase.date}.pdf`,
+    });
+    wkhtmltopdf(html, {
+      enableLocalFileAccess: true,
+      pageSize: "A4",
+    }).pipe(res);
   });
 });

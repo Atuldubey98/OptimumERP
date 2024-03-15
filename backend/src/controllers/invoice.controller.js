@@ -14,7 +14,6 @@ const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const ejs = require("ejs");
 const wkhtmltopdf = require("wkhtmltopdf");
-const fs = require("fs");
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
   const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
@@ -180,7 +179,8 @@ exports.getNextInvoiceNumber = requestAsyncHandler(async (req, res) => {
 exports.viewInvoice = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;
   if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
-
+  const templateName = req.query.template || "simple";
+  const locationTemplate = `templates/${templateName}`;
   const invoice = await Invoice.findOne({
     _id: invoiceId,
     org: req.params.orgId,
@@ -200,17 +200,21 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
-  return res.render("pdf/invoice", {
-    title: `Invoice-${invoice.invoiceNo}-${invoice.date}`,
-    invoice,
-    grandTotal: grandTotal.toFixed(2),
+  return res.render(locationTemplate, {
+    entity: invoice,
+    num: invoice.num,
+    grandTotal,
+    title: "Invoice",
+    billMetaHeading: "Invoice information",
+    partyMetaHeading: "Bill To",
   });
 });
 
 exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;
   if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
-
+  const templateName = req.query.template || "simple";
+  const locationTemplate = `./src/views/templates/${templateName}/index.ejs`;
   const invoice = await Invoice.findOne({
     _id: invoiceId,
     org: req.params.orgId,
@@ -230,23 +234,24 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
-
   ejs.renderFile(
-    "./src/views/pdf/invoice.ejs",
+    locationTemplate,
     {
-      title: `Invoice-${invoice.invoiceNo}-${invoice.date}`,
-      invoice,
-      grandTotal: grandTotal.toFixed(2),
+      entity: invoice,
+      grandTotal,
+      num: invoice.num,
+      title: "Invoice",
+      billMetaHeading: "Invoice information",
+      partyMetaHeading: "Bill To",
     },
     (err, html) => {
       if (err) throw err;
       res.writeHead(200, {
         "Content-Type": "application/pdf",
-        "Content-disposition": "attachment;filename=invoice.pdf",
+        "Content-disposition": `attachment;filename=invoice - ${invoice.date}.pdf`,
       });
       wkhtmltopdf(html, {
         enableLocalFileAccess: true,
-        userStyleSheet: "./public/styles/style.css",
         pageSize: "A4",
       }).pipe(res);
     }
