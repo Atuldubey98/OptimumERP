@@ -25,4 +25,4 @@ Contributions to Optimum ERP are welcome! If you find any issues or have suggest
 
 ## Contact
 
-For more information or inquiries about Optimum ERP, please contact the project owner at [email@example.com](mailto:email@example.com).
+For more information or inquiries about Optimum ERP, please contact the project owner at [Support](mailto:atuldubey017@gmail.com).
