@@ -8,7 +8,10 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Customer = require("../models/customer.model");
 const Invoice = require("../models/invoice.model");
 const Quotation = require("../models/quotes.model");
+const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
+const Setting = require("../models/settings.model");
+
 exports.createCustomer = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -100,4 +103,98 @@ exports.searchCustomer = requestAsyncHandler(async (req, res) => {
   if (search) filter.$text = { $search: search };
   const customers = await Customer.find(filter).sort({ createdAt: -1 });
   return res.status(200).json({ data: customers });
+});
+
+exports.getInvoicesForCustomer = requestAsyncHandler(async (req, res) => {
+  if (!req.params.customerId) throw CustomerNotFound();
+  const filter = {
+    org: req.params.orgId,
+    customer: req.params.customerId,
+  };
+  const search = req.query.search;
+  if (search) {
+    filter.$text = { $search: search };
+  }
+
+  if (req.query.startDate && req.query.endDate) {
+    filter.date = {
+      $gte: new Date(req.query.startDate),
+      $lte: new Date(req.query.endDate),
+    };
+  }
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  const invoices = await Invoice.find(filter)
+    .sort({ createdAt: -1 })
+    .populate("customer")
+    .populate("org")
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+  const total = await Invoice.countDocuments(filter);
+
+  const totalPages = Math.ceil(total / limit);
+  return res.status(200).json({
+    data: invoices,
+    page,
+    limit,
+    totalPages,
+    total,
+    message: "Invoices retrieved successfully",
+  });
+});
+
+exports.getCustomerTransactions = requestAsyncHandler(async (req, res) => {
+  if (!req.params.customerId) throw CustomerNotFound();
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const financialYear = setting.financialYear;
+  const filter = {
+    org: req.params.orgId,
+    customer: req.params.customerId,
+    financialYear,
+  };
+  const search = req.query.search;
+  const customer = await Customer.findOne({
+    org: req.params.orgId,
+    _id: req.params.customerId,
+  });
+  const transactionTypes = req.query.transactionTypes;
+  if (transactionTypes && typeof transactionTypes === "string")
+    filter.docModel = { $in: transactionTypes.split(",") };
+  if (search) filter.$text = { $search: search };
+
+  if (req.query.startDate && req.query.endDate) {
+    filter.createdAt = {
+      $gte: new Date(req.query.startDate),
+      $lte: new Date(req.query.endDate),
+    };
+  }
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  const transactions = await Transaction.find(filter)
+    .sort({ createdAt: -1 })
+    .populate("doc")
+    .populate("customer", "name billingAddress")
+    .skip(skip)
+    .limit(limit)
+    .exec();
+  
+  const total = await Transaction.countDocuments(filter);
+
+  const totalPages = Math.ceil(total / limit);
+  return res.status(200).json({
+    data: transactions,
+    page,
+    limit,
+    totalPages,
+    customer,
+    total,
+    message: "Transactions retrieved successfully",
+  });
 });

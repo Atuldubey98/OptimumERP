@@ -1,6 +1,6 @@
 import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { deleteCustomer } from "../../api/customer";
 import useCustomerForm from "../../hooks/useCustomerForm";
 import useCustomers from "../../hooks/useCustomers";
@@ -72,7 +72,7 @@ export default function CustomersPage() {
       });
     } finally {
       setStatus("idle");
-      closeDeleteModal()
+      closeDeleteModal();
     }
   };
   const onCloseCustomer = () => {
@@ -93,6 +93,7 @@ export default function CustomersPage() {
     customerFormik.setValues(customer);
     openCustomerFormDrawer();
   };
+  const navigate = useNavigate();
   return (
     <MainLayout>
       <Box p={5}>
@@ -112,6 +113,9 @@ export default function CustomersPage() {
             caption={`Total customers found : ${totalCustomers}`}
             operations={customers.map((customer) => (
               <CustomerMenu
+                onOpenTransactionsForCustomer={() => {
+                  navigate(`/${orgId}/customers/${customer._id}/transactions`);
+                }}
                 onDeleteCustomer={onOpenCustomerToDelete}
                 customer={customer}
                 key={customer._id}

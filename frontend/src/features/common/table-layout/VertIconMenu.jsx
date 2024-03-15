@@ -11,11 +11,13 @@ import { CiEdit, CiSaveDown2 } from "react-icons/ci";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
+import { CiMoneyBill } from "react-icons/ci";
 export default function VertIconMenu({
   showItem,
   editItem,
   deleteItem,
   onDownloadItem,
+  showTransactions,
 }) {
   return (
     <Menu>
@@ -33,6 +35,11 @@ export default function VertIconMenu({
             command="⌘S"
           >
             Show
+          </MenuItem>
+        ) : null}
+        {showTransactions ? (
+          <MenuItem command="⌘T" icon={<CiMoneyBill size={20} />} onClick={showTransactions}>
+            Transactions
           </MenuItem>
         ) : null}
         <MenuItem icon={<CiEdit size={20} />} onClick={editItem} command="⌘E">

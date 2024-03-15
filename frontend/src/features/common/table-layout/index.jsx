@@ -50,14 +50,16 @@ function TableLayoutMemoized({
           </Text>
         </Flex>
         <ButtonGroup gap="4">
-          <Button
-            leftIcon={<IoAdd />}
-            onClick={onAddNewItem}
-            size={"sm"}
-            colorScheme="blue"
-          >
-            Add new
-          </Button>
+          {onAddNewItem ? (
+            <Button
+              leftIcon={<IoAdd />}
+              onClick={onAddNewItem}
+              size={"sm"}
+              colorScheme="blue"
+            >
+              Add new
+            </Button>
+          ) : null}
         </ButtonGroup>
       </Flex>
       {filter}

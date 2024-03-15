@@ -6,6 +6,8 @@ const {
   deleteCustomer,
   createCustomer,
   searchCustomer,
+  getInvoicesForCustomer,
+  getCustomerTransactions,
 } = require("../controllers/customer.controller");
 const { authenticate } = require("../middlewares/auth.middleware");
 const {
@@ -50,6 +52,18 @@ customerRouter.get(
   authenticate,
   checkOrgAuthorization,
   getCustomer
+);
+customerRouter.get(
+  "/:customerId/invoices",
+  authenticate,
+  checkOrgAuthorization,
+  getInvoicesForCustomer
+);
+customerRouter.get(
+  "/:customerId/transactions",
+  authenticate,
+  checkOrgAuthorization,
+  getCustomerTransactions
 );
 customerRouter.delete(
   "/:customerId",

@@ -17,7 +17,7 @@ export default function MainLayout({ children }) {
           <Box boxShadow={"md"} p={2}>
             <Header onSideNavOpen={onOpen} />
           </Box>
-          <Box overflowY={"auto"} h={"90svh"}>
+          <Box overflowY={"auto"}>
             {children}
           </Box>
         </Flex>

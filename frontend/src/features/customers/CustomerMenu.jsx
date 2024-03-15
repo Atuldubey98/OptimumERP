@@ -5,10 +5,12 @@ export default function CustomerMenu({
   onOpenDrawerForEditingCustomer,
   onOpenCustomer,
   onDeleteCustomer,
+  onOpenTransactionsForCustomer,
 }) {
   return (
     <>
       <VertIconMenu
+        showTransactions={onOpenTransactionsForCustomer}
         showItem={() => {
           onOpenCustomer(customer);
         }}
@@ -16,7 +18,7 @@ export default function CustomerMenu({
           onOpenDrawerForEditingCustomer(customer);
         }}
         deleteItem={() => {
-          onDeleteCustomer(customer)
+          onDeleteCustomer(customer);
         }}
       />
     </>
