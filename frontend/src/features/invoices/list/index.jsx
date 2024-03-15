@@ -66,7 +66,8 @@ export default function InvoicesPage() {
     navigate(`create`);
   };
   const onSaveBill = async (item) => {
-    const downloadBill = `/api/v1/organizations/${item.org._id}/invoices/${item._id}/download?template=simple`;
+    const currentInvoice = item || invoice;
+    const downloadBill = `/api/v1/organizations/${currentInvoice.org._id}/invoices/${currentInvoice._id}/download?template=simple`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

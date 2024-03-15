@@ -42,7 +42,7 @@ export default function VertIconMenu({
           <MenuItem
             onClick={onDownloadItem}
             icon={<CiSaveDown2 size={20} />}
-            command="⌘D"
+            command="⌘J"
           >
             Download
           </MenuItem>

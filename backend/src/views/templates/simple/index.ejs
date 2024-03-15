@@ -133,7 +133,7 @@
             <td><%= item.gst %></td>
             <td><%= item.quantity %></td>
             <td><%= item.price %></td>
-            <td>
+            <td>  
               <%= (item.price * item.quantity + (item.price * item.quantity *
               (item.gst === "none" ? 0 : parseFloat(item.gst.split(":")[1]) /
               100))).toFixed(2) %>

@@ -15,7 +15,14 @@ import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
 import { IoPrintOutline } from "react-icons/io5";
 import useAsyncCall from "../../../hooks/useAsyncCall";
-export default function BillModal({ onClose, isOpen, bill, entity, heading, onSaveBill }) {
+export default function BillModal({
+  onClose,
+  isOpen,
+  bill,
+  entity,
+  heading,
+  onSaveBill,
+}) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
@@ -66,19 +73,21 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading, onSa
           <ButtonGroup>
             <Button onClick={onClose}>Close</Button>
             <Button
-              leftIcon={<CiSaveDown2 />}
-              onClick={onSaveBill}
-              colorScheme="green"
-            >
-              Download
-            </Button>
-            <Button
               leftIcon={<IoPrintOutline />}
               onClick={onPrintBill}
               colorScheme="blue"
               isLoading={status === "loading"}
             >
-              Save as PDF
+              Print
+            </Button>
+            <Button
+              leftIcon={<CiSaveDown2 />}
+              onClick={() => {
+                onSaveBill(bill);
+              }}
+              colorScheme="green"
+            >
+              Download
             </Button>
           </ButtonGroup>
         </ModalFooter>

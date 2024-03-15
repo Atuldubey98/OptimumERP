@@ -69,7 +69,8 @@ export default function EstimatesPage() {
     setEstimateStatus("idle");
   });
   const onSaveBill = async (item) => {
-    const downloadBill = `/api/v1/organizations/${item.org._id}/quotes/${item._id}/download?template=simple`;
+    const currentEstimate = quotation || item;
+    const downloadBill = `/api/v1/organizations/${currentEstimate.org._id}/quotes/${currentEstimate._id}/download?template=simple`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

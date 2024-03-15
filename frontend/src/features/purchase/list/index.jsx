@@ -14,7 +14,7 @@ import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
-export default function InvoicesPage() {
+export default function PurchasePage() {
   const {
     items: purchases,
     dateFilter,
@@ -70,7 +70,10 @@ export default function InvoicesPage() {
     navigate(`create`);
   };
   const onSaveBill = async (item) => {
-    const downloadBill = `/api/v1/organizations/${item.org._id}/purchases/${item._id}/download?template=simple`;
+    const currentPurchase = item || purchase;
+    
+    if (!currentPurchase) return;
+    const downloadBill = `/api/v1/organizations/${orgId}/purchases/${currentPurchase._id}/download?template=simple`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });
