@@ -10,14 +10,12 @@ import {
   Input,
   SimpleGrid,
   Spinner,
-  Textarea
+  Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
-import { useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useInvoicesForm from "../../../hooks/useInvoicesForm";
-import instance from "../../../instance";
 import MainLayout from "../../common/main-layout";
 import DateField from "../../estimates/create/DateField";
 import DescriptionField from "../../estimates/create/DescriptionField";
@@ -29,23 +27,7 @@ import { defaultInvoiceItem } from "../../estimates/create/data";
 import CustomerSelectBill from "./CustomerSelectBill";
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
-  const { orgId } = useParams();
   const loading = status === "loading";
-  const promiseOptions = async (searchQuery) => {
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/customers/search`,
-      {
-        params: {
-          keyword: searchQuery,
-        },
-      }
-    );
-    return data.data.map((customer) => ({
-      value: customer,
-      label: customer.name,
-    }));
-  };
-
   return (
     <MainLayout>
       <Box p={5}>
@@ -69,7 +51,10 @@ export default function CreateInvoicePage() {
               </Flex>
               <Grid gap={4}>
                 <Heading fontSize={"xl"}>Customer</Heading>
-                <FormControl isRequired>
+                <FormControl
+                  isInvalid={formik.errors.customer && formik.touched.customer}
+                  isRequired
+                >
                   <FormLabel>Bill to</FormLabel>
                   <CustomerSelectBill formik={formik} />
                   <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
@@ -88,7 +73,9 @@ export default function CreateInvoicePage() {
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
-                    isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
+                    isInvalid={
+                      formik.errors.invoiceNo && formik.touched.invoiceNo
+                    }
                   >
                     <FormLabel>Invoice No.</FormLabel>
                     <Input
