@@ -6,6 +6,7 @@ const {
   logoutUser,
   deactivateUser,
   resetPassword,
+  forgotPassword,
 } = require("../controllers/user.controller");
 const { authenticate } = require("../middlewares/auth.middleware");
 const userRoutes = Router();

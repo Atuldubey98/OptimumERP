@@ -27,7 +27,7 @@ export default function LoginPage() {
       if (auth.onSetCurrentUser) {
         auth.onSetCurrentUser(data.data);
         setSubmitting(false);
-        formik.resetForm()
+        formik.resetForm();
         navigate("/organizations");
       }
     }),

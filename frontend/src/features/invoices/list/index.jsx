@@ -13,6 +13,7 @@ import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "./TableDateFilter";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -28,13 +29,15 @@ export default function InvoicesPage() {
   });
   const loading = status === "loading";
   const navigate = useNavigate();
+  const { symbol } = useCurrentOrgCurrency();
+
   const invoiceTableMapper = (invoice) => ({
     customerName: invoice.customer.name,
     billingAddress: invoice.customer.billingAddress,
     ...invoice,
     invoiceNo: invoice.num,
     date: new Date(invoice.date).toISOString().split("T")[0],
-    grandTotal: (invoice.total + invoice.totalTax).toFixed(2),
+    grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

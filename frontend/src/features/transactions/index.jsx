@@ -1,4 +1,4 @@
-import { Box, Flex, Spinner, Tag, TagLabel } from "@chakra-ui/react";
+import { Box, Flex, Grid, Spinner, Tag, TagLabel } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import instance from "../../instance";
@@ -7,10 +7,24 @@ import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
 import useQuery from "../../hooks/useQuery";
 import { Select } from "chakra-react-select";
+import DateFilter from "../estimates/list/DateFilter";
 export default function TransactionsPage() {
   const { customerId, orgId } = useParams();
   const query = useQuery();
   const currentPage = query.get("page") || 1;
+  const today = new Date();
+  const sevenDaysAgo = new Date(today);
+  sevenDaysAgo.setDate(today.getDate() - 7);
+
+  const [dateFilter, setDateFilter] = useState({
+    startDate: sevenDaysAgo.toISOString().split("T")[0],
+    endDate: today.toISOString().split("T")[0],
+  });
+  const onChangeDateFilter = (e) =>
+    setDateFilter({
+      ...dateFilter,
+      [e.currentTarget.name]: e.currentTarget.value,
+    });
   const [transactionsResponse, setTransactionsResponse] = useState({
     items: [],
     page: 0,
@@ -48,6 +62,8 @@ export default function TransactionsPage() {
           params: {
             page: currentPage,
             transactionTypes,
+            startDate: dateFilter.startDate,
+            endDate: dateFilter.endDate,
           },
         }
       );
@@ -60,7 +76,7 @@ export default function TransactionsPage() {
       });
       setStatus("idle");
     })();
-  }, [orgId, customerId, currentPage, transactionTypes]);
+  }, [orgId, customerId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
 
   return (
@@ -73,20 +89,26 @@ export default function TransactionsPage() {
         ) : (
           <TableLayout
             filter={
-              <Box maxW={"md"}>
+              <Box>
                 <Select
                   isMulti
                   onChange={setSelectedTypeOfTransactions}
                   options={typeOfTransactions}
                   value={selectedTypeOfTransactions}
                 />
+                <Grid gap={3} gridTemplateColumns={"1fr 1fr"}>
+                  <DateFilter
+                    dateFilter={dateFilter}
+                    onChangeDateFilter={onChangeDateFilter}
+                  />
+                </Grid>
               </Box>
             }
-            heading={`Transasctions for ${
+            heading={`${
               transactionsResponse.customer
                 ? transactionsResponse.customer.name
                 : ""
-            }`}
+            } - Transactions`}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
               date: new Date(item.doc.date).toDateString(),

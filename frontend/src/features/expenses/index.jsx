@@ -151,6 +151,7 @@ export default function ExpensesPage() {
             isOpen={isExpenseOpen}
             item={{
               ...expenseSelected,
+              date: new Date(expenseSelected.date).toDateString(),
               category: expenseSelected.category
                 ? expenseSelected.category.name
                 : "Miscellenous",
@@ -160,6 +161,7 @@ export default function ExpensesPage() {
               date: "Date",
               category: "Category",
               description: "Description",
+              amount: "Amount",
             }}
           />
         ) : null}

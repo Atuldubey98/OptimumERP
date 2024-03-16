@@ -8,6 +8,7 @@ const {
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const User = require("../models/user.model");
 const bcryptjs = require("bcryptjs");
+
 exports.registerUser = requestAsyncHandler(async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
   const { email, password, name } = body;

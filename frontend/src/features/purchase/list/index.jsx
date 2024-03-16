@@ -14,6 +14,7 @@ import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function PurchasePage() {
   const {
     items: purchases,
@@ -31,6 +32,8 @@ export default function PurchasePage() {
   const settingContext = useContext(SettingContext);
   const transactionPrefixInvoice =
     settingContext?.setting?.transactionPrefix.purchase || "";
+  const { symbol } = useCurrentOrgCurrency();
+
   const navigate = useNavigate();
   const purchaseTableMapper = (purchase) => ({
     customerName: purchase.customer.name,
@@ -38,7 +41,7 @@ export default function PurchasePage() {
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
     date: new Date(purchase.date).toISOString().split("T")[0],
-    grandTotal: (purchase.total + purchase.totalTax).toFixed(2),
+    grandTotal: `${symbol} ${(purchase.total + purchase.totalTax).toFixed(2)}`,
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -71,7 +74,7 @@ export default function PurchasePage() {
   };
   const onSaveBill = async (item) => {
     const currentPurchase = item || purchase;
-    
+
     if (!currentPurchase) return;
     const downloadBill = `/api/v1/organizations/${orgId}/purchases/${currentPurchase._id}/download?template=simple`;
     const { data } = await instance.get(downloadBill, {
