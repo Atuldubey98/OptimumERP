@@ -25,6 +25,7 @@ import AlertModal from "../common/AlertModal";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import { MdOutlineHomeRepairService } from "react-icons/md";
 import { CgProductHunt } from "react-icons/cg";
+import { ums } from "../estimates/create/data";
 export default function ProductsPage() {
   const {
     isOpen: isProductFormOpen,
@@ -92,6 +93,29 @@ export default function ProductsPage() {
     setProductStatus("idle");
   });
   const { symbol } = useCurrentOrgCurrency();
+  const productsMapper = (product) => ({
+    ...product,
+    um: ums.find((um) => um.value === product.um).label || "Nos",
+    costPrice: `${symbol} ${product.costPrice}`,
+    category: (
+      <Tag
+        textTransform={"capitalize"}
+        size={"md"}
+        variant={"solid"}
+        colorScheme={"blue"}
+      >
+        <TagLeftIcon
+          boxSize="12px"
+          as={
+            product.category === "service"
+              ? MdOutlineHomeRepairService
+              : CgProductHunt
+          }
+        />
+        <TagLabel>{product.category}</TagLabel>
+      </Tag>
+    ),
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -107,28 +131,7 @@ export default function ProductsPage() {
               </Box>
             }
             heading={"Products"}
-            tableData={products.map((product) => ({
-              ...product,
-              costPrice: `${symbol} ${product.costPrice}`,
-              category: (
-                <Tag
-                  textTransform={"capitalize"}
-                  size={"md"}
-                  variant={"solid"}
-                  colorScheme={"blue"}
-                >
-                  <TagLeftIcon
-                    boxSize="12px"
-                    as={
-                      product.category === "service"
-                        ? MdOutlineHomeRepairService
-                        : CgProductHunt
-                    }
-                  />
-                  <TagLabel>{product.category}</TagLabel>
-                </Tag>
-              ),
-            }))}
+            tableData={products.map(productsMapper)}
             caption={`Total products found : ${totalCount}`}
             operations={products.map((product) => (
               <ProductMenu
