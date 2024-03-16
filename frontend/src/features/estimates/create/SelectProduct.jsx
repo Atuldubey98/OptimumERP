@@ -53,24 +53,26 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
     onClose: closeProductFormDrawer,
   } = useDisclosure();
   const { orgId } = useParams();
-  const controller = new AbortController();
   const fetchProducts = useCallback(async () => {
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/products`,
-      {
-        signal: controller.signal,
-        params: {
-          page: currentPage,
-          search: deboucedSearch,
-        },
-      }
-    );
-    setResponse({
-      items: data.data,
-      total: data.total,
-      totalPages: data.totalPages,
-      page: data.page,
-    });
+    try {
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/products`,
+        {
+          params: {
+            page: currentPage,
+            search: deboucedSearch,
+          },
+        }
+      );
+      setResponse({
+        items: data.data,
+        total: data.total,
+        totalPages: data.totalPages,
+        page: data.page,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }, [deboucedSearch, currentPage]);
   const { formik: productsFormFormik } = useProductForm(
     fetchProducts,
@@ -79,9 +81,6 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
 
   useEffect(() => {
     fetchProducts();
-    return () => {
-      controller.abort();
-    };
   }, [deboucedSearch, currentPage]);
   const { items: products, page, totalPages, total } = response;
   return (

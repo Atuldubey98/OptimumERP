@@ -82,7 +82,7 @@ export default function PurchasePage() {
     });
     const href = URL.createObjectURL(data);
     const link = document.createElement("a");
-    link.setAttribute("download", "file.pdf");
+    link.setAttribute("download", `Purchase-${currentPurchase.purchaseNo}.pdf`);
     link.href = href;
     link.click();
     URL.revokeObjectURL(href);

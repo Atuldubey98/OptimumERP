@@ -76,7 +76,7 @@ export default function InvoicesPage() {
     });
     const href = URL.createObjectURL(data);
     const link = document.createElement("a");
-    link.setAttribute("download", "file.pdf");
+    link.setAttribute("download", `Invoice-${currentInvoice.num}.pdf`);
     link.href = href;
     link.click();
     URL.revokeObjectURL(href);

@@ -24,6 +24,7 @@ function TableLayoutMemoized({
   tableData,
   caption,
   filter,
+  showExport,
   operations,
 }) {
   const tableRows = tableData.map((row) => {
@@ -60,6 +61,7 @@ function TableLayoutMemoized({
               Add new
             </Button>
           ) : null}
+        
         </ButtonGroup>
       </Flex>
       {filter}

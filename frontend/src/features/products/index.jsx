@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import MainLayout from "../common/main-layout";
-import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  Tag,
+  TagLabel,
+  TagLeftIcon,
+  useDisclosure,
+} from "@chakra-ui/react";
 import useProducts from "../../hooks/useProducts";
 import ProductMenu from "./ProductMenu";
 import TableLayout from "../common/table-layout";
@@ -15,7 +23,8 @@ import Pagination from "../common/main-layout/Pagination";
 import SearchItem from "../common/table-layout/SearchItem";
 import AlertModal from "../common/AlertModal";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-
+import { MdOutlineHomeRepairService } from "react-icons/md";
+import { CgProductHunt } from "react-icons/cg";
 export default function ProductsPage() {
   const {
     isOpen: isProductFormOpen,
@@ -101,6 +110,24 @@ export default function ProductsPage() {
             tableData={products.map((product) => ({
               ...product,
               costPrice: `${symbol} ${product.costPrice}`,
+              category: (
+                <Tag
+                  textTransform={"capitalize"}
+                  size={"md"}
+                  variant={"solid"}
+                  colorScheme={"blue"}
+                >
+                  <TagLeftIcon
+                    boxSize="12px"
+                    as={
+                      product.category === "service"
+                        ? MdOutlineHomeRepairService
+                        : CgProductHunt
+                    }
+                  />
+                  <TagLabel>{product.category}</TagLabel>
+                </Tag>
+              ),
             }))}
             caption={`Total products found : ${totalCount}`}
             operations={products.map((product) => (
@@ -134,9 +161,9 @@ export default function ProductsPage() {
             isOpen={isProductDrawerOpen}
             item={{
               ...selectedToShowProduct,
-              createdAt: new Date(selectedToShowProduct.createdAt)
-                .toISOString()
-                .split("T")[0],
+              createdAt: new Date(
+                selectedToShowProduct.createdAt
+              ).toDateString(),
             }}
             onClose={closeProductDrawer}
             selectedKeys={{

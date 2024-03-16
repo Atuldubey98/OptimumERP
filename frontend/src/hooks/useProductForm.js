@@ -23,6 +23,7 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId = "" } = useParams();
   const formik = useFormik({
+    validateOnChange: false,
     initialValues: {
       name: "",
       costPrice: 0,
