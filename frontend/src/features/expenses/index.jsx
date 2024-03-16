@@ -14,6 +14,7 @@ import ShowDrawer from "../common/ShowDrawer";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import AlertModal from "../common/AlertModal";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import * as Yup from "yup";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
@@ -50,7 +51,16 @@ export default function ExpensesPage() {
       category: "",
       date: new Date().toISOString().split("T")[0],
     },
-
+    validationSchema: Yup.object({
+      description: Yup.string()
+        .required("Description is required")
+        .label("Description"),
+      amount: Yup.number()
+        .min(0, "Amount should be mininum 0")
+        .required("Amount is required")
+        .label("Amount"),
+      date: Yup.string().required("Date is required").label("Date"),
+    }),
     onSubmit: async (values, { setSubmitting }) => {
       const { _id, ...expense } = values;
       await instance[_id ? "patch" : "post"](

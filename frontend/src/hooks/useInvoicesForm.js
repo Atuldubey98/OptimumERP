@@ -10,10 +10,15 @@ import { defaultInvoiceItem } from "../features/estimates/create/data";
 export default function useInvoicesForm() {
   const [status, setStatus] = useState("idle");
   const invoiceSchema = Yup.object().shape({
-    invoiceNo: Yup.number().required("Invoice number is required"),
-    customer: Yup.string().required("Customer is required"),
-    billingAddress: Yup.string().required("Billing Address is required"),
-    date: Yup.date().required("Date is required"),
+    invoiceNo: Yup.number()
+      .required("Invoice number is required")
+      .label("Invoice Number"),
+    customer: Yup.string().required("Customer is required").label("Customer"),
+    billingAddress: Yup.string()
+      .min(2, "Billing Address Cannot be less than 2")
+      .max(80, "Billing Address Cannot be greater than 80")
+      .label("Billing address"),
+    date: Yup.date().required("Date is required").label("Date"),
     status: Yup.string().required("Status is required"),
     poNo: Yup.string().optional(),
     poDate: Yup.string().optional(),
@@ -32,8 +37,12 @@ export default function useInvoicesForm() {
         })
       )
       .min(1),
-    terms: Yup.string().required("Terms are required"),
-    description: Yup.string(),
+    terms: Yup.string()
+      .required("Terms are required")
+      .label("Terms & Conditions"),
+    description: Yup.string()
+      .max(80, "Description cannot be greater than 80")
+      .label("Description"),
   });
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, invoiceId } = useParams();

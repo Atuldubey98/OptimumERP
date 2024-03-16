@@ -15,7 +15,7 @@ const customerDto = Yup.object({
     .label("Shipping address")
     .optional(),
   billingAddress: Yup.string()
-    .min(2)
+    .min(2, "Cannot be less than 2")
     .max(80, "Cannot be greater than 80")
     .label("Billing address"),
   gstNo: Yup.string().label("GST Number"),
@@ -33,6 +33,7 @@ export default function useCustomerForm(onAddedFetch, onCloseDrawer) {
       shippingAddress: "",
     },
     validationSchema: customerDto,
+    validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { name, shippingAddress, billingAddress, gstNo, panNo, _id } =
         values;

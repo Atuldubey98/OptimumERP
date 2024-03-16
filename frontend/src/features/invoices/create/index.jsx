@@ -60,13 +60,22 @@ export default function CreateInvoicePage() {
                   <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
                 </FormControl>
                 {formik.values.customer ? (
-                  <FormControl isRequired>
+                  <FormControl
+                    isInvalid={
+                      formik.errors.billingAddress &&
+                      formik.touched.billingAddress
+                    }
+                    isRequired
+                  >
                     <FormLabel>Billing Address</FormLabel>
                     <Textarea
                       name="billingAddress"
                       onChange={formik.handleChange}
                       value={formik.values.billingAddress}
                     />
+                    <FormErrorMessage>
+                      {formik.errors.billingAddress}
+                    </FormErrorMessage>
                   </FormControl>
                 ) : null}
                 <Heading fontSize={"xl"}>Invoice Details</Heading>
