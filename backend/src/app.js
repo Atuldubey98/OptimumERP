@@ -28,11 +28,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
-const whitelist = [
-  "http://localhost:5173",
-  "http://localhost:9000",
-  "https://erp-mern-frontend.onrender.com",
-];
+const whitelist = ["http://localhost:5173", "http://localhost:9000"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -74,7 +70,7 @@ app.get("/", (req, res) => {
     baseUrl:
       process.env.NODE_ENV === "development"
         ? "http://localhost:5173"
-        : "https://erp-mern-frontend.onrender.com",
+        : "",
   });
 });
 app.get("/api/v1/health", (_, res) =>
