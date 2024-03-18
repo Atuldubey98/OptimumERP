@@ -149,14 +149,9 @@ exports.getInvoicesForCustomer = requestAsyncHandler(async (req, res) => {
 
 exports.getCustomerTransactions = requestAsyncHandler(async (req, res) => {
   if (!req.params.customerId) throw CustomerNotFound();
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  });
-  const financialYear = setting.financialYear;
   const filter = {
     org: req.params.orgId,
     customer: req.params.customerId,
-    financialYear,
   };
   const search = req.query.search;
   const customer = await Customer.findOne({
@@ -184,7 +179,7 @@ exports.getCustomerTransactions = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .exec();
-  
+
   const total = await Transaction.countDocuments(filter);
 
   const totalPages = Math.ceil(total / limit);

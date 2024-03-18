@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -27,6 +28,8 @@ export default function TransactionPrefix() {
       invoice: "",
       quotation: "",
       currency: "INR",
+      startDate: "",
+      endDate: "",
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (!values.organization) return;
@@ -38,6 +41,10 @@ export default function TransactionPrefix() {
             quotation: values.quotation,
           },
           currency: values.currency,
+          financialYear: {
+            start: values.startDate,
+            end: values.endDate,
+          },
         }
       );
       const currentOrg = localStorage.getItem("organization");
@@ -65,6 +72,8 @@ export default function TransactionPrefix() {
           invoice: "",
           currency: "INR",
           quotation: "",
+          startDate: "",
+          endDate: "",
         });
         return;
       }
@@ -77,6 +86,12 @@ export default function TransactionPrefix() {
         invoice: data.data.transactionPrefix.invoice,
         quotation: data.data.transactionPrefix.quotation,
         currency: data.data.currency || "INR",
+        endDate: new Date(data.data.financialYear.end)
+          .toISOString()
+          .split("T")[0],
+        startDate: new Date(data.data.financialYear.start)
+          .toISOString()
+          .split("T")[0],
       });
       setStatus("success");
     })();
@@ -84,12 +99,12 @@ export default function TransactionPrefix() {
   const currencyCodes = Object.keys(currencies);
   return (
     <Stack spacing={6}>
-      <Heading fontSize={"lg"}>Transaction Prefixes</Heading>
+      <Heading fontSize={"lg"}>Transaction</Heading>
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={3}>
             <FormControl>
-              <FormLabel>Organization</FormLabel>
+              <FormLabel fontWeight={"bold"}>Organization</FormLabel>
               <Select
                 value={formik.values.organization}
                 onChange={formik.handleChange}
@@ -108,7 +123,7 @@ export default function TransactionPrefix() {
               </Select>
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Currency</FormLabel>
+              <FormLabel fontWeight={"bold"}>Currency</FormLabel>
               <Select
                 name="currency"
                 value={formik.values.currency}
@@ -123,7 +138,7 @@ export default function TransactionPrefix() {
               </Select>
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Invoice Prefix</FormLabel>
+              <FormLabel fontWeight={"bold"}>Invoice Prefix</FormLabel>
               <Input
                 name="invoice"
                 value={formik.values.invoice}
@@ -132,7 +147,7 @@ export default function TransactionPrefix() {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Quotation Prefix</FormLabel>
+              <FormLabel fontWeight={"bold"}>Quotation Prefix</FormLabel>
               <Input
                 name="quotation"
                 value={formik.values.quotation}
@@ -140,6 +155,37 @@ export default function TransactionPrefix() {
                 placeholder="ABC-ORG/23-24/XXXX"
               />
             </FormControl>
+            <Box>
+              <FormControl fontWeight={"bold"}>Fiscal Year</FormControl>
+              <Flex gap={3}>
+                <FormControl
+                  isDisabled={!formik.values.organization}
+                  isRequired
+                >
+                  <FormLabel>Start Date</FormLabel>
+                  <Input
+                    name="startDate"
+                    value={formik.values.startDate}
+                    onChange={formik.handleChange}
+                    placeholder="dd-mm-yyyy"
+                    type="date"
+                  />
+                </FormControl>
+                <FormControl
+                  isDisabled={!formik.values.organization}
+                  isRequired
+                >
+                  <FormLabel>End Date</FormLabel>
+                  <Input
+                    value={formik.values.endDate}
+                    placeholder="dd-mm-yyyy"
+                    type="date"
+                    name="endDate"
+                    onChange={formik.handleChange}
+                  />
+                </FormControl>
+              </Flex>
+            </Box>
           </Stack>
           <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
             <Button
