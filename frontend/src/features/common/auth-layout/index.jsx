@@ -39,7 +39,7 @@ export default function AuthLayout({ children, formHeading }) {
                 </ListItem>
                 <ListItem>
                   <ListIcon as={MdCheckCircle} color="green.500" />
-                  It Brings Together Your Invoice Clients And Estimates
+                  It Brings Together Your Invoice, Clients And Estimates
                 </ListItem>
               </List>
             </Grid>
