@@ -1,8 +1,18 @@
 import {
   Box,
+  Button,
   Container,
   Flex,
   Grid,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
   Spinner,
   Text,
   useColorModeValue,
@@ -15,7 +25,9 @@ import useOrganizations from "../../hooks/useOrganizations";
 import PrivateRoute from "../common/PrivateRoute";
 import NewOrgModal from "./NewOrgModal";
 import OrgItem from "./OrgItem";
+import { CiDollar } from "react-icons/ci";
 import AuthContext from "../../contexts/AuthContext";
+import { IoIosLogOut } from "react-icons/io";
 export default function OrgPage() {
   const {
     isOpen,
@@ -32,6 +44,30 @@ export default function OrgPage() {
     <PrivateRoute>
       <Box padding={4}>
         <Container maxW={"container.md"}>
+          <Flex alignItems={"center"} justifyContent={"space-between"}>
+            <Popover>
+              <PopoverTrigger>
+                <Button leftIcon={<CiDollar />}>Current Plan</Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverHeader fontWeight={"bold"}>Free Plan</PopoverHeader>
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    Free plan allows only one organization with limited
+                    benefits.
+                  </PopoverBody>
+                  {/* <PopoverFooter>
+                  <Button onClick={()=>{}} colorScheme="blue"> Change Plan</Button>
+                </PopoverFooter> */}
+                </PopoverContent>
+              </Portal>
+            </Popover>
+            <Button leftIcon={<IoIosLogOut />} colorScheme="red">
+              Logout
+            </Button>
+          </Flex>
           <Flex justifyContent={"center"} gap={4} alignItems={"center"}>
             <Text fontSize={"4xl"} fontWeight={"bold"} textAlign={"center"}>
               Your organizations
