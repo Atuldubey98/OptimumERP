@@ -22,11 +22,11 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../../api/logout";
 export default function AvatarProfileWithOptions() {
   const hoverBg = useColorModeValue("gray.200", "gray.700");
-  const [status, setStatus] = useState("idle");
   const { requestAsyncHandler } = useAsyncCall();
   const authContext = useAuth();
   const toast = useToast();
-
+  
+  const [status, setStatus] = useState("idle");
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
     const { data } = await logoutUser();

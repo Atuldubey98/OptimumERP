@@ -17,8 +17,9 @@ import {
   Text,
   useColorModeValue,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FaRegCircleDot } from "react-icons/fa6";
 import { IoAdd } from "react-icons/io5";
 import useOrganizations from "../../hooks/useOrganizations";
@@ -28,6 +29,9 @@ import OrgItem from "./OrgItem";
 import { CiDollar } from "react-icons/ci";
 import AuthContext from "../../contexts/AuthContext";
 import { IoIosLogOut } from "react-icons/io";
+import AlertModal from "../common/AlertModal";
+import useAsyncCall from "../../hooks/useAsyncCall";
+import { logoutUser } from "../../api/logout";
 export default function OrgPage() {
   const {
     isOpen,
@@ -36,10 +40,34 @@ export default function OrgPage() {
   } = useDisclosure();
   const { authorizedOrgs, loading, fetchOrgs } = useOrganizations();
   const hoverBg = useColorModeValue("gray.200", "gray.700");
+  const {
+    isOpen: isLogoutModalOpen,
+    onOpen: openLogoutModal,
+    onClose: closeLogoutModal,
+  } = useDisclosure();
   const auth = useContext(AuthContext);
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
     : "free";
+  const [status, setStatus] = useState("idle");
+  const toast = useToast();
+  const loggingOut = status === "loggingOut";
+  const { requestAsyncHandler } = useAsyncCall();
+  const onClickLogout = requestAsyncHandler(async () => {
+    setStatus("loggingOut");
+    const { data } = await logoutUser();
+    toast({
+      title: "Logout",
+      description: data.message,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    navigate("/", { replace: true });
+    setStatus("idle");
+    if (auth.onSetCurrentUser) auth.onSetCurrentUser(null);
+    localStorage.removeItem("organization");
+  });
   return (
     <PrivateRoute>
       <Box padding={4}>
@@ -64,7 +92,11 @@ export default function OrgPage() {
                 </PopoverContent>
               </Portal>
             </Popover>
-            <Button leftIcon={<IoIosLogOut />} colorScheme="red">
+            <Button
+              onClick={openLogoutModal}
+              leftIcon={<IoIosLogOut />}
+              colorScheme="red"
+            >
               Logout
             </Button>
           </Flex>
@@ -113,6 +145,15 @@ export default function OrgPage() {
         onCloseNewOrgModal={onCloseNewOrgModal}
         isOpen={isOpen}
         onAddedFetch={fetchOrgs}
+      />
+      <AlertModal
+        confirmDisable={loggingOut}
+        isOpen={isLogoutModalOpen}
+        onClose={closeLogoutModal}
+        onConfirm={onClickLogout}
+        body={"Do you want to logout ?"}
+        header={"Logout"}
+        buttonLabel="Logout"
       />
     </PrivateRoute>
   );
