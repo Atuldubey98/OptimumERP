@@ -1,8 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-import TransactionsPage from "./features/transactions";
-import ForgotPasswordPage from "./features/forgot-password";
+const TransactionsPage = lazy(() => import("./features/transactions"));
 const AdminPage = lazy(() => import("./features/admin"));
 const TransactionSettingsPage = lazy(() =>
   import("./features/common/transaction-settings")
