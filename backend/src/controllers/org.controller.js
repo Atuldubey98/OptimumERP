@@ -5,6 +5,7 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Org = require("../models/org.model");
 const User = require("../models/user.model");
 const OrgUser = require("../models/org_user.model");
+const UserActivatedPlan = require("../models/user_activated_plans");
 const bcryptjs = require("bcryptjs");
 const { UserDuplicate } = require("../errors/user.error");
 const logger = require("../logger");
@@ -13,7 +14,21 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
   const newOrg = await organization.save();
-
+  const activatedPlan = await UserActivatedPlan.findOne({
+    user: req.session.user._id,
+  });
+  const countOfOrganizationByUser = await OrgUser.countDocuments({
+    user: req.session.user._id,
+    role: "admin",
+  });
+  if (
+    activatedPlan &&
+    activatedPlan.plan === "free" &&
+    countOfOrganizationByUser === 1
+  )
+    return res
+      .status(400)
+      .json({ message: "Please upgrade your plan to gold" });
   const orgUser = new OrgUser({
     org: newOrg.id,
     user: req.session.user._id,
@@ -102,5 +117,7 @@ exports.updateOrganization = requestAsyncHandler(async (req, res) => {
   const updatedOrg = await Org.findByIdAndUpdate(req.params.orgId, req.body, {
     new: true,
   });
-  return res.status(200).json({ message: "Organization updated.", data : updatedOrg });
+  return res
+    .status(200)
+    .json({ message: "Organization updated.", data: updatedOrg });
 });

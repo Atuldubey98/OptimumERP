@@ -8,6 +8,7 @@ const {
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const User = require("../models/user.model");
 const bcryptjs = require("bcryptjs");
+const UserActivatedPlan = require("../models/user_activated_plans");
 
 exports.registerUser = requestAsyncHandler(async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
@@ -23,6 +24,7 @@ exports.registerUser = requestAsyncHandler(async (req, res) => {
     password: hashedPassword,
     name,
   });
+  await UserActivatedPlan.create({ user: registeredUser.id });
   return res.status(201).json({
     data: { email, name, _id: registeredUser.id },
     message: "User registered successfully !",
@@ -36,10 +38,14 @@ exports.loginUser = requestAsyncHandler(async (req, res) => {
   if (!user || !user.active) throw new UserNotFound();
   const isPasswordMatching = await bcryptjs.compare(password, user.password);
   if (!isPasswordMatching) throw new PasswordDoesNotMatch();
+  const activatedPlan = await UserActivatedPlan.findOne({
+    user: user._id,
+  });
   const loggedInUser = {
     email,
     name: user.name,
     _id: user._id,
+    currentPlan: activatedPlan,
   };
   req.session.user = loggedInUser;
   return res.status(200).json({ data: loggedInUser });
