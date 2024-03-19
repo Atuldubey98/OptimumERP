@@ -4,12 +4,25 @@ const {
   UserDuplicate,
   UserNotFound,
   PasswordDoesNotMatch,
+  InvalidOtp,
 } = require("../errors/user.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const User = require("../models/user.model");
 const bcryptjs = require("bcryptjs");
 const UserActivatedPlan = require("../models/user_activated_plans");
-
+const nodemailer = require("nodemailer");
+const ejs = require("ejs");
+const Otp = require("../models/otp.model");
+const Joi = require("joi");
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // Use `true` for port 465, `false` for all other ports
+  auth: {
+    user: process.env.NODE_MAILER_USER_NAME,
+    pass: process.env.NODE_MAILER_APP_PASSWORD,
+  },
+});
 exports.registerUser = requestAsyncHandler(async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
   const { email, password, name } = body;
@@ -92,3 +105,75 @@ exports.resetPassword = requestAsyncHandler(async (req, res) => {
   });
   return res.status(201).json({ message: "Done password resetting !" });
 });
+
+exports.forgotPassword = requestAsyncHandler(async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) throw new UserNotFound();
+  const otp = generateOTP();
+  await Otp.findOneAndUpdate(
+    {
+      user: user._id,
+      isVerified: false,
+    },
+    { expiresAt: new Date(Date.now()), isVerified: true }
+  );
+  await Otp.create({
+    user: user._id,
+    otp,
+  });
+  ejs.renderFile(
+    "./src/views/otp/send_otp.ejs",
+    { otp, expirationTime: 10 },
+    async (err, html) => {
+      if (err) throw err;
+      await transporter.sendMail({
+        from: `"OptimumERP" <${process.env.NODE_MAILER_USER_NAME}>`,
+        to: req.body.email,
+        subject: "Reset password | OptimumERP",
+        html,
+      });
+      return res
+        .status(200)
+        .json({ message: "OTP Sent ! Please check your email." });
+    }
+  );
+});
+const bodyJoi = Joi.object({
+  email: Joi.string().email().required().label("Email"),
+  password: Joi.string().required().min(8).max(20).label("Password"),
+  otp: Joi.string().required().label("OTP"),
+});
+exports.verifyOtpForgotPasswordAndReset = requestAsyncHandler(
+  async (req, res) => {
+    const body = await bodyJoi.validateAsync(req.body);
+    const user = await User.findOne({ email: body.email });
+    if (!user) throw new UserNotFound();
+    const otpFilter = {
+      user: user._id,
+      otp: body.otp,
+      isVerified: false,
+    };
+    const otp = await Otp.findOneAndUpdate(otpFilter, { isVerified: true });
+    if (!otp) throw new InvalidOtp();
+    const { password = "" } = req.body;
+    const hashedPassword = await bcryptjs.hash(
+      password,
+      await bcryptjs.genSalt(10)
+    );
+    await User.findOneAndUpdate(
+      { email: req.body.email },
+      {
+        password: hashedPassword,
+      }
+    );
+    return res.status(200).json({ message: "Password reset successful" });
+  }
+);
+
+function generateOTP() {
+  let digits = "0123456789";
+  let otp = "";
+  let len = digits.length;
+  for (let i = 0; i < 4; i++) otp += digits[Math.floor(Math.random() * len)];
+  return otp;
+}

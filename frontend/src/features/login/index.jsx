@@ -52,10 +52,13 @@ export default function LoginPage() {
               Login
             </Button>
           </Flex>
+          <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
+            Register Now ?
+          </ChakraLink>
+          <ChakraLink color="blue.500" as={ReactRouterLink} to={"/forgot-password"}>
+            Forgot Password ?
+          </ChakraLink>
         </Grid>
-        <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
-          Register Now ?
-        </ChakraLink>
       </form>
     </AuthLayout>
   );

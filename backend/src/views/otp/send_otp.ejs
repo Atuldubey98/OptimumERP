@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OTP Verification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+      
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      h1 {
+        color: #0055a5;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      
+      p {
+        color: #333333;
+        margin-bottom: 15px;
+      }
+      
+      .otp-container {
+        background-color: #e6f2ff;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      
+      .otp {
+        color: #0055a5;
+        font-size: 36px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>OTP Verification</h1>
+      <p>Please use the following one-time password (OTP) to verify your identity:</p>
+      <div class="otp-container">
+        <span class="otp"><%= otp %></span>
+      </div>
+      <p>This OTP is valid for <%= expirationTime %> minutes.</p>
+      <p>If you did not request this OTP, please ignore this email.</p>
+      <p>Thank you,<br>Optimum ERP</p>
+    </div>
+  </body>
+</html>

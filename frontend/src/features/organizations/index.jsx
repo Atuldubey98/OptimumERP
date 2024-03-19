@@ -32,6 +32,7 @@ import { IoIosLogOut } from "react-icons/io";
 import AlertModal from "../common/AlertModal";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import { logoutUser } from "../../api/logout";
+import { useNavigate } from "react-router-dom";
 export default function OrgPage() {
   const {
     isOpen,
@@ -52,6 +53,7 @@ export default function OrgPage() {
   const [status, setStatus] = useState("idle");
   const toast = useToast();
   const loggingOut = status === "loggingOut";
+  const navigate = useNavigate();
   const { requestAsyncHandler } = useAsyncCall();
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");

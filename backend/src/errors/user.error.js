@@ -39,10 +39,19 @@ class UnAuthorizedUser extends Error {
     this.name = "UnAuthorizedUser";
   }
 }
+class InvalidOtp extends Error {
+  constructor() {
+    super();
+    this.code = 400;
+    this.message = "Invalid OTP";
+    this.name = "InvalidOtp";
+  }
+}
 module.exports = {
   UserDuplicate,
   UserNotFound,
   PasswordDoesNotMatch,
   UnAuthenticated,
   UnAuthorizedUser,
+  InvalidOtp,
 };

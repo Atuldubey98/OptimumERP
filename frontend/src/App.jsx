@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
+const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
 const TransactionsPage = lazy(() => import("./features/transactions"));
 const AdminPage = lazy(() => import("./features/admin"));
 const TransactionSettingsPage = lazy(() =>
@@ -33,6 +34,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route
           path="/transaction-settings"
           element={<TransactionSettingsPage />}
