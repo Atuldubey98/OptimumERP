@@ -10,8 +10,15 @@ const mongoose = require("mongoose");
 const organizationRouter = require("./routes/org.routes");
 const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
 const logger = require("./logger");
-
+const { rateLimit } = require("express-rate-limit");
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
 const app = express();
+app.use(limiter)
 mongoose
   .connect(MONGO_URI)
   .then(() => {
@@ -68,9 +75,7 @@ app.get("/", (req, res) => {
     title: "Optimum ERP",
     user,
     baseUrl:
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:5173"
-        : "",
+      process.env.NODE_ENV === "development" ? "http://localhost:5173" : "",
   });
 });
 app.get("/api/v1/health", (_, res) =>

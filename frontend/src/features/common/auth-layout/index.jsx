@@ -57,7 +57,7 @@ export default function AuthLayout({ children, formHeading }) {
           <Show below="md">
             <Banner />
           </Show>
-          <Text fontSize={"3xl"} fontWeight={"600"}>
+          <Text fontSize={"xl"} fontWeight={"600"}>
             {formHeading}
           </Text>
           <Divider />
