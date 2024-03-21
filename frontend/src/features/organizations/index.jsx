@@ -40,7 +40,7 @@ export default function OrgPage() {
     onClose: onCloseNewOrgModal,
   } = useDisclosure();
   const { authorizedOrgs, loading, fetchOrgs } = useOrganizations();
-  const hoverBg = useColorModeValue("gray.200", "gray.700");
+  const hoverBg = useColorModeValue("gray.200", "gray.600");
   const {
     isOpen: isLogoutModalOpen,
     onOpen: openLogoutModal,

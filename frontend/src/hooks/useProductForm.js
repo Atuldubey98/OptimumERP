@@ -46,7 +46,7 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
       } = values;
       if (productId) await updateProduct({ product, orgId, productId });
       else await createProduct({ product, orgId });
-      onAddedFetch();
+      if(onAddedFetch) onAddedFetch()
       onCloseDrawer();
       formik.resetForm();
       setSubmitting(false);

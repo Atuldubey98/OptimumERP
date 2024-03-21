@@ -51,7 +51,7 @@ export default function useCustomerForm(onAddedFetch, onCloseDrawer) {
       setSubmitting(false);
       onCloseDrawer();
       formik.resetForm();
-      onAddedFetch();
+      if (onAddedFetch) onAddedFetch()
     }),
   });
   return { formik };
