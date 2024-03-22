@@ -1,16 +1,16 @@
 export const invoiceStatusList = [
   {
-    type: "draft",
+    value: "draft",
     label: "Draft",
     colorScheme: "blue",
   },
   {
-    type : "sent",
+    value : "sent",
     label : "Sent",
     colorScheme : "teal"
   },
   {
-    type : "paid",
+    value : "paid",
     label : "Paid",
     colorScheme : "yellow"
   }

@@ -152,7 +152,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
             {quickAccessLabels
               .filter(
                 (quickAccess) =>
-                  quickAccess.label.toLowerCase().includes(search) || !search
+                  quickAccess.label.toLowerCase().includes(search.toLowerCase()) || !search
               )
               .map((quickAccess) => (
                 <Card
