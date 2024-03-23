@@ -127,7 +127,6 @@ export default function AdminPage() {
           </Flex>
         ) : (
           <Box>
-            <Text fontStyle={"italic"}>Select your organization</Text>
             <FormControl>
               <FormLabel>Organization</FormLabel>
               <Select
