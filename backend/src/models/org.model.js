@@ -27,6 +27,19 @@ const orgSchema = new Schema(
     panNo: {
       type: String,
     },
+    bank: {
+      name: {
+        type: String,
+        maxLength: 80,
+      },
+      accountHolderName: {
+        type: String,
+        maxLength: 80,
+      },
+      ifscCode: String,
+      accountNo: Number,
+      upi: String,
+    },
   },
   { timestamps: true, versionKey: false }
 );

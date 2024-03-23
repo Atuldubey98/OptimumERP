@@ -21,18 +21,6 @@ const settingSchema = new Schema({
     default: "INR",
     required: true,
   },
-  counter: {
-    type: {
-      invoice: {
-        type: Number,
-        default: 0,
-      },
-      quotation: {
-        type: Number,
-        default: 0,
-      },
-    },
-  },
   financialYear: {
     type: {
       start: {
@@ -45,6 +33,16 @@ const settingSchema = new Schema({
       },
     },
     required: true,
+  },
+  printSettings: {
+    bank: {
+      type: Boolean,
+      default: false,
+    },
+    upiQr: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 
