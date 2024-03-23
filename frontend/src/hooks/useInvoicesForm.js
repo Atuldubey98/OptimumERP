@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
 
-export default function useInvoicesForm() {
+export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("idle");
   const invoiceSchema = Yup.object().shape({
     invoiceNo: Yup.number()
@@ -48,18 +48,19 @@ export default function useInvoicesForm() {
   const { orgId, invoiceId } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
+  const defaultInvoice = {
+    invoiceNo: 1,
+    date: new Date(Date.now()).toISOString().split("T")[0],
+    status: "draft",
+    items: [defaultInvoiceItem],
+    terms: "Thanks for business !",
+    description: "",
+    poNo: "",
+    billingAddress: "",
+    poDate: "",
+  };
   const formik = useFormik({
-    initialValues: {
-      invoiceNo: 1,
-      date: new Date(Date.now()).toISOString().split("T")[0],
-      status: "draft",
-      items: [defaultInvoiceItem],
-      terms: "Thanks for business !",
-      description: "",
-      poNo: "",
-      billingAddress: "",
-      poDate: "",
-    },
+    initialValues: defaultInvoice,
     validationSchema: invoiceSchema,
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
@@ -79,9 +80,21 @@ export default function useInvoicesForm() {
         duration: 3000,
         isClosable: true,
       });
-      navigate(`/${orgId}/invoices`);
+      if (!saveAndNew || _id) {
+        navigate(`/${orgId}/invoices`);
+      } else {
+        resetForm();
+      }
       setSubmitting(false);
     }),
+  });
+  const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
+    setStatus("loading");
+    const { data } = await instance.get(
+      `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
+    );
+    formik.setFieldValue("invoiceNo", data.data);
+    setStatus("success");
   });
   useEffect(() => {
     (async () => {
@@ -120,16 +133,13 @@ export default function useInvoicesForm() {
           setStatus("success");
         })();
       } else {
-        requestAsyncHandler(async () => {
-          setStatus("loading");
-          const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
-          );
-          formik.setFieldValue("invoiceNo", data.data);
-          setStatus("success");
-        })();
+        fetchNextInvoiceNumber();
       }
     })();
   }, []);
-  return { formik, status };
+  const resetForm = async () => {
+    formik.resetForm();
+    fetchNextInvoiceNumber();
+  };
+  return { formik, status, resetForm };
 }

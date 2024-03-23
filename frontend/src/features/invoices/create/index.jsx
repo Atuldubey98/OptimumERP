@@ -12,6 +12,7 @@ import {
   InputLeftAddon,
   SimpleGrid,
   Spinner,
+  Switch,
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
@@ -29,8 +30,13 @@ import { defaultInvoiceItem } from "../../estimates/create/data";
 import CustomerSelectBill from "./CustomerSelectBill";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import NumberInputInteger from "../../common/NumberInputInteger";
+import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
 export default function CreateInvoicePage() {
-  const { formik, status } = useInvoicesForm();
+  const { saveAndNew, onToggleSaveAndNew } =
+    useSaveAndNewForm("save-new:invoice");
+  const { formik, status } = useInvoicesForm({
+    saveAndNew,
+  });
   const loading = status === "loading";
   const { transactionPrefix } = useCurrentOrgCurrency();
   return (
@@ -44,6 +50,24 @@ export default function CreateInvoicePage() {
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
+                {formik.values._id ? null : (
+                  <FormControl
+                    display="flex"
+                    justifyContent={"flex-end"}
+                    alignItems="center"
+                  >
+                    <FormLabel htmlFor="save-and-new" mb="0">
+                      Save & New
+                    </FormLabel>
+                    <Switch
+                      onChange={(e) => {
+                        onToggleSaveAndNew(e.currentTarget.checked);
+                      }}
+                      isChecked={saveAndNew}
+                      id="save-and-new"
+                    />
+                  </FormControl>
+                )}
                 <Button
                   leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}

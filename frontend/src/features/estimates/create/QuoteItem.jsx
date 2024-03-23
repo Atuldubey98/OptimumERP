@@ -59,9 +59,9 @@ export default function QuoteItem({
                 value={quoteItem.name}
               />
               <InputRightElement>
-                <TbEyeSearch
-                  cursor={"pointer"}
-                  size={25}
+                <IconButton
+                  icon={<TbEyeSearch size={25} />}
+                  size={30}
                   onClick={onOpenSearchProduct}
                 />
               </InputRightElement>
@@ -153,7 +153,11 @@ export default function QuoteItem({
               <InputRightElement>{symbol}</InputRightElement>
             </InputGroup>
           </FormControl>
-          <IconButton cursor={"pointer"} onClick={deleteQuote} as={AiOutlineDelete} size={"sm"} />
+          <IconButton
+            onClick={deleteQuote}
+            icon={<AiOutlineDelete />}
+            size={"sm"}
+          />
         </GridItem>
       </SimpleGrid>
       <SelectProduct
