@@ -30,7 +30,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isRequired
           isInvalid={formik.errors.name && formik.touched.name}
         >
-          <FormLabel>Product Name</FormLabel>
+          <FormLabel>Item Name</FormLabel>
           <Input
             onChange={formik.handleChange}
             name="name"

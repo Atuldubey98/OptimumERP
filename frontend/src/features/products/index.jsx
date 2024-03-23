@@ -131,7 +131,7 @@ export default function ProductsPage() {
                 <SearchItem />
               </Box>
             }
-            heading={"Products"}
+            heading={"Items"}
             tableData={products.map(productsMapper)}
             caption={`Total products found : ${totalCount}`}
             operations={products.map((product) => (

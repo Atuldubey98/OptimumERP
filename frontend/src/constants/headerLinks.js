@@ -10,7 +10,7 @@ const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },
   { icon: AiOutlineCustomerService, link: "/customers", label: "Customers" },
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices" },
-  { icon: FaFileInvoice, link: "/estimates", label: "Quotations" },
+  { icon: FaFileInvoice, link: "/estimates", label: "Quotations/Estimates" },
   { icon: GiExpense, link: "/expenses", label: "Expenses" },
   { icon: FaMoneyBillTrendUp, link: "/purchases", label: "Purchase" },
   {
@@ -23,7 +23,7 @@ const headerLinks = [
     link: "/reports/sale",
     label: "Reports",
   },
-  { icon: GoTag, link: "/products", label: "Products" },
+  { icon: GoTag, link: "/products", label: "Items" },
 ];
 
 export default headerLinks;

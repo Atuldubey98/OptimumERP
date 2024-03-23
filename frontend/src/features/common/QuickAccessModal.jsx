@@ -100,7 +100,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     {
       label: "Products",
       onClick: () => {
-        navigate(`/${orgId}/producs`);
+        navigate(`/${orgId}/products`);
       },
       icon: <GoTag size={50} />,
     },
