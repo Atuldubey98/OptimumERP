@@ -9,14 +9,19 @@ import {
   DrawerHeader,
   DrawerOverlay,
   FormControl,
+  FormErrorMessage,
   FormLabel,
-  Select,
   Stack,
 } from "@chakra-ui/react";
 import React from "react";
+import { Select } from "chakra-react-select";
 import RegisterUserFields from "../register/RegisterUserFields";
 
 export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
+  const roleOptions = [
+    { value: "user", label: "User" },
+    { value: "admin", label: "Admin" },
+  ];
   return (
     <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
@@ -27,18 +32,20 @@ export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
         <form onSubmit={formik.handleSubmit}>
           <DrawerBody>
             <Stack spacing={4}>
-              <RegisterUserFields formik={formik} />
-              <FormControl isRequired>
+              <FormControl isInvalid={formik.errors.role} isRequired>
                 <FormLabel>User role</FormLabel>
                 <Select
-                  value={formik.values.role}
-                  onChange={formik.handleChange}
-                  name="role"
-                >
-                  <option value={"user"}>User</option>
-                  <option value={"admin"}>Admin</option>
-                </Select>
+                  value={roleOptions.find(
+                    (roleOption) => roleOption.value === formik.values.role
+                  )}
+                  onChange={({ value }) => {
+                    formik.setFieldValue("role", value);
+                  }}
+                  options={roleOptions}
+                />
+                <FormErrorMessage>{formik.errors.role}</FormErrorMessage>
               </FormControl>
+              <RegisterUserFields formik={formik} />
               <Checkbox
                 isChecked={formik.values.active}
                 onChange={formik.handleChange}
@@ -54,7 +61,11 @@ export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button isLoading={formik.isSubmitting} type="submit" colorScheme="blue">
+            <Button
+              isLoading={formik.isSubmitting}
+              type="submit"
+              colorScheme="blue"
+            >
               Register
             </Button>
           </DrawerFooter>

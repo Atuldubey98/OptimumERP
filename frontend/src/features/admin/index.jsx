@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  IconButton,
   Input,
   Spinner,
   Stack,
@@ -14,22 +15,23 @@ import {
   TableContainer,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
+import { GoShareAndroid } from "react-icons/go";
+import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
+import { IoAdd } from "react-icons/io5";
 import * as Yup from "yup";
+import useAsyncCall from "../../hooks/useAsyncCall";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
-import { Select } from "chakra-react-select";
-import { useFormik } from "formik";
-import { IoAdd } from "react-icons/io5";
-import useAsyncCall from "../../hooks/useAsyncCall";
+import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
 export default function AdminPage() {
   const registerSchema = Yup.object({
@@ -55,6 +57,7 @@ export default function AdminPage() {
       password: "",
       role: "user",
     },
+    validateOnChange: false,
     validationSchema: registerSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { data } = await instance.post(
@@ -114,6 +117,38 @@ export default function AdminPage() {
       setSubmitting(false);
     },
   });
+  const bankFormik = useFormik({
+    initialValues: {
+      name: "",
+      accountNo: "",
+      ifscCode: "",
+      upi: "",
+      accountHolderName: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().label("Bank Name"),
+      accountNo: Yup.number().label("Account Number"),
+      ifscCode: Yup.string().label("IFSC Code"),
+      upi: Yup.string().label("UPI Details"),
+      accountHolderName: Yup.string().label("Account Holder Name"),
+    }),
+    onSubmit: async (data, { setSubmitting }) => {
+      const { data: responseData } = await instance.patch(
+        `/api/v1/organizations/${organization}`,
+        {
+          bank: data,
+        }
+      );
+      toast({
+        title: "Bank",
+        description: responseData.message,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setSubmitting(false);
+    },
+  });
   const organizationsOptions = authorizedOrgs.map(({ org }) => ({
     label: org.name,
     value: org._id,
@@ -136,11 +171,14 @@ export default function AdminPage() {
                 )}
                 onChange={({ value }) => {
                   setOrganization(value);
-                  setValues(
-                    authorizedOrgs.find(
-                      (authorizedOrg) => authorizedOrg.org._id === value
-                    ).org
-                  );
+                  const currentOrg = authorizedOrgs.find(
+                    (authorizedOrg) => authorizedOrg.org._id === value
+                  ).org;
+                  setValues(currentOrg);
+                  bankFormik.setValues({
+                    ...bankFormik.values,
+                    ...currentOrg.bank,
+                  });
                 }}
               />
             </FormControl>
@@ -205,6 +243,12 @@ export default function AdminPage() {
                     </Flex>
                   </Stack>
                 </form>
+              </Box>
+              <Box>
+                <Heading fontSize={"lg"}>Bank Account</Heading>
+              </Box>
+              <Box>
+                <BankAccounts bankFormik={bankFormik}/>
               </Box>
               <Box>
                 <Heading fontSize={"lg"}>Users</Heading>

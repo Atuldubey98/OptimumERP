@@ -119,5 +119,5 @@ exports.updateOrganization = requestAsyncHandler(async (req, res) => {
   });
   return res
     .status(200)
-    .json({ message: "Organization updated.", data: updatedOrg });
+    .json({ message: "Details updated !", data: updatedOrg });
 });

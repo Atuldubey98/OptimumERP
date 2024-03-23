@@ -27,7 +27,7 @@ export const SidebarLinksList = () => {
           <Text>Settings</Text>
           <IconButton
             size={15}
-            as={openSettings ? FaChevronUp : FaChevronDown}
+            icon={openSettings ? <FaChevronUp /> : <FaChevronDown />}
             cursor={"pointer"}
             onClick={() => setOpenSettings(!openSettings)}
           />
