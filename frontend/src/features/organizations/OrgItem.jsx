@@ -36,7 +36,7 @@ export default function OrgItem({ org }) {
     >
       <GoOrganization size={34} />
       <Box>
-        <Flex>
+        <Flex gap={3}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
             {org.name}
           </Text>
