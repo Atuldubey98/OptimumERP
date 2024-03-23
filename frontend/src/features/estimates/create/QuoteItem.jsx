@@ -1,24 +1,20 @@
 import {
   Box,
-  Button,
-  Flex,
   FormControl,
   FormErrorMessage,
-  FormLabel,
-  Grid,
   GridItem,
   Input,
   InputGroup,
   InputRightElement,
-  Select,
   SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlineDelete } from "react-icons/ai";
-import { taxRates, ums } from "./data";
+import { Select } from "chakra-react-select";
 import { TbEyeSearch } from "react-icons/tb";
-import SelectProduct from "./SelectProduct";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import SelectProduct from "./SelectProduct";
+import { taxRates, ums } from "./data";
 export default function QuoteItem({
   quoteItem,
   errorsQuoteItems,
@@ -84,15 +80,12 @@ export default function QuoteItem({
           <FormControl isRequired isInvalid={errors.um && errors.um}>
             <Select
               name={`items[${index}].um`}
-              onChange={handleQuoteItemChange}
-              value={quoteItem.um}
-            >
-              {ums.map((um) => (
-                <option key={um.value} value={um.value}>
-                  {um.label}
-                </option>
-              ))}
-            </Select>
+              value={ums.find((um) => um.value === quoteItem.um)}
+              onChange={({ value }) => {
+                formik.setFieldValue(`items[${index}].um`, value);
+              }}
+              options={ums}
+            />
             <FormErrorMessage>{errors.um}</FormErrorMessage>
           </FormControl>
         </GridItem>
@@ -100,15 +93,14 @@ export default function QuoteItem({
           <FormControl isRequired isInvalid={errors.gst && errors.gst}>
             <Select
               name={`items[${index}].gst`}
-              value={quoteItem.gst}
-              onChange={handleQuoteItemChange}
-            >
-              {taxRates.map((taxRate) => (
-                <option value={taxRate.value} key={taxRate.value}>
-                  {taxRate.label}
-                </option>
-              ))}
-            </Select>
+              value={taxRates.find(
+                (taxRate) => taxRate.value === quoteItem.gst
+              )}
+              onChange={({ value }) => {
+                formik.setFieldValue(`items[${index}].gst`, value);
+              }}
+              options={taxRates}
+            />
             <FormErrorMessage>{errors.gst}</FormErrorMessage>
           </FormControl>
         </GridItem>

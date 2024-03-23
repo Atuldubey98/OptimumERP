@@ -4,13 +4,16 @@ import {
   FormLabel,
   Grid,
   Input,
-  Select,
   Textarea,
 } from "@chakra-ui/react";
 import FormDrawerLayout from "../common/form-drawer-layout";
 import { ums } from "../estimates/create/data";
-
+import { Select } from "chakra-react-select";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
+  const categoryOptions = [
+    { value: "service", label: "Service" },
+    { value: "goods", label: "Goods" },
+  ];
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
@@ -72,31 +75,30 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
         >
           <FormLabel>Category</FormLabel>
           <Select
-            onChange={formik.handleChange}
+            options={categoryOptions}
+            onChange={({ value }) => {
+              formik.setFieldValue("category", value);
+            }}
             name="category"
-            value={formik.values.category}
-          >
-            <option value="service">Service</option>
-            <option value="goods">Goods</option>
-          </Select>
+            value={categoryOptions.find(
+              (category) => category.value === formik.values.category
+            )}
+          ></Select>
           <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
         </FormControl>
         <FormControl
           isRequired
           isInvalid={formik.errors.um && formik.touched.um}
         >
-          <FormLabel>Unit of measurement</FormLabel>
+          <FormLabel>Unit of Measurement</FormLabel>
           <Select
-            onChange={formik.handleChange}
-            name="um"
-            value={formik.values.um}
-          >
-            {ums.map((um) => (
-              <option key={um.value} value={um.value}>
-                {um.label}
-              </option>
-            ))}
-          </Select>
+            name={`um`}
+            value={ums.find((um) => um.value === formik.values.um)}
+            onChange={({ value }) => {
+              formik.setFieldValue(`um`, value);
+            }}
+            options={ums}
+          />
           <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={formik.errors.code && formik.touched.code}>

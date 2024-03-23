@@ -1,6 +1,10 @@
-import { FormControl, FormLabel, Select } from "@chakra-ui/react";
-
+import { FormControl, FormErrorMessage, FormLabel } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 export default function SelectStatus({ formik, statusList }) {
+  const options = statusList.map((status) => ({
+    value: status.type,
+    label: status.label,
+  }));
   return (
     <FormControl
       isRequired
@@ -8,16 +12,14 @@ export default function SelectStatus({ formik, statusList }) {
     >
       <FormLabel>Status</FormLabel>
       <Select
-        value={formik.values.status}
-        onChange={formik.handleChange}
+        value={options.find((option) => option.value === formik.values.status)}
+        options={options}
+        onChange={({ value }) => {
+          formik.setFieldValue("status", value);
+        }}
         name="status"
-      >
-        {statusList.map((status) => (
-          <option key={status.type} value={status.type}>
-            {status.label}
-          </option>
-        ))}
-      </Select>
+      />
+      <FormErrorMessage>{formik.errors.status}</FormErrorMessage>
     </FormControl>
   );
 }

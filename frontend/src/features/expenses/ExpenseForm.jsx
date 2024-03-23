@@ -3,13 +3,13 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
-  Select,
   Textarea,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import FormDrawerLayout from "../common/form-drawer-layout";
 import instance from "../../instance";
+import { Select } from "chakra-react-select";
 import { useParams } from "react-router-dom";
 export default function ExpenseForm({ formik, isOpen, onClose }) {
   const { requestAsyncHandler } = useAsyncCall();
@@ -30,6 +30,10 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
   useEffect(() => {
     fetchExpenseCategories();
   }, []);
+  const expenseCategoryOptions = expenseCategories.map((expenseCategory) => ({
+    value: expenseCategory._id,
+    label: expenseCategory.name,
+  }));
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
@@ -70,24 +74,21 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
         >
           <FormLabel>Expense Category</FormLabel>
           <Select
-            onChange={formik.handleChange}
+            onChange={({ value }) => {
+              formik.setFieldValue("category", value);
+            }}
+            options={expenseCategoryOptions}
             name="category"
-            value={formik.values.category}
-          >
-            <option value="">Select any category</option>
-            {expenseCategories.map((expenseCategory) => (
-              <option value={expenseCategory._id} key={expenseCategory._id}>
-                {expenseCategory.name}
-              </option>
-            ))}
-          </Select>
+            value={expenseCategoryOptions.find(
+              (expenseCategory) =>
+                expenseCategory.value == formik.values.category
+            )}
+          ></Select>
           <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
         </FormControl>
       )}
       <FormControl
-        isInvalid={
-          formik.errors.date && formik.touched.date
-        }
+        isInvalid={formik.errors.date && formik.touched.date}
         isRequired
       >
         <FormLabel>Date</FormLabel>
@@ -97,7 +98,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           onChange={formik.handleChange}
           value={formik.values.date}
         />
-         <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
+        <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
       </FormControl>
     </FormDrawerLayout>
   );

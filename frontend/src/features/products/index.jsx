@@ -64,6 +64,7 @@ export default function ProductsPage() {
       description: "",
       category: "service",
       code: "",
+      um: "none",
     });
     openProductFormDrawer();
   };

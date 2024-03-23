@@ -5,10 +5,8 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Grid,
   Heading,
   Input,
-  Select,
   Spinner,
   Stack,
   Table,
@@ -16,23 +14,23 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as Yup from "yup";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
-
+import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
+import { IoAdd } from "react-icons/io5";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import RegisteUserDrawer from "./RegisteUserDrawer";
-import SettingContext from "../../contexts/SettingContext";
-import { IoAdd } from "react-icons/io5";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -96,7 +94,6 @@ export default function AdminPage() {
     }
     fetchOrgUsers();
   }, [organization]);
-  const settingContext = useContext(SettingContext);
   const {
     values: currentSelectedOrganization,
     handleChange,
@@ -117,6 +114,10 @@ export default function AdminPage() {
       setSubmitting(false);
     },
   });
+  const organizationsOptions = authorizedOrgs.map(({ org }) => ({
+    label: org.name,
+    value: org._id,
+  }));
   return (
     <MainLayout>
       <Box p={5}>
@@ -126,32 +127,23 @@ export default function AdminPage() {
           </Flex>
         ) : (
           <Box>
-            <FormControl maxW={"md"}>
+            <Text fontStyle={"italic"}>Select your organization</Text>
+            <FormControl>
               <FormLabel>Organization</FormLabel>
               <Select
-                fontFamily={`"Poppins", sans-serif`}
-                value={organization}
-                onChange={(e) => {
-                  setOrganization(e.currentTarget.value);
+                options={organizationsOptions}
+                value={organizationsOptions.find(
+                  (org) => org.value == organization
+                )}
+                onChange={({ value }) => {
+                  setOrganization(value);
                   setValues(
                     authorizedOrgs.find(
-                      (authorizedOrg) =>
-                        authorizedOrg.org._id === e.currentTarget.value
+                      (authorizedOrg) => authorizedOrg.org._id === value
                     ).org
                   );
                 }}
-              >
-                <option value={""}>Select an organization</option>
-                {authorizedOrgs.map((authorizedOrg) => (
-                  <option
-                    disabled={authorizedOrg.role === "user"}
-                    key={authorizedOrg.org._id}
-                    value={authorizedOrg.org._id}
-                  >
-                    {authorizedOrg.org.name}
-                  </option>
-                ))}
-              </Select>
+              />
             </FormControl>
           </Box>
         )}
@@ -262,10 +254,14 @@ export default function AdminPage() {
             </TableContainer>
           </Fade>
         )}
+        {organization ? (
+          <RegisteUserDrawer
+            isOpen={isOpen}
+            onClose={onClose}
+            formik={formik}
+          />
+        ) : null}
       </Box>
-      {organization ? (
-        <RegisteUserDrawer isOpen={isOpen} onClose={onClose} formik={formik} />
-      ) : null}
     </MainLayout>
   );
 }
