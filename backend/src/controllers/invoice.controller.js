@@ -14,6 +14,9 @@ const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const ejs = require("ejs");
 const wkhtmltopdf = require("wkhtmltopdf");
+const currencies = require("../constants/currencies");
+const taxRates = require("../constants/gst");
+const ums = require("../constants/um");
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
   const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
@@ -200,10 +203,28 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const currencySymbol = currencies[setting.currency].symbol;
+
+  const items = invoice.items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${price * quantity}`,
+  }));
   return res.render(locationTemplate, {
     entity: invoice,
     num: invoice.num,
-    grandTotal,
+    items,
+    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+    total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
+    sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
+    cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,
+    igst: `${currencySymbol} ${invoice.igst.toFixed(2)}`,
     title: "Invoice",
     billMetaHeading: "Invoice information",
     partyMetaHeading: "Bill To",
@@ -234,12 +255,30 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const currencySymbol = currencies[setting.currency].symbol;
+
+  const items = invoice.items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${price * quantity}`,
+  }));
   ejs.renderFile(
     locationTemplate,
     {
       entity: invoice,
-      grandTotal,
       num: invoice.num,
+      items,
+      grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+      total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
+      sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
+      cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,
+      igst: `${currencySymbol} ${invoice.igst.toFixed(2)}`,
       title: "Invoice",
       billMetaHeading: "Invoice information",
       partyMetaHeading: "Bill To",

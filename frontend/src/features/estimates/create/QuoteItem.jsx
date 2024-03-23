@@ -3,6 +3,7 @@ import {
   FormControl,
   FormErrorMessage,
   GridItem,
+  IconButton,
   Input,
   InputGroup,
   InputRightElement,
@@ -152,16 +153,7 @@ export default function QuoteItem({
               <InputRightElement>{symbol}</InputRightElement>
             </InputGroup>
           </FormControl>
-          <Box
-            onClick={deleteQuote}
-            cursor={"pointer"}
-            transition={"300ms ease-in"}
-            _hover={{
-              color: "red",
-            }}
-          >
-            <AiOutlineDelete size={30} />
-          </Box>
+          <IconButton cursor={"pointer"} onClick={deleteQuote} as={AiOutlineDelete} size={"sm"} />
         </GridItem>
       </SimpleGrid>
       <SelectProduct

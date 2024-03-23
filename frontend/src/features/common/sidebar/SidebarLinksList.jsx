@@ -1,8 +1,7 @@
-import { Container, Icon, List, Text } from "@chakra-ui/react";
+import { Container, Icon, IconButton, List, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
-import { HiOutlineDocumentReport } from "react-icons/hi";
 import { NavLink, useParams } from "react-router-dom";
 import headerLinks from "../../../constants/headerLinks";
 import HeaderLink from "./HeaderLink";
@@ -26,7 +25,8 @@ export const SidebarLinksList = () => {
         <HeaderLink>
           <Icon as={IoSettingsOutline} />
           <Text>Settings</Text>
-          <Icon
+          <IconButton
+            size={15}
             as={openSettings ? FaChevronUp : FaChevronDown}
             cursor={"pointer"}
             onClick={() => setOpenSettings(!openSettings)}

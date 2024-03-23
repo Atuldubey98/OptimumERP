@@ -10,6 +10,9 @@ const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const ejs = require("ejs");
 const wkhtmltopdf = require("wkhtmltopdf");
+const taxRates = require("../constants/gst");
+const ums = require("../constants/um");
+const currencies = require("../constants/currencies");
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
@@ -219,10 +222,30 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
   );
   const templateName = req.query.template || "simple";
   const locationTemplate = `templates/${templateName}`;
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const currencySymbol = currencies[setting.currency].symbol;
+
+  const items = quote.items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${price * quantity}`,
+  }));
+
   const data = {
     entity: quote,
     num: quote.num,
-    grandTotal,
+    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+    items,
+    currencySymbol,
+    total: `${currencySymbol} ${quote.total.toFixed(2)}`,
+    sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
+    cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
+    igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,
     title: "Quotation",
     billMetaHeading: "Estimate Information",
     partyMetaHeading: "Estimate to",
@@ -250,10 +273,30 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const currencySymbol = currencies[setting.currency].symbol;
+
+  const items = quote.items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${price * quantity}`,
+  }));
+
   const data = {
     entity: quote,
     num: quote.num,
-    grandTotal,
+    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+    items,
+    currencySymbol,
+    total: `${currencySymbol} ${quote.total.toFixed(2)}`,
+    sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
+    cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
+    igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,
     title: "Quotation",
     billMetaHeading: "Estimate Information",
     partyMetaHeading: "Estimate to",

@@ -22,11 +22,12 @@ export default function BillModal({
   entity,
   heading,
   onSaveBill,
+  templateName = "simple",
 }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
-  const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=simple`;
+  const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=${templateName}`;
   const onPrintBill = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(viewBill);

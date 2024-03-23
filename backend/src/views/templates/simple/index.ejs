@@ -2,14 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <title><%= title %></title>
     <style>
       /* General Styles */
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
         margin: 0;
+        line-height: 1.6;
+        color: #333;
       }
-
       .invoice-container {
         margin: 0 auto;
         padding: 3px;
@@ -126,18 +134,14 @@
           </tr>
         </thead>
         <tbody>
-          <% entity.items.forEach(function(item, index) { %>
+          <% items.forEach(function(item, index) { %>
           <tr>
             <td><%= index+1 %></td>
             <td><%= item.name %></td>
             <td><%= item.gst %></td>
             <td><%= item.quantity %></td>
             <td><%= item.price %></td>
-            <td>  
-              <%= (item.price * item.quantity + (item.price * item.quantity *
-              (item.gst === "none" ? 0 : parseFloat(item.gst.split(":")[1]) /
-              100))).toFixed(2) %>
-            </td>
+            <td><%= item.total %></td>
           </tr>
           <% }); %>
         </tbody>
@@ -147,33 +151,27 @@
         <table class="total-table">
           <tr>
             <th>Subtotal:</th>
-            <td><%= entity.total %></td>
+            <td><%= total %></td>
           </tr>
           <tr>
             <th>Discount:</th>
             <td><!-- Add discount amount here --></td>
           </tr>
           <tr>
-            <th>
-              SGST:
-            </th>
-            <td><%= entity.sgst.toFixed(2) %></td>
+            <th>SGST:</th>
+            <td><%= sgst %></td>
           </tr>
           <tr>
-            <th>
-              CGST:
-            </th>
-            <td><%= entity.cgst.toFixed(2) %></td>
+            <th>CGST:</th>
+            <td><%= cgst %></td>
           </tr>
           <tr>
-            <th>
-              IGST:
-            </th>
-            <td><%= entity.igst.toFixed(2) %></td>
+            <th>IGST:</th>
+            <td><%= igst %></td>
           </tr>
           <tr>
-            <th>Total:</th>
-            <td><%= grandTotal.toFixed(2) %></td>
+            <th>Grand Total:</th>
+            <td><%= grandTotal %></td>
           </tr>
         </table>
       </div>

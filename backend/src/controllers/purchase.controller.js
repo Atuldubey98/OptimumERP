@@ -14,6 +14,9 @@ const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const ejs = require("ejs");
 const wkhtmltopdf = require("wkhtmltopdf");
+const taxRates = require("../constants/gst");
+const ums = require("../constants/um");
+const currencies = require("../constants/currencies");
 
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
@@ -184,10 +187,29 @@ exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
   );
   const templateName = req.query.template || "simple";
   const locationTemplate = `templates/${templateName}`;
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const currencySymbol = currencies[setting.currency].symbol;
+
+  const items = purchase.items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${price * quantity}`,
+  }));
   const data = {
     entity: purchase,
     num: purchase.purchaseNo,
     grandTotal,
+    items,
+    grandTotal: `${currencySymbol} ${grandTotal}`,
+    total: `${currencySymbol} ${purchase.total.toFixed(2)}`,
+    sgst: `${currencySymbol} ${purchase.sgst.toFixed(2)}`,
+    cgst: `${currencySymbol} ${purchase.cgst.toFixed(2)}`,
+    igst: `${currencySymbol} ${purchase.igst.toFixed(2)}`,
     title: "Purchase",
     billMetaHeading: "Purchase Information",
     partyMetaHeading: "Bill From",
@@ -218,10 +240,29 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
         100,
     0
   );
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  const currencySymbol = currencies[setting.currency].symbol;
+
+  const items = purchase.items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${price * quantity}`,
+  }));
   const data = {
     entity: purchase,
     num: purchase.purchaseNo,
     grandTotal,
+    items,
+    grandTotal: `${currencySymbol} ${grandTotal}`,
+    total: `${currencySymbol} ${purchase.total}`,
+    sgst: `${currencySymbol} ${purchase.sgst}`,
+    cgst: `${currencySymbol} ${purchase.cgst}`,
+    igst: `${currencySymbol} ${purchase.igst}`,
     title: "Purchase",
     billMetaHeading: "Purchase Information",
     partyMetaHeading: "Bill From",
