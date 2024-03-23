@@ -28,6 +28,7 @@ import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import CustomerSelectBill from "./CustomerSelectBill";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import NumberInputInteger from "../../common/NumberInputInteger";
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
   const loading = status === "loading";
@@ -97,11 +98,11 @@ export default function CreateInvoicePage() {
                           {transactionPrefix.invoice}
                         </InputLeftAddon>
                       ) : null}
-                      <Input
-                        type="number"
-                        name="invoiceNo"
-                        onChange={formik.handleChange}
-                        value={formik.values.invoiceNo}
+                      <NumberInputInteger
+                        min={1}
+                        formik={formik}
+                        name={"invoiceNo"}
+                        onlyInt={true}
                       />
                     </InputGroup>
 

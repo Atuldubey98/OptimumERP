@@ -11,6 +11,7 @@ import FormDrawerLayout from "../common/form-drawer-layout";
 import instance from "../../instance";
 import { Select } from "chakra-react-select";
 import { useParams } from "react-router-dom";
+import NumberInputInteger from "../common/NumberInputInteger";
 export default function ExpenseForm({ formik, isOpen, onClose }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [expenseCategories, setExpenseCategories] = useState([]);
@@ -48,12 +49,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
         isRequired
       >
         <FormLabel>Amount</FormLabel>
-        <Input
-          type="number"
-          value={formik.values.amount}
-          name="amount"
-          onChange={formik.handleChange}
-        />
+        <NumberInputInteger formik={formik} name={"amount"} />
         <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
       </FormControl>
       <FormControl

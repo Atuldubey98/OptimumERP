@@ -9,6 +9,7 @@ import {
 import FormDrawerLayout from "../common/form-drawer-layout";
 import { ums } from "../estimates/create/data";
 import { Select } from "chakra-react-select";
+import NumberInputInteger from "../common/NumberInputInteger";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
   const categoryOptions = [
     { value: "service", label: "Service" },
@@ -45,13 +46,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isInvalid={formik.errors.costPrice && formik.touched.costPrice}
         >
           <FormLabel>Cost Price</FormLabel>
-          <Input
-            onChange={formik.handleChange}
-            name="costPrice"
-            type="number"
-            value={formik.values.costPrice}
-            placeholder="Cost Price"
-          />
+          <NumberInputInteger name={"costPrice"} formik={formik} />
           <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
         </FormControl>
         <FormControl
@@ -59,13 +54,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isInvalid={formik.errors.sellingPrice && formik.touched.sellingPrice}
         >
           <FormLabel>Selling Price</FormLabel>
-          <Input
-            onChange={formik.handleChange}
-            name="sellingPrice"
-            type="number"
-            value={formik.values.sellingPrice}
-            placeholder="Selling Price"
-          />
+          <NumberInputInteger name={"sellingPrice"} formik={formik} />
           <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
         </FormControl>
 

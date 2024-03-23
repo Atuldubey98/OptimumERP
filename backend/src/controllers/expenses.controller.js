@@ -117,7 +117,7 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
 
 exports.updateExpense = requestAsyncHandler(async (req, res) => {
   const { expenseId } = req.params;
-  if (!Types.ObjectId.isValid(expenseId)) {
+  if (!mongoose.isValidObjectId(expenseId)) {
     return res.status(404).json({ message: "Invalid expense ID" });
   }
   const updatedExpense = await Expense.findOneAndUpdate(
@@ -127,14 +127,14 @@ exports.updateExpense = requestAsyncHandler(async (req, res) => {
       new: true,
     }
   );
+
   const updateTransaction = await Transaction.findOneAndUpdate(
     {
       org: req.params.orgId,
       docModel: "expense",
       doc: updatedExpense._id,
-      total: req.body.amount,
     },
-    { updatedBy: req.body.updatedBy }
+    { updatedBy: req.body.updatedBy, ...req.body }
   );
   if (!updatedExpense || !updateTransaction) throw new ExpenseNotFound();
   res.status(200).json(updatedExpense);

@@ -6,6 +6,11 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -15,6 +20,7 @@ import { TbEyeSearch } from "react-icons/tb";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import SelectProduct from "./SelectProduct";
 import { taxRates, ums } from "./data";
+import NumberInputInteger from "../../common/NumberInputInteger";
 export default function QuoteItem({
   quoteItem,
   errorsQuoteItems,
@@ -67,12 +73,19 @@ export default function QuoteItem({
             isRequired
             isInvalid={errors.quantity && errors.quantity}
           >
-            <Input
-              type="number"
-              name={`items[${index}].quantity`}
+            <NumberInput
+              min={0}
               value={quoteItem.quantity}
-              onChange={handleQuoteItemChange}
-            />
+              onChange={(value) => {
+                formik.setFieldValue(`items[${index}].quantity`, value);
+              }}
+            >
+              <NumberInputField placeholder="Quantity" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
             <FormErrorMessage>{errors.quantity}</FormErrorMessage>
           </FormControl>
         </GridItem>
@@ -106,16 +119,19 @@ export default function QuoteItem({
         </GridItem>
         <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.price && errors.price}>
-            <InputGroup>
-              <Input
-                type="number"
-                value={quoteItem.price}
-                name={`items[${index}].price`}
-                onChange={handleQuoteItemChange}
-                placeholder="Enter amount"
-              />
-              <InputRightElement>{symbol}</InputRightElement>
-            </InputGroup>
+            <NumberInput
+              min={0}
+              value={quoteItem.price}
+              onChange={(value) => {
+                formik.setFieldValue(`items[${index}].price`, value);
+              }}
+            >
+              <NumberInputField placeholder="Price" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
             <FormErrorMessage>{errors.price}</FormErrorMessage>
           </FormControl>
         </GridItem>
