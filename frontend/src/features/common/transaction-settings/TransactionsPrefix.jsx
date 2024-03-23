@@ -6,11 +6,11 @@ import {
   FormLabel,
   Heading,
   Input,
-  Select,
   Skeleton,
   Stack,
   useToast,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import useOrganizations from "../../../hooks/useOrganizations";
 import { useContext, useEffect, useState } from "react";
@@ -97,6 +97,15 @@ export default function TransactionPrefix() {
     })();
   }, [formik.values.organization]);
   const currencyCodes = Object.keys(currencies);
+  const organizationOptions = organizations.map((authOrg) => ({
+    value: authOrg.org._id,
+    label: authOrg.org.name,
+    disabled: authOrg.role !== "admin",
+  }));
+  const currencyOptions = currencyCodes.map((currency) => ({
+    label: `${currency} - ${currencies[currency].symbol}`,
+    value: currency,
+  }));
   return (
     <Stack spacing={6}>
       <Heading fontSize={"lg"}>Transaction</Heading>
@@ -106,36 +115,30 @@ export default function TransactionPrefix() {
             <FormControl>
               <FormLabel fontWeight={"bold"}>Organization</FormLabel>
               <Select
-                value={formik.values.organization}
-                onChange={formik.handleChange}
+                value={organizationOptions.find(
+                  (org) => org.value === formik.values.organization
+                )}
+                onChange={({ value }) => {
+                  formik.setFieldValue("organization", value);
+                }}
+                isOptionDisabled={({ disabled }) => disabled}
+                options={organizationOptions}
                 name="organization"
-              >
-                <option value={""}>Select an organization</option>
-                {organizations.map((organization) => (
-                  <option
-                    disabled={organization.role !== "admin"}
-                    value={organization.org._id}
-                    key={organization.org._id}
-                  >
-                    {organization.org.name}
-                  </option>
-                ))}
-              </Select>
+              ></Select>
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
               <FormLabel fontWeight={"bold"}>Currency</FormLabel>
               <Select
                 name="currency"
-                value={formik.values.currency}
-                onChange={formik.handleChange}
-              >
-                {currencyCodes.map((currency) => (
-                  <option
-                    key={currency}
-                    value={currency}
-                  >{`${currency} - ${currencies[currency].symbol}`}</option>
-                ))}
-              </Select>
+                value={currencyOptions.find(
+                  (currencyOption) =>
+                    currencyOption.value === formik.values.currency
+                )}
+                options={currencyOptions}
+                onChange={({ value }) => {
+                  formik.setFieldValue("currency", value);
+                }}
+              />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
               <FormLabel fontWeight={"bold"}>Invoice Prefix</FormLabel>
