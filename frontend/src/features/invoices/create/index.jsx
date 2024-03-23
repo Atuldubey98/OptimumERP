@@ -8,6 +8,8 @@ import {
   Grid,
   Heading,
   Input,
+  InputGroup,
+  InputLeftAddon,
   SimpleGrid,
   Spinner,
   Textarea,
@@ -25,9 +27,11 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import CustomerSelectBill from "./CustomerSelectBill";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm();
   const loading = status === "loading";
+  const { transactionPrefix } = useCurrentOrgCurrency();
   return (
     <MainLayout>
       <Box p={5}>
@@ -87,12 +91,20 @@ export default function CreateInvoicePage() {
                     }
                   >
                     <FormLabel>Invoice No.</FormLabel>
-                    <Input
-                      type="number"
-                      name="invoiceNo"
-                      onChange={formik.handleChange}
-                      value={formik.values.invoiceNo}
-                    />
+                    <InputGroup>
+                      {transactionPrefix.invoice ? (
+                        <InputLeftAddon>
+                          {transactionPrefix.invoice}
+                        </InputLeftAddon>
+                      ) : null}
+                      <Input
+                        type="number"
+                        name="invoiceNo"
+                        onChange={formik.handleChange}
+                        value={formik.values.invoiceNo}
+                      />
+                    </InputGroup>
+
                     <FormErrorMessage>
                       {formik.errors.invoiceNo}
                     </FormErrorMessage>

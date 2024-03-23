@@ -8,6 +8,8 @@ import {
   Grid,
   Heading,
   Input,
+  InputGroup,
+  InputLeftAddon,
   SimpleGrid,
   Spinner,
   Textarea,
@@ -25,9 +27,11 @@ import TotalsBox from "./TotalsBox";
 import { defaultQuoteItem, statusList } from "./data";
 import { AiOutlineSave } from "react-icons/ai";
 import CustomerSelectBill from "../../invoices/create/CustomerSelectBill";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const loading = status === "loading";
+  const { transactionPrefix } = useCurrentOrgCurrency();
   return (
     <MainLayout>
       <Box p={5}>
@@ -82,12 +86,19 @@ export default function CreateEstimatePage() {
                     isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
                   >
                     <FormLabel>Quotation No.</FormLabel>
-                    <Input
-                      type="number"
-                      name="quoteNo"
-                      onChange={formik.handleChange}
-                      value={formik.values.quoteNo}
-                    />
+                    <InputGroup>
+                      {transactionPrefix.quotation ? (
+                        <InputLeftAddon>
+                          {transactionPrefix.quotation}
+                        </InputLeftAddon>
+                      ) : null}
+                      <Input
+                        type="number"
+                        name="quoteNo"
+                        onChange={formik.handleChange}
+                        value={formik.values.quoteNo}
+                      />
+                    </InputGroup>
                     <FormErrorMessage>{formik.errors.quoteNo}</FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />

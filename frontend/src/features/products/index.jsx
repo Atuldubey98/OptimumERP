@@ -133,7 +133,7 @@ export default function ProductsPage() {
             }
             heading={"Items"}
             tableData={products.map(productsMapper)}
-            caption={`Total products found : ${totalCount}`}
+            caption={`Total items found : ${totalCount}`}
             operations={products.map((product) => (
               <ProductMenu
                 onDeleteProduct={() => {
@@ -148,7 +148,7 @@ export default function ProductsPage() {
             selectedKeys={{
               name: "Name",
               costPrice: "Cost Price",
-              category: "Type of Product",
+              category: "Item Type",
               um: "Unit of measurement",
             }}
             onAddNewItem={onOpenDrawerForAddingNewProduct}
