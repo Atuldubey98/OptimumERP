@@ -19,8 +19,12 @@ const productSchema = new mongoose.Schema(
       default: "",
     },
     category: {
+      type: mongoose.Types.ObjectId,
+      ref: "product_category",
+    },
+    type: {
       type: String,
-      enum: ["goods", "service"],
+      enum: ["service", "goods"],
       required: true,
     },
     code: {
@@ -31,20 +35,20 @@ const productSchema = new mongoose.Schema(
       ref: "organization",
       required: true,
     },
-    um :{
-      type : String,
-      default : "none",
-      required : true,
+    um: {
+      type: String,
+      default: "none",
+      required: true,
     },
-    createdBy : {
-      type : mongoose.Types.ObjectId,
-      required : true,
-      ref : "user"
+    createdBy: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "user",
     },
-    updatedBy : {
-      type : mongoose.Types.ObjectId,
-      ref : "user"
-    }
+    updatedBy: {
+      type: mongoose.Types.ObjectId,
+      ref: "user",
+    },
   },
   {
     timestamps: true,

@@ -15,8 +15,8 @@ const headerLinks = [
   { icon: FaMoneyBillTrendUp, link: "/purchases", label: "Purchase" },
   {
     icon: TbCategory,
-    link: "/expense-categories",
-    label: "Expense Categories",
+    link: "/categories/expense",
+    label: "Categories",
   },
   {
     icon: HiOutlineDocumentReport,

@@ -16,7 +16,7 @@ const productDto = Yup.object({
     .min(2, "Cannot be less than 2")
     .max(80, "Cannot be greater than 80")
     .label("Description"),
-  category: Yup.string().label("Category"),
+  type: Yup.string().label("Type of product"),
   code: Yup.string().label("HSN Code or SAC Code"),
 });
 export default function useProductForm(onAddedFetch, onCloseDrawer) {
@@ -29,7 +29,7 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
       costPrice: 0,
       sellingPrice: 0,
       description: "",
-      category: "service",
+      type: "goods",
       code: "",
       um: "none",
     },

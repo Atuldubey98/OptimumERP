@@ -11,7 +11,7 @@ import { ums } from "../estimates/create/data";
 import { Select } from "chakra-react-select";
 import NumberInputInteger from "../common/NumberInputInteger";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
-  const categoryOptions = [
+  const typeOfProducts = [
     { value: "service", label: "Service" },
     { value: "goods", label: "Goods" },
   ];
@@ -60,20 +60,20 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
 
         <FormControl
           isRequired
-          isInvalid={formik.errors.category && formik.touched.category}
+          isInvalid={formik.errors.type && formik.touched.type}
         >
-          <FormLabel>Category</FormLabel>
+          <FormLabel>Type of product</FormLabel>
           <Select
-            options={categoryOptions}
+            options={typeOfProducts}
             onChange={({ value }) => {
-              formik.setFieldValue("category", value);
+              formik.setFieldValue("type", value);
             }}
-            name="category"
-            value={categoryOptions.find(
-              (category) => category.value === formik.values.category
+            name="type"
+            value={typeOfProducts.find(
+              (productType) => productType.value === formik.values.type
             )}
-          ></Select>
-          <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
+          />
+          <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
         </FormControl>
         <FormControl
           isRequired

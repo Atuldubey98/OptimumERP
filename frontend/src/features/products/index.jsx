@@ -62,7 +62,7 @@ export default function ProductsPage() {
       costPrice: 0,
       sellingPrice: 0,
       description: "",
-      category: "service",
+      type: "service",
       code: "",
       um: "none",
     });
@@ -98,7 +98,7 @@ export default function ProductsPage() {
     ...product,
     um: ums.find((um) => um.value === product.um).label || "Nos",
     costPrice: `${symbol} ${product.costPrice}`,
-    category: (
+    type: (
       <Tag
         textTransform={"capitalize"}
         size={"md"}
@@ -108,12 +108,12 @@ export default function ProductsPage() {
         <TagLeftIcon
           boxSize="12px"
           as={
-            product.category === "service"
+            product.type === "service"
               ? MdOutlineHomeRepairService
               : CgProductHunt
           }
         />
-        <TagLabel>{product.category}</TagLabel>
+        <TagLabel>{product.type}</TagLabel>
       </Tag>
     ),
   });
@@ -148,7 +148,7 @@ export default function ProductsPage() {
             selectedKeys={{
               name: "Name",
               costPrice: "Cost Price",
-              category: "Item Type",
+              type: "Item Type",
               um: "Unit of measurement",
             }}
             onAddNewItem={onOpenDrawerForAddingNewProduct}
@@ -173,7 +173,7 @@ export default function ProductsPage() {
             selectedKeys={{
               name: "Name",
               costPrice: "Cost Price",
-              category: "Type of Product",
+              type: "Type of Product",
               sellingPrice: "Selling Price",
               createdAt: "Created At",
               description: "Description",

@@ -29,6 +29,6 @@ const productCategorySchema = new Schema(
 productCategorySchema.index({
   name: "text",
 });
-const ProductCategory = model("product_categorie", productCategorySchema);
+const ProductCategory = model("product_category", productCategorySchema);
 
 module.exports = ProductCategory;

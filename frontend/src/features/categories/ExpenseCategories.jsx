@@ -1,18 +1,16 @@
 import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import { isAxiosError } from "axios";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import useExpenseCategories from "../../hooks/useExpenseCategories";
-import MainLayout from "../common/main-layout";
+import instance from "../../instance";
+import AlertModal from "../common/AlertModal";
 import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
-import { useFormik } from "formik";
-import ExpenseCategoryForm from "./ExpenseCategoryForm";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
-import instance from "../../instance";
-import { useParams } from "react-router-dom";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import AlertModal from "../common/AlertModal";
-import { useState } from "react";
-import { isAxiosError } from "axios";
-export default function ExpenseCategoriePage() {
+import ExpenseCategoryForm from "./ExpenseCategoryForm";
+export default function ExpenseCategories() {
   const { fetchExpenseCategories, expenseCategories, status } =
     useExpenseCategories();
   const { orgId } = useParams();
@@ -85,54 +83,52 @@ export default function ExpenseCategoriePage() {
   const deleting = expenseCategoryStatus === "deleting";
 
   return (
-    <MainLayout>
-      <Box p={5}>
-        {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"}>
-            <Spinner size={"md"} />
-          </Flex>
-        ) : (
-          <TableLayout
-            caption={`Total expense categories : ${expenseCategories.length}`}
-            filter={
-              <Box>
-                <SearchItem />
-              </Box>
-            }
-            onAddNewItem={onAddNewExpenseCategory}
-            operations={expenseCategories.map((category) => (
-              <VertIconMenu
-                deleteItem={() => {
-                  onDeleteExpenseCategory(category);
-                }}
-                editItem={() => {
-                  formik.setValues(category);
-                  openExpenseCategoryForm();
-                }}
-              />
-            ))}
-            heading={"Expense Categories"}
-            tableData={expenseCategories}
-            selectedKeys={{
-              name: "Name",
-              description: "Description",
-            }}
-          />
-        )}
-        <ExpenseCategoryForm
-          formik={formik}
-          isOpen={isExpenseCategoryFormOpen}
-          onClose={closeExpenseCategoryForm}
+    <Box p={1}>
+      {loading ? (
+        <Flex justifyContent={"center"} alignItems={"center"}>
+          <Spinner size={"md"} />
+        </Flex>
+      ) : (
+        <TableLayout
+          caption={`Total expense categories : ${expenseCategories.length}`}
+          filter={
+            <Box>
+              <SearchItem />
+            </Box>
+          }
+          onAddNewItem={onAddNewExpenseCategory}
+          operations={expenseCategories.map((category) => (
+            <VertIconMenu
+              deleteItem={() => {
+                onDeleteExpenseCategory(category);
+              }}
+              editItem={() => {
+                formik.setValues(category);
+                openExpenseCategoryForm();
+              }}
+            />
+          ))}
+          heading={"Expense Categories"}
+          tableData={expenseCategories}
+          selectedKeys={{
+            name: "Name",
+            description: "Description",
+          }}
         />
-        <AlertModal
-          confirmDisable={deleting}
-          body={"Do you want to delete the expense category ?"}
-          header={"Delete"}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-          onConfirm={deleteExpenseCategory}
-        />
-      </Box>
-    </MainLayout>
+      )}
+      <ExpenseCategoryForm
+        formik={formik}
+        isOpen={isExpenseCategoryFormOpen}
+        onClose={closeExpenseCategoryForm}
+      />
+      <AlertModal
+        confirmDisable={deleting}
+        body={"Do you want to delete the expense category ?"}
+        header={"Delete"}
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={deleteExpenseCategory}
+      />
+    </Box>
   );
 }

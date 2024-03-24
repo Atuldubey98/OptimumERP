@@ -4,12 +4,11 @@ import FullLoader from "./features/common/FullLoader";
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
 const TransactionsPage = lazy(() => import("./features/transactions"));
 const AdminPage = lazy(() => import("./features/admin"));
+const CategoriesPage = lazy(()=>import("./features/categories"));
 const TransactionSettingsPage = lazy(() =>
   import("./features/common/transaction-settings")
 );
-const ExpenseCategoriePage = lazy(() =>
-  import("./features/expense-categories")
-);
+
 const ProfileSettingsPage = lazy(() =>
   import("./features/profile/ProfileSettingsPage")
 );
@@ -42,6 +41,7 @@ export default function App() {
         <Route path="/:orgId">
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
+          <Route element={<CategoriesPage />} path="categories/:type" />
           <Route path="customers">
             <Route element={<CustomersPage />} path="" />
             <Route
@@ -50,7 +50,7 @@ export default function App() {
             />
           </Route>
           <Route element={<ExpensesPage />} path="expenses" />
-          <Route element={<ExpenseCategoriePage />} path="expense-categories" />
+
           <Route path="estimates">
             <Route element={<EstimatesPage />} path="" />
             <Route element={<CreateEstimatePage />} path="create" />

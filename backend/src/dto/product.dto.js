@@ -5,11 +5,12 @@ const createProductDto = Joi.object({
   sellingPrice: Joi.number().label("Selling Price"),
   description: Joi.string().max(200).allow(""),
   um : Joi.string().default("NONE").optional(),
-  category: Joi.string()
+  type: Joi.string()
     .valid("goods", "service")
     .required()
     .label("Type of Product"),
   code: Joi.string().label("HSN Code or SAC Code").allow(""),
+  category : Joi.string().optional(),
   createdBy: Joi.string().label("Created By"),
 });
 const updateProductDto = Joi.object({
@@ -17,12 +18,13 @@ const updateProductDto = Joi.object({
   costPrice: Joi.number().label("Cost Price").optional(),
   sellingPrice: Joi.number().label("Selling Price").optional(),
   description: Joi.string().allow("").max(200).optional(),
-  category: Joi.string()
+  type: Joi.string()
     .valid("goods", "service")
     .required()
     .label("Type of Product")
     .optional(),
   um : Joi.string().default("NONE").optional(),
+  category : Joi.string().optional(),
   code: Joi.string().label("HSN Code or SAC Code").optional(),
   updatedBy : Joi.string().label("Updated By")
 });
