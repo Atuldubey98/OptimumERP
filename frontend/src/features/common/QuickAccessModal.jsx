@@ -34,6 +34,7 @@ import CustomerFormDrawer from "../customers/CustomerFormDrawer";
 import useCustomerForm from "../../hooks/useCustomerForm";
 import useProductForm from "../../hooks/useProductForm";
 import ProductFormDrawer from "../products/ProductFormDrawer";
+import { GiExpense } from "react-icons/gi";
 export default function QuickAccessModal({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { orgId } = useParams();
@@ -108,6 +109,11 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       label: "Create Product",
       onClick: () => openProductForm(),
       icon: <IoCreateOutline size={50} />,
+    },
+    {
+      label: "Expenses",
+      onClick: () => navigate(`/${orgId}/expenses`),
+      icon: <GiExpense size={50} />,
     },
   ];
   const [search, setSearch] = useState("");
