@@ -27,6 +27,7 @@ exports.getAllProducts = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .sort({ createdAt: -1 })
+    .populate("category")
     .exec();
 
   const totalCount = await Product.countDocuments(filter).exec();
@@ -100,10 +101,8 @@ exports.addManyProducts = requestAsyncHandler(async (req, res) => {
     org: orgId,
   }));
   await Product.insertMany(productsToAdd);
-  return res
-    .status(200)
-    .json({
-      message: "Products saved successfully",
-      productsCreated: body.length,
-    });
+  return res.status(200).json({
+    message: "Products saved successfully",
+    productsCreated: body.length,
+  });
 });

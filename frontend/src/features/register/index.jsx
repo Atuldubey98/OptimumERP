@@ -1,12 +1,7 @@
-import {
-  Button,
-  Link as ChakraLink,
-  Flex,
-  useToast
-} from "@chakra-ui/react";
+import { Button, Link as ChakraLink, Flex, useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { registerUser } from "../../api/register";
 import useAsyncCall from "../../hooks/useAsyncCall";
@@ -14,6 +9,7 @@ import AuthLayout from "../common/auth-layout";
 import RegisterUserFields from "./RegisterUserFields";
 export default function RegisterPage() {
   const { requestAsyncHandler } = useAsyncCall();
+  const navigate = useNavigate();
   const toast = useToast();
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -41,6 +37,8 @@ export default function RegisterPage() {
         duration: 3000,
         isClosable: true,
       });
+      formik.resetForm();
+      navigate("/login");
       setSubmitting(false);
     }),
   });

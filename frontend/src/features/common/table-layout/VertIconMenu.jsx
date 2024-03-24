@@ -5,6 +5,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
 } from "@chakra-ui/react";
 import React from "react";
 import { CiEdit, CiSaveDown2 } from "react-icons/ci";
@@ -18,6 +19,7 @@ export default function VertIconMenu({
   deleteItem,
   onDownloadItem,
   showTransactions,
+  downloading = false,
 }) {
   return (
     <Menu>
@@ -38,7 +40,11 @@ export default function VertIconMenu({
           </MenuItem>
         ) : null}
         {showTransactions ? (
-          <MenuItem command="⌘T" icon={<CiMoneyBill size={20} />} onClick={showTransactions}>
+          <MenuItem
+            command="⌘T"
+            icon={<CiMoneyBill size={20} />}
+            onClick={showTransactions}
+          >
             Transactions
           </MenuItem>
         ) : null}
@@ -48,7 +54,7 @@ export default function VertIconMenu({
         {onDownloadItem ? (
           <MenuItem
             onClick={onDownloadItem}
-            icon={<CiSaveDown2 size={20} />}
+            icon={downloading ? <Spinner /> : <CiSaveDown2 size={20} />}
             command="⌘J"
           >
             Download

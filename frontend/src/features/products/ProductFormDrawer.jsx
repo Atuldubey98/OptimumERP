@@ -10,6 +10,7 @@ import FormDrawerLayout from "../common/form-drawer-layout";
 import { ums } from "../estimates/create/data";
 import { Select } from "chakra-react-select";
 import NumberInputInteger from "../common/NumberInputInteger";
+import ProductCategoryAsyncSelect from "./ProductCategoryAsyncSelect";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
   const typeOfProducts = [
     { value: "service", label: "Service" },
@@ -42,22 +43,12 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
         </FormControl>
         <FormControl
-          isRequired
-          isInvalid={formik.errors.costPrice && formik.touched.costPrice}
+          isInvalid={formik.errors.category && formik.errors.category}
         >
-          <FormLabel>Cost Price</FormLabel>
-          <NumberInputInteger name={"costPrice"} formik={formik} />
-          <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
+          <FormLabel>Category</FormLabel>
+          <ProductCategoryAsyncSelect formik={formik} />
+          <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
         </FormControl>
-        <FormControl
-          isRequired
-          isInvalid={formik.errors.sellingPrice && formik.touched.sellingPrice}
-        >
-          <FormLabel>Selling Price</FormLabel>
-          <NumberInputInteger name={"sellingPrice"} formik={formik} />
-          <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
-        </FormControl>
-
         <FormControl
           isRequired
           isInvalid={formik.errors.type && formik.touched.type}
@@ -75,6 +66,23 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           />
           <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
         </FormControl>
+        <FormControl
+          isRequired
+          isInvalid={formik.errors.costPrice && formik.touched.costPrice}
+        >
+          <FormLabel>Cost Price</FormLabel>
+          <NumberInputInteger name={"costPrice"} formik={formik} />
+          <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          isRequired
+          isInvalid={formik.errors.sellingPrice && formik.touched.sellingPrice}
+        >
+          <FormLabel>Selling Price</FormLabel>
+          <NumberInputInteger name={"sellingPrice"} formik={formik} />
+          <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
+        </FormControl>
+
         <FormControl
           isRequired
           isInvalid={formik.errors.um && formik.touched.um}

@@ -69,7 +69,11 @@ export default function ProductsPage() {
     openProductFormDrawer();
   };
   const onOpenDrawerForEditingProduct = (product) => {
-    formik.setValues(product);
+    formik.setValues({
+      ...product,
+      categoryProps: product.category,
+      category: product.category._id,
+    });
     openProductFormDrawer();
   };
   const { orgId = "" } = useParams();

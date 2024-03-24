@@ -81,7 +81,7 @@ export default function InvoicesPage() {
     link.click();
     URL.revokeObjectURL(href);
   };
-
+  const downloading = invoiceStatus === "downloading";
   return (
     <MainLayout>
       <Box p={5}>
@@ -103,6 +103,7 @@ export default function InvoicesPage() {
             operations={invoices.map((invoice) => (
               <VertIconMenu
                 showItem={() => onOpenInvoice(invoice)}
+                downloading={downloading}
                 onDownloadItem={() => {
                   onSaveBill(invoice);
                 }}
