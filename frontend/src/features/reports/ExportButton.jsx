@@ -29,8 +29,8 @@ export default function ExportButton({
         fontSize={"md"}
         href={`${baseURL}/api/v1/organizations/${orgId}/reports/${reportType}/download?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
       >
-        <Text>Export</Text>
-        <SiMicrosoftexcel />
+        <Text color={"white"}>Export</Text>
+        <SiMicrosoftexcel color="white"/>
       </Link>
     </>
   );

@@ -22,6 +22,7 @@ export default function useEstimateForm() {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
+          code : Yup.string().optional(),
           gst: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")

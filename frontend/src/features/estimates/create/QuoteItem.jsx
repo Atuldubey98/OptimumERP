@@ -13,15 +13,14 @@ import {
   NumberInputField,
   NumberInputStepper,
   SimpleGrid,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
-import { AiOutlineDelete } from "react-icons/ai";
 import { Select } from "chakra-react-select";
+import { AiOutlineDelete } from "react-icons/ai";
 import { TbEyeSearch } from "react-icons/tb";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import SelectProduct from "./SelectProduct";
 import { taxRates, ums } from "./data";
-import NumberInputInteger from "../../common/NumberInputInteger";
 export default function QuoteItem({
   quoteItem,
   errorsQuoteItems,
@@ -48,7 +47,7 @@ export default function QuoteItem({
   };
   return (
     <Box marginBlock={5}>
-      <SimpleGrid gap={2} minChildWidth={200}>
+      <SimpleGrid gap={2} minChildWidth={100}>
         <GridItem colSpan={2}>
           <FormControl isRequired>
             <InputGroup>
@@ -88,6 +87,16 @@ export default function QuoteItem({
               </NumberInputStepper>
             </NumberInput>
             <FormErrorMessage>{errors.quantity}</FormErrorMessage>
+          </FormControl>
+        </GridItem>
+        <GridItem colSpan={1}>
+          <FormControl>
+            <Input
+              placeholder="HSN Code/SAC Code"
+              name={`items[${index}].code`}
+              value={quoteItem.code}
+              onChange={handleQuoteItemChange}
+            />
           </FormControl>
         </GridItem>
         <GridItem colSpan={1}>
@@ -137,10 +146,11 @@ export default function QuoteItem({
           </FormControl>
         </GridItem>
         <GridItem
-          colSpan={1}
+          gap={2}
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
+          colSpan={1}
         >
           <FormControl flex={1}>
             <InputGroup>

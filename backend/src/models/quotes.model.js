@@ -68,6 +68,9 @@ const quoteSchema = new Schema(
           required: true,
           default: 0,
         },
+        code: {
+          type: String,
+        },
         um: {
           type: String,
           default: "none",

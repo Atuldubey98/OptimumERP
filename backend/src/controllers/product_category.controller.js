@@ -1,6 +1,6 @@
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const ProductCategory = require("../models/product_category.model");
-
+const Product = require("../models/product.model");
 exports.createProductCategory = requestAsyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const newProductCategory = new ProductCategory({
@@ -64,13 +64,18 @@ exports.updateProductCategory = requestAsyncHandler(async (req, res) => {
 });
 
 exports.deleteProductCategory = requestAsyncHandler(async (req, res) => {
+  const product = await Product.findOne({ category: req.params.id });
+  if (product)
+    return res
+      .status(400)
+      .json({ message: "Product category used by product" });
   const deletedProductCategory = await ProductCategory.findOneAndDelete({
     _id: req.params.id,
     org: req.params.orgId,
   });
-  if (!deletedProductCategory) {
+
+  if (!deletedProductCategory)
     return res.status(404).json({ message: "Product category not found" });
-  }
   return res
     .status(200)
     .json({ message: "Product category deleted successfully" });

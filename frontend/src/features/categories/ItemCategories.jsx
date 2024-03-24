@@ -58,7 +58,7 @@ export default function ItemCategories() {
         description: isAxiosError(error)
           ? error.response.data.message || "Some error occured"
           : "Some error occured",
-        status: "info",
+        status: "error",
         duration: 3000,
         isClosable: true,
       });

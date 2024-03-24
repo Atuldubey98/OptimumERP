@@ -188,6 +188,7 @@ const defaultQuoteItem = {
   um: "none",
   gst: "none",
   price: 0,
+  code: "",
 };
 const defaultInvoiceItem = {
   name: "",

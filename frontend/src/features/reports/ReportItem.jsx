@@ -3,8 +3,6 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Input,
-  Select,
   SimpleGrid,
   Spinner,
   Stack,
@@ -17,10 +15,11 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import DateFilter from "../../features/estimates/list/DateFilter";
-import { useParams } from "react-router-dom";
-import useDateFilterFetch from "../../hooks/useDateFilterFetch";
+import { Select } from "chakra-react-select";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import DateFilter from "../../features/estimates/list/DateFilter";
+import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 const reportDataByType = {
@@ -140,16 +139,24 @@ export default function ReportItem() {
   const { status, totalCount, totalPages, currentPage } = response;
   const currentReport = reportDataByType[reportType];
   const [customerFilter, setCustomerFilter] = useState({ lastDays: 0 });
-  const onChangeCustomerFilterDays = (e) => {
-    setCustomerFilter({ lastDays: e.currentTarget.value });
-    const newEndDate = new Date();
-    const newStartDate = new Date();
-    newStartDate.setDate(newEndDate.getDate() - e.currentTarget.value);
-    onSetDateFilter({
-      start: newStartDate.toISOString().split("T")[0],
-      end: newEndDate.toISOString().split("T")[0],
-    });
-  };
+  const lastDaysOptions = [
+    {
+      value: 0,
+      label: "Select",
+    },
+    {
+      value: 30,
+      label: "Last Month",
+    },
+    {
+      value: 180,
+      label: "Last 6 Months",
+    },
+    {
+      value: 360,
+      label: "Last 365 Days",
+    },
+  ];
   return (
     <Box>
       <Stack spacing={3} boxShadow={"md"} p={5}>
@@ -157,14 +164,21 @@ export default function ReportItem() {
           <FormControl>
             <FormLabel fontWeight={"bold"}>Custom</FormLabel>
             <Select
-              value={customerFilter.lastDays}
-              onChange={onChangeCustomerFilterDays}
-            >
-              <option value={0}>Select</option>
-              <option value={30}>Last Month</option>
-              <option value={180}>Last 6 Months</option>
-              <option value={360}>Last 365 Days</option>
-            </Select>
+              value={lastDaysOptions.find(
+                (option) => option.value === customerFilter.lastDays
+              )}
+              options={lastDaysOptions}
+              onChange={({ value }) => {
+                setCustomerFilter({ lastDays: value });
+                const newEndDate = new Date();
+                const newStartDate = new Date();
+                newStartDate.setDate(newEndDate.getDate() - value);
+                onSetDateFilter({
+                  start: newStartDate.toISOString().split("T")[0],
+                  end: newEndDate.toISOString().split("T")[0],
+                });
+              }}
+            />
           </FormControl>
           <DateFilter
             dateFilter={response.dateFilter}

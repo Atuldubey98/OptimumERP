@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Heading,
   Skeleton,
   Stack,
@@ -9,6 +10,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
+import { Select } from "chakra-react-select";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
@@ -29,21 +31,27 @@ export default function DashboardPage() {
   });
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
+  const [currentPeriod, setCurrentPeriod] = useState("lastMonth");
   const [status, setStatus] = useState("idle");
   const fetchDashboard = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/dashboard`
+        `/api/v1/organizations/${orgId}/dashboard`,
+        {
+          params: {
+            period: currentPeriod,
+          },
+        }
       );
       setDashboard(data.data);
       setStatus("success");
     }),
-    []
+    [currentPeriod]
   );
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [currentPeriod]);
   const loading = status === "loading";
   const { isOpen: isGuideTourOpen, onClose: closeGuideTour } = useDisclosure({
     defaultIsOpen: !localStorage.getItem("guide"),
@@ -52,39 +60,69 @@ export default function DashboardPage() {
     closeGuideTour();
     localStorage.setItem("guide", false);
   };
+  const periods = [
+    {
+      label: "This week",
+      value: "lastWeek",
+    },
+    {
+      label: "This month",
+      value: "lastMonth",
+    },
+    {
+      label: "This year",
+      value: "lastYear",
+    },
+  ];
+  const currentPeriodLabel = periods.find(
+    (period) => period.value === currentPeriod
+  ).label;
   return (
     <MainLayout>
       <Box p={5}>
         <Heading>Dashboard</Heading>
         <Stack marginBlock={2} spacing={3}>
-          <Heading fontSize={"2xl"}>{"This Month"}</Heading>
+          <Flex justifyContent={"flex-end"} alignItems={"center"}>
+            <Select
+              options={periods}
+              onChange={({ value }) => {
+                setCurrentPeriod(value);
+              }}
+              value={periods.find((period) => period.value === currentPeriod)}
+            />
+          </Flex>
           <StatGroup gap={3}>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                period={currentPeriodLabel}
                 dashType="Invoice"
                 dashTotal={dashboard.invoiceThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                period={currentPeriodLabel}
                 dashType="Customer"
                 dashTotal={dashboard.customersThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                period={currentPeriodLabel}
                 dashType="Expenses"
                 dashTotal={dashboard.expensesThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                period={currentPeriodLabel}
                 dashType="Quotation"
                 dashTotal={dashboard.quotesThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                period={currentPeriodLabel}
                 dashType="Purchase"
                 dashTotal={dashboard.purchasesThisMonth}
               />
