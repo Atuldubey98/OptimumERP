@@ -278,9 +278,10 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
   });
   const currencySymbol = currencies[setting.currency].symbol;
 
-  const items = quote.items.map(({ name, price, quantity, gst, um }) => ({
+  const items = quote.items.map(({ name, price, quantity, gst, um , code}) => ({
     name,
     quantity,
+    code,
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
