@@ -105,7 +105,7 @@ export default function ItemCategories() {
             name: "Name",
             description: "Description",
           }}
-          heading={"Item Types"}
+          heading={"Product Categories"}
         />
       )}
       {loading ? null : (

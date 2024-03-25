@@ -22,6 +22,7 @@ const settingSchema = new Schema({
     required: true,
   },
   financialYear: {
+    _id: false,
     type: {
       start: {
         type: Date,

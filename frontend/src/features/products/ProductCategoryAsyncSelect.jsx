@@ -39,14 +39,21 @@ export default function ProductCategoryAsyncSelect({ formik }) {
           }
         }
         createOptionPosition="first"
-        onChange={({ value: category }) => {
-          formik.setFieldValue("category", category._id);
-          formik.setFieldValue("categoryProps", category);
+        onChange={(e) => {
+          if (!e) {
+            formik.setFieldValue("category", undefined);
+            formik.setFieldValue("categoryProps", undefined);
+          } else {
+            const category = e.value;
+            formik.setFieldValue("category", category._id);
+            formik.setFieldValue("categoryProps", category);
+          }
         }}
         onCreateOption={(input) => {
           formik.setFieldValue("name", input);
           openItemCategoryForm();
         }}
+        isClearable
         loadOptions={promiseOptions}
       />
       <ItemCategoryForm

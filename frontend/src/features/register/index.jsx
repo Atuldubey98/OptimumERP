@@ -38,7 +38,7 @@ export default function RegisterPage() {
         isClosable: true,
       });
       formik.resetForm();
-      navigate("/login");
+      navigate("/");
       setSubmitting(false);
     }),
   });

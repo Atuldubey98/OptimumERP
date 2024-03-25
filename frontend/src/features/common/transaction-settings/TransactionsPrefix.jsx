@@ -21,7 +21,6 @@ export default function TransactionPrefix() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
   const toast = useToast();
-  const [status, setStatus] = useState("idle");
   const formik = useFormik({
     initialValues: {
       organization: "",
@@ -77,7 +76,6 @@ export default function TransactionPrefix() {
         });
         return;
       }
-      setStatus("loading");
       const { data } = await instance.get(
         `/api/v1/organizations/${formik.values.organization}/settings`
       );
@@ -93,7 +91,6 @@ export default function TransactionPrefix() {
           .toISOString()
           .split("T")[0],
       });
-      setStatus("success");
     })();
   }, [formik.values.organization]);
   const currencyCodes = Object.keys(currencies);

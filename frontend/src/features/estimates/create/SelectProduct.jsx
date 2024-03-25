@@ -156,6 +156,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                             name: product.name,
                             quantity: 1,
                             um: product.um || "none",
+                            code: product.code || "",
                             gst: "none",
                             price: product.sellingPrice || 0,
                           });

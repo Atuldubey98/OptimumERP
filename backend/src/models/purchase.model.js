@@ -107,6 +107,7 @@ const purchaseInvoice = new Schema(
           required: true,
         },
       },
+      _id : false,
       required: true,
     },
   },

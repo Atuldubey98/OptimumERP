@@ -41,15 +41,23 @@ export default function CustomerSelectBill({ formik }) {
           }
         }
         createOptionPosition="first"
-        onChange={({ value: customer }) => {
-          formik.setFieldValue("customer", customer._id);
-          formik.setFieldValue("billingAddress", customer.billingAddress);
-          formik.setFieldValue("customerDetails", customer);
+        onChange={(e) => {
+          if (!e) {
+            formik.setFieldValue("customer", undefined);
+            formik.setFieldValue("billingAddress", "");
+            formik.setFieldValue("customerDetails", undefined);
+          } else {
+            const customer = e.value
+            formik.setFieldValue("customer", customer._id);
+            formik.setFieldValue("billingAddress", customer.billingAddress);
+            formik.setFieldValue("customerDetails", customer);
+          }
         }}
         onCreateOption={(input) => {
           customerFormik.setFieldValue("name", input);
           openCustomerFormDrawer();
         }}
+        isClearable
         loadOptions={promiseOptions}
       />
       <CustomerFormDrawer

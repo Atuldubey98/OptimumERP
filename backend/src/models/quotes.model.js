@@ -114,6 +114,7 @@ const quoteSchema = new Schema(
           required: true,
         },
       },
+      _id : false,
       required: true,
     },
   },

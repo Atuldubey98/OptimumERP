@@ -7,7 +7,7 @@ export default function ItemCategoryForm({ formik, isOpen, onClose }) {
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
       formBtnLabel={formik.values._id ? "Update" : "Save"}
-      formHeading={"Expense Category"}
+      formHeading={"Product Category"}
       handleFormSubmit={formik.handleSubmit}
       isOpen={isOpen}
       onClose={onClose}

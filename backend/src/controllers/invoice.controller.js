@@ -176,6 +176,7 @@ exports.getNextInvoiceNumber = requestAsyncHandler(async (req, res) => {
     { invoiceNo: 1 },
     { sort: { invoiceNo: -1 } }
   ).select("invoiceNo");
+  console.log({ financialYear: setting.financialYear, invoice });
   return res.status(200).json({ data: invoice ? invoice.invoiceNo + 1 : 1 });
 });
 
