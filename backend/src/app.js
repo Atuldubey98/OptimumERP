@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
-const whitelist = ["http://localhost:5173", "http://localhost:9000", "http://localhost"];
+const whitelist = ["http://localhost:5173", "http://localhost:9000", "http://app.localhost"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
