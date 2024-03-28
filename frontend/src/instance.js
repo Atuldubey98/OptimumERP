@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
-export const baseURL = "http://localhost:3000";
+export const baseURL = "http://api.localhost";
 const instance = axios.create({
   baseURL,
   withCredentials: true,
