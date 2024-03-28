@@ -13,7 +13,10 @@ export default function LoginPage() {
   const auth = useAuth();
   const loginSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    password: Yup.string()
+      .min(8, "Minimum length can be 8")
+      .max(20, "Maximum length can be 20")
+      .required("Password is required"),
   });
   const formik = useFormik({
     initialValues: {
@@ -55,7 +58,11 @@ export default function LoginPage() {
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
             Register Now ?
           </ChakraLink>
-          <ChakraLink color="blue.500" as={ReactRouterLink} to={"/forgot-password"}>
+          <ChakraLink
+            color="blue.500"
+            as={ReactRouterLink}
+            to={"/forgot-password"}
+          >
             Forgot Password ?
           </ChakraLink>
         </Grid>

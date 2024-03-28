@@ -14,12 +14,13 @@ export default function RegisterPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string()
-      .required("Password is required")
-      .min(8, "Min length should be 8"),
+      .min(8, "Minimum length should be 8")
+      .max(20, "Maximum length can be 20")
+      .required("Password is required"),
     name: Yup.string()
       .required("Name is required")
-      .min(3, "Min length should be 3")
-      .max(30, "Max length cannot be greater than 20"),
+      .min(3, "Minimum length should be 3")
+      .max(30, "Maximum length cannot be greater than 20"),
   });
   const formik = useFormik({
     initialValues: {

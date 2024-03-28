@@ -70,6 +70,18 @@ export default function OrgPage() {
     if (auth.onSetCurrentUser) auth.onSetCurrentUser(null);
     localStorage.removeItem("organization");
   });
+  const plansPopup = {
+    free: {
+      description:
+        "Free plan allows only one organization with limited benefits.",
+      name: "Free Plan",
+    },
+    gold: {
+      description: "Gold Plan allows you to have 3 organizations",
+      name: "Gold Plan",
+    },
+  };
+  const popup = plansPopup[currentPlan];
   return (
     <PrivateRoute>
       <Box padding={4}>
@@ -82,12 +94,11 @@ export default function OrgPage() {
               <Portal>
                 <PopoverContent>
                   <PopoverArrow />
-                  <PopoverHeader fontWeight={"bold"}>Free Plan</PopoverHeader>
+                  <PopoverHeader fontWeight={"bold"}>
+                    {popup.name}
+                  </PopoverHeader>
                   <PopoverCloseButton />
-                  <PopoverBody>
-                    Free plan allows only one organization with limited
-                    benefits.
-                  </PopoverBody>
+                  <PopoverBody>{popup.description}</PopoverBody>
                   {/* <PopoverFooter>
                   <Button onClick={()=>{}} colorScheme="blue"> Change Plan</Button>
                 </PopoverFooter> */}

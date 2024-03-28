@@ -14,6 +14,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
@@ -86,7 +87,6 @@ export default function NewOrgModal({
                 <FormErrorMessage>{formik.errors.address}</FormErrorMessage>
               </FormControl>
               <FormControl
-                isRequired
                 isInvalid={formik.errors.name && formik.touched.name}
               >
                 <FormLabel>GST No. </FormLabel>
@@ -114,7 +114,9 @@ export default function NewOrgModal({
                 <FormErrorMessage>{formik.errors.gstNo}</FormErrorMessage>
               </FormControl>
               <Divider />
-              <Flex gap={3}>
+             <Grid>
+              <Text fontWeight={"bold"} fontSize={"md"}>Fiscal Year</Text>
+             <Flex gap={3}>
                 <FormControl isRequired>
                   <FormLabel fontWeight={"bold"}>Start Date</FormLabel>
                   <Input
@@ -136,6 +138,7 @@ export default function NewOrgModal({
                   />
                 </FormControl>
               </Flex>
+             </Grid>
               <Divider />
             </Grid>
           </ModalBody>

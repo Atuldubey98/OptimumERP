@@ -12,7 +12,9 @@ export default function ItemsList({ formik, defaultItem }) {
         <Box>
           <OrderedList>
             {formik.values.items.map((quoteItem, index) => (
-              <ListItem key={index}>
+              <ListItem
+                key={index}
+              >
                 <QuoteItem
                   errorsQuoteItems={errorsQuoteItems}
                   deleteQuote={() => itemsHelper.remove(index)}
