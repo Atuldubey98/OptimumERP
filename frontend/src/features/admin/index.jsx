@@ -178,6 +178,7 @@ export default function AdminPage() {
                   bankFormik.setValues({
                     ...bankFormik.values,
                     ...currentOrg.bank,
+                    accountNo : currentOrg.bank.accountNo ||""
                   });
                 }}
               />
