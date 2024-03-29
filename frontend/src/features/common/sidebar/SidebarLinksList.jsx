@@ -13,7 +13,7 @@ export const SidebarLinksList = () => {
     <Container marginBlock={3}>
       <List spacing={3}>
         {headerLinks.map((headerLink) => (
-          <HeaderLink key={headerLink.label}>
+          <HeaderLink  key={headerLink.label}>
             <Icon as={headerLink.icon} />
             <NavLink
               to={orgId ? `/${orgId}${headerLink.link}` : "/organizations"}

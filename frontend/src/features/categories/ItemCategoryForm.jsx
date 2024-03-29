@@ -1,6 +1,12 @@
 import React from "react";
 import FormDrawerLayout from "../common/form-drawer-layout";
-import { FormControl, FormErrorMessage, FormLabel, Input, Textarea } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Textarea,
+} from "@chakra-ui/react";
 
 export default function ItemCategoryForm({ formik, isOpen, onClose }) {
   return (
@@ -12,7 +18,10 @@ export default function ItemCategoryForm({ formik, isOpen, onClose }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <FormControl isRequired>
+      <FormControl
+        isInvalid={formik.errors.name && formik.touched.name}
+        isRequired
+      >
         <FormLabel>Name</FormLabel>
         <Input
           name="name"
@@ -21,7 +30,10 @@ export default function ItemCategoryForm({ formik, isOpen, onClose }) {
         />
         <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
       </FormControl>
-      <FormControl isRequired>
+      <FormControl
+        isInvalid={formik.errors.description && formik.touched.description}
+        isRequired
+      >
         <FormLabel>Description</FormLabel>
         <Textarea
           name="description"

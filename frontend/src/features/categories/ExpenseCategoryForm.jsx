@@ -18,7 +18,10 @@ export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <FormControl isRequired>
+      <FormControl
+        isInvalid={formik.errors.name && formik.touched.name}
+        isRequired
+      >
         <FormLabel>Expense Type</FormLabel>
         <Input
           name="name"
@@ -27,7 +30,10 @@ export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
         />
         <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
       </FormControl>
-      <FormControl isRequired>
+      <FormControl
+        isInvalid={formik.errors.description && formik.touched.description}
+        isRequired
+      >
         <FormLabel>Description</FormLabel>
         <Textarea
           name="description"
