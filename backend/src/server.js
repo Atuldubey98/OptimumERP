@@ -1,5 +1,5 @@
 require("dotenv").config({
-  path: process.env.NODE_ENV === "development" ? "./.env.development" : "./.env",
+  path: process.env.NODE_ENV === "development" ? "../.env.development" : "../.env",
 });
 const app = require("./app");
 const http = require("http");
