@@ -24,6 +24,7 @@ const productCategorySchema = new Schema(
   {
     versionKey: false,
     timestamps: true,
+    collection : "product_categories"
   }
 );
 productCategorySchema.index({

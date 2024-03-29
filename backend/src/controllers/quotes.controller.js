@@ -34,10 +34,10 @@ exports.getTotalAndTax = (items = []) => {
   return { total, totalTax, cgst, sgst, igst };
 };
 exports.createQuote = requestAsyncHandler(async (req, res) => {
+  const body = await quoteDto.validateAsync(req.body);
   const { total, totalTax, sgst, cgst, igst } = this.getTotalAndTax(
     req.body.items
   );
-  const body = await quoteDto.validateAsync(req.body);
   const setting = await Setting.findOne({
     org: req.params.orgId,
   });

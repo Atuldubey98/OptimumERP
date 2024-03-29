@@ -10,10 +10,12 @@ const settingSchema = new Schema({
     type: {
       invoice: String,
       quotation: String,
+      purchaseOrder: String,
     },
     default: {
       invoice: "",
       quotation: "",
+      purchaseOrder: "",
     },
   },
   currency: {
