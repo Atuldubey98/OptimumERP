@@ -152,7 +152,7 @@ export default function DashboardPage() {
                 tableRows={dashboard.recentInvoices.map((invoice) => ({
                   _id: invoice._id,
                   num: invoice.num,
-                  partyName: "",
+                  partyName: invoice.party.name,
                   total: invoice.total,
                   totalTax: invoice.totalTax,
                   status: (
