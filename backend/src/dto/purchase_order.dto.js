@@ -19,6 +19,7 @@ const purchaseOrderDto = Joi.object({
   poNo: Joi.number().required().label("PO Number"),
   date: Joi.string().required().label("PO Date"),
   description: Joi.string().allow("").label("Description"),
+  billingAddress: Joi.string().required().label("Billing Address"),
   items: Joi.array().items(itemSchema).required().label("Items"),
   terms: Joi.string().allow("").label("Terms"),
   num: Joi.string().default("").allow(""),

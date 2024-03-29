@@ -7,6 +7,10 @@ const purchaseOrderSchema = new Schema(
       required: true,
       ref: "party",
     },
+    billingAddress: {
+      type: String,
+      required: true,
+    },
     discount: {
       type: Number,
       default: 0,
