@@ -30,8 +30,8 @@ import { IoCreateOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { GoTag } from "react-icons/go";
-import CustomerFormDrawer from "../customers/CustomerFormDrawer";
-import useCustomerForm from "../../hooks/useCustomerForm";
+import PartyFormDrawer from "../parties/PartyFormDrawer";
+import usePartyForm from "../../hooks/usePartyForm";
 import useProductForm from "../../hooks/useProductForm";
 import ProductFormDrawer from "../products/ProductFormDrawer";
 import { GiExpense } from "react-icons/gi";
@@ -40,13 +40,13 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   const { orgId } = useParams();
   const quickAccessLabels = [
     {
-      label: "Customers",
-      onClick: () => navigate(`/${orgId}/customers`),
+      label: "Parties",
+      onClick: () => navigate(`/${orgId}/parties`),
       icon: <AiOutlineCustomerService size={50} />,
     },
     {
-      label: "Create Customer",
-      onClick: () => openCustomerFormDrawer(),
+      label: "Create Party",
+      onClick: () => openPartyFormDrawer(),
       icon: <IoCreateOutline size={50} />,
     },
     {
@@ -119,16 +119,16 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   const [search, setSearch] = useState("");
   const hoverBg = useColorModeValue("gray.200", "gray.600");
   const {
-    isOpen: isCustomerFormOpen,
-    onOpen: openCustomerFormDrawer,
-    onClose: closeCustomerFormDrawer,
+    isOpen: isPartyFormOpen,
+    onOpen: openPartyFormDrawer,
+    onClose: closePartyFormDrawer,
   } = useDisclosure();
   const {
     isOpen: isProductFormOpen,
     onOpen: openProductForm,
     onClose: closeProductForm,
   } = useDisclosure();
-  const { formik } = useCustomerForm(undefined, closeCustomerFormDrawer);
+  const { formik } = usePartyForm(undefined, closePartyFormDrawer);
   const { formik: productFormik } = useProductForm(undefined, closeProductForm);
   return (
     <Modal size={"2xl"} isOpen={isOpen} onClose={onClose}>
@@ -192,10 +192,10 @@ export default function QuickAccessModal({ isOpen, onClose }) {
           </Button>
         </ModalFooter>
       </ModalContent>
-      <CustomerFormDrawer
+      <PartyFormDrawer
         formik={formik}
-        isOpen={isCustomerFormOpen}
-        onClose={closeCustomerFormDrawer}
+        isOpen={isPartyFormOpen}
+        onClose={closePartyFormDrawer}
       />
       <ProductFormDrawer
         formik={productFormik}

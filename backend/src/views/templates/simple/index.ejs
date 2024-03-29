@@ -24,7 +24,7 @@
         margin-bottom: 20px;
       }
 
-      .customer-info,
+      .party-info,
       .shipping-info {
         margin-right: 20px;
         margin-bottom: 20px;
@@ -94,12 +94,12 @@
           -webkit-box-pack: space-between;
         "
       >
-        <div class="customer-info">
+        <div class="party-info">
           <h3><%= partyMetaHeading %></h3>
-          <p><%= entity.customer.name %></p>
+          <p><%= entity.party.name %></p>
           <p><%= entity.billingAddress %></p>
-          <p>GSTIN: <%= entity.customer.gstNo %></p>
-          <p>PAN: <%= entity.customer.panNo %></p>
+          <p>GSTIN: <%= entity.party.gstNo %></p>
+          <p>PAN: <%= entity.party.panNo %></p>
         </div>
         <div class="invoice-header">
           <h3><%= billMetaHeading %></h3>

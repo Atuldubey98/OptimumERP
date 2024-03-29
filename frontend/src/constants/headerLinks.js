@@ -8,7 +8,7 @@ import { HiOutlineDocumentReport } from "react-icons/hi";
 
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },
-  { icon: AiOutlineCustomerService, link: "/customers", label: "Customers" },
+  { icon: AiOutlineCustomerService, link: "/parties", label: "Parties" },
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices" },
   { icon: FaFileInvoice, link: "/estimates", label: "Quotations/Estimates" },
   { icon: GiExpense, link: "/expenses", label: "Expenses" },

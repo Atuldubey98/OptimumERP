@@ -10,7 +10,7 @@ export default function useEstimateForm() {
   const [status, setStatus] = useState("idle");
   const quoteSchema = Yup.object().shape({
     quoteNo: Yup.number().required("Quote number is required"),
-    customer: Yup.string().required("Customer is required"),
+    party: Yup.string().required("Party is required"),
     billingAddress: Yup.string().required("Billing Address is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
@@ -78,7 +78,7 @@ export default function useEstimateForm() {
           `/api/v1/organizations/${orgId}/quotes/${quoteId}`
         );
         const {
-          customer,
+          party,
           billingAddress = "",
           terms,
           quoteNo,
@@ -89,7 +89,7 @@ export default function useEstimateForm() {
         } = data.data;
         formik.setValues({
           _id: data.data._id,
-          customer: customer._id,
+          party: party._id,
           terms,
           billingAddress,
           quoteNo,
@@ -97,7 +97,7 @@ export default function useEstimateForm() {
           status,
           items,
           description,
-          customerDetails: customer,
+          partyDetails: party,
         });
         setStatus("success");
       } else {

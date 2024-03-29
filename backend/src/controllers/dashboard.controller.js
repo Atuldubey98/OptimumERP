@@ -3,7 +3,7 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Invoice = require("../models/invoice.model");
 const Quotes = require("../models/quotes.model");
 const { OrgNotFound } = require("../errors/org.error");
-const Customer = require("../models/customer.model");
+const Party = require("../models/party.model");
 const Expense = require("../models/expense.model");
 const Purchase = require("../models/purchase.model");
 exports.getDashboard = requestAsyncHandler(async (req, res) => {
@@ -107,7 +107,7 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
     },
     org: orgId,
   });
-  const customersThisMonth = await Customer.countDocuments({
+  const partysThisMonth = await Party.countDocuments({
     createdAt: {
       $gte: startDate,
       $lte: endDate,
@@ -130,14 +130,14 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
   });
   const recentInvoices = await Invoice.find({ org: orgId })
     .sort({ createdAt: -1 })
-    .select("name invoiceNo total totalTax status customer date num")
-    .populate("customer", "name")
+    .select("name invoiceNo total totalTax status party date num")
+    .populate("party", "name")
     .limit(5)
     .exec();
   const recentQuotes = await Quotes.find({ org: orgId })
     .sort({ createdAt: -1 })
-    .select("name quoteNo total totalTax status customer date num")
-    .populate("customer", "name")
+    .select("name quoteNo total totalTax status party date num")
+    .populate("party", "name")
     .limit(5)
     .exec();
   return res.status(200).json({
@@ -145,7 +145,7 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
       invoiceThisMonth,
       quotesThisMonth,
       expensesThisMonth,
-      customersThisMonth,
+      partysThisMonth,
       recentInvoices,
       purchaseStatusTotal,
       recentQuotes,

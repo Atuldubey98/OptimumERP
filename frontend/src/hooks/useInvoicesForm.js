@@ -13,7 +13,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     invoiceNo: Yup.number()
       .required("Invoice number is required")
       .label("Invoice Number"),
-    customer: Yup.string().required("Customer is required").label("Customer"),
+    party: Yup.string().required("Party is required").label("Party"),
     billingAddress: Yup.string()
       .min(2, "Billing Address Cannot be less than 2")
       .max(80, "Billing Address Cannot be greater than 80")
@@ -105,7 +105,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
           );
           const {
-            customer,
+            party,
             terms,
             invoiceNo,
             date,
@@ -118,12 +118,12 @@ export default function useInvoicesForm({ saveAndNew = false }) {
           } = data.data;
           formik.setValues({
             _id: data.data._id,
-            customer: customer._id,
+            party: party._id,
             terms,
             invoiceNo,
             date: new Date(date).toISOString().split("T")[0],
             status,
-            customerDetails: customer,
+            partyDetails: party,
             items,
             description,
             poDate: poDate ? poDate.split("T")[0] : "",

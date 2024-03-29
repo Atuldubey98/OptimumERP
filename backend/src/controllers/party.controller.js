@@ -1,52 +1,52 @@
-const { createCustomerDto, updateCustomerDto } = require("../dto/customer.dto");
+const { createPartyDto, updatePartyDto } = require("../dto/party.dto");
 const {
-  CustomerNotFound,
-  CustomerNotDelete,
-} = require("../errors/customer.error");
+  PartyNotFound,
+  PartyNotDelete,
+} = require("../errors/party.error");
 const { OrgNotFound } = require("../errors/org.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const Customer = require("../models/customer.model");
+const Party = require("../models/party.model");
 const Invoice = require("../models/invoice.model");
 const Quotation = require("../models/quotes.model");
 const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
-const Setting = require("../models/settings.model");
 
-exports.createCustomer = requestAsyncHandler(async (req, res) => {
+
+exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
-  const body = await createCustomerDto.validateAsync({
+  const body = await createPartyDto.validateAsync({
     ...req.body,
     org: orgId,
   });
-  const customer = new Customer(body);
-  await customer.save();
-  logger.info(`created customer ${customer.id}`);
-  return res.status(201).json({ message: "Customer created !" });
+  const party = new Party(body);
+  await party.save();
+  logger.info(`created party ${party.id}`);
+  return res.status(201).json({ message: "Party created !" });
 });
 
-exports.updateCustomer = requestAsyncHandler(async (req, res) => {
-  if (!req.params.customerId) throw new CustomerNotFound();
-  const body = await updateCustomerDto.validateAsync(req.body);
-  const updatedCustomer = await Customer.findOneAndUpdate(
-    { _id: req.params.customerId, org: req.params.orgId },
+exports.updateParty = requestAsyncHandler(async (req, res) => {
+  if (!req.params.partyId) throw new PartyNotFound();
+  const body = await updatePartyDto.validateAsync(req.body);
+  const updatedParty = await Party.findOneAndUpdate(
+    { _id: req.params.partyId, org: req.params.orgId },
     body
   );
-  if (!updatedCustomer) throw new CustomerNotFound();
-  return res.status(200).json({ message: "Customer updated !" });
+  if (!updatedParty) throw new PartyNotFound();
+  return res.status(200).json({ message: "Party updated !" });
 });
 
-exports.getCustomer = requestAsyncHandler(async (req, res) => {
-  if (!req.params.customerId) throw new CustomerNotFound();
-  const customer = await Customer.findOne({
-    _id: req.params.customerId,
+exports.getParty = requestAsyncHandler(async (req, res) => {
+  if (!req.params.partyId) throw new PartyNotFound();
+  const party = await Party.findOne({
+    _id: req.params.partyId,
     org: req.params.orgId,
   });
-  if (!customer) throw new CustomerNotFound();
-  return res.status(200).json({ data: customer });
+  if (!party) throw new PartyNotFound();
+  return res.status(200).json({ data: party });
 });
 
-exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
+exports.getAllParty = requestAsyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
@@ -56,12 +56,12 @@ exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
   const search = req.query.search || "";
   if (search) filter.$text = { $search: search };
 
-  const totalCustomers = await Customer.countDocuments(filter);
-  const totalPages = Math.ceil(totalCustomers / limit);
+  const totalPartys = await Party.countDocuments(filter);
+  const totalPages = Math.ceil(totalPartys / limit);
 
   const skip = (page - 1) * limit;
 
-  const customers = await Customer.find(filter)
+  const parties = await Party.find(filter)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
@@ -70,46 +70,46 @@ exports.getAllCustomer = requestAsyncHandler(async (req, res) => {
     page,
     limit,
     totalPages,
-    total: totalCustomers,
-    data: customers,
+    total: totalPartys,
+    data: parties,
   });
 });
 
-exports.deleteCustomer = requestAsyncHandler(async (req, res) => {
-  if (!req.params.customerId) throw new CustomerNotFound();
+exports.deleteParty = requestAsyncHandler(async (req, res) => {
+  if (!req.params.partyId) throw new PartyNotFound();
   const invoice = await Invoice.findOne({
-    customer: req.params.customerId,
+    party: req.params.partyId,
     org: req.params.orgId,
   });
-  if (invoice) throw new CustomerNotDelete({ reason: `Invoice is linked` });
+  if (invoice) throw new PartyNotDelete({ reason: `Invoice is linked` });
   const quotation = await Quotation.findOne({
-    customer: req.params.customerId,
+    party: req.params.partyId,
     org: req.params.orgId,
   });
-  if (quotation) throw new CustomerNotDelete({ reason: `Quotation is linked` });
-  const customer = await Customer.findOneAndDelete({
-    _id: req.params.customerId,
+  if (quotation) throw new PartyNotDelete({ reason: `Quotation is linked` });
+  const party = await Party.findOneAndDelete({
+    _id: req.params.partyId,
     org: req.params.orgId,
   });
-  if (!customer) throw new CustomerNotFound();
-  return res.status(200).json({ message: "Customer deleted" });
+  if (!party) throw new PartyNotFound();
+  return res.status(200).json({ message: "Party deleted" });
 });
 
-exports.searchCustomer = requestAsyncHandler(async (req, res) => {
+exports.searchParty = requestAsyncHandler(async (req, res) => {
   const filter = {
     org: req.params.orgId,
   };
   const search = req.query.keyword || "";
   if (search) filter.$text = { $search: search };
-  const customers = await Customer.find(filter).sort({ createdAt: -1 });
-  return res.status(200).json({ data: customers });
+  const parties = await Party.find(filter).sort({ createdAt: -1 });
+  return res.status(200).json({ data: parties });
 });
 
-exports.getInvoicesForCustomer = requestAsyncHandler(async (req, res) => {
-  if (!req.params.customerId) throw CustomerNotFound();
+exports.getInvoicesForParty = requestAsyncHandler(async (req, res) => {
+  if (!req.params.partyId) throw PartyNotFound();
   const filter = {
     org: req.params.orgId,
-    customer: req.params.customerId,
+    party: req.params.partyId,
   };
   const search = req.query.search;
   if (search) {
@@ -128,7 +128,7 @@ exports.getInvoicesForCustomer = requestAsyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .populate("org")
     .skip(skip)
     .limit(limit)
@@ -147,16 +147,16 @@ exports.getInvoicesForCustomer = requestAsyncHandler(async (req, res) => {
   });
 });
 
-exports.getCustomerTransactions = requestAsyncHandler(async (req, res) => {
-  if (!req.params.customerId) throw CustomerNotFound();
+exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
+  if (!req.params.partyId) throw PartyNotFound();
   const filter = {
     org: req.params.orgId,
-    customer: req.params.customerId,
+    party: req.params.partyId,
   };
   const search = req.query.search;
-  const customer = await Customer.findOne({
+  const party = await Party.findOne({
     org: req.params.orgId,
-    _id: req.params.customerId,
+    _id: req.params.partyId,
   });
   const transactionTypes = req.query.transactionTypes;
   if (transactionTypes && typeof transactionTypes === "string")
@@ -175,7 +175,7 @@ exports.getCustomerTransactions = requestAsyncHandler(async (req, res) => {
   const transactions = await Transaction.find(filter)
     .sort({ createdAt: -1 })
     .populate("doc")
-    .populate("customer", "name billingAddress")
+    .populate("party", "name billingAddress")
     .skip(skip)
     .limit(limit)
     .exec();
@@ -188,7 +188,7 @@ exports.getCustomerTransactions = requestAsyncHandler(async (req, res) => {
     page,
     limit,
     totalPages,
-    customer,
+    party,
     total,
     message: "Transactions retrieved successfully",
   });

@@ -1,14 +1,14 @@
 const { Router } = require("express");
 const {
-  getAllCustomer,
-  getCustomer,
-  updateCustomer,
-  deleteCustomer,
-  createCustomer,
-  searchCustomer,
-  getInvoicesForCustomer,
-  getCustomerTransactions,
-} = require("../controllers/customer.controller");
+  getAllParty,
+  getParty,
+  updateParty,
+  deleteParty,
+  createParty,
+  searchParty,
+  getInvoicesForParty,
+  getPartyTransactions,
+} = require("../controllers/party.controller");
 const { authenticate } = require("../middlewares/auth.middleware");
 const {
   createModel,
@@ -19,56 +19,56 @@ const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
 
-const customerRouter = Router({ mergeParams: true });
-customerRouter.get(
+const partyRouter = Router({ mergeParams: true });
+partyRouter.get(
   "/",
   authenticate,
   checkOrgAuthorization,
   paginateModel,
-  getAllCustomer
+  getAllParty
 );
-customerRouter.get(
+partyRouter.get(
   "/search",
   authenticate,
   checkOrgAuthorization,
-  searchCustomer
+  searchParty
 );
-customerRouter.post(
+partyRouter.post(
   "/",
   authenticate,
   createModel,
   checkOrgAuthorization,
-  createCustomer
+  createParty
 );
-customerRouter.patch(
-  "/:customerId",
+partyRouter.patch(
+  "/:partyId",
   authenticate,
   updateModel,
   checkOrgAuthorization,
-  updateCustomer
+  updateParty
 );
-customerRouter.get(
-  "/:customerId",
+partyRouter.get(
+  "/:partyId",
   authenticate,
   checkOrgAuthorization,
-  getCustomer
+  getParty
 );
-customerRouter.get(
-  "/:customerId/invoices",
+partyRouter.get(
+  "/:partyId/invoices",
   authenticate,
   checkOrgAuthorization,
-  getInvoicesForCustomer
+  getInvoicesForParty
 );
-customerRouter.get(
-  "/:customerId/transactions",
+partyRouter.get(
+  "/:partyId/transactions",
   authenticate,
   checkOrgAuthorization,
-  getCustomerTransactions
+  getPartyTransactions
 );
-customerRouter.delete(
-  "/:customerId",
+partyRouter.delete(
+  "/:partyId",
   authenticate,
   checkOrgAuthorization,
-  deleteCustomer
+  deleteParty
 );
-module.exports = customerRouter;
+module.exports = partyRouter;

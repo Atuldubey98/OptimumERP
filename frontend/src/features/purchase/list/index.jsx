@@ -36,8 +36,8 @@ export default function PurchasePage() {
 
   const navigate = useNavigate();
   const purchaseTableMapper = (purchase) => ({
-    customerName: purchase.customer.name,
-    billingAddress: purchase.customer.billingAddress,
+    partyName: purchase.party.name,
+    billingAddress: purchase.party.billingAddress,
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
     date: new Date(purchase.date).toISOString().split("T")[0],
@@ -124,7 +124,7 @@ export default function PurchasePage() {
             selectedKeys={{
               date: "Purchase Date",
               status: "Status",
-              customerName: "Customer name",
+              partyName: "Party name",
               purchaseNo: "Purchase No.",
               billingAddress: "Billing address",
               grandTotal: "Total",

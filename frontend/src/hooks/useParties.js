@@ -4,22 +4,22 @@ import { useParams } from "react-router-dom";
 import useQuery from "./useQuery";
 import instance from "../instance";
 
-export default function useCustomers() {
-  const [customers, setCustomers] = useState([]);
+export default function usePartys() {
+  const [parties, setPartys] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [totalPartys, setTotalPartys] = useState(0);
   const [status, setStatus] = useState("idle");
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
   const query = useQuery();
   const searchQuery = query.get("query");
   const page = query.get("page") || 1;
-  const fetchCustomers = useCallback(
+  const fetchPartys = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/customers`,
+        `/api/v1/organizations/${orgId}/parties`,
         {
           params: {
             search: searchQuery,
@@ -27,23 +27,23 @@ export default function useCustomers() {
           },
         }
       );
-      setTotalCustomers(data.total);
+      setTotalPartys(data.total);
       setCurrentPage(data.page);
       setTotalPages(data.totalPages);
-      setCustomers(data.data);
+      setPartys(data.data);
       setStatus("success");
     }),
     [searchQuery, page]
   );
   useEffect(() => {
-    fetchCustomers();
-  }, [searchQuery, fetchCustomers, page]);
+    fetchPartys();
+  }, [searchQuery, fetchPartys, page]);
   return {
     loading: status === "loading",
-    customers,
-    fetchCustomers,
+    parties,
+    fetchPartys,
     currentPage,
-    totalCustomers,
+    totalPartys,
     totalPages,
   };
 }

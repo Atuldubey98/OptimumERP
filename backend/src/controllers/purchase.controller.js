@@ -1,12 +1,12 @@
 const { isValidObjectId } = require("mongoose");
 const { purchaseDto } = require("../dto/purchase.dto");
-const { CustomerNotFound } = require("../errors/customer.error");
+const { PartyNotFound } = require("../errors/party.error");
 const {
   PurchaseNotFound,
   PurchaseDuplicate,
 } = require("../errors/purchase.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const Customer = require("../models/customer.model");
+const Party = require("../models/party.model");
 const Purchase = require("../models/purchase.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const { OrgNotFound } = require("../errors/org.error");
@@ -25,16 +25,16 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!setting) throw new OrgNotFound();
-  const customer = await Customer.findOne({
-    _id: body.customer,
+  const party = await Party.findOne({
+    _id: body.party,
     org: req.params.orgId,
   });
-  if (!customer) throw new CustomerNotFound();
+  if (!party) throw new PartyNotFound();
   const existingInvoice = await Purchase.findOne({
     org: req.params.orgId,
     purchaseNo: body.purchaseNo,
     financialYear: setting.financialYear,
-    customer: body.customer,
+    party: body.party,
   });
   if (existingInvoice) throw new PurchaseDuplicate(body.purchaseNo);
   const newPurchase = new Purchase({
@@ -57,7 +57,7 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     doc: newPurchase._id,
     total,
     totalTax,
-    customer: body.customer,
+    party: body.party,
   });
   await transaction.save();
   return res
@@ -86,7 +86,7 @@ exports.updatePurchase = requestAsyncHandler(async (req, res) => {
       docModel: "purchase",
       doc: updatedInvoice.id,
     },
-    { updatedBy: req.body.updatedBy, total, totalTax, customer: body.customer }
+    { updatedBy: req.body.updatedBy, total, totalTax, party: body.party }
   );
   if (!updatedInvoice || !updateTransaction) throw new PurchaseNotFound();
   return res.status(200).json({ message: "Purchase updated !" });
@@ -130,7 +130,7 @@ exports.getPurchases = requestAsyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .populate("org")
     .skip(skip)
     .limit(limit)
@@ -155,7 +155,7 @@ exports.getPurchase = requestAsyncHandler(async (req, res) => {
     _id: req.params.purchaseId,
     org: req.params.orgId,
   })
-    .populate("customer", "name _id")
+    .populate("party", "name _id")
     .populate("createdBy", "name email _id")
     .populate("org", "name address _id");
   if (!purchase) throw new PurchaseNotFound();
@@ -170,7 +170,7 @@ exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
     _id: purchaseId,
     org: req.params.orgId,
   })
-    .populate("customer", "name gstNo panNo")
+    .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo");
   const grandTotal = purchase.items.reduce(
@@ -226,7 +226,7 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
     _id: purchaseId,
     org: req.params.orgId,
   })
-    .populate("customer", "name gstNo panNo")
+    .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo");
   const grandTotal = purchase.items.reduce(

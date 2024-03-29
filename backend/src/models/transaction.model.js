@@ -28,9 +28,9 @@ const transactionSchema = new Schema(
       type: Number,
       default: 0,
     },
-    customer: {
+    party: {
       type: Types.ObjectId,
-      ref: "customer",
+      ref: "party",
     },
     financialYear: {
       type: {

@@ -9,7 +9,7 @@ const itemSchema = Joi.object({
 });
 
 const purchaseDto = Joi.object({
-  customer: Joi.string().required().label("Customer"),
+  party: Joi.string().required().label("Party"),
   description: Joi.string().optional().allow("").label("Description"),
   billingAddress: Joi.string().required().label("Party Address"),
   terms: Joi.string().optional().allow("").label("Terms & Conditions"),

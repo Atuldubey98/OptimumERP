@@ -20,11 +20,11 @@
           <div class="border border-1 p-2">
             <p>Bill to</p>
             <h2 class="font-bold text-capitalize">
-              <%= invoice.customer.name %>
+              <%= invoice.party.name %>
             </h2>
-            <p><%= invoice.customer.billingAddress %></p>
-            <p><%= invoice.customer.gstNo %></p>
-            <p><%= invoice.customer.panNo %></p>
+            <p><%= invoice.party.billingAddress %></p>
+            <p><%= invoice.party.gstNo %></p>
+            <p><%= invoice.party.panNo %></p>
           </div>
         </div>
         <div class="grid grid-cols-2 border border-1">

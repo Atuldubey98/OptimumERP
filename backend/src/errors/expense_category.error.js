@@ -3,7 +3,7 @@ class ExpenseCategoryNotDeleted extends Error {
     super();
     this.code = 400;
     this.message = reason;
-    this.name = "CustomerNotDelete";
+    this.name = "PartyNotDelete";
   }
 }
 

@@ -36,8 +36,8 @@ export default function EstimatesPage() {
   });
   const loading = status === "loading";
   const estimateTableMapper = (estimate) => ({
-    customerName: estimate.customer.name,
-    billingAddress: estimate.customer.billingAddress,
+    partyName: estimate.party.name,
+    billingAddress: estimate.party.billingAddress,
     ...estimate,
     quoteNo: estimate.num,
     date: new Date(estimate.date).toISOString().split("T")[0],
@@ -119,7 +119,7 @@ export default function EstimatesPage() {
             selectedKeys={{
               date: "Quotation Date",
               status: "Status",
-              customerName: "Customer name",
+              partyName: "Party name",
               quoteNo: "Quote No.",
               billingAddress: "Billing address",
               grandTotal: "Total",

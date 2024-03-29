@@ -26,7 +26,7 @@ const reportDataByType = {
   sale: {
     header: {
       num: "Invoice Number",
-      customerName: "Customer Name",
+      partyName: "Party Name",
       date: "Date",
       totalTax: "Total Tax",
       grandTotal: "Grand Total",
@@ -34,7 +34,7 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
+      partyName: item.party?.name,
       num: item.num,
       date: item.date ? new Date(item.date)?.toISOString().split("T")[0] : "",
       totalTax: item.totalTax.toFixed(2),
@@ -45,7 +45,7 @@ const reportDataByType = {
   purchase: {
     header: {
       num: "Purchase Number",
-      customerName: "Customer Name",
+      partyName: "Party Name",
       date: "Date",
       totalTax: "Total Tax",
       grandTotal: "Grand Total",
@@ -54,7 +54,7 @@ const reportDataByType = {
 
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
+      partyName: item.party?.name,
       num: item.purchaseNo,
       date: item.date ? new Date(item.date).toISOString().split("T")[0] : "",
       totalTax: item.totalTax.toFixed(2),
@@ -79,23 +79,23 @@ const reportDataByType = {
   },
   parties: {
     header: {
-      customerName: "Customer Name",
-      address: "Customer Address",
+      partyName: "Party Name",
+      address: "Party Address",
       amount: "Amount",
       currentStatus: "Amount Status",
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      address: item.customer?.billingAddress,
+      partyName: item.party?.name,
+      address: item.party?.billingAddress,
       amount: (item.total + item.totalTax).toFixed(2),
       currentStatus: item.total + item.totalTax < 0 ? "CREDIT" : "DEBIT",
     }),
   },
   gstr1: {
     header: {
-      gstNo: "Customer GST No",
-      customerName: "Customer Name",
+      gstNo: "Party GST No",
+      partyName: "Party Name",
       cgst: "CGST",
       sgst: "SGST",
       igst: "IGST",
@@ -103,8 +103,8 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      gstNo: item.customer?.gstNo,
+      partyName: item.party?.name,
+      gstNo: item.party?.gstNo,
       cgst: item.cgst?.toFixed(2),
       sgst: item.sgst?.toFixed(2),
       igst: item.igst?.toFixed(2),
@@ -113,8 +113,8 @@ const reportDataByType = {
   },
   gstr2: {
     header: {
-      gstNo: "Customer GST No",
-      customerName: "Customer Name",
+      gstNo: "Party GST No",
+      partyName: "Party Name",
       cgst: "IGST",
       sgst: "IGST",
       igst: "IGST",
@@ -122,8 +122,8 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      gstNo: item.customer?.gstNo,
+      partyName: item.party?.name,
+      gstNo: item.party?.gstNo,
       cgst: item.cgst?.toFixed(2),
       sgst: item.sgst?.toFixed(2),
       igst: item.igst?.toFixed(2),
@@ -138,7 +138,7 @@ export default function ReportItem() {
   });
   const { status, totalCount, totalPages, currentPage } = response;
   const currentReport = reportDataByType[reportType];
-  const [customerFilter, setCustomerFilter] = useState({ lastDays: 0 });
+  const [partyFilter, setPartyFilter] = useState({ lastDays: 0 });
   const lastDaysOptions = [
     {
       value: 0,
@@ -165,11 +165,11 @@ export default function ReportItem() {
             <FormLabel fontWeight={"bold"}>Custom</FormLabel>
             <Select
               value={lastDaysOptions.find(
-                (option) => option.value === customerFilter.lastDays
+                (option) => option.value === partyFilter.lastDays
               )}
               options={lastDaysOptions}
               onChange={({ value }) => {
-                setCustomerFilter({ lastDays: value });
+                setPartyFilter({ lastDays: value });
                 const newEndDate = new Date();
                 const newStartDate = new Date();
                 newStartDate.setDate(newEndDate.getDate() - value);

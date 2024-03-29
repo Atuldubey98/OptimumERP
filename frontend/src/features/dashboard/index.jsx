@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
     quotesThisMonth: 0,
-    customersThisMonth: 0,
+    partysThisMonth: 0,
     purchasesThisMonth: 0,
     expensesThisMonth: 0,
     recentInvoices: [],
@@ -102,8 +102,8 @@ export default function DashboardPage() {
             <Skeleton isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
-                dashType="Customer"
-                dashTotal={dashboard.customersThisMonth}
+                dashType="Party"
+                dashTotal={dashboard.partysThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
@@ -135,7 +135,7 @@ export default function DashboardPage() {
                 tableRows={dashboard.recentQuotes.map((quote) => ({
                   _id: quote._id,
                   num: quote.num,
-                  customerName: quote?.customer.name,
+                  partyName: quote?.party.name,
                   total: quote.total,
                   totalTax: quote.totalTax,
                   status: (
@@ -143,7 +143,7 @@ export default function DashboardPage() {
                   ),
                   date: new Date(quote.date).toISOString().split("T")[0],
                 }))}
-                tableHeads={["NUM", "Customer name", "Total", "Status", "Date"]}
+                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                 tableRows={dashboard.recentInvoices.map((invoice) => ({
                   _id: invoice._id,
                   num: invoice.num,
-                  customerName: invoice?.customer.name,
+                  partyName: "",
                   total: invoice.total,
                   totalTax: invoice.totalTax,
                   status: (
@@ -163,7 +163,7 @@ export default function DashboardPage() {
                   ),
                   date: new Date(invoice.date).toISOString().split("T")[0],
                 }))}
-                tableHeads={["NUM", "Customer name", "Total", "Status", "Date"]}
+                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />
             </Skeleton>
           </Stack>

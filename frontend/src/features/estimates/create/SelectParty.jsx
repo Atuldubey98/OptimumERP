@@ -12,11 +12,11 @@ import { useCallback, useEffect, useState } from "react";
 import { TbEyeSearch } from "react-icons/tb";
 import { useParams } from "react-router-dom";
 import useAsyncCall from "../../../hooks/useAsyncCall";
-import useCustomerForm from "../../../hooks/useCustomerForm";
+import usePartyForm from "../../../hooks/usePartyForm";
 import instance from "../../../instance";
-import CustomerModal from "./CustomerModal";
+import PartyModal from "./PartyModal";
 import useDebouncedInput from "../../../hooks/useDeboucedInput";
-export default function SelectCustomer({ formik }) {
+export default function SelectParty({ formik }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [response, setResponse] = useState({
     items: [],
@@ -35,11 +35,11 @@ export default function SelectCustomer({ formik }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("idle");
-  const fetchCustomer = useCallback(
+  const fetchParty = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/customers`,
+        `/api/v1/organizations/${orgId}/parties`,
         {
           params: {
             search: deboucedSearch,
@@ -57,34 +57,34 @@ export default function SelectCustomer({ formik }) {
     }),
     [deboucedSearch, currentPage]
   );
-  const { items: customers } = response;
+  const { items: parties } = response;
   useEffect(() => {
-    fetchCustomer();
+    fetchParty();
   }, [deboucedSearch, currentPage]);
-  const selectCustomer = (customerId) =>
-    formik.setFieldValue("customer", customerId);
+  const selectParty = (partyId) =>
+    formik.setFieldValue("party", partyId);
 
-  const customerProps = {
-    selectCustomer,
-    selectedCustomer: formik.values.customer,
+  const partyProps = {
+    selectParty,
+    selectedParty: formik.values.party,
   };
-  const customer = customers.find(
-    (customer) => customer._id === formik.values.customer
+  const party = parties.find(
+    (party) => party._id === formik.values.party
   );
   const loading = status === "loading";
   const {
-    isOpen: isOpenCustomerFormDrawer,
-    onOpen: onOpenCustomerFormDrawer,
-    onClose: onCloseCustomerFormDrawer,
+    isOpen: isOpenPartyFormDrawer,
+    onOpen: onOpenPartyFormDrawer,
+    onClose: onClosePartyFormDrawer,
   } = useDisclosure();
-  const customerFormProps = {
-    isOpenCustomerFormDrawer,
-    onCloseCustomerFormDrawer,
-    onOpenCustomerFormDrawer,
+  const partyFormProps = {
+    isOpenPartyFormDrawer,
+    onClosePartyFormDrawer,
+    onOpenPartyFormDrawer,
   };
-  const { formik: customerFormik } = useCustomerForm(
-    fetchCustomer,
-    onCloseCustomerFormDrawer
+  const { formik: partyFormik } = usePartyForm(
+    fetchParty,
+    onClosePartyFormDrawer
   );
 
   return (
@@ -94,38 +94,38 @@ export default function SelectCustomer({ formik }) {
         isReadOnly
         isRequired
       >
-        <FormLabel>Customer</FormLabel>
+        <FormLabel>Party</FormLabel>
         <InputGroup>
           <Input
             required
-            placeholder="Select Customer"
-            value={customer ? customer.name : "Select a customer"}
+            placeholder="Select Party"
+            value={party ? party.name : "Select a party"}
             readOnly={true}
           />
           <InputRightElement>
             <TbEyeSearch cursor={"pointer"} onClick={onOpen} size={25} />
           </InputRightElement>
         </InputGroup>
-        <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+        <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
       </FormControl>
-      {customer ? (
+      {party ? (
         <FormControl isRequired>
           <FormLabel>Address</FormLabel>
-          <Textarea readOnly value={customer.billingAddress} />
+          <Textarea readOnly value={party.billingAddress} />
         </FormControl>
       ) : null}
-      <CustomerModal
-        customerFormProps={customerFormProps}
+      <PartyModal
+        partyFormProps={partyFormProps}
         response={response}
         onClose={onClose}
-        formik={customerFormik}
+        formik={partyFormik}
         onChangeInput={onChangeInput}
         search={search}
         isOpen={isOpen}
         loading={loading}
         nextPage={() => setCurrentPage((prev) => prev + 1)}
         previousPage={() => setCurrentPage((prev) => prev - 1)}
-        customerProps={customerProps}
+        partyProps={partyProps}
       />
     </>
   );

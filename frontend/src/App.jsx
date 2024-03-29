@@ -18,7 +18,7 @@ const PurchasePage = lazy(() => import("./features/purchase/list"));
 const LoginPage = lazy(() => import("./features/login"));
 const OrgPage = lazy(() => import("./features/organizations"));
 const RegisterPage = lazy(() => import("./features/register"));
-const CustomersPage = lazy(() => import("./features/customers"));
+const PartysPage = lazy(() => import("./features/parties"));
 const ProductsPage = lazy(() => import("./features/products"));
 const EstimatesPage = lazy(() => import("./features/estimates/list"));
 const CreateEstimatePage = lazy(() => import("./features/estimates/create"));
@@ -42,11 +42,11 @@ export default function App() {
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
           <Route element={<CategoriesPage />} path="categories/:type" />
-          <Route path="customers">
-            <Route element={<CustomersPage />} path="" />
+          <Route path="parties">
+            <Route element={<PartysPage />} path="" />
             <Route
               element={<TransactionsPage />}
-              path=":customerId/transactions"
+              path=":partyId/transactions"
             />
           </Route>
           <Route element={<ExpensesPage />} path="expenses" />

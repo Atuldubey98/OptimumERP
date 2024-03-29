@@ -9,7 +9,7 @@ import useQuery from "../../hooks/useQuery";
 import { Select } from "chakra-react-select";
 import DateFilter from "../estimates/list/DateFilter";
 export default function TransactionsPage() {
-  const { customerId, orgId } = useParams();
+  const { partyId, orgId } = useParams();
   const query = useQuery();
   const currentPage = query.get("page") || 1;
   const today = new Date();
@@ -30,7 +30,7 @@ export default function TransactionsPage() {
     page: 0,
     totalPages: 0,
     total: 0,
-    customer: null,
+    party: null,
   });
   const [status, setStatus] = useState("idle");
   const typeOfTransactions = [
@@ -57,7 +57,7 @@ export default function TransactionsPage() {
     (async () => {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/customers/${customerId}/transactions`,
+        `/api/v1/organizations/${orgId}/parties/${partyId}/transactions`,
         {
           params: {
             page: currentPage,
@@ -72,11 +72,11 @@ export default function TransactionsPage() {
         page: data.page,
         total: data.total,
         totalPages: data.totalPages,
-        customer: data.customer,
+        party: data.party,
       });
       setStatus("idle");
     })();
-  }, [orgId, customerId, currentPage, transactionTypes, dateFilter]);
+  }, [orgId, partyId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
 
   return (
@@ -105,8 +105,8 @@ export default function TransactionsPage() {
               </Box>
             }
             heading={`${
-              transactionsResponse.customer
-                ? transactionsResponse.customer.name
+              transactionsResponse.party
+                ? transactionsResponse.party.name
                 : ""
             } - Transactions`}
             tableData={transactionsResponse.items.map((item) => ({

@@ -30,7 +30,7 @@ export default function DashTotal({ dashTotal, dashType }) {
                 padding: 1,
                 borderRadius: 5,
               }
-            : dashType === "customer"
+            : dashType === "party"
             ? {
                 backgroundColor: "lightorange",
                 color: "orange",

@@ -20,8 +20,8 @@ module.exports = ({ axios, cookie, orgId, entity }) => {
     });
   }
   async function getBills() {
-    const customersResponse = await axios.get(
-      `/api/v1/organizations/${orgId}/customers`,
+    const partysResponse = await axios.get(
+      `/api/v1/organizations/${orgId}/parties`,
       {
         headers: {
           Cookie: cookie,
@@ -37,10 +37,10 @@ module.exports = ({ axios, cookie, orgId, entity }) => {
       }
     );
     const idMapper = (item) => item._id;
-    const customerIds = customersResponse.data.data.map(idMapper);
+    const partyIds = partysResponse.data.data.map(idMapper);
     const products = productsReponse.data.data;
     const bills = new Array(1000).fill(0).map((_, index) => {
-      const customer = customerIds[getRandomInt(0, customerIds.length)];
+      const party = partyIds[getRandomInt(0, partyIds.length)];
       const items = new Array(5).fill(0).map(() => {
         const product = products[getRandomInt(0, products.length)];
         return {
@@ -55,7 +55,7 @@ module.exports = ({ axios, cookie, orgId, entity }) => {
         num: index,
         date: new Date().toISOString().split("T")[0],
         status: "draft",
-        customer,
+        party,
         items,
         invoiceNo: index,
         terms: "",

@@ -2,9 +2,9 @@ const { isValidObjectId, default: mongoose } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Quote = require("../models/quotes.model");
 const { QuoteNotFound, QuotationDuplicate } = require("../errors/quote.error");
-const { CustomerNotFound } = require("../errors/customer.error");
+const { PartyNotFound } = require("../errors/party.error");
 const { quoteDto } = require("../dto/quotes.dto");
-const Customer = require("../models/customer.model");
+const Party = require("../models/party.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
@@ -42,11 +42,11 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!setting) throw new OrgNotFound();
-  const customer = await Customer.findOne({
-    _id: body.customer,
+  const party = await Party.findOne({
+    _id: body.party,
     org: req.params.orgId,
   });
-  if (!customer) throw new CustomerNotFound();
+  if (!party) throw new PartyNotFound();
   const existingQuotation = await Quote.findOne({
     org: req.params.orgId,
     quoteNo: body.quoteNo,
@@ -75,7 +75,7 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     doc: newQuote._id,
     total,
     totalTax,
-    customer: body.customer,
+    party: body.party,
   });
   await transaction.save();
   return res.status(201).json({ message: "Quote created !", data: newQuote });
@@ -111,7 +111,7 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
       doc: updatedQuote.id,
       total,
       totalTax,
-      customer: body.customer,
+      party: body.party,
     },
     { updatedBy: req.body.updatedBy }
   );
@@ -155,7 +155,7 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-  const quotesQuery = Quote.find(filter).populate("customer").populate("org");
+  const quotesQuery = Quote.find(filter).populate("party").populate("org");
 
   const totalCount = await Quote.countDocuments(filter);
 
@@ -180,7 +180,7 @@ exports.getQuote = requestAsyncHandler(async (req, res) => {
     _id: req.params.quoteId,
     org: req.params.orgId,
   })
-    .populate("customer", "name _id")
+    .populate("party", "name _id")
     .populate("createdBy", "name email _id")
     .populate("org", "name address _id");
   if (!quote) throw new QuoteNotFound();
@@ -205,7 +205,7 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     _id: req.params.quoteId,
     org: req.params.orgId,
   })
-    .populate("customer")
+    .populate("party")
     .populate("createdBy", "name email _id")
     .populate("org");
   const grandTotal = quote.items.reduce(
@@ -258,7 +258,7 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     _id: req.params.quoteId,
     org: req.params.orgId,
   })
-    .populate("customer")
+    .populate("party")
     .populate("createdBy", "name email _id")
     .populate("org");
   const grandTotal = quote.items.reduce(

@@ -37,13 +37,13 @@ export default function GuideTourModal({ isOpen, onClose }) {
       ),
     },
     {
-      label: "Customers",
+      label: "Parties",
       children: (
         <TourGuide
           imgSrc={dashboard}
-          label={"Customers"}
+          label={"Parties"}
           description={
-            "Manage your customer relationships efficiently. Add new customers, view their details, and track interactions to provide excellent service"
+            "Manage your party relationships efficiently. Add new parties, view their details, and track interactions to provide excellent service"
           }
         />
       ),

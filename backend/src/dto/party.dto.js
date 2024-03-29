@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-exports.createCustomerDto = Joi.object({
+exports.createPartyDto = Joi.object({
   name: Joi.string().min(2).max(80).required().label("Name"),
   shippingAddress: Joi.string().allow("").max(80).label("Shipping address"),
   billingAddress: Joi.string().min(3).max(80).required().label("Billing address"),
@@ -11,8 +11,8 @@ exports.createCustomerDto = Joi.object({
   org: Joi.string().required().label("Organization"),
 });
 
-exports.updateCustomerDto = Joi.object({
-  name: Joi.string().min(2).max(80).label("Customer name"),
+exports.updatePartyDto = Joi.object({
+  name: Joi.string().min(2).max(80).label("Party name"),
   shippingAddress: Joi.string().allow("").max(80).label("Shipping address"),
   billingAddress: Joi.string().min(3).max(80).label("Billing Address"),
   gstNo: Joi.string().allow("").label("GST No"),

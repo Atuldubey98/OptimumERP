@@ -1,26 +1,26 @@
 const read = require("../read");
 
 module.exports = ({ axios, cookie, orgId }) => {
-  function createCustomer(customer) {
-    return axios.post(`/api/v1/organizations/${orgId}/customers`, customer, {
+  function createParty(party) {
+    return axios.post(`/api/v1/organizations/${orgId}/parties`, party, {
       headers: {
         Cookie: cookie,
       },
     });
   }
-  async function getCustomers() {
+  async function getPartys() {
     const data = await read(
-      "/home/atul/Development/erp_mern/backend/src/mock-database/raw-data/customers.csv"
+      "/home/atul/Development/erp_mern/backend/src/mock-database/raw-data/parties.csv"
     );
     return data;
   }
-  async function createManyCustomers() {
-    const customers = await getCustomers();
-    await Promise.all(customers.map((customer) => createCustomer(customer)));
+  async function createManyPartys() {
+    const parties = await getPartys();
+    await Promise.all(parties.map((party) => createParty(party)));
   }
   return {
-    createCustomer,
-    getCustomers,
-    createManyCustomers,
+    createParty,
+    getPartys,
+    createManyPartys,
   };
 };

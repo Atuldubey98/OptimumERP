@@ -37,7 +37,7 @@ async function getSaleReport(queryParams, orgId) {
 
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .populate("org")
     .skip(skip)
     .limit(limit)
@@ -108,7 +108,7 @@ async function getAllPartyStatements(queryParams, orgId) {
     },
     {
       $group: {
-        _id: "$customer",
+        _id: "$party",
         total: {
           $sum: {
             $cond: [
@@ -137,14 +137,14 @@ async function getAllPartyStatements(queryParams, orgId) {
     },
     {
       $lookup: {
-        from: "customers",
+        from: "parties",
         localField: "_id",
-        as: "customer",
+        as: "party",
         foreignField: "_id",
       },
     },
     {
-      $unwind: "$customer",
+      $unwind: "$party",
     },
   ]);
   return {
@@ -169,7 +169,7 @@ async function getGSTR1Report(queryParams, orgId) {
   const skip = (page - 1) * limit;
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .skip(skip)
     .limit(limit)
     .exec();
@@ -201,7 +201,7 @@ async function getGSTR2Report(queryParams, orgId) {
   const skip = (page - 1) * limit;
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .skip(skip)
     .limit(limit)
     .exec();
@@ -239,7 +239,7 @@ async function getPurchaseReport(queryParams, orgId) {
   const skip = (page - 1) * limit;
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .populate("org")
     .skip(skip)
     .limit(limit)
@@ -269,8 +269,8 @@ const reportDataByType = {
   sale: {
     header: {
       num: "Invoice Number",
-      customerName: "Customer Name",
-      address: "Customer Address",
+      partyName: "Party Name",
+      address: "Party Address",
       date: "Date",
       totalTax: "Total Tax",
       poNo: "Purchase Order Number",
@@ -280,8 +280,8 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      address: item.customer?.billingAddress,
+      partyName: item.party?.name,
+      address: item.party?.billingAddress,
       poNo: item.poNo,
       poDate: item.poDate,
       num: item.num,
@@ -294,7 +294,7 @@ const reportDataByType = {
   purchase: {
     header: {
       num: "Purchase Number",
-      customerName: "Customer Name",
+      partyName: "Party Name",
       date: "Date",
       totalTax: "Total Tax",
       grandTotal: "Grand Total",
@@ -303,7 +303,7 @@ const reportDataByType = {
 
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
+      partyName: item.party?.name,
       num: item.purchaseNo,
       date: item.date ? new Date(item.date).toISOString().split("T")[0] : "",
       totalTax: item.totalTax.toFixed(2),
@@ -328,23 +328,23 @@ const reportDataByType = {
   },
   parties: {
     header: {
-      customerName: "Customer Name",
-      address: "Customer Address",
+      partyName: "Party Name",
+      address: "Party Address",
       amount: "Amount",
       currentStatus: "Amount Status",
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      address: item.customer?.billingAddress,
+      partyName: item.party?.name,
+      address: item.party?.billingAddress,
       amount: (item.total + item.totalTax).toFixed(2),
       currentStatus: item.total + item.totalTax < 0 ? "CREDIT" : "DEBIT",
     }),
   },
   gstr1: {
     header: {
-      gstNo: "Customer GST No",
-      customerName: "Customer Name",
+      gstNo: "Party GST No",
+      partyName: "Party Name",
       cgst: "CGST",
       sgst: "SGST",
       igst: "IGST",
@@ -352,8 +352,8 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      gstNo: item.customer?.gstNo,
+      partyName: item.party?.name,
+      gstNo: item.party?.gstNo,
       cgst: item.cgst.toFixed(2),
       sgst: item.sgst.toFixed(2),
       igst: item.igst.toFixed(2),
@@ -362,8 +362,8 @@ const reportDataByType = {
   },
   gstr2: {
     header: {
-      gstNo: "Customer GST No",
-      customerName: "Customer Name",
+      gstNo: "Party GST No",
+      partyName: "Party Name",
       cgst: "IGST",
       sgst: "IGST",
       igst: "IGST",
@@ -371,8 +371,8 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      customerName: item.customer?.name,
-      gstNo: item.customer?.gstNo,
+      partyName: item.party?.name,
+      gstNo: item.party?.gstNo,
       cgst: item.cgst.toFixed(2),
       sgst: item.sgst.toFixed(2),
       igst: item.igst.toFixed(2),
@@ -408,7 +408,7 @@ async function downloadPartiesReport(queryParams, orgId) {
     },
     {
       $group: {
-        _id: "$customer",
+        _id: "$party",
         total: {
           $sum: {
             $cond: [
@@ -431,14 +431,14 @@ async function downloadPartiesReport(queryParams, orgId) {
     },
     {
       $lookup: {
-        from: "customers",
+        from: "parties",
         localField: "_id",
-        as: "customer",
+        as: "party",
         foreignField: "_id",
       },
     },
     {
-      $unwind: "$customer",
+      $unwind: "$party",
     },
   ]);
   return transactions;
@@ -460,7 +460,7 @@ async function downloadSaleReport(queryParams, orgId) {
   }
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer");
+    .populate("party");
   return invoices;
 }
 async function downloadPurchaseReport(queryParams, orgId) {
@@ -480,7 +480,7 @@ async function downloadPurchaseReport(queryParams, orgId) {
   }
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer");
+    .populate("party");
   return purchases;
 }
 

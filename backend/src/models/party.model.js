@@ -1,6 +1,6 @@
 const { Schema, Types, model } = require("mongoose");
 
-const customerSchema = new Schema(
+const partySchema = new Schema(
   {
     name: {
       type: String,
@@ -39,12 +39,12 @@ const customerSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false, collection: "parties" }
 );
-customerSchema.index({
+partySchema.index({
   name: "text",
   billingAddress: "text",
   shippingAddress: "text",
 });
-const Customer = model("customer", customerSchema);
-module.exports = Customer;
+const Party = model("party", partySchema);
+module.exports = Party;

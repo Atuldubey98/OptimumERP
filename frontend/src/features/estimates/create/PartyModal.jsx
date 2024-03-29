@@ -25,15 +25,15 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import PaginateButtons from "../../common/PaginateButtons";
-import CustomerFormDrawer from "../../customers/CustomerFormDrawer";
+import PartyFormDrawer from "../../parties/PartyFormDrawer";
 import { IoSearchOutline } from "react-icons/io5";
 import { useEffect, useRef } from "react";
-export default function CustomerModal({
+export default function PartyModal({
   response,
   onClose,
   isOpen,
-  customerProps,
-  customerFormProps,
+  partyProps,
+  partyFormProps,
   formik,
   loading,
   onChangeInput,
@@ -41,12 +41,12 @@ export default function CustomerModal({
   previousPage,
   search,
 }) {
-  const { items: customers, page, totalPages } = response;
+  const { items: parties, page, totalPages } = response;
   const {
-    isOpenCustomerFormDrawer,
-    onCloseCustomerFormDrawer,
-    onOpenCustomerFormDrawer,
-  } = customerFormProps;
+    isOpenPartyFormDrawer,
+    onClosePartyFormDrawer,
+    onOpenPartyFormDrawer,
+  } = partyFormProps;
   const searchRef = useRef(null);
   useEffect(() => {
     if (searchRef.current) {
@@ -57,7 +57,7 @@ export default function CustomerModal({
     <Modal size={"2xl"} onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Select Customers</ModalHeader>
+        <ModalHeader>Select Parties</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Flex justifyContent={"space-around"} alignItems={"center"}>
@@ -70,14 +70,14 @@ export default function CustomerModal({
             <ButtonGroup>
               <Button
                 variant={"outline"}
-                onClick={() => customerProps.selectCustomer("")}
+                onClick={() => partyProps.selectParty("")}
               >
                 Clear
               </Button>
               <Button
                 variant={"solid"}
                 colorScheme="blue"
-                onClick={onOpenCustomerFormDrawer}
+                onClick={onOpenPartyFormDrawer}
               >
                 Add
               </Button>
@@ -104,29 +104,29 @@ export default function CustomerModal({
                 <Thead>
                   <Tr>
                     <Th>Select</Th>
-                    <Th>Customer Name</Th>
+                    <Th>Party Name</Th>
                     <Th>Billing address</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {customers.map((customer) => (
-                    <Tr cursor={"pointer"} key={customer._id}>
+                  {parties.map((party) => (
+                    <Tr cursor={"pointer"} key={party._id}>
                       <Td>
                         <Checkbox
                           isChecked={
-                            customerProps.selectedCustomer === customer._id
+                            partyProps.selectedParty === party._id
                           }
                           size="lg"
                           onChange={() => {
-                            customerProps.selectCustomer(customer._id);
+                            partyProps.selectParty(party._id);
                             onClose();
                           }}
                           isDisabled={false}
                           colorScheme="orange"
                         />
                       </Td>
-                      <Td>{customer.name}</Td>
-                      <Td>{customer.billingAddress}</Td>
+                      <Td>{party.name}</Td>
+                      <Td>{party.billingAddress}</Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -138,10 +138,10 @@ export default function CustomerModal({
           <Button onClick={onClose}>Close</Button>
         </ModalFooter>
       </ModalContent>
-      <CustomerFormDrawer
+      <PartyFormDrawer
         formik={formik}
-        isOpen={isOpenCustomerFormDrawer}
-        onClose={onCloseCustomerFormDrawer}
+        isOpen={isOpenPartyFormDrawer}
+        onClose={onClosePartyFormDrawer}
       />
     </Modal>
   );

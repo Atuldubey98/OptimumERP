@@ -1,12 +1,12 @@
 const { isValidObjectId } = require("mongoose");
 const { invoiceDto } = require("../dto/invoice.dto");
-const { CustomerNotFound } = require("../errors/customer.error");
+const { PartyNotFound } = require("../errors/party.error");
 const {
   InvoiceNotFound,
   InvoiceDuplicate,
 } = require("../errors/invoice.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const Customer = require("../models/customer.model");
+const Party = require("../models/party.model");
 const Invoice = require("../models/invoice.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const { OrgNotFound } = require("../errors/org.error");
@@ -24,11 +24,11 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!setting) throw new OrgNotFound();
-  const customer = await Customer.findOne({
-    _id: body.customer,
+  const party = await Party.findOne({
+    _id: body.party,
     org: req.params.orgId,
   });
-  if (!customer) throw new CustomerNotFound();
+  if (!party) throw new PartyNotFound();
   const existingInvoice = await Invoice.findOne({
     org: req.params.orgId,
     invoiceNo: body.invoiceNo,
@@ -57,7 +57,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     doc: newInvoice._id,
     total,
     totalTax,
-    customer: body.customer,
+    party: body.party,
   });
   await transaction.save();
   return res
@@ -90,7 +90,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       docModel: "invoice",
       doc: updatedInvoice.id,
     },
-    { updatedBy: req.body.updatedBy, total, totalTax, customer: body.customer }
+    { updatedBy: req.body.updatedBy, total, totalTax, party: body.party }
   );
   if (!updatedInvoice || !updateTransaction) throw new InvoiceNotFound();
   return res.status(200).json({ message: "Invoice updated !" });
@@ -134,7 +134,7 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
-    .populate("customer")
+    .populate("party")
     .populate("org")
     .skip(skip)
     .limit(limit)
@@ -159,7 +159,7 @@ exports.getInvoice = requestAsyncHandler(async (req, res) => {
     _id: req.params.invoiceId,
     org: req.params.orgId,
   })
-    .populate("customer", "name _id")
+    .populate("party", "name _id")
     .populate("createdBy", "name email _id")
     .populate("org", "name address _id");
   if (!invoice) throw new InvoiceNotFound();
@@ -188,7 +188,7 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     _id: invoiceId,
     org: req.params.orgId,
   })
-    .populate("customer", "name gstNo panNo")
+    .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo");
   const grandTotal = invoice.items.reduce(
@@ -241,7 +241,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
     _id: invoiceId,
     org: req.params.orgId,
   })
-    .populate("customer", "name gstNo panNo")
+    .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo");
   const grandTotal = invoice.items.reduce(

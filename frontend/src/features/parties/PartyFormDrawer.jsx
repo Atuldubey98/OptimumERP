@@ -8,13 +8,13 @@ import {
 import React from "react";
 import FormDrawerLayout from "../common/form-drawer-layout";
 
-export default function CustomerFormDrawer({ isOpen, onClose, formik }) {
+export default function PartyFormDrawer({ isOpen, onClose, formik }) {
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
       formBtnLabel={formik.values._id ? "Update" : "Add"}
       formHeading={
-        formik.values._id ? "Update customer form" : "New Customer form"
+        formik.values._id ? "Update party form" : "New Party form"
       }
       handleFormSubmit={formik.handleSubmit}
       isOpen={isOpen}
@@ -25,13 +25,13 @@ export default function CustomerFormDrawer({ isOpen, onClose, formik }) {
           isRequired
           isInvalid={formik.errors.name && formik.touched.name}
         >
-          <FormLabel>Customer Name</FormLabel>
+          <FormLabel>Party Name</FormLabel>
           <Input
             onChange={formik.handleChange}
             name="name"
             type="text"
             value={formik.values.name}
-            placeholder="Customer Name"
+            placeholder="Party Name"
           />
           <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
         </FormControl>

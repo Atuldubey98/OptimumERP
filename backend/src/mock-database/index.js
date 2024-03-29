@@ -6,7 +6,7 @@ const instance = axios.create({
 const userApi = require("./api/users");
 const orgApi = require("./api/organization");
 const productApi = require("./api/products");
-const customersApi = require("./api/customers");
+const partysApi = require("./api/parties");
 const billsApi = require("./api/bills");
 const users = userApi(instance);
 (async () => {
@@ -36,7 +36,7 @@ const users = userApi(instance);
     cookie,
     orgId: data.data._id,
   });
-  const customers = customersApi({
+  const parties = partysApi({
     axios: instance,
     cookie,
     orgId: data.data._id,
@@ -48,6 +48,6 @@ const users = userApi(instance);
     entity: "invoices",
   });
   await products.createManyProducts();
-  await customers.createManyCustomers();
+  await parties.createManyPartys();
   await invoices.createManyBills();
 })();

@@ -2,10 +2,10 @@ const { Schema, Types, model } = require("mongoose");
 
 const purchaseInvoice = new Schema(
   {
-    customer: {
+    party: {
       type: Types.ObjectId,
       required: true,
-      ref: "customer",
+      ref: "party",
     },
     billingAddress: {
       type: String,

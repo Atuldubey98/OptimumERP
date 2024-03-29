@@ -20,13 +20,13 @@ import MainLayout from "../../common/main-layout";
 import DateField from "./DateField";
 import DescriptionField from "./DescriptionField";
 import ItemsList from "./ItemList";
-import SelectCustomer from "./SelectCustomer";
+import SelectParty from "./SelectParty";
 import SelectStatus from "./SelectStatus";
 import TermsAndCondtions from "./TermsConditions";
 import TotalsBox from "./TotalsBox";
 import { defaultQuoteItem, statusList } from "./data";
 import { AiOutlineSave } from "react-icons/ai";
-import CustomerSelectBill from "../../invoices/create/CustomerSelectBill";
+import PartySelectBill from "../../invoices/create/PartySelectBill";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
@@ -54,13 +54,13 @@ export default function CreateEstimatePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Customer</Heading>
+                <Heading fontSize={"xl"}>Party</Heading>
                 <FormControl isRequired>
                   <FormLabel>Bill To</FormLabel>
-                  <CustomerSelectBill formik={formik} />
-                  <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+                  <PartySelectBill formik={formik} />
+                  <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
-                {formik.values.customer ? (
+                {formik.values.party ? (
                   <FormControl
                     isInvalid={
                       formik.errors.billingAddress &&

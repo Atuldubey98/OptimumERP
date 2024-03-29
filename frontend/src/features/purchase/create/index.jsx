@@ -23,7 +23,7 @@ import ItemsList from "../../estimates/create/ItemList";
 import SelectStatus from "../../estimates/create/SelectStatus";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
-import CustomerSelectBill from "../../invoices/create/CustomerSelectBill";
+import PartySelectBill from "../../invoices/create/PartySelectBill";
 
 export default function CreatePurchasePage() {
   const { formik, status } = usePurchaseForm();
@@ -50,13 +50,13 @@ export default function CreatePurchasePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Customer</Heading>
+                <Heading fontSize={"xl"}>Party</Heading>
                 <FormControl isRequired>
                   <FormLabel>Bill from</FormLabel>
-                  <CustomerSelectBill formik={formik} />
-                  <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+                  <PartySelectBill formik={formik} />
+                  <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
-                {formik.values.customer ? (
+                {formik.values.party ? (
                   <FormControl isRequired>
                     <FormLabel>Billing Address</FormLabel>
                     <Textarea

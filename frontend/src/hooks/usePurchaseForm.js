@@ -12,7 +12,7 @@ export default function usePurchaseForm() {
   const purchaseSchema = Yup.object().shape({
     purchaseNo: Yup.string().required("Purchase number is required"),
     billingAddress: Yup.string().required("Party Address is required"),
-    customer: Yup.string().required("Customer is required"),
+    party: Yup.string().required("Party is required"),
     date: Yup.date().required("Date is required"),
     status: Yup.string().required("Status is required"),
     items: Yup.array()
@@ -79,7 +79,7 @@ export default function usePurchaseForm() {
             `/api/v1/organizations/${orgId}/purchases/${purchaseId}`
           );
           const {
-            customer,
+            party,
             billingAddress = "",
             purchaseNo,
             date,
@@ -92,8 +92,8 @@ export default function usePurchaseForm() {
           formik.setValues({
             billingAddress,
             _id: data.data._id,
-            customer: customer._id,
-            customerDetails: customer,
+            party: party._id,
+            partyDetails: party,
             purchaseNo,
             date: new Date(date).toISOString().split("T")[0],
             status,

@@ -27,7 +27,7 @@ import SelectStatus from "../../estimates/create/SelectStatus";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
-import CustomerSelectBill from "./CustomerSelectBill";
+import PartySelectBill from "./PartySelectBill";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
@@ -79,16 +79,16 @@ export default function CreateInvoicePage() {
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Customer</Heading>
+                <Heading fontSize={"xl"}>Party</Heading>
                 <FormControl
-                  isInvalid={formik.errors.customer && formik.touched.customer}
+                  isInvalid={formik.errors.party && formik.touched.party}
                   isRequired
                 >
                   <FormLabel>Bill to</FormLabel>
-                  <CustomerSelectBill formik={formik} />
-                  <FormErrorMessage>{formik.errors.customer}</FormErrorMessage>
+                  <PartySelectBill formik={formik} />
+                  <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
-                {formik.values.customer ? (
+                {formik.values.party ? (
                   <FormControl
                     isInvalid={
                       formik.errors.billingAddress &&

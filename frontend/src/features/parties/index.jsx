@@ -1,64 +1,64 @@
 import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteCustomer } from "../../api/customer";
-import useCustomerForm from "../../hooks/useCustomerForm";
-import useCustomers from "../../hooks/useCustomers";
+import { deleteParty } from "../../api/party";
+import usePartyForm from "../../hooks/usePartyForm";
+import useParties from "../../hooks/useParties";
 import AlertModal from "../common/AlertModal";
 import ShowDrawer from "../common/ShowDrawer";
 import MainLayout from "../common/main-layout";
 import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
-import CustomerFormDrawer from "./CustomerFormDrawer";
-import CustomerMenu from "./CustomerMenu";
+import PartyFormDrawer from "./PartyFormDrawer";
+import PartyMenu from "./PartyMenu";
 import { isAxiosError } from "axios";
-export default function CustomersPage() {
+export default function PartysPage() {
   const {
     isOpen: isDeleteModalOpen,
     onOpen: openDeleteModal,
     onClose: closeDeleteModal,
   } = useDisclosure();
   const {
-    isOpen: isCustomerFormOpen,
-    onClose: onCloseCustomerFormDrawer,
-    onOpen: openCustomerFormDrawer,
+    isOpen: isPartyFormOpen,
+    onClose: onClosePartyFormDrawer,
+    onOpen: openPartyFormDrawer,
   } = useDisclosure();
   const {
-    isOpen: isCustomerDrawerOpen,
-    onClose: closeCustomerDrawer,
-    onOpen: openCustomerDrawer,
+    isOpen: isPartyDrawerOpen,
+    onClose: closePartyDrawer,
+    onOpen: openPartyDrawer,
   } = useDisclosure();
   const {
-    customers,
-    fetchCustomers,
+    parties,
+    fetchPartys,
     loading,
     currentPage,
-    totalCustomers,
+    totalPartys,
     totalPages,
-  } = useCustomers();
-  const { formik: customerFormik } = useCustomerForm(
-    fetchCustomers,
-    onCloseCustomerFormDrawer
+  } = useParties();
+  const { formik: partyFormik } = usePartyForm(
+    fetchPartys,
+    onClosePartyFormDrawer
   );
-  const [selectedToShowCustomer, setSelectedToShowCustomer] = useState(null);
-  const onOpenCustomer = (customer) => {
-    setSelectedToShowCustomer(customer);
-    openCustomerDrawer();
+  const [selectedToShowParty, setSelectedToShowParty] = useState(null);
+  const onOpenParty = (party) => {
+    setSelectedToShowParty(party);
+    openPartyDrawer();
   };
   const { orgId = "" } = useParams();
   const [status, setStatus] = useState("idle");
   const deleting = status === "deleting";
-  const onOpenCustomerToDelete = (customer) => {
-    setSelectedToShowCustomer(customer);
+  const onOpenPartyToDelete = (party) => {
+    setSelectedToShowParty(party);
     openDeleteModal();
   };
   const toast = useToast();
-  const onDeleteCustomer = async () => {
+  const onDeleteParty = async () => {
     try {
       setStatus("deleting");
-      await deleteCustomer(selectedToShowCustomer._id, orgId);
-      fetchCustomers();
+      await deleteParty(selectedToShowParty._id, orgId);
+      fetchPartys();
       setStatus("idle");
     } catch (err) {
       toast({
@@ -75,23 +75,23 @@ export default function CustomersPage() {
       closeDeleteModal();
     }
   };
-  const onCloseCustomer = () => {
-    closeCustomerDrawer();
-    setSelectedToShowCustomer(null);
+  const onCloseParty = () => {
+    closePartyDrawer();
+    setSelectedToShowParty(null);
   };
-  const onOpenDrawerForAddingNewCustomer = () => {
-    customerFormik.setValues({
+  const onOpenDrawerForAddingNewParty = () => {
+    partyFormik.setValues({
       name: "",
       billingAddress: "",
       gstNo: "",
       panNo: "",
       shippingAddress: "",
     });
-    openCustomerFormDrawer();
+    openPartyFormDrawer();
   };
-  const onOpenDrawerForEditingCustomer = (customer) => {
-    customerFormik.setValues(customer);
-    openCustomerFormDrawer();
+  const onOpenDrawerForEditingParty = (party) => {
+    partyFormik.setValues(party);
+    openPartyFormDrawer();
   };
   const navigate = useNavigate();
   return (
@@ -108,19 +108,19 @@ export default function CustomersPage() {
                 <SearchItem />
               </Box>
             }
-            heading={"Customers"}
-            tableData={customers}
-            caption={`Total customers found : ${totalCustomers}`}
-            operations={customers.map((customer) => (
-              <CustomerMenu
-                onOpenTransactionsForCustomer={() => {
-                  navigate(`/${orgId}/customers/${customer._id}/transactions`);
+            heading={"Parties"}
+            tableData={parties}
+            caption={`Total parties found : ${totalPartys}`}
+            operations={parties.map((party) => (
+              <PartyMenu
+                onOpenTransactionsForParty={() => {
+                  navigate(`/${orgId}/parties/${party._id}/transactions`);
                 }}
-                onDeleteCustomer={onOpenCustomerToDelete}
-                customer={customer}
-                key={customer._id}
-                onOpenDrawerForEditingCustomer={onOpenDrawerForEditingCustomer}
-                onOpenCustomer={onOpenCustomer}
+                onDeleteParty={onOpenPartyToDelete}
+                party={party}
+                key={party._id}
+                onOpenDrawerForEditingParty={onOpenDrawerForEditingParty}
+                onOpenParty={onOpenParty}
               />
             ))}
             selectedKeys={{
@@ -128,30 +128,30 @@ export default function CustomersPage() {
               billingAddress: "Billing address",
               gstNo: "TAX No.",
             }}
-            onAddNewItem={onOpenDrawerForAddingNewCustomer}
+            onAddNewItem={onOpenDrawerForAddingNewParty}
           />
         )}
         <AlertModal
           confirmDisable={deleting}
-          body={"Do you want to delete the customer ?"}
-          header={"Delete customer"}
+          body={"Do you want to delete the party ?"}
+          header={"Delete party"}
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
-          onConfirm={onDeleteCustomer}
+          onConfirm={onDeleteParty}
         />
-        <CustomerFormDrawer
-          formik={customerFormik}
-          isOpen={isCustomerFormOpen}
-          onClose={onCloseCustomerFormDrawer}
+        <PartyFormDrawer
+          formik={partyFormik}
+          isOpen={isPartyFormOpen}
+          onClose={onClosePartyFormDrawer}
         />
-        {selectedToShowCustomer ? (
+        {selectedToShowParty ? (
           <ShowDrawer
-            onClickNewItem={onOpenDrawerForAddingNewCustomer}
-            heading={"Customer"}
+            onClickNewItem={onOpenDrawerForAddingNewParty}
+            heading={"Party"}
             formBtnLabel={"Create New"}
-            isOpen={isCustomerDrawerOpen}
-            item={selectedToShowCustomer}
-            onClose={onCloseCustomer}
+            isOpen={isPartyDrawerOpen}
+            item={selectedToShowParty}
+            onClose={onCloseParty}
             selectedKeys={{
               name: "Name",
               shippingAddress: "Shipping address",

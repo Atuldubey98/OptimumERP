@@ -32,8 +32,8 @@ export default function InvoicesPage() {
   const { symbol } = useCurrentOrgCurrency();
 
   const invoiceTableMapper = (invoice) => ({
-    customerName: invoice.customer.name,
-    billingAddress: invoice.customer.billingAddress,
+    partyName: invoice.party.name,
+    billingAddress: invoice.party.billingAddress,
     ...invoice,
     invoiceNo: invoice.num,
     date: new Date(invoice.date).toISOString().split("T")[0],
@@ -119,7 +119,7 @@ export default function InvoicesPage() {
             selectedKeys={{
               date: "Invoice Date",
               status: "Status",
-              customerName: "Customer name",
+              partyName: "Party name",
               invoiceNo: "Invoice No.",
               billingAddress: "Billing address",
               grandTotal: "Total",

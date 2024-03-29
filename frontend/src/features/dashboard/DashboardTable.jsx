@@ -34,7 +34,7 @@ export default function DashboardTable({ heading, tableHeads, tableRows }) {
             {tableRows.map((tableRow) => (
               <Tr key={tableRow._id}>
                 <Td>{tableRow.num}</Td>
-                <Td>{tableRow.customerName}</Td>
+                <Td>{tableRow.partyName}</Td>
                 <Td>{`${symbol} ${(tableRow.total + tableRow.totalTax).toFixed(
                   2
                 )}`}</Td>
