@@ -34,4 +34,5 @@ jobs:
           echo "${{secrets.PROD_ENV_FILE}}" > .env
       - name: Restart app
         run: |
+          npm install pm2 -g
           pm2 restart backend
