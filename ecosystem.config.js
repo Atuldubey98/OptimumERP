@@ -3,12 +3,7 @@ module.exports = {
     {
       name: "backend",
       script: "./backend/src/server.js",
-      env: {
-        NODE_ENV: "development",
-      },
-      env_production: {
-        NODE_ENV: "production",
-      },
+      node_args : '-r ./backend/node_modules/dotenv/config'
     },
   ],
 };

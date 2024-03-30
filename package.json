@@ -9,7 +9,7 @@
     "build:frontend": "cd frontend && npm i && npm run build",
     "build:backend": "cd backend && npm i",
     "build": "npm run build:frontend && npm run build:backend",
-    "start": "cd backend && npm start"
+    "start": "pm2 start ecosystem.config.js --env production"
   },
   "author": "Atul Dubey",
   "license": "ISC"
