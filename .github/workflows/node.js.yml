@@ -34,7 +34,8 @@ jobs:
       - name: Install and Test frontend
         working-directory: ./frontend
         run: |
-            npm install
+            npm installl
+            npm run build
       - name: Create env file
         run: |
             echo "${{secrets.PROD_ENV_FILE}}" > .env
