@@ -8,12 +8,6 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-env:
-  MONGO_URI: ${{ secrets.MONGO_URI }}
-  SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-  NODE_MAILER_USER_NAME: ${{ secrets.NODE_MAILER_USER_NAME }}
-  NODE_MAILER_APP_PASSWORD: ${{ secrets.NODE_MAILER_APP_PASSWORD }}
-  NODE_MAILER_HOST: ${{ secrets.NODE_MAILER_HOST }}
 jobs:
   build:
 
@@ -37,12 +31,10 @@ jobs:
         working-directory: ./backend
         run: |
           npm install 
-          set MONGO_URI=$MONGO_URI
-          set SESSION_SECRET=$SESSION_SECRET
-          set NODE_MAILER_USER_NAME=$NODE_MAILER_USER_NAME
-          set NODE_MAILER_APP_PASSWORD=$NODE_MAILER_APP_PASSWORD
-          set NODE_MAILER_HOST=$NODE_MAILER_HOST
       - name: Install and Test frontend
         working-directory: ./frontend
         run: |
             npm install
+      - name: Create env file
+        run: |
+            echo "${{secrets.PROD_ENV_FILE}}" > .env
