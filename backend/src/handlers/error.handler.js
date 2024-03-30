@@ -31,9 +31,7 @@ module.exports = (err, req, res, next) => {
     message = "unauthenticated request";
     code = 401;
   }
-  if (NODE_ENV === "development") {
-    console.log(err);
-  }
+  console.log(err);
   const name = err.name || "InternalError";
   return res
     .status(code > 500 ? 500 : code)

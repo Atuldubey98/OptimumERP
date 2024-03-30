@@ -5,12 +5,11 @@ name: OptimumERP
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 jobs:
   build:
-
     runs-on: self-hosted
 
     strategy:
@@ -20,17 +19,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
- 
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Install and Test backend
         working-directory: ./backend
         run: |
           npm install
       - name: Create env file
         run: |
-            echo "${{secrets.PROD_ENV_FILE}}" > .env
+          echo "${{secrets.PROD_ENV_FILE}}" > .env
+      - name: Restart app
+        run: |
+            pm2 restart all
