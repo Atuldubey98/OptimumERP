@@ -95,7 +95,7 @@ export default function ExpensesPage() {
   const { symbol } = useCurrentOrgCurrency();
   return (
     <MainLayout>
-      <Box p={5}>
+      <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Spinner size={"md"} />

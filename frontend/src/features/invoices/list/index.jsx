@@ -84,7 +84,7 @@ export default function InvoicesPage() {
   const downloading = invoiceStatus === "downloading";
   return (
     <MainLayout>
-      <Box p={5}>
+      <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Spinner size={"md"} />

@@ -38,7 +38,7 @@ function TableLayoutMemoized({
   });
   const navigate = useNavigate();
   return (
-    <Stack spacing={4} marginTop={4}>
+    <Stack spacing={4}>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
         <Flex justifyContent={"space-between"} gap={4} alignItems={"center"}>
           <Icon

@@ -85,7 +85,7 @@ export default function EstimatesPage() {
   const deleting = estimateStatus === "deleting";
   return (
     <MainLayout>
-      <Box p={5}>
+      <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Spinner size={"md"} />

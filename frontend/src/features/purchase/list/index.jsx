@@ -37,7 +37,7 @@ export default function PurchasePage() {
   const navigate = useNavigate();
   const purchaseTableMapper = (purchase) => ({
     partyName: purchase.party ? purchase.party.name : "",
-    billingAddress: purchase.party.billingAddress,
+    billingAddress: purchase?.billingAddress,
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
     date: new Date(purchase.date).toISOString().split("T")[0],
@@ -90,7 +90,7 @@ export default function PurchasePage() {
 
   return (
     <MainLayout>
-      <Box p={5}>
+      <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Spinner size={"md"} />
