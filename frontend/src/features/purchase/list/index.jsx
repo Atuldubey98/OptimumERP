@@ -36,7 +36,7 @@ export default function PurchasePage() {
 
   const navigate = useNavigate();
   const purchaseTableMapper = (purchase) => ({
-    partyName: purchase.party.name,
+    partyName: purchase.party ? purchase.party.name : "",
     billingAddress: purchase.party.billingAddress,
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
