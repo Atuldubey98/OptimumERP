@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
-export const baseURL = import.meta.env.PROD ? "http://api.optimumerp.biz" :  "http://localhost:3000";
+export const baseURL = import.meta.env.PROD ? "https://api.optimumerp.biz" :  "http://localhost:3000";
 const instance = axios.create({
   baseURL,
   withCredentials: true,
