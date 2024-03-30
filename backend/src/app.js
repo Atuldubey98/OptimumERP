@@ -28,7 +28,11 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
-const whitelist = ["http://localhost:5173", "http://localhost:9000", "https://app.optimumerp.biz"];
+const whitelist = [
+  "http://localhost:5173",
+  "http://localhost:9000",
+  "https://app.optimumerp.biz",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -67,8 +71,6 @@ app.get("/", (req, res) => {
   res.render("landing", {
     title: "Optimum ERP",
     user,
-    baseUrl:
-      process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://app.optimumerp.biz",
   });
 });
 app.get("/api/v1/health", (_, res) =>
