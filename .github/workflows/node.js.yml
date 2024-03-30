@@ -37,11 +37,11 @@ jobs:
         working-directory: ./backend
         run: |
           npm install 
-          export MONGO_URI=$MONGO_URI
-          export SESSION_SECRET=$SESSION_SECRET
-          export NODE_MAILER_USER_NAME=$NODE_MAILER_USER_NAME
-          export NODE_MAILER_APP_PASSWORD=$NODE_MAILER_APP_PASSWORD
-          export NODE_MAILER_HOST=$NODE_MAILER_HOST
+          set MONGO_URI=$MONGO_URI
+          set SESSION_SECRET=$SESSION_SECRET
+          set NODE_MAILER_USER_NAME=$NODE_MAILER_USER_NAME
+          set NODE_MAILER_APP_PASSWORD=$NODE_MAILER_APP_PASSWORD
+          set NODE_MAILER_HOST=$NODE_MAILER_HOST
       - name: Install and Test frontend
         working-directory: ./frontend
         run: |
