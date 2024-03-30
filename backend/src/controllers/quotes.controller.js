@@ -13,6 +13,8 @@ const wkhtmltopdf = require("wkhtmltopdf");
 const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
+const path = require("path");
+
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
@@ -303,7 +305,7 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     partyMetaHeading: "Estimate to",
   };
   const templateName = req.query.template || "simple";
-  const locationTemplate = `./src/views/templates/${templateName}/index.ejs`;
+  const locationTemplate = path.join(__dirname, `../views/templates/${templateName}/index.ejs`);
   ejs.renderFile(locationTemplate, data, (err, html) => {
     if (err) throw err;
     res.writeHead(200, {

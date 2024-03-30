@@ -17,7 +17,7 @@ const wkhtmltopdf = require("wkhtmltopdf");
 const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
-
+const path = require("path");
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
   const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(body.items);
@@ -269,7 +269,7 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
     partyMetaHeading: "Bill From",
   };
   const templateName = req.query.template || "simple";
-  const locationTemplate = `./src/views/templates/${templateName}/index.ejs`;
+  const locationTemplate = path.join(__dirname, `../views/templates/${templateName}/index.ejs`);
   ejs.renderFile(locationTemplate, data, (err, html) => {
     if (err) throw err;
     res.writeHead(200, {

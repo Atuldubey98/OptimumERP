@@ -17,6 +17,7 @@ const wkhtmltopdf = require("wkhtmltopdf");
 const currencies = require("../constants/currencies");
 const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
+const path = require("path");
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
   const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
@@ -236,7 +237,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;
   if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
   const templateName = req.query.template || "simple";
-  const locationTemplate = `./src/views/templates/${templateName}/index.ejs`;
+  const locationTemplate = path.join(__dirname, `../views/templates/${templateName}/index.ejs`);
   const invoice = await Invoice.findOne({
     _id: invoiceId,
     org: req.params.orgId,
