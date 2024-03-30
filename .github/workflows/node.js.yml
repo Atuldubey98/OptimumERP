@@ -26,8 +26,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-    - run: cd backend
-    - run: cd ../frontend
-    - run: cd ../ && touch .env
+    - run: touch .env
     - run: echo "${{secrets.PROD_ENV_FILE}}" > .env
