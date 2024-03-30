@@ -68,7 +68,7 @@ app.get("/", (req, res) => {
     title: "Optimum ERP",
     user,
     baseUrl:
-      process.env.NODE_ENV === "development" ? "http://localhost:5173" : "",
+      process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://app.optimumerp.biz",
   });
 });
 app.get("/api/v1/health", (_, res) =>
