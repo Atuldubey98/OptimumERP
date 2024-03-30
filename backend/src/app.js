@@ -48,22 +48,17 @@ app.use(cors(corsOptions));
 
 const sessionOptions = {
   secret: SESSION_SECRET,
-  resave: true,
+  resave: false,
+  httpOnly: true,
   saveUninitialized: true,
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
     ttl: 14 * 24 * 60 * 60,
   }),
-  cookie: {
-    sameSite: "none",
-    secure: false,
-    partitioned: true,
-  },
 };
 
 if (NODE_ENV === "production") {
   app.set("trust proxy", 1);
-  sessionOptions.cookie.secure = true;
 }
 app.use(session(sessionOptions));
 app.get("/", (req, res) => {
