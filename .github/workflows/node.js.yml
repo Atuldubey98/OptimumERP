@@ -34,7 +34,7 @@ jobs:
       - name: Install and Test frontend
         working-directory: ./frontend
         run: |
-            npm installl
+            npm install
             npm run build
       - name: Create env file
         run: |
