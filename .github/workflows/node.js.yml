@@ -8,23 +8,31 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+env:
+  MONGO_URI: ${{ secrets.MONGO_URI }}
+  SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+  NODE_MAILER_USER_NAME: ${{ secrets.NODE_MAILER_USER_NAME }}
+  NODE_MAILER_APP_PASSWORD: ${{ secrets.NODE_MAILER_APP_PASSWORD }}
+  NODE_MAILER_HOST: ${{ secrets.NODE_MAILER_HOST }}
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: touch .env
-    - run: echo "${{secrets.PROD_ENV_FILE}}" > .env
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install and Test backend
+        working-directory: ./backend
+        run: |
+          npm install 
+      - name: Install and Test frontend
+        working-directory: ./frontend
+        run: |
+            npm install
+            export MONGO_URI=$MONGO_URI
+            export SESSION_SECRET=$SESSION_SECRET
+            export NODE_MAILER_USER_NAME=$NODE_MAILER_USER_NAME
+            export NODE_MAILER_APP_PASSWORD=$NODE_MAILER_APP_PASSWORD
+            export NODE_MAILER_HOST=$NODE_MAILER_HOST
