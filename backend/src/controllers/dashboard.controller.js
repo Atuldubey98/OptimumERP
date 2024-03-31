@@ -140,10 +140,17 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
     .populate("party", "name")
     .limit(5)
     .exec();
+  const recentPurchases = await Purchase.find({ org: orgId })
+    .sort({ createdAt: -1 })
+    .select("name purchaseNo total totalTax status party date")
+    .populate("party", "name")
+    .limit(5)
+    .exec();
   return res.status(200).json({
     data: {
       invoiceThisMonth,
       quotesThisMonth,
+      recentPurchases,
       expensesThisMonth,
       partysThisMonth,
       recentInvoices,

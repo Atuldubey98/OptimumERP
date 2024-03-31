@@ -17,7 +17,7 @@ export default function MainLayout({ children }) {
           <Box boxShadow={"md"} p={2}>
             <Header onSideNavOpen={onOpen} />
           </Box>
-          <Box minH={"50svh"} overflowY={"auto"}>{children}</Box>
+          <Box minH={"70svh"} overflowY={"auto"}>{children}</Box>
         </Flex>
       </Flex>
       <NavDrawer isOpen={isOpen} onClose={onClose} />

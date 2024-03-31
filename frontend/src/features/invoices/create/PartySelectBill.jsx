@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { AsyncCreatableSelect } from "chakra-react-select";
-import React from "react";
+import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
 import usePartyForm from "../../../hooks/usePartyForm";
 import instance from "../../../instance";
@@ -8,19 +8,31 @@ import PartyFormDrawer from "../../parties/PartyFormDrawer";
 
 export default function PartySelectBill({ formik }) {
   const { orgId } = useParams();
+  const selectRef=  useRef(null);
   const promiseOptions = async (searchQuery) => {
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/parties/search`,
-      {
-        params: {
-          keyword: searchQuery,
-        },
-      }
-    );
-    return data.data.map((party) => ({
-      value: party,
-      label: party.name,
-    }));
+    if (selectRef.current) 
+      clearTimeout(selectRef.current)
+      return new Promise((resolve, reject) => {
+        selectRef.current = setTimeout(async () => {
+          try {
+            const { data } = await instance.get(
+              `/api/v1/organizations/${orgId}/parties/search`,
+              {
+                params: {
+                  keyword: searchQuery,
+                },
+              }
+            );
+            const options = data.data.map((party) => ({
+              value: party,
+              label: party.name,
+            }));
+            resolve(options);
+          } catch (error) {
+            reject(error);
+          }
+        }, 800);
+  })
   };
   const {
     isOpen: isPartyFormOpen,

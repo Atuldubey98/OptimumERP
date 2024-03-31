@@ -22,8 +22,8 @@ export default function FormDrawerLayout({
   return (
     <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
-      <DrawerContent>
-        <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit}>
+        <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>{formHeading}</DrawerHeader>
           <Divider />
@@ -36,8 +36,8 @@ export default function FormDrawerLayout({
               {formBtnLabel}
             </Button>
           </DrawerFooter>
-        </form>
-      </DrawerContent>
+        </DrawerContent>
+      </form>
     </Drawer>
   );
 }

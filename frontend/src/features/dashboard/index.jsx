@@ -19,6 +19,7 @@ import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
+import { purchaseStatusList } from "../../constants/purchase";
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -28,6 +29,7 @@ export default function DashboardPage() {
     expensesThisMonth: 0,
     recentInvoices: [],
     recentQuotes: [],
+    recentPurchases: [],
   });
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
@@ -80,7 +82,7 @@ export default function DashboardPage() {
   return (
     <MainLayout>
       <Box p={5}>
-        <Heading>Dashboard</Heading>
+        <Heading fontSize={"3xl"}>Dashboard</Heading>
         <Stack marginBlock={2} spacing={3}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
             <Select
@@ -162,6 +164,26 @@ export default function DashboardPage() {
                     />
                   ),
                   date: new Date(invoice.date).toISOString().split("T")[0],
+                }))}
+                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
+              />
+            </Skeleton>
+            <Skeleton isLoaded={!loading}>
+              <DashboardTable
+                heading={"Recent Purchases"}
+                tableRows={dashboard.recentPurchases.map((purchase) => ({
+                  _id: purchase._id,
+                  num: purchase.purchaseNo,
+                  partyName: purchase.party.name,
+                  total: purchase.total,
+                  totalTax: purchase.totalTax,
+                  status: (
+                    <Status
+                      status={purchase.status}
+                      statusList={purchaseStatusList}
+                    />
+                  ),
+                  date: new Date(purchase.date).toISOString().split("T")[0],
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />

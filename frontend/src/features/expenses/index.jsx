@@ -79,6 +79,12 @@ export default function ExpensesPage() {
       date: new Date().toISOString().split("T")[0],
       description: "",
     });
+    formik.setTouched({
+      amount: false,
+      category: false,
+      date: false,
+      description: false,
+    });
     openExpenseForm();
   };
   const deleteExpense = requestAsyncHandler(async () => {

@@ -4,6 +4,7 @@ import {
   Container,
   Flex,
   Grid,
+  Heading,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -113,10 +114,10 @@ export default function OrgPage() {
               Logout
             </Button>
           </Flex>
-          <Flex justifyContent={"center"} gap={4} alignItems={"center"}>
-            <Text fontSize={"4xl"} fontWeight={"bold"} textAlign={"center"}>
+          <Flex marginBlock={3} justifyContent={"center"} gap={4} alignItems={"center"}>
+            <Heading as={"h5"} fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"}>
               Your organizations
-            </Text>
+            </Heading>
             <FaRegCircleDot color="green" size={24} />
           </Flex>
           {loading ? (

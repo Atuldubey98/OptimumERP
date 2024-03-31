@@ -1,5 +1,5 @@
 import { AsyncCreatableSelect } from "chakra-react-select";
-import React from "react";
+import React, { useRef } from "react";
 import ItemCategoryForm from "../categories/ItemCategoryForm";
 import { useDisclosure } from "@chakra-ui/react";
 import useItemCategoryForm from "../../hooks/useItemCategoryForm";
@@ -7,19 +7,30 @@ import instance from "../../instance";
 import { useParams } from "react-router-dom";
 export default function ProductCategoryAsyncSelect({ formik }) {
   const { orgId } = useParams();
+  const selectRef = useRef(null);
   const promiseOptions = async (searchQuery) => {
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/productCategories`,
-      {
-        params: {
-          query: searchQuery,
-        },
-      }
-    );
-    return data.data.map((category) => ({
-      value: category,
-      label: category.name,
-    }));
+    if (selectRef.current) clearTimeout(selectRef.current);
+    return new Promise((response, reject) => {
+      selectRef.current = setTimeout(async () => {
+        try {
+          const { data } = await instance.get(
+            `/api/v1/organizations/${orgId}/productCategories`,
+            {
+              params: {
+                query: searchQuery,
+              },
+            }
+          );
+          const res = data.data.map((category) => ({
+            value: category,
+            label: category.name,
+          }));
+          response(res);
+        } catch (error) {
+          reject(error);
+        }
+      }, 800);
+    });
   };
   const {
     isOpen: isItemCategoryFormOpen,

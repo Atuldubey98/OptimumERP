@@ -27,7 +27,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <Grid maxH={"80svh"} overflowY={"auto"} gap={4}>
+      <Grid overflowY={"auto"} gap={4}>
         <FormControl
           isRequired
           isInvalid={formik.errors.name && formik.touched.name}
@@ -68,6 +68,21 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
         </FormControl>
         <FormControl
           isRequired
+          isInvalid={formik.errors.um && formik.touched.um}
+        >
+          <FormLabel>Unit of Measurement</FormLabel>
+          <Select
+            name={`um`}
+            value={ums.find((um) => um.value === formik.values.um)}
+            onChange={({ value }) => {
+              formik.setFieldValue(`um`, value);
+            }}
+            options={ums}
+          />
+          <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          isRequired
           isInvalid={formik.errors.costPrice && formik.touched.costPrice}
         >
           <FormLabel>Cost Price</FormLabel>
@@ -83,21 +98,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
         </FormControl>
 
-        <FormControl
-          isRequired
-          isInvalid={formik.errors.um && formik.touched.um}
-        >
-          <FormLabel>Unit of Measurement</FormLabel>
-          <Select
-            name={`um`}
-            value={ums.find((um) => um.value === formik.values.um)}
-            onChange={({ value }) => {
-              formik.setFieldValue(`um`, value);
-            }}
-            options={ums}
-          />
-          <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
-        </FormControl>
+        
         <FormControl isInvalid={formik.errors.code && formik.touched.code}>
           <FormLabel>HSN Code or SAC Code</FormLabel>
           <Input
@@ -122,6 +123,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           />
           <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
         </FormControl>
+        
       </Grid>
     </FormDrawerLayout>
   );

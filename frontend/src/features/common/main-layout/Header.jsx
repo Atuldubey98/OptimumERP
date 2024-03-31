@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  IconButton,
   Show,
   Text,
   useColorMode,
@@ -33,6 +34,7 @@ export default function Header({ onSideNavOpen }) {
           alignItems={"center"}
         >
           <Button
+            size={"sm"}
             colorScheme="blue"
             onClick={() => {
               navigate(
@@ -52,6 +54,7 @@ export default function Header({ onSideNavOpen }) {
             </Show>
           </Button>
           <Button
+            size={"sm"}
             colorScheme="blue"
             onClick={openQuickAccess}
             variant="outline"
@@ -61,7 +64,12 @@ export default function Header({ onSideNavOpen }) {
               <Text marginLeft={3}>Quick Access</Text>
             </Show>
           </Button>
-          {colorMode === "dark" ? (
+          <IconButton
+          size={"sm"}
+            icon={colorMode === "dark" ? <MdOutlineWbSunny /> : <CiDark />}
+            onClick={toggleColorMode}
+          />
+          {/* {colorMode === "dark" ? (
             <MdOutlineWbSunny
               onClick={toggleColorMode}
               size={28}
@@ -69,7 +77,7 @@ export default function Header({ onSideNavOpen }) {
             />
           ) : (
             <CiDark onClick={toggleColorMode} size={28} cursor={"pointer"} />
-          )}
+          )} */}
           <Show below="xl">
             <AvatarProfileWithOptions />
             <MdMenu size={28} cursor={"pointer"} onClick={onSideNavOpen} />
