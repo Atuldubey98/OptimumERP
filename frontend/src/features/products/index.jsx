@@ -72,7 +72,7 @@ export default function ProductsPage() {
     formik.setValues({
       ...product,
       categoryProps: product.category,
-      category: product.category._id,
+      category: product.category ? product.category._id : "",
     });
     openProductFormDrawer();
   };

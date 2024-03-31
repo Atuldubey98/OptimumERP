@@ -10,7 +10,7 @@ const createProductDto = Joi.object({
     .required()
     .label("Type of Product"),
   code: Joi.string().label("HSN Code or SAC Code").allow(""),
-  category : Joi.string().optional(),
+  category : Joi.string().optional().allow(null),
   createdBy: Joi.string().label("Created By"),
 });
 const updateProductDto = Joi.object({
@@ -24,7 +24,7 @@ const updateProductDto = Joi.object({
     .label("Type of Product")
     .optional(),
   um : Joi.string().default("NONE").optional(),
-  category : Joi.string().optional(),
+  category : Joi.string().optional().allow(null),
   code: Joi.string().label("HSN Code or SAC Code").allow("").optional(),
   updatedBy : Joi.string().label("Updated By")
 });

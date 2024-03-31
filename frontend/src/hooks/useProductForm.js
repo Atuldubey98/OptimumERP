@@ -45,7 +45,15 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
         updatedAt,
         ...product
       } = values;
-      if (productId) await updateProduct({ product, orgId, productId });
+      if (productId)
+        await updateProduct({
+          product: {
+            ...product,
+            category: values.category ? values.category : null,
+          },
+          orgId,
+          productId,
+        });
       else await createProduct({ product, orgId });
       if (onAddedFetch) onAddedFetch();
       onCloseDrawer();
