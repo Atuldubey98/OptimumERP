@@ -4,36 +4,22 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  IconButton,
+  Heading,
   Input,
   Stack,
-  useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
-import { MdOutlineQrCode } from "react-icons/md";
-import BankAccountUpiQRCodeModal from "./BankAccountUpiQRCodeModal";
+import HelpPopover from "../common/HelpPopover";
 
 export default function BankAccounts({ bankFormik }) {
-  const {
-    isOpen: isOpenBankAccountModal,
-    onOpen: openBankAccountModal,
-    onClose: closeBankAccountModal,
-  } = useDisclosure();
   return (
     <form onSubmit={bankFormik.handleSubmit}>
-      <Stack
-        marginBlock={3}
-        boxShadow={"md"}
-        borderRadius={"md"}
-        p={4}
-        spacing={4}
-        maxW={"xl"}
-      >
-        <Flex justifyContent={"flex-end"} alignItems={"center"} marginBlock={1}>
-          <IconButton
-            onClick={openBankAccountModal}
-            icon={<MdOutlineQrCode />}
-            isDisabled={!bankFormik.values.upi}
+      <Stack spacing={4}>
+        <Flex justifyContent={"space-between"} alignItems={"center"}>
+          <Heading fontSize={"lg"}>Bank details</Heading>
+          <HelpPopover
+            title={"Bank Details"}
+            description={"Fill your bank details here"}
           />
         </Flex>
         <FormControl isInvalid={bankFormik.errors.accountHolderName}>
@@ -86,6 +72,7 @@ export default function BankAccounts({ bankFormik }) {
         </FormControl>
         <Flex justifyContent="center" alignItems={"center"}>
           <Button
+            size={"sm"}
             type="submit"
             isLoading={bankFormik.isSubmitting}
             colorScheme="blue"
@@ -94,14 +81,6 @@ export default function BankAccounts({ bankFormik }) {
           </Button>
         </Flex>
       </Stack>
-      {bankFormik.values.upi && isOpenBankAccountModal ? (
-        <BankAccountUpiQRCodeModal
-          accountHolderName={bankFormik.values.accountHolderName}
-          upi={bankFormik.values.upi}
-          isOpen={isOpenBankAccountModal}
-          onClose={closeBankAccountModal}
-        />
-      ) : null}
     </form>
   );
 }

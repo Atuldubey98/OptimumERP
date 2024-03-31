@@ -18,6 +18,16 @@ const currencies = require("../constants/currencies");
 const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
 const path = require("path");
+const QRCode = require("qrcode");
+
+const promiseQrCode = (value) => {
+  return new Promise((res, rej) => {
+    QRCode.toDataURL(value, function (err, url) {
+      if (err) rej(err);
+      res(url);
+    });
+  });
+};
 exports.createInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
   const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
@@ -191,7 +201,7 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
   })
     .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
-    .populate("org", "name address gstNo panNo");
+    .populate("org", "name address gstNo panNo bank");
   const grandTotal = invoice.items.reduce(
     (total, invoiceItem) =>
       total +
@@ -208,20 +218,27 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   const currencySymbol = currencies[setting.currency].symbol;
-
-  const items = invoice.items.map(({ name, price, quantity, gst, um, code }) => ({
-    name,
-    quantity,
-    code,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${price * quantity}`,
-  }));
+  const upiUrl = `upi://pay?pa=${invoice.org?.bank?.upi}&am=${grandTotal}`;
+  const upiQr =
+    setting.printSettings.upiQr && invoice.org.bank.upi
+      ? await promiseQrCode(upiUrl)
+      : null;
+  const items = invoice.items.map(
+    ({ name, price, quantity, gst, um, code }) => ({
+      name,
+      quantity,
+      code,
+      gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+      um: ums.find((unit) => unit.value === um).label,
+      price: `${currencySymbol} ${price.toFixed(2)}`,
+      total: `${currencySymbol} ${price * quantity}`,
+    })
+  );
   return res.render(locationTemplate, {
     entity: invoice,
     num: invoice.num,
     items,
+    upiQr,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
     sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
@@ -237,14 +254,17 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;
   if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
   const templateName = req.query.template || "simple";
-  const locationTemplate = path.join(__dirname, `../views/templates/${templateName}/index.ejs`);
+  const locationTemplate = path.join(
+    __dirname,
+    `../views/templates/${templateName}/index.ejs`
+  );
   const invoice = await Invoice.findOne({
     _id: invoiceId,
     org: req.params.orgId,
   })
     .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
-    .populate("org", "name address gstNo panNo");
+    .populate("org", "name address gstNo panNo bank");
   const grandTotal = invoice.items.reduce(
     (total, invoiceItem) =>
       total +
@@ -273,12 +293,18 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
       total: `${currencySymbol} ${price * quantity}`,
     })
   );
+  const upiUrl = `upi://pay?pa=${invoice.org?.bank?.upi}&am=${grandTotal}`;
+  const upiQr =
+    setting.printSettings.upiQr && invoice.org.bank.upi
+      ? await promiseQrCode(upiUrl)
+      : null;
   ejs.renderFile(
     locationTemplate,
     {
       entity: invoice,
       num: invoice.num,
       items,
+      upiQr,
       grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
       total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
       sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,

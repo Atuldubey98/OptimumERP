@@ -6,7 +6,7 @@ const settingsLinks = [
   {
     icon: LuSettings2,
     link: "/transaction-settings",
-    label: "Transaction Settings",
+    label: "Transactions",
     role: "admin",
   },
   {

@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  IconButton,
   Input,
   Spinner,
   Stack,
@@ -22,7 +21,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import { GoShareAndroid } from "react-icons/go";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
@@ -33,6 +31,8 @@ import instance from "../../instance";
 import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
+import CurrentOrganizationInstruction from "./CurrentOrganizationInstruction";
+import HelpPopover from "../common/HelpPopover";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -178,7 +178,7 @@ export default function AdminPage() {
                   bankFormik.setValues({
                     ...bankFormik.values,
                     ...currentOrg.bank,
-                    accountNo : currentOrg.bank.accountNo ||""
+                    accountNo: currentOrg.bank.accountNo || "",
                   });
                 }}
               />
@@ -189,9 +189,6 @@ export default function AdminPage() {
           <Fade in={!loading && organization}>
             <Stack marginBlock={3} spacing={1}>
               <Box>
-                <Heading fontSize={"lg"}>Current Organization Details</Heading>
-              </Box>
-              <Box>
                 <form onSubmit={handleSubmit}>
                   <Stack
                     marginBlock={3}
@@ -201,6 +198,20 @@ export default function AdminPage() {
                     spacing={4}
                     maxW={"xl"}
                   >
+                    <Flex
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                    >
+                      <Heading fontSize={"lg"}>
+                        Current Organization Details
+                      </Heading>
+                      <HelpPopover
+                        title={"Organization Details"}
+                        description={
+                          "Here you can update your organization details"
+                        }
+                      />
+                    </Flex>
                     <FormControl>
                       <FormLabel>Name</FormLabel>
                       <Input
@@ -235,6 +246,7 @@ export default function AdminPage() {
                     </FormControl>
                     <Flex justifyContent={"center"} alignItems={"center"}>
                       <Button
+                        size={"sm"}
                         type="submit"
                         isLoading={isSubmitting}
                         colorScheme="blue"
@@ -245,11 +257,15 @@ export default function AdminPage() {
                   </Stack>
                 </form>
               </Box>
-              <Box>
-                <Heading fontSize={"lg"}>Bank Account</Heading>
-              </Box>
-              <Box>
-                <BankAccounts bankFormik={bankFormik}/>
+
+              <Box
+                maxW={"xl"}
+                marginBlock={3}
+                boxShadow={"md"}
+                borderRadius={"md"}
+                p={4}
+              >
+                <BankAccounts bankFormik={bankFormik} />
               </Box>
               <Box>
                 <Heading fontSize={"lg"}>Users</Heading>

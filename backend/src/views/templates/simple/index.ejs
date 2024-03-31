@@ -81,6 +81,9 @@
   </head>
   <body>
     <div class="invoice-container">
+      <% if (upiQr) { %>
+      <img src="<%= upiQr %>" alt="QR Code" width="100" />
+      <% } %>
       <div class="company-info">
         <h1><%= entity.org.name %></h1>
         <p><%= entity.org.address %></p>

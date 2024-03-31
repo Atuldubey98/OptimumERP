@@ -21,7 +21,7 @@ export default function DashboardTable({ heading, tableHeads, tableRows }) {
       <TableContainer>
         <Table variant="simple">
           {tableRows.length ? null : (
-            <TableCaption>Nothing created in this month</TableCaption>
+            <TableCaption>Nothing to show</TableCaption>
           )}
           <Thead>
             <Tr>
