@@ -14,6 +14,7 @@ const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const Otp = require("../models/otp.model");
 const Joi = require("joi");
+const path = require("path");
 const transporter = nodemailer.createTransport({
   host: process.env.NODE_MAILER_HOST,
   port: 465,
@@ -121,8 +122,9 @@ exports.forgotPassword = requestAsyncHandler(async (req, res) => {
     user: user._id,
     otp,
   });
+  const locationTemplate = path.join(__dirname, `../views/otp/send_otp.ejs`);
   ejs.renderFile(
-    "./src/views/otp/send_otp.ejs",
+    locationTemplate,
     { otp, expirationTime: 10 },
     async (err, html) => {
       if (err) throw err;
