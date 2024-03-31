@@ -23,7 +23,7 @@ export default function FormDrawerLayout({
     <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
       <form onSubmit={handleFormSubmit}>
-        <DrawerContent>
+        <DrawerContent overflowY={"auto"}>
           <DrawerCloseButton />
           <DrawerHeader>{formHeading}</DrawerHeader>
           <Divider />

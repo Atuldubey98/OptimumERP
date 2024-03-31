@@ -37,7 +37,7 @@ import ProductFormDrawer from "../products/ProductFormDrawer";
 import { GiExpense } from "react-icons/gi";
 export default function QuickAccessModal({ isOpen, onClose }) {
   const navigate = useNavigate();
-  const { orgId } = useParams();
+  const { orgId = localStorage.getItem("organization")} = useParams();
   const quickAccessLabels = [
     {
       label: "Parties",
@@ -107,7 +107,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: "Create Product",
-      onClick: () => openProductForm(),
+      onClick: () => {
+        openProductForm();
+      },
       icon: <IoCreateOutline size={50} />,
     },
     {
@@ -158,7 +160,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
             {quickAccessLabels
               .filter(
                 (quickAccess) =>
-                  quickAccess.label.toLowerCase().includes(search.toLowerCase()) || !search
+                  quickAccess.label
+                    .toLowerCase()
+                    .includes(search.toLowerCase()) || !search
               )
               .map((quickAccess) => (
                 <Card
