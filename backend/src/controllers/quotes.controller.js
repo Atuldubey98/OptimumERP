@@ -235,7 +235,7 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${price * quantity}`,
+    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
   }));
 
   const data = {
@@ -243,6 +243,7 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     num: quote.num,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     items,
+    bank : null,
     upiQr: null,
     currencySymbol,
     total: `${currencySymbol} ${quote.total.toFixed(2)}`,
@@ -288,7 +289,7 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${price * quantity}`,
+    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
   }));
 
   const data = {
@@ -296,6 +297,7 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     num: quote.num,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     items,
+    bank : null,
     upiQr: null,
     currencySymbol,
     total: `${currencySymbol} ${quote.total.toFixed(2)}`,

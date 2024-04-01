@@ -1,13 +1,13 @@
 import { Box, FormControl, FormLabel, Stack, useToast } from "@chakra-ui/react";
-import MainLayout from "../main-layout";
-import TransactionPrefix from "./TransactionsPrefix";
-import PrintSettings from "./PrintSettings";
-import useOrganizations from "../../../hooks/useOrganizations";
-import { useFormik } from "formik";
-import instance from "../../../instance";
-import SettingContext from "../../../contexts/SettingContext";
-import { useContext } from "react";
 import { Select } from "chakra-react-select";
+import { useFormik } from "formik";
+import { useContext } from "react";
+import SettingContext from "../../../contexts/SettingContext";
+import useOrganizations from "../../../hooks/useOrganizations";
+import instance from "../../../instance";
+import MainLayout from "../main-layout";
+import PrintSettings from "./PrintSettings";
+import TransactionPrefix from "./TransactionsPrefix";
 export default function TransactionSettingsPage() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
@@ -97,20 +97,36 @@ export default function TransactionSettingsPage() {
             />
           </FormControl>
         </Box>
-        <Box borderRadius={"md"} p={5} boxShadow={"md"} w={"100%"} maxW={"md"}>
-          <TransactionPrefix
-            formik={formik}
-            loading={loading}
-            printFormik={printFormik}
-          />
-        </Box>
-        <Box borderRadius={"md"} p={5} boxShadow={"md"} w={"100%"} maxW={"md"}>
-          <PrintSettings
-            printFormik={printFormik}
-            formik={formik}
-            loading={loading}
-          />
-        </Box>
+        {
+          formik.values.organization ?  <>
+          <Box
+            borderRadius={"md"}
+            p={5}
+            boxShadow={"md"}
+            w={"100%"}
+            maxW={"md"}
+          >
+            <TransactionPrefix
+              formik={formik}
+              loading={loading}
+              printFormik={printFormik}
+            />
+          </Box>
+          <Box
+            borderRadius={"md"}
+            p={5}
+            boxShadow={"md"}
+            w={"100%"}
+            maxW={"md"}
+          >
+            <PrintSettings
+              printFormik={printFormik}
+              formik={formik}
+              loading={loading}
+            />
+          </Box>
+        </> : null
+        }
       </Stack>
     </MainLayout>
   );

@@ -31,7 +31,6 @@ import instance from "../../instance";
 import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
-import CurrentOrganizationInstruction from "./CurrentOrganizationInstruction";
 import HelpPopover from "../common/HelpPopover";
 export default function AdminPage() {
   const registerSchema = Yup.object({

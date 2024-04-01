@@ -223,6 +223,7 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     setting.printSettings.upiQr && invoice.org.bank.upi
       ? await promiseQrCode(upiUrl)
       : null;
+  const bank = req.session?.user?.currentPlan?.plan !== "free" && setting.printSettings.bank && invoice.org.bank;
   const items = invoice.items.map(
     ({ name, price, quantity, gst, um, code }) => ({
       name,
@@ -231,13 +232,14 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
       gst: taxRates.find((taxRate) => taxRate.value === gst).label,
       um: ums.find((unit) => unit.value === um).label,
       price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${price * quantity}`,
+      total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
     })
   );
   return res.render(locationTemplate, {
     entity: invoice,
     num: invoice.num,
     items,
+    bank,
     upiQr,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
@@ -290,7 +292,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
       gst: taxRates.find((taxRate) => taxRate.value === gst).label,
       um: ums.find((unit) => unit.value === um).label,
       price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${price * quantity}`,
+      total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
     })
   );
   const upiUrl = `upi://pay?pa=${invoice.org?.bank?.upi}&am=${grandTotal}`;
@@ -298,6 +300,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
     setting.printSettings.upiQr && invoice.org.bank.upi
       ? await promiseQrCode(upiUrl)
       : null;
+  const bank = setting.printSettings.bank && invoice.org.bank;
   ejs.renderFile(
     locationTemplate,
     {
@@ -305,6 +308,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
       num: invoice.num,
       items,
       upiQr,
+      bank,
       grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
       total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
       sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,

@@ -14,9 +14,11 @@ import {
   PopoverTrigger,
   Skeleton,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import AuthContext from "../../../contexts/AuthContext";
 function PrintPopOverInstructions() {
   return (
     <Popover>
@@ -36,11 +38,15 @@ function PrintPopOverInstructions() {
   );
 }
 export default function PrintSettings({ printFormik, formik, loading }) {
+  const auth = useContext(AuthContext);
+  const currentPlan = auth?.user?.currentPlan
+    ? auth?.user?.currentPlan.plan
+    : "free";
   return (
     <form onSubmit={printFormik.handleSubmit}>
       <Stack spacing={6}>
         <Flex justifyContent={"space-between"} alignItems={"center"}>
-          <Heading fontSize={"lg"}>Print Settings</Heading>
+          <Heading fontSize={"lg"}>Print Settings Invoice</Heading>
           <PrintPopOverInstructions />
         </Flex>
         <Skeleton isLoaded={!loading}>
@@ -55,16 +61,25 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 Print Bank Details
               </Checkbox>
             </Box>
-            <Box>
-              <Checkbox
-                isDisabled={!formik.values.organization}
-                name="upiQr"
-                onChange={printFormik.handleChange}
-                isChecked={printFormik.values.upiQr}
-              >
-                Print UPI QR
-              </Checkbox>
-            </Box>
+            <Tooltip
+              label={
+                currentPlan === "free" ? "Upgrade your current plan" : null
+              }
+              aria-label="qr code tool tip"
+            >
+              <Box>
+                <Checkbox
+                  isDisabled={
+                    !formik.values.organization || currentPlan === "free"
+                  }
+                  name="upiQr"
+                  onChange={printFormik.handleChange}
+                  isChecked={printFormik.values.upiQr}
+                >
+                  Print UPI QR
+                </Checkbox>
+              </Box>
+            </Tooltip>
           </Stack>
         </Skeleton>
         <Flex justifyContent={"center"} alignItems={"center"}>

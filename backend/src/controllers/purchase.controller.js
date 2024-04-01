@@ -199,13 +199,15 @@ exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${price * quantity}`,
+    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
   }));
   const data = {
     entity: purchase,
     num: purchase.purchaseNo,
     grandTotal,
     items,
+    bank : null,
+    upiQr : null,
     grandTotal: `${currencySymbol} ${grandTotal}`,
     total: `${currencySymbol} ${purchase.total.toFixed(2)}`,
     sgst: `${currencySymbol} ${purchase.sgst.toFixed(2)}`,
@@ -246,18 +248,21 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
   });
   const currencySymbol = currencies[setting.currency].symbol;
 
-  const items = purchase.items.map(({ name, price, quantity, gst, um }) => ({
+  const items = purchase.items.map(({ name, price, quantity, gst, um, code }) => ({
     name,
     quantity,
+    code,
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${price * quantity}`,
+    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
   }));
   const data = {
     entity: purchase,
     num: purchase.purchaseNo,
     grandTotal,
+    bank : null,
+    upiQr : null,
     items,
     grandTotal: `${currencySymbol} ${grandTotal}`,
     total: `${currencySymbol} ${purchase.total}`,

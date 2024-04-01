@@ -7,7 +7,7 @@
       /* General Styles */
       body {
         margin: 0;
-        line-height: 1.6;
+        line-height: 1;
         color: #333;
       }
       .invoice-container {
@@ -63,7 +63,12 @@
         text-align: left;
         border-bottom: 1px solid #ddd;
       }
-
+      .invoice-meta-info > div:nth-child(1){
+        -webkit-box-flex: 1;
+      }
+      .invoice-meta-info > div:nth-child(2){
+        -webkit-box-flex: 1;
+      }
       .total-table th {
         background-color: #f2f2f2;
       }
@@ -73,6 +78,16 @@
       .bank-details {
         margin-bottom: 20px;
       }
+      .bank-details{
+        display: -webkit-box;
+        justify-content: space-between;
+      }
+      .bank-details > div:nth-child(1){
+        -webkit-box-flex: 1;
+      }
+      .bank-details > div:nth-child(2){
+        -webkit-box-flex: 1;
+      }
       .invoice-head {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -81,9 +96,6 @@
   </head>
   <body>
     <div class="invoice-container">
-      <% if (upiQr) { %>
-      <img src="<%= upiQr %>" alt="QR Code" width="100" />
-      <% } %>
       <div class="company-info">
         <h1><%= entity.org.name %></h1>
         <p><%= entity.org.address %></p>
@@ -91,6 +103,7 @@
         <p>PAN: <%= entity.org.panNo %></p>
       </div>
       <div
+        class="invoice-meta-info"
         style="
           display: -webkit-box;
           -webkit-box-orient: horizontal;
@@ -101,8 +114,12 @@
           <h3><%= partyMetaHeading %></h3>
           <p><%= entity.party.name %></p>
           <p><%= entity.billingAddress %></p>
-          <p>GSTIN: <%= entity.party.gstNo %></p>
-          <p>PAN: <%= entity.party.panNo %></p>
+          <% if (entity.party.gstNo) { %>
+            <p>GSTIN: <%= entity.party.gstNo %></p>
+          <% } %>
+          <% if (entity.party.panNo) { %>
+            <p>PAN: <%= entity.party.panNo %></p>
+          <% } %>
         </div>
         <div class="invoice-header">
           <h3><%= billMetaHeading %></h3>
@@ -124,7 +141,7 @@
             <th>GST</th>
             <th>Qty</th>
             <th>Rate</th>
-            <th>GST Amount</th>
+            <th>Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -178,21 +195,29 @@
         <p><%= term %></p>
         <% }) %>
       </div>
-      <% } %> <% if (entity.org.bankDetails) { %>
+      <% } %> <% if (bank) { %>
       <div class="bank-details">
-        <h3>Bank Account Details:</h3>
-        <p>
-          Account Holder:
-          <!-- Add account holder name here -->
-        </p>
-        <p>
-          Account Number:
-          <!-- Add account number here -->
-        </p>
-        <p>
-          IFSC Code:
-          <!-- Add IFSC code here -->
-        </p>
+        <div>
+          <h3>Bank Account Details:</h3>
+          <p>
+            Bank Name: <%= bank.name %>
+          </p>
+          <p>
+            Account Holder: <%= bank.accountHolderName %>
+          </p>
+          <p>
+            Account Number: <%= bank.accountNo %>
+          </p>
+          <p>
+            IFSC Code: <%= bank.ifscCode %>
+          </p>
+        </div>
+        <div>
+          <% if (upiQr) { %>
+            <h3>UPI QR Code</h3>
+            <img src="<%= upiQr %>" alt="QR Code" width="100" />
+            <% } %>
+        </div>
       </div>
       <% } %>
     </div>
