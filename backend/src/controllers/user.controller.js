@@ -82,7 +82,7 @@ exports.logoutUser = requestAsyncHandler(async (req, res) => {
 exports.deactivateUser = requestAsyncHandler(async (req, res) => {
   if (!isValidObjectId(req.body.userId)) throw new UserNotFound();
   const userId = req.body.userId;
-  const deactivatedUser = await User.findByIdAndDelete(userId, {
+  const deactivatedUser = await User.findByIdAndUpdate(userId, {
     active: false,
   });
   if (!deactivatedUser) throw new UserNotFound();

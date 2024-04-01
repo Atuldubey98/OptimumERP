@@ -76,7 +76,7 @@ export default function PurchasePage() {
     const currentPurchase = item || purchase;
 
     if (!currentPurchase) return;
-    const downloadBill = `/api/v1/organizations/${orgId}/purchases/${currentPurchase._id}/download?template=simple`;
+    const downloadBill = `/api/v1/organizations/${orgId}/purchases/${currentPurchase._id}/download?template=${localStorage.getItem("template") || "simple"}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

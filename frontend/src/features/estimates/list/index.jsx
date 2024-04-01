@@ -70,7 +70,7 @@ export default function EstimatesPage() {
   });
   const onSaveBill = async (item) => {
     const currentEstimate = quotation || item;
-    const downloadBill = `/api/v1/organizations/${currentEstimate.org._id}/quotes/${currentEstimate._id}/download?template=simple`;
+    const downloadBill = `/api/v1/organizations/${currentEstimate.org._id}/quotes/${currentEstimate._id}/download?template=${localStorage.getItem("template") || "simple"}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

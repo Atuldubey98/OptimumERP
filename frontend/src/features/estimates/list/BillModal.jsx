@@ -26,12 +26,23 @@ export default function BillModal({
   bill,
   entity,
   heading,
-  onSaveBill,
 }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
   const [templateName, setTemplateName] = useState("simple");
+  const onSaveBill = async () => {
+    const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download?template=${templateName}`;
+    const { data } = await instance.get(downloadBill, {
+      responseType: "blob",
+    });
+    const href = URL.createObjectURL(data);
+    const link = document.createElement("a");
+    link.setAttribute("download", `${heading}-${bill.date}.pdf`);
+    link.href = href;
+    link.click();
+    URL.revokeObjectURL(href);
+  };
   const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=${templateName}`;
   const onPrintBill = requestAsyncHandler(async () => {
     setStatus("loading");
@@ -92,7 +103,10 @@ export default function BillModal({
                 width={"xxs"}
                 bg={template.value === templateName ? hoverBg : undefined}
                 key={template.value}
-                onClick={() => setTemplateName(template.value)}
+                onClick={() => {
+                  setTemplateName(template.value);
+                  localStorage.setItem("template", template.value);
+                }}
               >
                 <Image
                   width={20}

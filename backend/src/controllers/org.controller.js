@@ -67,6 +67,10 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
     password: hashedPassword,
     name,
   });
+  await UserActivatedPlan.create({
+    user: registeredUser.id,
+    plan : req.session?.user?.currentPlan?.plan,
+  });
   const orgUser = new OrgUser({
     org: req.params.orgId,
     user: registeredUser.id,

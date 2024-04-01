@@ -16,6 +16,7 @@ import {
   Td,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useDisclosure,
   useToast,
@@ -32,6 +33,7 @@ import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
 import HelpPopover from "../common/HelpPopover";
+import { GoDotFill } from "react-icons/go";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -267,7 +269,7 @@ export default function AdminPage() {
                 <BankAccounts bankFormik={bankFormik} />
               </Box>
               <Box>
-                <Heading fontSize={"lg"}>Users</Heading>
+                <Heading fontSize={"lg"}>Registered Users</Heading>
               </Box>
               <Flex justifyContent={"flex-end"} alignItems={"center"}>
                 {organization ? (
@@ -295,6 +297,7 @@ export default function AdminPage() {
                 <TableCaption></TableCaption>
                 <Thead>
                   <Tr>
+                    <Th>Active</Th>
                     <Th>Name</Th>
                     <Th>Email</Th>
                     <Th>Role</Th>
@@ -303,6 +306,9 @@ export default function AdminPage() {
                 <Tbody>
                   {orgUsers.map((orgUser) => (
                     <Tr key={orgUser._id}>
+                      <Td>
+                        <GoDotFill color={orgUser.active ? "green" : "red"} />
+                      </Td>
                       <Td>{orgUser.name}</Td>
                       <Td>{orgUser.email}</Td>
                       <Td textTransform={"capitalize"}>{orgUser.role}</Td>

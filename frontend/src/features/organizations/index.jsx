@@ -34,6 +34,7 @@ import AlertModal from "../common/AlertModal";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import { logoutUser } from "../../api/logout";
 import { useNavigate } from "react-router-dom";
+import SettingContext from "../../contexts/SettingContext";
 export default function OrgPage() {
   const {
     isOpen,
@@ -83,6 +84,8 @@ export default function OrgPage() {
     },
   };
   const popup = plansPopup[currentPlan];
+  const settingContext = useContext(SettingContext);
+  const role = settingContext?.role || "user";
   return (
     <PrivateRoute>
       <Box padding={4}>
@@ -114,8 +117,18 @@ export default function OrgPage() {
               Logout
             </Button>
           </Flex>
-          <Flex marginBlock={3} justifyContent={"center"} gap={4} alignItems={"center"}>
-            <Heading as={"h5"} fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"}>
+          <Flex
+            marginBlock={3}
+            justifyContent={"center"}
+            gap={4}
+            alignItems={"center"}
+          >
+            <Heading
+              as={"h5"}
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+              textAlign={"center"}
+            >
               Your organizations
             </Heading>
             <FaRegCircleDot color="green" size={24} />
@@ -133,7 +146,8 @@ export default function OrgPage() {
               {authorizedOrgs.map((authorizedOrg) => (
                 <OrgItem org={authorizedOrg.org} key={authorizedOrg.org._id} />
               ))}
-              {currentPlan !== "free" || !authorizedOrgs.length ? (
+              {(currentPlan !== "free" && role && role === "admin") ||
+              !authorizedOrgs.length ? (
                 <Flex
                   cursor={"pointer"}
                   _hover={{
