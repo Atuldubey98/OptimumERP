@@ -1,6 +1,9 @@
 import {
+  Box,
   Button,
   ButtonGroup,
+  Flex,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -9,6 +12,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Skeleton,
+  Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { CiSaveDown2 } from "react-icons/ci";
 import instance, { baseURL } from "../../../instance";
@@ -22,11 +27,11 @@ export default function BillModal({
   entity,
   heading,
   onSaveBill,
-  templateName = "simple",
 }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
+  const [templateName, setTemplateName] = useState("simple");
   const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=${templateName}`;
   const onPrintBill = requestAsyncHandler(async () => {
     setStatus("loading");
@@ -42,6 +47,17 @@ export default function BillModal({
     };
   });
   const isBillLoading = billLoadStatus === "idle";
+  const templates = [
+    { value: "simple", label: "Simple", templateImg: "/templates/simple.png" },
+    { value: "modern", label: "Modern", templateImg: "/templates/modern.png" },
+    {
+      value: "border-land",
+      label: "Border-land",
+      templateImg: "/templates/border-land.png",
+    },
+  ];
+  const hoverBg = useColorModeValue("gray.200", "gray.600");
+
   return (
     <Modal
       size={"full"}
@@ -65,10 +81,28 @@ export default function BillModal({
                 border: "none",
               }}
               width={"100%"}
-              height={720}
+              height={650}
               src={`${baseURL}${viewBill}`}
             />
           </Skeleton>
+          <Flex marginBlock={2} gap={3}>
+            {templates.map((template) => (
+              <Box
+                cursor={"pointer"}
+                width={"xxs"}
+                bg={template.value === templateName ? hoverBg : undefined}
+                key={template.value}
+                onClick={() => setTemplateName(template.value)}
+              >
+                <Image
+                  width={20}
+                  objectFit={"contain"}
+                  src={template.templateImg}
+                />
+                <Text fontSize={"sm"} textAlign={"center"}>{template.label}</Text>
+              </Box>
+            ))}
+          </Flex>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>

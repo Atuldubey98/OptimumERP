@@ -178,9 +178,9 @@
           >
             <% if (upiQr) { %>
             <h3>UPI QR Code</h3>
+            <p>Scan the qr code payment</p>
             <img src="<%= upiQr %>" alt="QR Code" width="100" />
             <% } %>
-            <p>Scan the qr code payment</p>
           </div>
           <div
             style="
@@ -223,7 +223,7 @@
         <div style="-webkit-box-flex: 8; border-right: 1px solid black">
           <div style="padding: 5px;">
             <h4>Terms & Conditions</h4>
-            <% entity.terms.split("\n").forEach(term => { %>
+            <% entity.terms?.split("\n").forEach(term => { %>
             <p><%= term %></p>
             <% }) %>
           </div>
