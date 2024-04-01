@@ -77,21 +77,6 @@ const reportDataByType = {
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   },
-  parties: {
-    header: {
-      partyName: "Party Name",
-      address: "Party Address",
-      amount: "Amount",
-      currentStatus: "Amount Status",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      address: item.party?.billingAddress,
-      amount: (item.total + item.totalTax).toFixed(2),
-      currentStatus: item.total + item.totalTax < 0 ? "CREDIT" : "DEBIT",
-    }),
-  },
   gstr1: {
     header: {
       gstNo: "Party GST No",
@@ -115,8 +100,8 @@ const reportDataByType = {
     header: {
       gstNo: "Party GST No",
       partyName: "Party Name",
-      cgst: "IGST",
-      sgst: "IGST",
+      cgst: "CGST",
+      sgst: "SGST",
       igst: "IGST",
       grandTotal: "Grand Total",
     },

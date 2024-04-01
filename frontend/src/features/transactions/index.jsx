@@ -1,4 +1,12 @@
-import { Box, Flex, Grid, Spinner, Tag, TagLabel } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  Spinner,
+  Stack,
+  Tag,
+  TagLabel,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import instance from "../../instance";
@@ -8,6 +16,7 @@ import TableLayout from "../common/table-layout";
 import useQuery from "../../hooks/useQuery";
 import { Select } from "chakra-react-select";
 import DateFilter from "../estimates/list/DateFilter";
+import TransactionStats from "./TransactionStats";
 export default function TransactionsPage() {
   const { partyId, orgId } = useParams();
   const query = useQuery();
@@ -50,6 +59,7 @@ export default function TransactionsPage() {
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
     typeOfTransactions.slice(0, 2)
   );
+  const [transactionTotalByType, setTransactionTotalByType] = useState([]);
   const transactionTypes = selectedTypeOfTransactions
     .map((option) => option.value)
     .join(",");
@@ -67,6 +77,7 @@ export default function TransactionsPage() {
           },
         }
       );
+      setTransactionTotalByType(data.transactionTotalByType);
       setTransactionsResponse({
         items: data.data,
         page: data.page,
@@ -89,7 +100,10 @@ export default function TransactionsPage() {
         ) : (
           <TableLayout
             filter={
-              <Box>
+              <Stack spacing={3}>
+                {/* <TransactionStats
+                  transactionTotalByType={transactionTotalByType}
+                /> */}
                 <Select
                   isMulti
                   onChange={setSelectedTypeOfTransactions}
@@ -102,16 +116,14 @@ export default function TransactionsPage() {
                     onChangeDateFilter={onChangeDateFilter}
                   />
                 </Grid>
-              </Box>
+              </Stack>
             }
             heading={`${
-              transactionsResponse.party
-                ? transactionsResponse.party.name
-                : ""
+              transactionsResponse.party ? transactionsResponse.party.name : ""
             } - Transactions`}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
-              date: new Date(item.doc.date).toDateString(),
+              date: new Date(item.doc.date).toLocaleDateString(),
               totalItems: item.doc.items.length,
               num: item.doc.num || item.doc.purchaseNo,
               grandTotal: (item.total + item.totalTax).toFixed(2),

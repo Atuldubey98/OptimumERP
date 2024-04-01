@@ -40,7 +40,7 @@ export default function EstimatesPage() {
     billingAddress: estimate.party.billingAddress,
     ...estimate,
     quoteNo: estimate.num,
-    date: new Date(estimate.date).toISOString().split("T")[0],
+    date: new Date(estimate.date).toLocaleDateString(),
     grandTotal: `${symbol} ${(estimate.total + estimate.totalTax).toFixed(2)}`,
     status: <Status status={estimate.status} statusList={statusList} />,
   });

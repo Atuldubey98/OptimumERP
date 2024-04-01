@@ -143,7 +143,7 @@ export default function DashboardPage() {
                   status: (
                     <Status status={quote.status} statusList={statusList} />
                   ),
-                  date: new Date(quote.date).toISOString().split("T")[0],
+                  date: new Date(quote.date).toLocaleDateString()
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />
@@ -163,7 +163,7 @@ export default function DashboardPage() {
                       statusList={invoiceStatusList}
                     />
                   ),
-                  date: new Date(invoice.date).toISOString().split("T")[0],
+                  date: new Date(invoice.date).toLocaleDateString(),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                       statusList={purchaseStatusList}
                     />
                   ),
-                  date: new Date(purchase.date).toISOString().split("T")[0],
+                  date: new Date(purchase.date).toLocaleDateString()
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />

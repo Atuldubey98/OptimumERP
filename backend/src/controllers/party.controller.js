@@ -1,8 +1,5 @@
 const { createPartyDto, updatePartyDto } = require("../dto/party.dto");
-const {
-  PartyNotFound,
-  PartyNotDelete,
-} = require("../errors/party.error");
+const { PartyNotFound, PartyNotDelete } = require("../errors/party.error");
 const { OrgNotFound } = require("../errors/org.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Party = require("../models/party.model");
@@ -10,7 +7,7 @@ const Invoice = require("../models/invoice.model");
 const Quotation = require("../models/quotes.model");
 const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
-
+const { default: mongoose } = require("mongoose");
 
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
@@ -162,7 +159,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
   if (transactionTypes && typeof transactionTypes === "string")
     filter.docModel = { $in: transactionTypes.split(",") };
   if (search) filter.$text = { $search: search };
-
+  
   if (req.query.startDate && req.query.endDate) {
     filter.date = {
       $gte: new Date(req.query.startDate),
@@ -179,7 +176,23 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .exec();
-
+  const transactionTotalByType = await Transaction.aggregate([
+    {
+      $match: {
+        org: new mongoose.Types.ObjectId(req.params.orgId),
+        party: new mongoose.Types.ObjectId(req.params.partyId),
+        docModel: filter.docModel,
+        date: filter.date,
+      },
+    },
+    {
+      $group: {
+        _id: "$docModel",
+        total: { $sum: { $sum: ["$total", "$totalTax"] } },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
   const total = await Transaction.countDocuments(filter);
 
   const totalPages = Math.ceil(total / limit);
@@ -190,6 +203,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
     totalPages,
     party,
     total,
+    transactionTotalByType,
     message: "Transactions retrieved successfully",
   });
 });
