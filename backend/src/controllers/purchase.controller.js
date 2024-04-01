@@ -56,6 +56,7 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
     doc: newPurchase._id,
     total,
+    date: newPurchase.date,
     totalTax,
     party: body.party,
   });
@@ -86,7 +87,13 @@ exports.updatePurchase = requestAsyncHandler(async (req, res) => {
       docModel: "purchase",
       doc: updatedInvoice.id,
     },
-    { updatedBy: req.body.updatedBy, total, totalTax, party: body.party }
+    {
+      updatedBy: req.body.updatedBy,
+      total,
+      totalTax,
+      party: body.party,
+      date: updatedInvoice.date,
+    }
   );
   if (!updatedInvoice || !updateTransaction) throw new PurchaseNotFound();
   return res.status(200).json({ message: "Purchase updated !" });
@@ -192,22 +199,28 @@ exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
   });
   const currencySymbol = currencies[setting.currency].symbol;
 
-  const items = purchase.items.map(({ name, price, quantity, gst, um, code }) => ({
-    name,
-    quantity,
-    code,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
-  }));
+  const items = purchase.items.map(
+    ({ name, price, quantity, gst, um, code }) => ({
+      name,
+      quantity,
+      code,
+      gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+      um: ums.find((unit) => unit.value === um).label,
+      price: `${currencySymbol} ${price.toFixed(2)}`,
+      total: `${currencySymbol} ${(
+        price *
+        quantity *
+        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+      ).toFixed(2)}`,
+    })
+  );
   const data = {
     entity: purchase,
     num: purchase.purchaseNo,
     grandTotal,
     items,
-    bank : null,
-    upiQr : null,
+    bank: null,
+    upiQr: null,
     grandTotal: `${currencySymbol} ${grandTotal}`,
     total: `${currencySymbol} ${purchase.total.toFixed(2)}`,
     sgst: `${currencySymbol} ${purchase.sgst.toFixed(2)}`,
@@ -248,21 +261,27 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
   });
   const currencySymbol = currencies[setting.currency].symbol;
 
-  const items = purchase.items.map(({ name, price, quantity, gst, um, code }) => ({
-    name,
-    quantity,
-    code,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
-  }));
+  const items = purchase.items.map(
+    ({ name, price, quantity, gst, um, code }) => ({
+      name,
+      quantity,
+      code,
+      gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+      um: ums.find((unit) => unit.value === um).label,
+      price: `${currencySymbol} ${price.toFixed(2)}`,
+      total: `${currencySymbol} ${(
+        price *
+        quantity *
+        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+      ).toFixed(2)}`,
+    })
+  );
   const data = {
     entity: purchase,
     num: purchase.purchaseNo,
     grandTotal,
-    bank : null,
-    upiQr : null,
+    bank: null,
+    upiQr: null,
     items,
     grandTotal: `${currencySymbol} ${grandTotal}`,
     total: `${currencySymbol} ${purchase.total}`,
@@ -274,7 +293,10 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
     partyMetaHeading: "Bill From",
   };
   const templateName = req.query.template || "simple";
-  const locationTemplate = path.join(__dirname, `../views/templates/${templateName}/index.ejs`);
+  const locationTemplate = path.join(
+    __dirname,
+    `../views/templates/${templateName}/index.ejs`
+  );
   ejs.renderFile(locationTemplate, data, (err, html) => {
     if (err) throw err;
     res.writeHead(200, {

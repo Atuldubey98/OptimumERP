@@ -75,6 +75,7 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     docModel: "quotes",
     financialYear: setting.financialYear,
     doc: newQuote._id,
+    date: newQuote.date,
     total,
     totalTax,
     party: body.party,
@@ -111,11 +112,14 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       docModel: "quotes",
       doc: updatedQuote.id,
+    },
+    {
+      updatedBy: req.body.updatedBy,
       total,
       totalTax,
       party: body.party,
-    },
-    { updatedBy: req.body.updatedBy }
+      date: updatedQuote.date,
+    }
   );
   if (!updatedQuote) throw new QuoteNotFound();
   return res.status(200).json({ message: "Quote updated !" });
@@ -235,7 +239,11 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
+    total: `${currencySymbol} ${(
+      price *
+      quantity *
+      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+    ).toFixed(2)}`,
   }));
 
   const data = {
@@ -243,7 +251,7 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     num: quote.num,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     items,
-    bank : null,
+    bank: null,
     upiQr: null,
     currencySymbol,
     total: `${currencySymbol} ${quote.total.toFixed(2)}`,
@@ -289,7 +297,11 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     gst: taxRates.find((taxRate) => taxRate.value === gst).label,
     um: ums.find((unit) => unit.value === um).label,
     price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
+    total: `${currencySymbol} ${(
+      price *
+      quantity *
+      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+    ).toFixed(2)}`,
   }));
 
   const data = {
@@ -297,7 +309,7 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     num: quote.num,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     items,
-    bank : null,
+    bank: null,
     upiQr: null,
     currencySymbol,
     total: `${currencySymbol} ${quote.total.toFixed(2)}`,

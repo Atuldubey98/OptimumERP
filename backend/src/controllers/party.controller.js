@@ -164,7 +164,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
   if (search) filter.$text = { $search: search };
 
   if (req.query.startDate && req.query.endDate) {
-    filter.createdAt = {
+    filter.date = {
       $gte: new Date(req.query.startDate),
       $lte: new Date(req.query.endDate),
     };

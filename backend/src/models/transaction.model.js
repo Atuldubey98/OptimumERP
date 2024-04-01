@@ -1,4 +1,8 @@
 const { Schema, Types, model } = require("mongoose");
+function getTodayDate() {
+  const today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+}
 const transactionSchema = new Schema(
   {
     org: {
@@ -50,6 +54,11 @@ const transactionSchema = new Schema(
       type: Types.ObjectId,
       required: true,
       refPath: "docModel",
+    },
+    date: {
+      type: Date,
+      required: true,
+      default : getTodayDate
     },
   },
   { timestamps: true, versionKey: false }

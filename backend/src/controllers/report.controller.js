@@ -9,7 +9,6 @@ function generateReportByReportType(reportType) {
     sale: getSaleReport,
     purchase: getPurchaseReport,
     transactions: getTransactions,
-    parties: getAllPartyStatements,
     gstr1: getGSTR1Report,
     gstr2: getGSTR2Report,
   };
@@ -61,7 +60,7 @@ async function getTransactions(queryParams, orgId) {
   };
 
   if (queryParams.startDate && queryParams.endDate) {
-    filter.createdAt = {
+    filter.date = {
       $gte: new Date(queryParams.startDate),
       $lte: new Date(queryParams.endDate),
     };
@@ -88,72 +87,7 @@ async function getTransactions(queryParams, orgId) {
     message: "Transactions retrieved successfully",
   };
 }
-async function getAllPartyStatements(queryParams, orgId) {
-  const filter = {
-    org: new mongoose.Types.ObjectId(orgId),
-    docModel: { $in: ["invoice", "purchase"] },
-  };
-  if (queryParams.startDate && queryParams.endDate) {
-    filter.createdAt = {
-      $gte: new Date(queryParams.startDate),
-      $lte: new Date(queryParams.endDate),
-    };
-  }
-  const page = parseInt(queryParams.page) || 1;
-  const limit = parseInt(queryParams.limit) || 10;
-  const skip = (page - 1) * limit;
-  const transactions = await Transaction.aggregate([
-    {
-      $match: filter,
-    },
-    {
-      $group: {
-        _id: "$party",
-        total: {
-          $sum: {
-            $cond: [
-              { $eq: ["$docModel", "purchase"] },
-              { $subtract: ["$total", "$total"] },
-              "$total",
-            ],
-          },
-        },
-        totalTax: {
-          $sum: {
-            $cond: [
-              { $eq: ["$docModel", "purchase"] },
-              { $subtract: ["$totalTax", "$totalTax"] },
-              "$totalTax",
-            ],
-          },
-        },
-      },
-    },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limit,
-    },
-    {
-      $lookup: {
-        from: "parties",
-        localField: "_id",
-        as: "party",
-        foreignField: "_id",
-      },
-    },
-    {
-      $unwind: "$party",
-    },
-  ]);
-  return {
-    data: transactions,
-    skip,
-    limit,
-    page,
-  };
-}
+
 async function getGSTR1Report(queryParams, orgId) {
   const filter = {
     org: orgId,
@@ -326,21 +260,6 @@ const reportDataByType = {
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   },
-  parties: {
-    header: {
-      partyName: "Party Name",
-      address: "Party Address",
-      amount: "Amount",
-      currentStatus: "Amount Status",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      address: item.party?.billingAddress,
-      amount: (item.total + item.totalTax).toFixed(2),
-      currentStatus: item.total + item.totalTax < 0 ? "CREDIT" : "DEBIT",
-    }),
-  },
   gstr1: {
     header: {
       gstNo: "Party GST No",
@@ -387,62 +306,10 @@ function getDownloadReportFn(reportType) {
     gstr1: downloadSaleReport,
     gstr2: downloadPurchaseReport,
     transactions: downloadTransactionsReport,
-    parties: downloadPartiesReport,
   };
   return reportTypes[reportType];
 }
-async function downloadPartiesReport(queryParams, orgId) {
-  const filter = {
-    org: new mongoose.Types.ObjectId(orgId),
-    docModel: { $in: ["invoice", "purchase"] },
-  };
-  if (queryParams.startDate && queryParams.endDate) {
-    filter.createdAt = {
-      $gte: new Date(queryParams.startDate),
-      $lte: new Date(queryParams.endDate),
-    };
-  }
-  const transactions = await Transaction.aggregate([
-    {
-      $match: filter,
-    },
-    {
-      $group: {
-        _id: "$party",
-        total: {
-          $sum: {
-            $cond: [
-              { $eq: ["$docModel", "purchase"] },
-              { $subtract: ["$total", "$total"] },
-              "$total",
-            ],
-          },
-        },
-        totalTax: {
-          $sum: {
-            $cond: [
-              { $eq: ["$docModel", "purchase"] },
-              { $subtract: ["$totalTax", "$totalTax"] },
-              "$totalTax",
-            ],
-          },
-        },
-      },
-    },
-    {
-      $lookup: {
-        from: "parties",
-        localField: "_id",
-        as: "party",
-        foreignField: "_id",
-      },
-    },
-    {
-      $unwind: "$party",
-    },
-  ]);
-  return transactions;
-}
+
 async function downloadSaleReport(queryParams, orgId) {
   const filter = {
     org: orgId,

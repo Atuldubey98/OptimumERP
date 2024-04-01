@@ -69,6 +69,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     total,
     totalTax,
     party: body.party,
+    date: newInvoice.date,
   });
   await transaction.save();
   return res
@@ -101,7 +102,13 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       docModel: "invoice",
       doc: updatedInvoice.id,
     },
-    { updatedBy: req.body.updatedBy, total, totalTax, party: body.party }
+    {
+      updatedBy: req.body.updatedBy,
+      total,
+      totalTax,
+      party: body.party,
+      date: updatedInvoice.date,
+    }
   );
   if (!updatedInvoice || !updateTransaction) throw new InvoiceNotFound();
   return res.status(200).json({ message: "Invoice updated !" });
@@ -202,8 +209,8 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo bank");
-  if(!invoice) throw new InvoiceNotFound();
-  const grandTotal = (invoice.items||[]).reduce(
+  if (!invoice) throw new InvoiceNotFound();
+  const grandTotal = (invoice.items || []).reduce(
     (total, invoiceItem) =>
       total +
       (invoiceItem.price *
@@ -225,7 +232,10 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
       ? await promiseQrCode(upiUrl)
       : null;
 
-  const bank = req.session?.user?.currentPlan?.plan !== "free" && setting.printSettings.bank && invoice.org.bank;
+  const bank =
+    req.session?.user?.currentPlan?.plan !== "free" &&
+    setting.printSettings.bank &&
+    invoice.org.bank;
   const items = invoice.items.map(
     ({ name, price, quantity, gst, um, code }) => ({
       name,
@@ -234,7 +244,11 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
       gst: taxRates.find((taxRate) => taxRate.value === gst).label,
       um: ums.find((unit) => unit.value === um).label,
       price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
+      total: `${currencySymbol} ${(
+        price *
+        quantity *
+        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+      ).toFixed(2)}`,
     })
   );
   return res.render(locationTemplate, {
@@ -294,7 +308,11 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
       gst: taxRates.find((taxRate) => taxRate.value === gst).label,
       um: ums.find((unit) => unit.value === um).label,
       price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${(price * quantity * ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1])))/100)).toFixed(2)}`,
+      total: `${currencySymbol} ${(
+        price *
+        quantity *
+        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+      ).toFixed(2)}`,
     })
   );
   const upiUrl = `upi://pay?pa=${invoice.org?.bank?.upi}&am=${grandTotal}`;

@@ -20,13 +20,7 @@ import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
 import { IoPrintOutline } from "react-icons/io5";
 import useAsyncCall from "../../../hooks/useAsyncCall";
-export default function BillModal({
-  onClose,
-  isOpen,
-  bill,
-  entity,
-  heading,
-}) {
+export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
@@ -92,15 +86,19 @@ export default function BillModal({
                 border: "none",
               }}
               width={"100%"}
-              height={650}
+              height={600}
               src={`${baseURL}${viewBill}`}
             />
           </Skeleton>
           <Flex marginBlock={2} gap={3}>
             {templates.map((template) => (
-              <Box
+              <Flex
+                p={1}
+                justifyContent={"center"}
+                alignItems={"center"}
+                flexDir={"column"}
                 cursor={"pointer"}
-                width={"xxs"}
+                width={60}
                 bg={template.value === templateName ? hoverBg : undefined}
                 key={template.value}
                 onClick={() => {
@@ -113,8 +111,10 @@ export default function BillModal({
                   objectFit={"contain"}
                   src={template.templateImg}
                 />
-                <Text fontSize={"sm"} textAlign={"center"}>{template.label}</Text>
-              </Box>
+                <Text fontSize={"sm"} textAlign={"center"}>
+                  {template.label}
+                </Text>
+              </Flex>
             ))}
           </Flex>
         </ModalBody>

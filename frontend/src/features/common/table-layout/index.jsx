@@ -46,7 +46,7 @@ function TableLayoutMemoized({
             as={IoArrowBack}
             onClick={() => navigate(-1)}
           />
-          <Text fontSize={"2xl"} fontWeight={"bold"}>
+          <Text fontSize={"xl"} fontWeight={"bold"}>
             {heading}
           </Text>
         </Flex>
