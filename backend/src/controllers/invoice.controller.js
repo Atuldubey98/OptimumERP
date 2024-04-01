@@ -202,7 +202,8 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo bank");
-  const grandTotal = invoice.items.reduce(
+  if(!invoice) throw new InvoiceNotFound();
+  const grandTotal = (invoice.items||[]).reduce(
     (total, invoiceItem) =>
       total +
       (invoiceItem.price *
@@ -223,6 +224,7 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     setting.printSettings.upiQr && invoice.org.bank.upi
       ? await promiseQrCode(upiUrl)
       : null;
+
   const bank = req.session?.user?.currentPlan?.plan !== "free" && setting.printSettings.bank && invoice.org.bank;
   const items = invoice.items.map(
     ({ name, price, quantity, gst, um, code }) => ({
