@@ -7,7 +7,7 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
     <Grid gap={2}>
       <Divider />
       <Box>
-        <SearchItem placeholder="Search by description" />
+        <SearchItem placeholder="Search" />
       </Box>
       <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
         <DateFilter
