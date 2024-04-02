@@ -1,4 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
+const paymentMethods = require("../constants/paymentMethods");
 
 const invoiceSchema = new Schema(
   {
@@ -6,6 +7,24 @@ const invoiceSchema = new Schema(
       type: Types.ObjectId,
       required: true,
       ref: "party",
+    },
+    payment: {
+      _id: false,
+      type: {
+        amount: {
+          type: Number,
+        },
+        paymentMode: {
+          type: String,
+          enum: paymentMethods.map((method) => method.value),
+        },
+        description: {
+          type: String,
+        },
+        date: {
+          type: Date,
+        },
+      },
     },
     billingAddress: {
       type: String,
@@ -108,7 +127,7 @@ const invoiceSchema = new Schema(
     status: {
       type: String,
       default: "sent",
-      enum: ["draft", "sent", "paid"],
+      enum: ["draft", "sent", "pending"],
     },
     financialYear: {
       type: {

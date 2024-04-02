@@ -8,18 +8,17 @@ import {
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import useQuery from "../../hooks/useQuery";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
 import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
-import useQuery from "../../hooks/useQuery";
-import { Select } from "chakra-react-select";
 import DateFilter from "../estimates/list/DateFilter";
-import TransactionStats from "./TransactionStats";
-import BillStatsByStatus from "./BillStatsByStatus";
 import BalanceStats from "./BalanceStats";
+import BillStatsByStatus from "./BillStatsByStatus";
 export default function TransactionsPage() {
   const { partyId, orgId } = useParams();
   const query = useQuery();
@@ -64,7 +63,10 @@ export default function TransactionsPage() {
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
     typeOfTransactions.slice(0, 2)
   );
-  const [transactionTotalByType, setTransactionTotalByType] = useState([]);
+  const [invoiceBalance, setInvoiceBalance] = useState({
+    total: 0,
+    amountReceived: 0,
+  });
   const transactionTypes = selectedTypeOfTransactions
     .map((option) => option.value)
     .join(",");
@@ -82,8 +84,8 @@ export default function TransactionsPage() {
           },
         }
       );
-      setTransactionTotalByType(data.transactionTotalByType);
       setPurchaseByStatus(data.purchasesByStatus);
+      setInvoiceBalance(data.invoiceBalance);
       setInvoicesByStatus(data.invoicesByStatus);
       setTransactionsResponse({
         items: data.data,
@@ -96,19 +98,11 @@ export default function TransactionsPage() {
     })();
   }, [orgId, partyId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
-  const invoiceCredit = invoicesByStatus.reduce(
-    (prev, invStatus) =>
-      ["draft", "unpaid"].includes(invStatus._id)
-        ? prev + invStatus.total
-        : prev,
+  const purchaseTotal = purchasesByStatus.reduce(
+    (prev, purchaseType) =>
+      purchaseType._id === "unpaid" ? prev + purchaseType.total : prev,
     0
   );
-  const purchaseCredit = purchasesByStatus.reduce(
-    (prev, purchase) =>
-      purchase._id === "unpaid" ? prev + purchase.total : prev,
-    0
-  );
-
   return (
     <MainLayout>
       <Box p={5}>
@@ -133,9 +127,13 @@ export default function TransactionsPage() {
                       label={"Purchase"}
                     />
                   ) : null}
-                  {invoicesByStatus.length || purchasesByStatus.length ? (
-                    <BalanceStats balance={invoiceCredit - purchaseCredit} />
-                  ) : null}
+                  <BalanceStats
+                    balance={
+                      invoiceBalance.total -
+                      invoiceBalance.amountReceived -
+                      purchaseTotal
+                    }
+                  />
                 </SimpleGrid>
                 <Select
                   isMulti
@@ -158,6 +156,7 @@ export default function TransactionsPage() {
               _id: item._id,
               date: new Date(item.doc.date).toLocaleDateString(),
               totalItems: item.doc.items.length,
+              status: item.doc.status,
               num: item.doc.num || item.doc.purchaseNo,
               grandTotal: (item.total + item.totalTax).toFixed(2),
               type: (
@@ -183,6 +182,7 @@ export default function TransactionsPage() {
               num: "Transaction Number",
               totalItems: "Total Items",
               type: "Type of Transaction",
+              status: "Status",
               grandTotal: "Grand Total",
             }}
           />

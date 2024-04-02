@@ -19,6 +19,7 @@ const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
 const path = require("path");
 const QRCode = require("qrcode");
+const Joi = require("joi");
 
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
@@ -350,4 +351,22 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
       }).pipe(res);
     }
   );
+});
+
+const paymentDto = Joi.object({
+  description: Joi.string().allow("").required().label("Description"),
+  amount: Joi.number().required().label("Amount"),
+  paymentMode: Joi.string().allow("").label("Payment Mode"),
+  date : Joi.string().required().label("Date")
+});
+exports.recordPayment = requestAsyncHandler(async (req, res) => {
+  const invoiceId = req.params.invoiceId;
+  if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
+  const body = await paymentDto.validateAsync(req.body);
+  const invoice = await Invoice.findOneAndUpdate(
+    { _id: req.params.invoiceId, org: req.params.orgId },
+    { payment: body, updatedBy: req.session.user._id }
+  );
+  if (!invoice) throw new InvoiceNotFound();
+  return res.status(201).json({ message: "Payment added" });
 });

@@ -1,22 +1,4 @@
-export const invoiceStatusList = [
-  {
-    type: "draft",
-    label: "Draft",
-    colorScheme: "blue",
-  },
-  {
-    type: "sent",
-    label: "Sent",
-    colorScheme: "teal",
-  },
-  {
-    type: "pending",
-    label: "Pending",
-    colorScheme: "yellow",
-  },
-];
-
-export const paymentMethods = [
+const paymentMethods = [
   { value: "", label: "Default Payment" },
   { value: "card", label: "Credit/Debit Card Payments" },
   { value: "eft", label: "Electronic Funds Transfer (EFT)" },
@@ -35,3 +17,5 @@ export const paymentMethods = [
   { value: "ach", label: "Automated Clearing House (ACH) Payments" },
   { value: "crypto", label: "Cryptocurrency Payments" },
 ];
+
+module.exports = paymentMethods;

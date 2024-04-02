@@ -8,17 +8,18 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import React from "react";
-import { CiEdit, CiSaveDown2 } from "react-icons/ci";
+import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
+import { FaMoneyCheck } from "react-icons/fa";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
-import { CiMoneyBill } from "react-icons/ci";
 export default function VertIconMenu({
   showItem,
   editItem,
   deleteItem,
   onDownloadItem,
   showTransactions,
+  recordPayment,
   downloading = false,
 }) {
   return (
@@ -30,6 +31,7 @@ export default function VertIconMenu({
         variant="outline"
       />
       <MenuList>
+        
         {showItem ? (
           <MenuItem
             icon={<LiaEyeSolid size={20} />}
@@ -37,6 +39,15 @@ export default function VertIconMenu({
             command="⌘S"
           >
             Show
+          </MenuItem>
+        ) : null}
+        {recordPayment ? (
+          <MenuItem
+            onClick={recordPayment}
+            icon={<FaMoneyCheck size={20} />}
+            command="⌘M"
+          >
+            Record Payment
           </MenuItem>
         ) : null}
         {showTransactions ? (

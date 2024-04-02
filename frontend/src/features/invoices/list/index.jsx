@@ -14,6 +14,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "./TableDateFilter";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import RecordPaymentModal from "./RecordPaymentModal";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -87,6 +88,11 @@ export default function InvoicesPage() {
     URL.revokeObjectURL(href);
   };
   const downloading = invoiceStatus === "downloading";
+  const {
+    isOpen: isRecordPaymentModalOpen,
+    onOpen: openRecordPaymentModal,
+    onClose: closeRecordPaymentModal,
+  } = useDisclosure();
   return (
     <MainLayout>
       <Box p={4}>
@@ -107,6 +113,10 @@ export default function InvoicesPage() {
             caption={`Total invoices found : ${totalCount}`}
             operations={invoices.map((invoice) => (
               <VertIconMenu
+                recordPayment={() => {
+                  setInvoice(invoice);
+                  openRecordPaymentModal();
+                }}
                 showItem={() => onOpenInvoice(invoice)}
                 downloading={downloading}
                 onDownloadItem={() => {
@@ -150,6 +160,14 @@ export default function InvoicesPage() {
           onClose={onCloseDeleteModal}
           onConfirm={() => deleteInvoice(invoice)}
         />
+        {invoice ? (
+          <RecordPaymentModal
+            invoice={invoice}
+            fetchInvoices={fetchInvoices}
+            isOpen={isRecordPaymentModalOpen}
+            onClose={closeRecordPaymentModal}
+          />
+        ) : null}
         {loading ? null : (
           <Pagination currentPage={currentPage} total={totalPages} />
         )}

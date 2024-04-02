@@ -20,7 +20,7 @@ const invoiceDto = Joi.object({
   poDate: Joi.string().label("PO Date").allow("").optional(),
   status: Joi.string()
     .default("draft")
-    .valid("draft", "sent", "paid")
+    .valid("draft", "sent", "pending")
     .label("Status"),
   createdBy: Joi.string().optional().label("Created By"),
   updatedBy: Joi.string().optional().label("Updated By"),
