@@ -10,6 +10,8 @@ const bcryptjs = require("bcryptjs");
 const { UserDuplicate } = require("../errors/user.error");
 const logger = require("../logger");
 const Setting = require("../models/settings.model");
+const ExpenseCategory = require("../models/expense_category");
+const expenseCategories = require("../constants/expense_categories");
 exports.createOrg = requestAsyncHandler(async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
@@ -41,6 +43,9 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
   await setting.save();
   await orgUser.save();
   logger.info(`Organization created with id ${newOrg.id}`);
+  await ExpenseCategory.insertMany(
+    expenseCategories.map((category) => ({ ...category, org: newOrg.id }))
+  );
   return res
     .status(201)
     .json({ message: "Organization registered", data: organization });
@@ -69,7 +74,7 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
   });
   await UserActivatedPlan.create({
     user: registeredUser.id,
-    plan : req.session?.user?.currentPlan?.plan,
+    plan: req.session?.user?.currentPlan?.plan,
   });
   const orgUser = new OrgUser({
     org: req.params.orgId,
@@ -77,6 +82,7 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
     role: body.role,
   });
   await orgUser.save();
+
   logger.info(`Organization user created with id ${orgUser.id}`);
   return res
     .status(201)

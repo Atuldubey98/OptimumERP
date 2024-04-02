@@ -15,7 +15,7 @@ export default function TransactionStats({ transactionTotalByType }) {
       <Heading>
         {symbol} {grandTotal}
       </Heading>
-      <Box>
+      <Box w={"100%"}>
         <Flex
           maxW={"md"}
           width={"100%"}

@@ -5,10 +5,11 @@ const expenseCategorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
+      maxLength : 30,
     },
     description: {
       type: String,
+      maxLength: 40,
     },
     org: {
       type: mongoose.Types.ObjectId,
@@ -19,7 +20,7 @@ const expenseCategorySchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
-    collection : "expense_categories"
+    collection: "expense_categories",
   }
 );
 

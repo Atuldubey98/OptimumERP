@@ -8,7 +8,7 @@ const Quotation = require("../models/quotes.model");
 const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
 const { default: mongoose } = require("mongoose");
-
+const Purchase = require("../models/purchase.model");
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -159,7 +159,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
   if (transactionTypes && typeof transactionTypes === "string")
     filter.docModel = { $in: transactionTypes.split(",") };
   if (search) filter.$text = { $search: search };
-  
+
   if (req.query.startDate && req.query.endDate) {
     filter.date = {
       $gte: new Date(req.query.startDate),
@@ -176,21 +176,37 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .exec();
-  const transactionTotalByType = await Transaction.aggregate([
+  
+  const invoicesByStatus = await Invoice.aggregate([
     {
       $match: {
         org: new mongoose.Types.ObjectId(req.params.orgId),
         party: new mongoose.Types.ObjectId(req.params.partyId),
-        docModel: filter.docModel,
         date: filter.date,
       },
     },
     {
       $group: {
-        _id: "$docModel",
+        _id : "$status",
         total: { $sum: { $sum: ["$total", "$totalTax"] } },
         count: { $sum: 1 },
+      }
+    },
+  ]);
+  const purchasesByStatus = await Purchase.aggregate([
+    {
+      $match: {
+        org: new mongoose.Types.ObjectId(req.params.orgId),
+        party: new mongoose.Types.ObjectId(req.params.partyId),
+        date: filter.date,
       },
+    },
+    {
+      $group: {
+        _id : "$status",
+        total: { $sum: { $sum: ["$total", "$totalTax"] } },
+        count: { $sum: 1 },
+      }
     },
   ]);
   const total = await Transaction.countDocuments(filter);
@@ -202,8 +218,10 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
     limit,
     totalPages,
     party,
+    purchasesByStatus,
+    invoicesByStatus,
     total,
-    transactionTotalByType,
+   
     message: "Transactions retrieved successfully",
   });
 });

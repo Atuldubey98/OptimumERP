@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   Grid,
+  SimpleGrid,
   Spinner,
   Stack,
   Tag,
@@ -17,6 +18,8 @@ import useQuery from "../../hooks/useQuery";
 import { Select } from "chakra-react-select";
 import DateFilter from "../estimates/list/DateFilter";
 import TransactionStats from "./TransactionStats";
+import BillStatsByStatus from "./BillStatsByStatus";
+import BalanceStats from "./BalanceStats";
 export default function TransactionsPage() {
   const { partyId, orgId } = useParams();
   const query = useQuery();
@@ -29,6 +32,8 @@ export default function TransactionsPage() {
     startDate: sevenDaysAgo.toISOString().split("T")[0],
     endDate: today.toISOString().split("T")[0],
   });
+  const [purchasesByStatus, setPurchaseByStatus] = useState([]);
+  const [invoicesByStatus, setInvoicesByStatus] = useState([]);
   const onChangeDateFilter = (e) =>
     setDateFilter({
       ...dateFilter,
@@ -78,6 +83,8 @@ export default function TransactionsPage() {
         }
       );
       setTransactionTotalByType(data.transactionTotalByType);
+      setPurchaseByStatus(data.purchasesByStatus);
+      setInvoicesByStatus(data.invoicesByStatus);
       setTransactionsResponse({
         items: data.data,
         page: data.page,
@@ -89,6 +96,18 @@ export default function TransactionsPage() {
     })();
   }, [orgId, partyId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
+  const invoiceCredit = invoicesByStatus.reduce(
+    (prev, invStatus) =>
+      ["draft", "unpaid"].includes(invStatus._id)
+        ? prev + invStatus.total
+        : prev,
+    0
+  );
+  const purchaseCredit = purchasesByStatus.reduce(
+    (prev, purchase) =>
+      purchase._id === "unpaid" ? prev + purchase.total : prev,
+    0
+  );
 
   return (
     <MainLayout>
@@ -101,9 +120,23 @@ export default function TransactionsPage() {
           <TableLayout
             filter={
               <Stack spacing={3}>
-                {/* <TransactionStats
-                  transactionTotalByType={transactionTotalByType}
-                /> */}
+                <SimpleGrid gap={3} minChildWidth={200}>
+                  {invoicesByStatus.length ? (
+                    <BillStatsByStatus
+                      invoicesByStatus={invoicesByStatus}
+                      label={"Invoices"}
+                    />
+                  ) : null}
+                  {purchasesByStatus.length ? (
+                    <BillStatsByStatus
+                      invoicesByStatus={purchasesByStatus}
+                      label={"Purchase"}
+                    />
+                  ) : null}
+                  {invoicesByStatus.length || purchasesByStatus.length ? (
+                    <BalanceStats balance={invoiceCredit - purchaseCredit} />
+                  ) : null}
+                </SimpleGrid>
                 <Select
                   isMulti
                   onChange={setSelectedTypeOfTransactions}

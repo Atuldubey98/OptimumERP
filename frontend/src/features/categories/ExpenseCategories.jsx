@@ -10,6 +10,13 @@ import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseCategoryForm from "./ExpenseCategoryForm";
+import * as Yup from "yup";
+const expenseCategorySchema = Yup.object({
+  name: Yup.string().required().max(30, "Cannot be greater than 30 characters"),
+  description: Yup.string()
+    .optional()
+    .max(40, "Cannot be greater than 40 characters"),
+});
 export default function ExpenseCategories() {
   const { fetchExpenseCategories, expenseCategories, status } =
     useExpenseCategories();
@@ -48,11 +55,17 @@ export default function ExpenseCategories() {
       closeExpenseCategoryForm();
       setSubmitting(false);
     },
+    validationSchema: expenseCategorySchema,
+    validateOnChange: false,
   });
   const onAddNewExpenseCategory = () => {
     formik.setValues({
       name: "",
       description: "",
+    });
+    formik.setTouched({
+      name: false,
+      description: false,
     });
     openExpenseCategoryForm();
   };
