@@ -79,7 +79,7 @@ function TableLayoutMemoized({
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
                 {Object.keys(selectedKeys).map((col) => (
-                  <Td whiteSpace={"pre-wrap"} isNumeric={typeof tableRow[col] === "number"} key={col}>
+                  <Td  isNumeric={typeof tableRow[col] === "number"} key={col}>
                     {tableRow[col]}
                   </Td>
                 ))}
