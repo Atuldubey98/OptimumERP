@@ -3,6 +3,7 @@ import {
   Button,
   ButtonGroup,
   Flex,
+  Hide,
   Image,
   Modal,
   ModalBody,
@@ -121,14 +122,16 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
         <ModalFooter>
           <ButtonGroup>
             <Button onClick={onClose}>Close</Button>
-            <Button
-              leftIcon={<IoPrintOutline />}
-              onClick={onPrintBill}
-              colorScheme="blue"
-              isLoading={status === "loading"}
-            >
-              Print
-            </Button>
+            <Hide below="md">
+              <Button
+                leftIcon={<IoPrintOutline />}
+                onClick={onPrintBill}
+                colorScheme="blue"
+                isLoading={status === "loading"}
+              >
+                Print
+              </Button>
+            </Hide>
             <Button
               leftIcon={<CiSaveDown2 />}
               onClick={() => {
