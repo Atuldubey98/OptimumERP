@@ -47,7 +47,7 @@ export default function QuoteItem({
   };
   return (
     <Box marginBlock={5}>
-      <SimpleGrid gap={2} minChildWidth={100}>
+      <SimpleGrid gap={2} minChildWidth={150}>
         <GridItem colSpan={2}>
           <FormControl isRequired>
             <InputGroup>

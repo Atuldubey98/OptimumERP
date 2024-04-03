@@ -87,15 +87,15 @@ export default function RecordPaymentModal({
               </Text>
               <Text>
                 <strong>Sub Total : </strong>
-                {symbol} {invoice.total}
+                {symbol} {invoice.total.toFixed(2)}
               </Text>
               <Text>
                 <strong> Total Tax: </strong>
-                {symbol} {invoice.totalTax}
+                {symbol} {invoice.totalTax.toFixed(2)}
               </Text>
               <Text fontSize={"xl"}>
                 <strong>Grand Total : </strong>
-                {symbol} {invoice.total + invoice.totalTax}
+                {symbol} {(invoice.total + invoice.totalTax).toFixed(2)}
               </Text>
               <FormControl>
                 <FormLabel>Amount</FormLabel>
