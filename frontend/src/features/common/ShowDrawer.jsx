@@ -35,7 +35,7 @@ export default function ShowDrawer({
   };
   const fields = getFieldsToShow();
   return (
-    <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
+    <Drawer blockScrollOnMount={false} size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
