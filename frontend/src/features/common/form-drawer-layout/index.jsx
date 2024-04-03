@@ -20,7 +20,7 @@ export default function FormDrawerLayout({
   isSubmitting = false,
 }) {
   return (
-    <Drawer size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
+    <Drawer blockScrollOnMount={false} size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
       <form onSubmit={handleFormSubmit}>
         <DrawerContent overflowY={"auto"}>

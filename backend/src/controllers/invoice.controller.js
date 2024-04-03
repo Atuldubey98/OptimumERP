@@ -233,10 +233,7 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
       ? await promiseQrCode(upiUrl)
       : null;
 
-  const bank =
-    req.session?.user?.currentPlan?.plan !== "free" &&
-    setting.printSettings.bank &&
-    invoice.org.bank;
+  const bank = setting.printSettings.bank && invoice.org.bank;
   const items = invoice.items.map(
     ({ name, price, quantity, gst, um, code }) => ({
       name,
@@ -357,7 +354,7 @@ const paymentDto = Joi.object({
   description: Joi.string().allow("").required().label("Description"),
   amount: Joi.number().required().label("Amount"),
   paymentMode: Joi.string().allow("").label("Payment Mode"),
-  date : Joi.string().required().label("Date")
+  date: Joi.string().required().label("Date"),
 });
 exports.recordPayment = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;

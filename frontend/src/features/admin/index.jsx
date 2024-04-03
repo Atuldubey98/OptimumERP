@@ -98,6 +98,15 @@ export default function AdminPage() {
     }
     fetchOrgUsers();
   }, [organization]);
+  const defaultOrganization = {
+    name: "",
+    address: "",
+    gstNo: "",
+    panNo: "",
+    email: "",
+    web: "",
+    telephone: "",
+  };
   const {
     values: currentSelectedOrganization,
     handleChange,
@@ -105,12 +114,7 @@ export default function AdminPage() {
     handleSubmit,
     setValues,
   } = useFormik({
-    initialValues: {
-      name: "",
-      address: "",
-      gstNo: "",
-      panNo: "",
-    },
+    initialValues: defaultOrganization,
     onSubmit: async (data, { setSubmitting }) => {
       const { _id, ...restOrg } = data;
       await instance.patch(`/api/v1/organizations/${organization}`, restOrg);
@@ -175,12 +179,11 @@ export default function AdminPage() {
                   const currentOrg = authorizedOrgs.find(
                     (authorizedOrg) => authorizedOrg.org._id === value
                   ).org;
-                  setValues(currentOrg);
-                  bankFormik.setValues({
-                    ...bankFormik.values,
-                    ...currentOrg.bank,
-                    accountNo: currentOrg.bank.accountNo || "",
+                  setValues({
+                    ...defaultOrganization,
+                    ...currentOrg,
                   });
+                  if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
                 }}
               />
             </FormControl>
@@ -243,6 +246,33 @@ export default function AdminPage() {
                         onChange={handleChange}
                         name="panNo"
                         value={currentSelectedOrganization.panNo}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Website</FormLabel>
+                      <Input
+                        type="url"
+                        onChange={handleChange}
+                        name="web"
+                        value={currentSelectedOrganization.web}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Telephone</FormLabel>
+                      <Input
+                        type="tel"
+                        onChange={handleChange}
+                        name="telephone"
+                        value={currentSelectedOrganization.telephone}
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Email</FormLabel>
+                      <Input
+                        type="email"
+                        onChange={handleChange}
+                        name="email"
+                        value={currentSelectedOrganization.email}
                       />
                     </FormControl>
                     <Flex justifyContent={"center"} alignItems={"center"}>

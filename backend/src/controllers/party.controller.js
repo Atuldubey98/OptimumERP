@@ -74,16 +74,12 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
 
 exports.deleteParty = requestAsyncHandler(async (req, res) => {
   if (!req.params.partyId) throw new PartyNotFound();
-  const invoice = await Invoice.findOne({
-    party: req.params.partyId,
+  const transaction = await Transaction.findOne({
     org: req.params.orgId,
-  });
-  if (invoice) throw new PartyNotDelete({ reason: `Invoice is linked` });
-  const quotation = await Quotation.findOne({
     party: req.params.partyId,
-    org: req.params.orgId,
   });
-  if (quotation) throw new PartyNotDelete({ reason: `Quotation is linked` });
+  if (transaction)
+    throw new PartyNotDelete({ reason: `${transaction.docModel} is linked` });
   const party = await Party.findOneAndDelete({
     _id: req.params.partyId,
     org: req.params.orgId,
@@ -228,7 +224,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
   const invoiceBalance = balanceCalculator.length
     ? balanceCalculator[0]
     : { total: 0, amountReceived: 0 };
-  
+
   const total = await Transaction.countDocuments(filter);
   const totalPages = Math.ceil(total / limit);
   return res.status(200).json({

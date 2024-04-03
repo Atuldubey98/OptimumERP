@@ -4,6 +4,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Grid,
   Input,
   Modal,
   ModalBody,
@@ -72,6 +73,7 @@ export default function RecordPaymentModal({
     }
   }, [invoice]);
   const { symbol } = useCurrentOrgCurrency();
+  const grandTotal = invoice.total + invoice.totalTax;
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -95,14 +97,33 @@ export default function RecordPaymentModal({
               </Text>
               <Text fontSize={"xl"}>
                 <strong>Grand Total : </strong>
-                {symbol} {(invoice.total + invoice.totalTax).toFixed(2)}
+                {symbol} {grandTotal.toFixed(2)}
               </Text>
-              <FormControl>
+              <FormControl
+                isInvalid={formik.errors.amount && formik.touched.amount}
+              >
                 <FormLabel>Amount</FormLabel>
-                <NumberInputInteger formik={formik} name={"amount"} min={0} />
+                <Grid gap={2} gridTemplateColumns={"1fr auto"}>
+                  <NumberInputInteger formik={formik} name={"amount"} min={0} />
+                  <Button
+                    onClick={() =>
+                      formik.setFieldValue(
+                        "amount",
+                        parseFloat(grandTotal.toFixed(2))
+                      )
+                    }
+                    type="button"
+                  >
+                    Settle
+                  </Button>
+                </Grid>
                 <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl
+                isInvalid={
+                  formik.errors.description && formik.touched.description
+                }
+              >
                 <FormLabel>Description</FormLabel>
                 <Textarea
                   onChange={formik.handleChange}
@@ -110,7 +131,11 @@ export default function RecordPaymentModal({
                   name="description"
                 />
               </FormControl>
-              <FormControl>
+              <FormControl
+                isInvalid={
+                  formik.errors.paymentMode && formik.touched.paymentMode
+                }
+              >
                 <FormLabel>Payment Mode</FormLabel>
                 <Select
                   onChange={({ value }) => {
@@ -122,8 +147,11 @@ export default function RecordPaymentModal({
                     (method) => method.value === formik.values.paymentMode
                   )}
                 />
+                <FormErrorMessage>{formik.errors.paymentMode}</FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl
+                isInvalid={formik.errors.date && formik.touched.date}
+              >
                 <FormLabel>Date</FormLabel>
                 <Input
                   type="date"
@@ -131,6 +159,7 @@ export default function RecordPaymentModal({
                   value={formik.values.date}
                   onChange={formik.handleChange}
                 />
+                <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
               </FormControl>
             </Stack>
           </ModalBody>

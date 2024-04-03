@@ -33,7 +33,13 @@ exports.getTotalAndTax = (items = []) => {
     igst += typeOfGST === "IGST" ? tax : 0;
     return tax;
   }, 0);
-  return { total, totalTax, cgst, sgst, igst };
+  return {
+    total: parseFloat(total.toFixed(2)),
+    totalTax: parseFloat(totalTax.toFixed(2)),
+    cgst,
+    sgst,
+    igst,
+  };
 };
 exports.createQuote = requestAsyncHandler(async (req, res) => {
   const body = await quoteDto.validateAsync(req.body);

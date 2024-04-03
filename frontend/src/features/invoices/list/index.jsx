@@ -1,6 +1,7 @@
 import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
@@ -33,7 +34,14 @@ export default function InvoicesPage() {
   const { symbol } = useCurrentOrgCurrency();
 
   const invoiceTableMapper = (invoice) => ({
-    partyName: invoice.party.name,
+    partyName: (
+      <ChakraLink
+        to={`/${orgId}/parties/${invoice.party._id}/transactions`}
+        as={Link}
+      >
+        {invoice.party.name}
+      </ChakraLink>
+    ),
     billingAddress: invoice.party.billingAddress,
     ...invoice,
     invoiceNo: invoice.num,

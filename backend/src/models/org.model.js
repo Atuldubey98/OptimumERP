@@ -27,6 +27,15 @@ const orgSchema = new Schema(
     panNo: {
       type: String,
     },
+    telephone: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    web: {
+      type: String,
+    },
     bank: {
       name: {
         type: String,

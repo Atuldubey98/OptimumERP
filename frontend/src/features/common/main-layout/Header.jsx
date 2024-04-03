@@ -24,6 +24,13 @@ export default function Header({ onSideNavOpen }) {
     onClose: closeQuickAccess,
     onOpen: openQuickAccess,
   } = useDisclosure();
+  const onClickDashboard = () => {
+    navigate(
+      localStorage.getItem("organization")
+        ? `/${(localStorage.getItem("organization") || "") + "/dashboard"}`
+        : "/organizations"
+    );
+  };
   return (
     <Box width={"100%"}>
       <Box position={"relative"}>
@@ -33,51 +40,48 @@ export default function Header({ onSideNavOpen }) {
           gap={5}
           alignItems={"center"}
         >
-          <Button
-            size={"sm"}
-            colorScheme="blue"
-            onClick={() => {
-              navigate(
-                localStorage.getItem("organization")
-                  ? `/${
-                      (localStorage.getItem("organization") || "") +
-                      "/dashboard"
-                    }`
-                  : "/organizations"
-              );
-            }}
-            variant="outline"
-          >
-            <AiOutlineDashboard />
-            <Show above="xl">
-              <Text marginLeft={3}>Dashboard</Text>
-            </Show>
-          </Button>
-          <Button
-            size={"sm"}
-            colorScheme="blue"
-            onClick={openQuickAccess}
-            variant="outline"
-          >
-            <SiQuicktime />
-            <Show above="xl">
-              <Text marginLeft={3}>Quick Access</Text>
-            </Show>
-          </Button>
+          <Show above="xl">
+            <Button
+              leftIcon={<SiQuicktime />}
+              size={"sm"}
+              colorScheme="blue"
+              onClick={openQuickAccess}
+              variant="outline"
+            >
+              Quick Access
+            </Button>
+          </Show>
+          <Show above="xl">
+            <Button
+              leftIcon={<AiOutlineDashboard />}
+              size={"sm"}
+              colorScheme="blue"
+              onClick={onClickDashboard}
+              variant="outline"
+            >
+              Dashboard
+            </Button>
+          </Show>
           <IconButton
-          size={"sm"}
-            icon={colorMode === "dark" ? <MdOutlineWbSunny /> : <CiDark />}
-            onClick={toggleColorMode}
+            size={"sm"}
+            icon={<AiOutlineDashboard />}
+            onClick={onClickDashboard}
           />
-          {/* {colorMode === "dark" ? (
-            <MdOutlineWbSunny
-              onClick={toggleColorMode}
-              size={28}
-              cursor={"pointer"}
+          <Show below="xl">
+            <IconButton
+              size={"sm"}
+              icon={<SiQuicktime />}
+              onClick={openQuickAccess}
             />
-          ) : (
-            <CiDark onClick={toggleColorMode} size={28} cursor={"pointer"} />
-          )} */}
+          </Show>
+          <Show below="xl">
+            <IconButton
+              size={"sm"}
+              icon={colorMode === "dark" ? <MdOutlineWbSunny /> : <CiDark />}
+              onClick={toggleColorMode}
+            />
+          </Show>
+
           <Show below="xl">
             <AvatarProfileWithOptions />
             <MdMenu size={28} cursor={"pointer"} onClick={onSideNavOpen} />

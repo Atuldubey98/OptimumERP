@@ -133,7 +133,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   const { formik } = usePartyForm(undefined, closePartyFormDrawer);
   const { formik: productFormik } = useProductForm(undefined, closeProductForm);
   return (
-    <Modal size={"2xl"} isOpen={isOpen} onClose={onClose}>
+    <Modal blockScrollOnMount={false} size={"2xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Quick Access</ModalHeader>

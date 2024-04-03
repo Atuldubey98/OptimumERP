@@ -15,6 +15,8 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ChakraLink } from "@chakra-ui/react";
 export default function PurchasePage() {
   const {
     items: purchases,
@@ -36,7 +38,14 @@ export default function PurchasePage() {
 
   const navigate = useNavigate();
   const purchaseTableMapper = (purchase) => ({
-    partyName: purchase.party ? purchase.party.name : "",
+    partyName: (
+      <ChakraLink
+        as={ReactRouterLink}
+        to={`/${orgId}/parties/${purchase.party._id}/transactions`}
+      >
+        {purchase.party ? purchase.party.name : ""}
+      </ChakraLink>
+    ),
     billingAddress: purchase?.billingAddress,
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
@@ -76,7 +85,9 @@ export default function PurchasePage() {
     const currentPurchase = item || purchase;
 
     if (!currentPurchase) return;
-    const downloadBill = `/api/v1/organizations/${orgId}/purchases/${currentPurchase._id}/download?template=${localStorage.getItem("template") || "simple"}`;
+    const downloadBill = `/api/v1/organizations/${orgId}/purchases/${
+      currentPurchase._id
+    }/download?template=${localStorage.getItem("template") || "simple"}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });
