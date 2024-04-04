@@ -9,6 +9,7 @@ const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
 const { default: mongoose } = require("mongoose");
 const Purchase = require("../models/purchase.model");
+const Contact = require("../models/contacts.model");
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -80,6 +81,11 @@ exports.deleteParty = requestAsyncHandler(async (req, res) => {
   });
   if (transaction)
     throw new PartyNotDelete({ reason: `${transaction.docModel} is linked` });
+  const contact = new Contact.findOne({
+    org: req.params.orgId,
+    party: req.params.partyId,
+  });
+  if (contact) throw new PartyNotDelete({ reason: "contact is linked" });
   const party = await Party.findOneAndDelete({
     _id: req.params.partyId,
     org: req.params.orgId,
