@@ -62,11 +62,13 @@ export default function Header({ onSideNavOpen }) {
               Dashboard
             </Button>
           </Show>
-          <IconButton
-            size={"sm"}
-            icon={<AiOutlineDashboard />}
-            onClick={onClickDashboard}
-          />
+          <Show below="xl">
+            <IconButton
+              size={"sm"}
+              icon={<AiOutlineDashboard />}
+              onClick={onClickDashboard}
+            />
+          </Show>
           <Show below="xl">
             <IconButton
               size={"sm"}
@@ -74,13 +76,11 @@ export default function Header({ onSideNavOpen }) {
               onClick={openQuickAccess}
             />
           </Show>
-          <Show below="xl">
-            <IconButton
-              size={"sm"}
-              icon={colorMode === "dark" ? <MdOutlineWbSunny /> : <CiDark />}
-              onClick={toggleColorMode}
-            />
-          </Show>
+          <IconButton
+            size={"sm"}
+            icon={colorMode === "dark" ? <MdOutlineWbSunny /> : <CiDark />}
+            onClick={toggleColorMode}
+          />
 
           <Show below="xl">
             <AvatarProfileWithOptions />
