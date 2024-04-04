@@ -1,4 +1,4 @@
-import { Container, Icon, IconButton, List, Text } from "@chakra-ui/react";
+import { Box, Container, Icon, IconButton, List, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -19,7 +19,11 @@ export const SidebarLinksList = () => {
             <NavLink
               to={orgId ? `/${orgId}${headerLink.link}` : "/organizations"}
             >
-              {headerLink.label}
+              {({ isActive }) => (
+                <Box fontWeight={isActive ? "bold" : "400"}>
+                  {headerLink.label}
+                </Box>
+              )}
             </NavLink>
           </HeaderLink>
         ))}
@@ -37,7 +41,9 @@ export const SidebarLinksList = () => {
         <HeaderLink>
           <Icon as={SiAboutdotme} />
           <NavLink to={`/${orgId}/about`}>
-            <Text>About</Text>
+            {({ isActive }) => (
+              <Box fontWeight={isActive ? "bold" : "400"}>About</Box>
+            )}
           </NavLink>
         </HeaderLink>
       </List>

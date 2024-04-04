@@ -1,4 +1,4 @@
-import { Icon, List } from "@chakra-ui/react";
+import { Box, Icon, List } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import HeaderLink from "./HeaderLink";
 import { NavLink, useParams } from "react-router-dom";
@@ -17,7 +17,13 @@ export default function SettingLinks() {
         .map((setting) => (
           <HeaderLink key={setting.label}>
             <Icon as={setting.icon} />
-            <NavLink to={`/${orgId}${setting.link}`}>{setting.label}</NavLink>
+            <NavLink to={`/${orgId}${setting.link}`}>
+              {({ isActive }) => (
+                <Box fontWeight={isActive ? "bold" : "400"}>
+                  {setting.label}
+                </Box>
+              )}
+            </NavLink>
           </HeaderLink>
         ))}
     </List>

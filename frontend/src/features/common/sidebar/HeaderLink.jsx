@@ -9,7 +9,6 @@ export default function HeaderLink({ children }) {
       alignItems={"center"}
       justifyContent={"flex-start"}
       gap={2}
-      fontWeight={"600"}
     >
       {children}
     </ListItem>

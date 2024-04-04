@@ -3,6 +3,8 @@ import {
   ButtonGroup,
   Flex,
   Icon,
+  IconButton,
+  Show,
   Stack,
   Table,
   TableCaption,
@@ -52,14 +54,28 @@ function TableLayoutMemoized({
         </Flex>
         <ButtonGroup gap="4">
           {onAddNewItem ? (
-            <Button
-              leftIcon={<IoAdd />}
-              onClick={onAddNewItem}
-              size={"sm"}
-              colorScheme="blue"
-            >
-              Add new
-            </Button>
+            <>
+              <Show above="md">
+                <Button
+                  leftIcon={<IoAdd />}
+                  onClick={onAddNewItem}
+                  size={"sm"}
+                  colorScheme="blue"
+                >
+                  Add new
+                </Button>
+              </Show>
+              <Show below="md">
+                <IconButton
+                  icon={<IoAdd />}
+                  onClick={onAddNewItem}
+                  size={"sm"}
+                  colorScheme="blue"
+                >
+                  Add new
+                </IconButton>
+              </Show>
+            </>
           ) : null}
         </ButtonGroup>
       </Flex>
@@ -79,7 +95,7 @@ function TableLayoutMemoized({
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
                 {Object.keys(selectedKeys).map((col) => (
-                  <Td  isNumeric={typeof tableRow[col] === "number"} key={col}>
+                  <Td isNumeric={typeof tableRow[col] === "number"} key={col}>
                     {tableRow[col]}
                   </Td>
                 ))}
