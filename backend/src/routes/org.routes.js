@@ -21,6 +21,7 @@ const purchaseRouter = require("./purchase.routes");
 const reportRouter = require("./report.routes");
 const productCategoryRouter = require("./product_category.routes");
 const purchaseOrderRouter = require("./purchase_order.routes");
+const contactRouter = require("./contact.routes");
 
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
@@ -56,5 +57,6 @@ organizationRouter.use("/:orgId/purchases", purchaseRouter);
 organizationRouter.use("/:orgId/reports", reportRouter);
 organizationRouter.use("/:orgId/productCategories", productCategoryRouter);
 organizationRouter.use("/:orgId/purchaseOrders", purchaseOrderRouter);
+organizationRouter.use("/:orgId/contacts", contactRouter);
 
 module.exports = organizationRouter;
