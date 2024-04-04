@@ -89,7 +89,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={3}>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel fontWeight={"bold"}>Currency</FormLabel>
+              <FormLabel>Currency</FormLabel>
               <Select
                 name="currency"
                 value={currencyOptions.find(
@@ -103,7 +103,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel fontWeight={"bold"}>Invoice Prefix</FormLabel>
+              <FormLabel>Invoice Prefix</FormLabel>
               <Input
                 name="invoice"
                 value={formik.values.invoice}
@@ -112,7 +112,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel fontWeight={"bold"}>Quotation Prefix</FormLabel>
+              <FormLabel>Quotation Prefix</FormLabel>
               <Input
                 name="quotation"
                 value={formik.values.quotation}
@@ -121,7 +121,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <Box>
-              <FormControl fontWeight={"bold"}>Fiscal Year</FormControl>
+              <FormControl>Fiscal Year</FormControl>
               <Flex gap={3}>
                 <FormControl
                   isDisabled={!formik.values.organization}

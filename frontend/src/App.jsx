@@ -1,10 +1,11 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
+import AboutPage from "./features/about";
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
 const TransactionsPage = lazy(() => import("./features/transactions"));
 const AdminPage = lazy(() => import("./features/admin"));
-const CategoriesPage = lazy(()=>import("./features/categories"));
+const CategoriesPage = lazy(() => import("./features/categories"));
 const TransactionSettingsPage = lazy(() =>
   import("./features/common/transaction-settings")
 );
@@ -32,13 +33,15 @@ export default function App() {
     <Suspense fallback={<FullLoader />}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route
-          path="/transaction-settings"
-          element={<TransactionSettingsPage />}
-        />
         <Route path="/:orgId">
+          <Route element={<ProfileSettingsPage />} path="profile-settings" />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="admin" element={<AdminPage />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route
+            path="transaction-settings"
+            element={<TransactionSettingsPage />}
+          />
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
           <Route element={<CategoriesPage />} path="categories/:type" />
@@ -50,7 +53,6 @@ export default function App() {
             />
           </Route>
           <Route element={<ExpensesPage />} path="expenses" />
-
           <Route path="estimates">
             <Route element={<EstimatesPage />} path="" />
             <Route element={<CreateEstimatePage />} path="create" />
@@ -72,7 +74,6 @@ export default function App() {
           </Route>
         </Route>
         <Route path="/organizations" element={<OrgPage />} />
-        <Route path="/profile-settings" element={<ProfileSettingsPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

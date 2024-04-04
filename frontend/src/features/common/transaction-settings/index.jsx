@@ -1,4 +1,12 @@
-import { Box, FormControl, FormLabel, Stack, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  FormControl,
+  FormLabel,
+  SimpleGrid,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useContext } from "react";
@@ -81,7 +89,7 @@ export default function TransactionSettingsPage() {
   return (
     <MainLayout>
       <Stack spacing={3} p={5}>
-        <Box marginBlock={3}>
+        <Box>
           <FormControl>
             <FormLabel fontWeight={"bold"}>Organization</FormLabel>
             <Select
@@ -97,36 +105,43 @@ export default function TransactionSettingsPage() {
             />
           </FormControl>
         </Box>
-        {
-          formik.values.organization ?  <>
-          <Box
-            borderRadius={"md"}
-            p={5}
-            boxShadow={"md"}
-            w={"100%"}
-            maxW={"md"}
-          >
-            <TransactionPrefix
-              formik={formik}
-              loading={loading}
-              printFormik={printFormik}
-            />
-          </Box>
-          <Box
-            borderRadius={"md"}
-            p={5}
-            boxShadow={"md"}
-            w={"100%"}
-            maxW={"md"}
-          >
-            <PrintSettings
-              printFormik={printFormik}
-              formik={formik}
-              loading={loading}
-            />
-          </Box>
-        </> : null
-        }
+        <SimpleGrid gap={4} minChildWidth={300}>
+          {formik.values.organization ? (
+            <>
+              <Box
+                border={"1px"}
+                borderColor={"gray.200"}
+                maxW={"xl"}
+                borderRadius={"md"}
+                p={5}
+                boxShadow={"md"}
+              >
+                <TransactionPrefix
+                  formik={formik}
+                  loading={loading}
+                  printFormik={printFormik}
+                />
+              </Box>
+              <Flex justifyContent={"center"} alignItems={"center"}>
+                <Box
+                  border={"1px"}
+                  borderColor={"gray.200"}
+                  width={"100%"}
+                  maxW={"xl"}
+                  borderRadius={"md"}
+                  p={5}
+                  boxShadow={"md"}
+                >
+                  <PrintSettings
+                    printFormik={printFormik}
+                    formik={formik}
+                    loading={loading}
+                  />
+                </Box>
+              </Flex>
+            </>
+          ) : null}
+        </SimpleGrid>
       </Stack>
     </MainLayout>
   );

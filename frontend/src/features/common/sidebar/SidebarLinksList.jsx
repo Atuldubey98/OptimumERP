@@ -6,6 +6,7 @@ import { NavLink, useParams } from "react-router-dom";
 import headerLinks from "../../../constants/headerLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
+import { SiAboutdotme } from "react-icons/si";
 export const SidebarLinksList = () => {
   const [openSettings, setOpenSettings] = useState(false);
   const { orgId = localStorage.getItem("organization") || "" } = useParams();
@@ -13,7 +14,7 @@ export const SidebarLinksList = () => {
     <Container marginBlock={3}>
       <List spacing={3}>
         {headerLinks.map((headerLink) => (
-          <HeaderLink  key={headerLink.label}>
+          <HeaderLink key={headerLink.label}>
             <Icon as={headerLink.icon} />
             <NavLink
               to={orgId ? `/${orgId}${headerLink.link}` : "/organizations"}
@@ -33,6 +34,12 @@ export const SidebarLinksList = () => {
           />
         </HeaderLink>
         {openSettings ? <SettingLinks /> : null}
+        <HeaderLink>
+          <Icon as={SiAboutdotme} />
+          <NavLink to={`/${orgId}/about`}>
+            <Text>About</Text>
+          </NavLink>
+        </HeaderLink>
       </List>
     </Container>
   );

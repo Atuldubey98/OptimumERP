@@ -13,7 +13,13 @@ export default function Dashcard({
   period = "This month",
 }) {
   return (
-    <Box boxShadow={"md"} borderRadius={"md"} p={2}>
+    <Box
+      border={"1px"}
+      borderColor={"gray.200"}
+      boxShadow={"md"}
+      borderRadius={"md"}
+      p={4}
+    >
       <Stat>
         <StatLabel>{dashType}</StatLabel>
         <StatNumber>{dashTotal}</StatNumber>
