@@ -10,13 +10,13 @@ const partySchema = new Schema(
     },
     shippingAddress: {
       type: String,
-      maxLength: 80,
+      maxLength: 150,
     },
     billingAddress: {
       type: String,
       required: true,
       minLength: 3,
-      maxLength: 80,
+      maxLength: 150,
     },
     gstNo: {
       type: String,

@@ -11,12 +11,12 @@ const partyDto = Yup.object({
     .required("Please give party name")
     .label("Name"),
   shippingAddress: Yup.string()
-    .max(80, "Cannot be greater than 80")
+    .max(150, "Cannot be greater than 80")
     .label("Shipping address")
     .optional(),
   billingAddress: Yup.string()
     .min(2, "Cannot be less than 2")
-    .max(80, "Cannot be greater than 80")
+    .max(150, "Cannot be greater than 80")
     .label("Billing address"),
   gstNo: Yup.string().label("GST Number"),
   panNo: Yup.string().label("PAN Number"),
