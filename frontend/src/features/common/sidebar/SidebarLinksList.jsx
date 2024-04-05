@@ -1,15 +1,23 @@
-import { Box, Container, Icon, IconButton, List, Text } from "@chakra-ui/react";
+import {
+  Container,
+  Flex,
+  Icon,
+  IconButton,
+  List,
+  ListItem,
+  Text
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoSettingsOutline } from "react-icons/io5";
-import { NavLink, useLocation, useParams } from "react-router-dom";
-import headerLinks from "../../../constants/headerLinks";
-import HeaderLink from "./HeaderLink";
-import SettingLinks from "./SettingLinks";
 import { SiAboutdotme } from "react-icons/si";
 import { TbCategory } from "react-icons/tb";
+import { useLocation, useParams } from "react-router-dom";
+import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
-import { HiOutlineDocumentReport } from "react-icons/hi";
+import HeaderLink from "./HeaderLink";
+import SettingLinks from "./SettingLinks";
 export const SidebarLinksList = () => {
   const {
     orgId = localStorage.getItem("organization") || "",
@@ -24,58 +32,51 @@ export const SidebarLinksList = () => {
   );
 
   return (
-    <Container height={"100%"} overflowY={"auto"} marginBlock={3}>
-      <List  spacing={3}>
+    <Container p={0} height={"100%"} overflowY={"auto"} marginBlock={3}>
+      <List spacing={1}>
         {headerLinks.map((headerLink) => (
-          <HeaderLink key={headerLink.label}>
-            <Icon as={headerLink.icon} />
-            <NavLink
-              to={orgId ? `/${orgId}${headerLink.link}` : "/organizations"}
-            >
-              {({ isActive }) => (
-                <Box fontWeight={isActive ? "bold" : "400"}>
-                  {headerLink.label}
-                </Box>
-              )}
-            </NavLink>
-          </HeaderLink>
+          <HeaderLink headerLink={headerLink} key={headerLink.link} />
         ))}
-
-        <HeaderLink>
-          <Icon as={TbCategory} />
-          <NavLink to={`/${orgId}/categories/${type}`}>
-            {({ isActive }) => (
-              <Box fontWeight={isActive ? "bold" : "400"}>Categories</Box>
-            )}
-          </NavLink>
-        </HeaderLink>
-        <HeaderLink>
-          <Icon as={HiOutlineDocumentReport} />
-          <NavLink to={`/${orgId}/reports/${reportType}`}>
-            {({ isActive }) => (
-              <Box fontWeight={isActive ? "bold" : "400"}>Reports</Box>
-            )}
-          </NavLink>
-        </HeaderLink>
-        <HeaderLink>
-          <Icon as={IoSettingsOutline} />
-          <Text>Settings</Text>
-          <IconButton
-            size={15}
-            icon={openSettings ? <FaChevronUp /> : <FaChevronDown />}
-            cursor={"pointer"}
-            onClick={() => setOpenSettings(!openSettings)}
-          />
-        </HeaderLink>
+        <HeaderLink
+          headerLink={{
+            icon: TbCategory,
+            link: `/categories/${type}`,
+            label: "Categories",
+          }}
+        />
+        <HeaderLink
+          headerLink={{
+            icon: HiOutlineDocumentReport,
+            link: `/reports/${reportType}`,
+            label: "Reports",
+          }}
+        />
+        <ListItem>
+          <Flex
+            p={1}
+            paddingInline={2}
+            justifyContent={"flex-start"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <Icon as={IoSettingsOutline} />
+            <Text>Settings</Text>
+            <IconButton
+              size={15}
+              icon={openSettings ? <FaChevronUp /> : <FaChevronDown />}
+              cursor={"pointer"}
+              onClick={() => setOpenSettings(!openSettings)}
+            />
+          </Flex>
+        </ListItem>
         {openSettings ? <SettingLinks /> : null}
-        <HeaderLink>
-          <Icon as={SiAboutdotme} />
-          <NavLink to={`/${orgId}/about`}>
-            {({ isActive }) => (
-              <Box fontWeight={isActive ? "bold" : "400"}>About</Box>
-            )}
-          </NavLink>
-        </HeaderLink>
+        <HeaderLink
+          headerLink={{
+            icon: SiAboutdotme,
+            link: `/about`,
+            label: "About",
+          }}
+        />
       </List>
     </Container>
   );

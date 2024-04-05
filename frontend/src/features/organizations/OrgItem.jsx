@@ -16,7 +16,7 @@ export default function OrgItem({ org }) {
     );
     if (settingContext.onSetSettingForOrganization) {
       settingContext.onSetSettingForOrganization(data.data);
-      settingContext.onSetCurrentOrgRole(data.role)
+      settingContext.onSetCurrentOrgRole(data.role);
     }
     navigate(`/${org._id}/dashboard`);
     localStorage.setItem("organization", org._id);
@@ -37,9 +37,7 @@ export default function OrgItem({ org }) {
       <GoOrganization size={34} />
       <Box>
         <Flex gap={3}>
-          <Text fontSize={"xl"} fontWeight={"bold"}>
-            {org.name}
-          </Text>
+          <Text fontWeight={"bold"}>{org.name}</Text>
           {loading ? <Spinner /> : null}
         </Flex>
         <Text fontSize={"sm"} fontStyle={"italic"}>

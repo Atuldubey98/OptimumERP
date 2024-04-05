@@ -4,14 +4,12 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
+  DrawerOverlay
 } from "@chakra-ui/react";
 import Banner from "../sidebar/Banner";
 import { SidebarLinksList } from "../sidebar/SidebarLinksList";
 import CurrentOrganization from "./CurrentOrganization";
-import AvatarProfileWithOptions from "../sidebar/AvatarProfileWithOptions";
 
 export default function NavDrawer({ isOpen, onClose }) {
   return (

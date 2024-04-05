@@ -26,6 +26,7 @@ import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import { MdOutlineHomeRepairService } from "react-icons/md";
 import { CgProductHunt } from "react-icons/cg";
 import { ums } from "../estimates/create/data";
+import instance from "../../instance";
 export default function ProductsPage() {
   const {
     isOpen: isProductFormOpen,
@@ -48,9 +49,24 @@ export default function ProductsPage() {
     totalPages,
     currentPage,
   } = useProducts();
+  const { orgId = "", productCategoryId } = useParams();
+  const [heading, setHeading] = useState();
+
+  const fetchCategoryByCategoryId = async () => {
+    if (productCategoryId) {
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/productCategories/${productCategoryId}?select=name`
+      );
+      setHeading(`Items (${data.data.name})`);
+    } else {
+      setHeading("Items");
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
-  }, [search, fetchProducts]);
+    fetchCategoryByCategoryId();
+  }, [search, fetchProducts, productCategoryId]);
   const { formik } = useProductForm(fetchProducts, onCloseProductFormDrawer);
   const onOpenProduct = (product) => {
     setSelectedToShowProduct(product);
@@ -76,7 +92,6 @@ export default function ProductsPage() {
     });
     openProductFormDrawer();
   };
-  const { orgId = "" } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const {
     isOpen: isDeleteModalOpen,
@@ -135,7 +150,7 @@ export default function ProductsPage() {
                 <SearchItem />
               </Box>
             }
-            heading={"Items"}
+            heading={heading}
             tableData={products.map(productsMapper)}
             caption={`Total items found : ${totalCount}`}
             operations={products.map((product) => (

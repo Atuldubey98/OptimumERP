@@ -42,10 +42,10 @@ exports.getProductCategoryById = requestAsyncHandler(async (req, res) => {
   const productCategory = await ProductCategory.findOne({
     _id: req.params.id,
     org: req.params.orgId,
-  });
+  }).select(req.params.select);
   if (!productCategory)
     return res.status(404).json({ message: "Product category not found" });
-  return res.status(200).json(productCategory);
+  return res.status(200).json({ data: productCategory });
 });
 
 exports.updateProductCategory = requestAsyncHandler(async (req, res) => {
@@ -81,7 +81,6 @@ exports.deleteProductCategory = requestAsyncHandler(async (req, res) => {
     .json({ message: "Product category deleted successfully" });
 });
 
-
 exports.searchProductCategory = requestAsyncHandler(async (req, res) => {
   const filter = {
     org: req.params.orgId,
@@ -89,6 +88,8 @@ exports.searchProductCategory = requestAsyncHandler(async (req, res) => {
   const search = req.query.keyword || "";
   if (search) filter.$text = { $search: search };
   console.log(filter);
-  const productCategories = await ProductCategory.find(filter).sort({ createdAt: -1 });
+  const productCategories = await ProductCategory.find(filter).sort({
+    createdAt: -1,
+  });
   return res.status(200).json({ data: productCategories });
 });

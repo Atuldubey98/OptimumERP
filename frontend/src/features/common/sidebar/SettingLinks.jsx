@@ -1,30 +1,27 @@
-import { Box, Icon, List } from "@chakra-ui/react";
+import { List } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import HeaderLink from "./HeaderLink";
-import { NavLink, useParams } from "react-router-dom";
 import settingsLinks from "../../../constants/settingsLinks";
 import SettingContext from "../../../contexts/SettingContext";
+import HeaderLink from "./HeaderLink";
 export default function SettingLinks() {
   const settingContext = useContext(SettingContext);
   const currentRole = settingContext.role || "";
-  const { orgId } = useParams();
+
   return (
-    <List marginLeft={3} spacing={3}>
+    <List marginLeft={3} spacing={1}>
       {settingsLinks
         .filter(
           (setting) => setting.role === currentRole || currentRole === "admin"
         )
         .map((setting) => (
-          <HeaderLink key={setting.label}>
-            <Icon as={setting.icon} />
-            <NavLink to={`/${orgId}${setting.link}`}>
-              {({ isActive }) => (
-                <Box fontWeight={isActive ? "bold" : "400"}>
-                  {setting.label}
-                </Box>
-              )}
-            </NavLink>
-          </HeaderLink>
+          <HeaderLink
+            headerLink={{
+              icon: setting.icon,
+              label: setting.label,
+              link: setting.link,
+            }}
+            key={setting.label}
+          />
         ))}
     </List>
   );
