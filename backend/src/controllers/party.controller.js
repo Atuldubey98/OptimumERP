@@ -81,7 +81,7 @@ exports.deleteParty = requestAsyncHandler(async (req, res) => {
   });
   if (transaction)
     throw new PartyNotDelete({ reason: `${transaction.docModel} is linked` });
-  const contact = new Contact.findOne({
+  const contact = await Contact.findOne({
     org: req.params.orgId,
     party: req.params.partyId,
   });
