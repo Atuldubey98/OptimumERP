@@ -44,7 +44,7 @@ function TableLayoutMemoized({
     <Stack spacing={4}>
       <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} />
       {filter}
-      <TableContainer whiteSpace={"wrap"}>
+      <TableContainer>
         <Table variant="simple">
           <TableCaption>{caption}</TableCaption>
           <Thead>
