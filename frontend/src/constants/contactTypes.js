@@ -1,7 +1,7 @@
-const contactTypes = [
+export const contactTypes = [
   {
     value: "unknown",
-    label: "Unknown Contact",
+    label: "Unknown",
     description: "Unkown Contact",
   },
   {
@@ -65,5 +65,3 @@ const contactTypes = [
       "Individuals or companies hired on a temporary or project basis to perform specific tasks or services for the company.",
   },
 ];
-
-module.exports = contactTypes;

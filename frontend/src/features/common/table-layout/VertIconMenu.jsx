@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
 import { FaMoneyCheck } from "react-icons/fa";
+import { GoTag } from "react-icons/go";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
@@ -20,6 +21,7 @@ export default function VertIconMenu({
   onDownloadItem,
   showTransactions,
   recordPayment,
+  showProducts,
   downloading = false,
 }) {
   return (
@@ -31,7 +33,6 @@ export default function VertIconMenu({
         variant="outline"
       />
       <MenuList>
-        
         {showItem ? (
           <MenuItem
             icon={<LiaEyeSolid size={20} />}
@@ -41,6 +42,16 @@ export default function VertIconMenu({
             Show
           </MenuItem>
         ) : null}
+        {showProducts ? (
+          <MenuItem
+            icon={<GoTag size={20} />}
+            onClick={showProducts}
+            command="⌘S"
+          >
+            Show Products
+          </MenuItem>
+        ) : null}
+        
         {recordPayment ? (
           <MenuItem
             onClick={recordPayment}

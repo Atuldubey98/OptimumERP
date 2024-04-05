@@ -35,6 +35,7 @@ import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
 import HelpPopover from "../common/HelpPopover";
 import { GoDotFill } from "react-icons/go";
+import { useParams } from "react-router-dom";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -47,6 +48,7 @@ export default function AdminPage() {
       .max(30, "Max length cannot be greater than 20"),
   });
   const { authorizedOrgs, loading } = useOrganizations();
+
   const [organization, setOrganization] = useState("");
   const [orgUsers, setOrgUsers] = useState([]);
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -79,9 +81,9 @@ export default function AdminPage() {
     }),
   });
   const fetchOrgUsers = useCallback(
-    requestAsyncHandler(async () => {
+    requestAsyncHandler(async (org) => {
       const { data } = await instance.get(
-        `/api/v1/organizations/${organization}/users`
+        `/api/v1/organizations/${org}/users`
       );
       setOrgUsers(
         data.data.map((responseData) => ({
@@ -90,15 +92,9 @@ export default function AdminPage() {
         }))
       );
     }),
-    [organization]
+    []
   );
-  useEffect(() => {
-    if (!organization) {
-      setOrgUsers([]);
-      return;
-    }
-    fetchOrgUsers();
-  }, [organization]);
+ 
   const defaultOrganization = {
     name: "",
     address: "",
@@ -185,6 +181,7 @@ export default function AdminPage() {
                     ...currentOrg,
                   });
                   if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
+                  fetchOrgUsers(value);
                 }}
               />
             </FormControl>

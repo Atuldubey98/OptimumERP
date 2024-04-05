@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 import AboutPage from "./features/about";
+import ContactsPage from "./features/contacts";
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
 const TransactionsPage = lazy(() => import("./features/transactions"));
 const AdminPage = lazy(() => import("./features/admin"));
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/:orgId">
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
+          <Route element={<ContactsPage />} path="contacts" />
           <Route path="about" element={<AboutPage />} />
           <Route path="admin" element={<AdminPage />} />
           <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -44,7 +46,15 @@ export default function App() {
           />
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
-          <Route element={<CategoriesPage />} path="categories/:type" />
+          <Route path="categories">
+            <Route path=":type">
+              <Route element={<CategoriesPage />} path="" />
+              <Route
+                element={<ProductsPage />}
+                path=":productCategoryId/products"
+              />
+            </Route>
+          </Route>
           <Route path="parties">
             <Route element={<PartysPage />} path="" />
             <Route

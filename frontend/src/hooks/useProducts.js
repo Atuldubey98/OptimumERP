@@ -9,11 +9,11 @@ export default function useProducts() {
     products: [],
     totalCount: 0,
     totalPages: 0,
-    page : 0
+    page: 0,
   });
   const [status, setStatus] = useState("idle");
   const { requestAsyncHandler } = useAsyncCall();
-  const { orgId } = useParams();
+  const { orgId, productCategoryId } = useParams();
   const query = useQuery();
   const page = isNaN(parseInt(query.get("page")))
     ? 1
@@ -23,29 +23,40 @@ export default function useProducts() {
     : parseInt(query.get("limit"));
   const search = query.get("query");
   const controller = new AbortController();
-  const fetchProducts =useCallback(requestAsyncHandler(async () => {
-    setStatus("loading");
-    const { data } = await instance.get(`/api/v1/organizations/${orgId}/products`, {
-      signal : controller.signal,
-      params: {
-        page,
-        limit,
-        search,
-      },
-      
-    });
-    setProductsPaginated({
-      products: data.data,
-      totalCount: data.totalCount,
-      totalPages: data.totalPages,
-      page : data.page,
-    });
-    setStatus("success");
-    return ()=>{
-      controller.abort();
-    }
-  }),[search, page]);
-  const { products, totalCount, totalPages, page  : currentPage} = productsPaginated;
+  const fetchProducts = useCallback(
+    requestAsyncHandler(async () => {
+      setStatus("loading");
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/products`,
+        {
+          signal: controller.signal,
+          params: {
+            page,
+            limit,
+            search,
+            category: productCategoryId,
+          },
+        }
+      );
+      setProductsPaginated({
+        products: data.data,
+        totalCount: data.totalCount,
+        totalPages: data.totalPages,
+        page: data.page,
+      });
+      setStatus("success");
+      return () => {
+        controller.abort();
+      };
+    }),
+    [search, page]
+  );
+  const {
+    products,
+    totalCount,
+    totalPages,
+    page: currentPage,
+  } = productsPaginated;
   return {
     loading: status === "loading",
     totalCount,

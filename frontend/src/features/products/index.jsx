@@ -62,7 +62,7 @@ export default function ProductsPage() {
       costPrice: 0,
       sellingPrice: 0,
       description: "",
-      type: "service",
+      type: "goods",
       code: "",
       um: "none",
     });

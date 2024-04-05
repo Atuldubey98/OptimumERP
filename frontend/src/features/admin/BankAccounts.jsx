@@ -22,7 +22,7 @@ export default function BankAccounts({ bankFormik }) {
             description={"Fill your bank details here"}
           />
         </Flex>
-        <FormControl isInvalid={bankFormik.errors.accountHolderName}>
+        <FormControl isRequired isInvalid={bankFormik.errors.accountHolderName}>
           <FormLabel>Account Holder Name</FormLabel>
           <Input
             name="accountHolderName"
@@ -33,7 +33,7 @@ export default function BankAccounts({ bankFormik }) {
             {bankFormik.errors.accountHolderName}
           </FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={bankFormik.errors.name}>
+        <FormControl isRequired isInvalid={bankFormik.errors.name}>
           <FormLabel>Bank Name</FormLabel>
           <Input
             name="name"
@@ -42,7 +42,7 @@ export default function BankAccounts({ bankFormik }) {
           />
           <FormErrorMessage>{bankFormik.errors.name}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={bankFormik.errors.ifscCode}>
+        <FormControl isRequired isInvalid={bankFormik.errors.ifscCode}>
           <FormLabel>IFSC Code</FormLabel>
           <Input
             name="ifscCode"
@@ -51,7 +51,7 @@ export default function BankAccounts({ bankFormik }) {
           />
           <FormErrorMessage>{bankFormik.errors.ifscCode}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={bankFormik.errors.accountNo}>
+        <FormControl isRequired isInvalid={bankFormik.errors.accountNo}>
           <FormLabel>Bank Account no</FormLabel>
           <Input
             type="number"

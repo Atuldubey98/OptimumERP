@@ -19,6 +19,7 @@ import {
 import React, { memo } from "react";
 import { IoAdd, IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import HeadingButtons from "./HeadingButtons";
 function TableLayoutMemoized({
   heading,
   onAddNewItem,
@@ -38,47 +39,10 @@ function TableLayoutMemoized({
       .forEach((element) => (tableRow[element] = row[element]));
     return tableRow;
   });
-  const navigate = useNavigate();
+  
   return (
     <Stack spacing={4}>
-      <Flex justifyContent={"space-between"} alignItems={"center"}>
-        <Flex justifyContent={"space-between"} gap={4} alignItems={"center"}>
-          <Icon
-            cursor={"pointer"}
-            as={IoArrowBack}
-            onClick={() => navigate(-1)}
-          />
-          <Text fontSize={"xl"} fontWeight={"bold"}>
-            {heading}
-          </Text>
-        </Flex>
-        <ButtonGroup gap="4">
-          {onAddNewItem ? (
-            <>
-              <Show above="md">
-                <Button
-                  leftIcon={<IoAdd />}
-                  onClick={onAddNewItem}
-                  size={"sm"}
-                  colorScheme="blue"
-                >
-                  Add new
-                </Button>
-              </Show>
-              <Show below="md">
-                <IconButton
-                  icon={<IoAdd />}
-                  onClick={onAddNewItem}
-                  size={"sm"}
-                  colorScheme="blue"
-                >
-                  Add new
-                </IconButton>
-              </Show>
-            </>
-          ) : null}
-        </ButtonGroup>
-      </Flex>
+      <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} />
       {filter}
       <TableContainer>
         <Table variant="simple">

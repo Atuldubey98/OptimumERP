@@ -80,3 +80,14 @@ exports.deleteProductCategory = requestAsyncHandler(async (req, res) => {
     .status(200)
     .json({ message: "Product category deleted successfully" });
 });
+
+
+exports.searchProductCategory = requestAsyncHandler(async (req, res) => {
+  const filter = {
+    org: req.params.orgId,
+  };
+  const search = req.query.keyword || "";
+  if (search) filter.$text = { $search: search };
+  const productCategories = await ProductCategory.find(filter).sort({ createdAt: -1 });
+  return res.status(200).json({ data: productCategories });
+});

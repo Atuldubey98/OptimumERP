@@ -4,6 +4,7 @@ import {
   FormControl,
   FormLabel,
   SimpleGrid,
+  Spinner,
   Stack,
   useToast,
 } from "@chakra-ui/react";
@@ -89,22 +90,28 @@ export default function TransactionSettingsPage() {
   return (
     <MainLayout>
       <Stack spacing={3} p={5}>
-        <Box>
-          <FormControl>
-            <FormLabel fontWeight={"bold"}>Organization</FormLabel>
-            <Select
-              value={organizationOptions.find(
-                (org) => org.value === formik.values.organization
-              )}
-              onChange={({ value }) => {
-                formik.setFieldValue("organization", value);
-              }}
-              isOptionDisabled={({ disabled }) => disabled}
-              options={organizationOptions}
-              name="organization"
-            />
-          </FormControl>
-        </Box>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <Box>
+            <FormControl>
+              <FormLabel fontWeight={"bold"}>Organization</FormLabel>
+              <Select
+                value={organizationOptions.find(
+                  (org) => org.value === formik.values.organization
+                )}
+                onChange={({ value }) => {
+                  formik.setFieldValue("organization", value);
+                }}
+                isOptionDisabled={({ disabled }) => disabled}
+                options={organizationOptions}
+                name="organization"
+              />
+            </FormControl>
+          </Box>
+        )}
         <SimpleGrid gap={4} minChildWidth={300}>
           {formik.values.organization ? (
             <>

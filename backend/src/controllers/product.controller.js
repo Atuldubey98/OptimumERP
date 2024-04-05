@@ -22,7 +22,9 @@ exports.getAllProducts = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   };
   const search = req.query.search;
+  const category = req.query.category;
   if (search) filter.$text = { $search: search };
+  if (category) filter.category = category;
   const products = await Product.find(filter)
     .skip(skip)
     .limit(limit)

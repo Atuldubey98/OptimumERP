@@ -26,8 +26,8 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
   if (search) filter.$text = { $search: search };
   if (type) filter.type = type;
   if (partyId) filter.party = partyId;
-  const totalPartys = await Contact.countDocuments(filter);
-  const totalPages = Math.ceil(totalPartys / limit);
+  const totalContacts = await Contact.countDocuments(filter);
+  const totalPages = Math.ceil(totalContacts / limit);
 
   const skip = (page - 1) * limit;
   const contacts = await Contact.find(filter)
@@ -36,15 +36,15 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit);
   return res.status(200).json({
-    page,
+    currentPage: page,
     limit,
     totalPages,
-    total: totalPartys,
+    total: totalContacts,
     data: contacts,
   });
 });
 
-exports.updateContact = requestAsyncHandler(async (req, params) => {
+exports.updateContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   const updatedContact = await Contact.findOneAndUpdate(
     {
@@ -58,7 +58,7 @@ exports.updateContact = requestAsyncHandler(async (req, params) => {
     .status(200)
     .json({ data: updatedContact, message: "Contact updated" });
 });
-exports.deleteContact = requestAsyncHandler(async (req, params) => {
+exports.deleteContact = requestAsyncHandler(async (req, res) => {
   const deletedContact = await Contact.findOneAndDelete({
     _id: req.params.id,
     org: req.params.orgId,
@@ -67,7 +67,7 @@ exports.deleteContact = requestAsyncHandler(async (req, params) => {
   return res.status(200).json({ message: "Contact deleted" });
 });
 
-exports.getContact = requestAsyncHandler(async (req, params) => {
+exports.getContact = requestAsyncHandler(async (req, res) => {
   const contact = await Contact.findOne({
     _id: req.params.id,
     org: req.params.orgId,

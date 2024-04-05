@@ -23,10 +23,6 @@ const contactSchema = new Schema(
     telephone: {
       type: String,
     },
-    description: {
-      type: String,
-      maxLength: 80,
-    },
     name: {
       type: String,
       required: true,
@@ -46,5 +42,10 @@ const contactSchema = new Schema(
   }
 );
 
+contactSchema.index({
+  name: "text",
+  type: "text",
+});
 const Contact = model("contact", contactSchema);
+
 module.exports = Contact;

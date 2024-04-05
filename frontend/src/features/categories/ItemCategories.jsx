@@ -1,7 +1,7 @@
 import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import TableLayout from "../common/table-layout";
 import ItemCategoryForm from "./ItemCategoryForm";
 import useItemCategoryForm from "../../hooks/useItemCategoryForm";
@@ -36,6 +36,7 @@ export default function ItemCategories() {
   const [selectedItemCategory, setSelectedItemCategory] = useState(null);
   const toast = useToast();
   const deleting = categoryStatus === "deleting";
+
   const deleteProductCategory = useCallback(async () => {
     try {
       if (!selectedItemCategory) return;
@@ -70,6 +71,8 @@ export default function ItemCategories() {
     setSelectedItemCategory(itemCategory);
     openItemCategoryDeleteModal();
   };
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Box p={1}>
       {loading ? (
@@ -87,6 +90,9 @@ export default function ItemCategories() {
           tableData={data.items}
           operations={data.items.map((itemType) => (
             <VertIconMenu
+              showProducts={() =>
+                navigate(location.pathname + `/${itemType._id}/products`)
+              }
               key={itemType._id}
               editItem={() => {
                 formik.setValues(itemType);
