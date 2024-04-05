@@ -61,6 +61,10 @@ export default function App() {
               element={<TransactionsPage />}
               path=":partyId/transactions"
             />
+            <Route
+              element={<ContactsPage />}
+              path=":partyId/contacts"
+            />
           </Route>
           <Route element={<ExpensesPage />} path="expenses" />
           <Route path="estimates">

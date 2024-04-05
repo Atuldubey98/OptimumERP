@@ -9,6 +9,7 @@ const {
   getProductCategoryById,
   updateProductCategory,
   deleteProductCategory,
+  searchProductCategory,
 } = require("../controllers/product_category.controller");
 const productCategoryRouter = Router({
   mergeParams: true,
@@ -19,6 +20,12 @@ productCategoryRouter.post(
   authenticate,
   checkOrgAuthorization,
   createProductCategory
+);
+productCategoryRouter.get(
+  "/search",
+  authenticate,
+  checkOrgAuthorization,
+  searchProductCategory
 );
 productCategoryRouter.get(
   "/",
@@ -45,4 +52,5 @@ productCategoryRouter.delete(
   checkOrgAuthorization,
   deleteProductCategory
 );
+
 module.exports = productCategoryRouter;

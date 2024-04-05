@@ -105,7 +105,7 @@ export default function ExpenseCategories() {
         <TableLayout
           caption={`Total expense categories : ${expenseCategories.length}`}
           filter={
-            <Box>
+            <Box maxW={"md"}>
               <SearchItem />
             </Box>
           }

@@ -14,10 +14,10 @@ export default function ProductCategoryAsyncSelect({ formik }) {
       selectRef.current = setTimeout(async () => {
         try {
           const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/productCategories`,
+            `/api/v1/organizations/${orgId}/productCategories/search`,
             {
               params: {
-                query: searchQuery,
+                keyword: searchQuery,
               },
             }
           );

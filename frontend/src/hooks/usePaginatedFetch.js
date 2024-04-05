@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import useQuery from "./useQuery";
 import useAsyncCall from "./useAsyncCall";
 import instance from "../instance";
-
+import { useParams } from "react-router-dom";
 const usePaginatedFetch = ({ url }) => {
   const [data, setData] = useState({
     items: [],
@@ -14,6 +14,7 @@ const usePaginatedFetch = ({ url }) => {
   const [status, setStatus] = useState("idle");
   const page = query.get("page") || 1;
   const search = query.get("query") || "";
+  const { partyId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const fetchFn = useCallback(
     requestAsyncHandler(async () => {
@@ -22,6 +23,7 @@ const usePaginatedFetch = ({ url }) => {
         params: {
           page,
           search,
+          party: partyId,
         },
       });
       setData({

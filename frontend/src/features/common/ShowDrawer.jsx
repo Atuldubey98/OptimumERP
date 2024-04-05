@@ -35,7 +35,13 @@ export default function ShowDrawer({
   };
   const fields = getFieldsToShow();
   return (
-    <Drawer blockScrollOnMount={false} size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
+    <Drawer
+      blockScrollOnMount={false}
+      size={"md"}
+      isOpen={isOpen}
+      placement="right"
+      onClose={onClose}
+    >
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -43,16 +49,18 @@ export default function ShowDrawer({
         <Divider />
         <DrawerBody>
           <Stack spacing={3} marginBlock={3}>
-            {fields.map((field) => (
-              <Box key={field.name}>
-                <Grid gridTemplateColumns={"auto 1fr"} gap={5}>
-                  <GridItem>
-                    <Text fontWeight={"bold"}>{field.name} : </Text>
-                  </GridItem>
-                  <GridItem>{field.value}</GridItem>
-                </Grid>
-              </Box>
-            ))}
+            {fields
+              .filter((field) => field.value)
+              .map((field) => (
+                <Box key={field.name}>
+                  <Grid gridTemplateColumns={"auto 1fr"} gap={5}>
+                    <GridItem>
+                      <Text fontWeight={"bold"}>{field.name} : </Text>
+                    </GridItem>
+                    <GridItem>{field.value}</GridItem>
+                  </Grid>
+                </Box>
+              ))}
           </Stack>
         </DrawerBody>
         <DrawerFooter>

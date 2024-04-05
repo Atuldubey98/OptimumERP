@@ -14,6 +14,7 @@ import { GoTag } from "react-icons/go";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
+import { TiContacts } from "react-icons/ti";
 export default function VertIconMenu({
   showItem,
   editItem,
@@ -22,6 +23,7 @@ export default function VertIconMenu({
   showTransactions,
   recordPayment,
   showProducts,
+  showContacts,
   downloading = false,
 }) {
   return (
@@ -51,7 +53,15 @@ export default function VertIconMenu({
             Show Products
           </MenuItem>
         ) : null}
-        
+        {showContacts ? (
+          <MenuItem
+            icon={<TiContacts size={20} />}
+            onClick={showContacts}
+            command="⌘C"
+          >
+            Show Contacts
+          </MenuItem>
+        ) : null}
         {recordPayment ? (
           <MenuItem
             onClick={recordPayment}

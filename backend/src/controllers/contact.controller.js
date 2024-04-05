@@ -4,6 +4,7 @@ const Party = require("../models/party.model");
 const { PartyNotFound } = require("../errors/party.error");
 const Contact = require("../models/contacts.model");
 const { ContactNotFound } = require("../errors/contact.error");
+const { isValidObjectId } = require("mongoose");
 exports.createContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   if (body.party) {
@@ -22,10 +23,10 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
   };
   const search = req.query.search || "";
   const type = req.query.type;
-  const partyId = req.query.partyId;
+  const party = req.query.party;
   if (search) filter.$text = { $search: search };
   if (type) filter.type = type;
-  if (partyId) filter.party = partyId;
+  if (isValidObjectId(party)) filter.party = party;
   const totalContacts = await Contact.countDocuments(filter);
   const totalPages = Math.ceil(totalContacts / limit);
 

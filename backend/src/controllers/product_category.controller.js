@@ -88,6 +88,7 @@ exports.searchProductCategory = requestAsyncHandler(async (req, res) => {
   };
   const search = req.query.keyword || "";
   if (search) filter.$text = { $search: search };
+  console.log(filter);
   const productCategories = await ProductCategory.find(filter).sort({ createdAt: -1 });
   return res.status(200).json({ data: productCategories });
 });
