@@ -9,12 +9,12 @@ export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
     <PrivateRoute>
-      <Flex height={"100svh"}>
+      <Flex>
         <Hide below="xl">
           <Sidebar />
         </Hide>
-        <Flex height={"100%"} flexDirection={"column"} width={"100%"}>
-          <Box boxShadow={"md"} p={2}>
+        <Flex height={"100svh"} flexDirection={"column"} width={"100%"}>
+          <Box position={""} boxShadow={"md"} p={2}>
             <Header onSideNavOpen={onOpen} />
           </Box>
           <Box maxH={"100%"} overflowY={"auto"}>{children}</Box>

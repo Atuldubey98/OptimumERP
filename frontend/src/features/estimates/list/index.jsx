@@ -37,7 +37,6 @@ export default function EstimatesPage() {
   const loading = status === "loading";
   const estimateTableMapper = (estimate) => ({
     partyName: estimate.party.name,
-    billingAddress: estimate.party.billingAddress,
     ...estimate,
     quoteNo: estimate.num,
     date: new Date(estimate.date).toLocaleDateString(),
@@ -121,7 +120,7 @@ export default function EstimatesPage() {
               status: "Status",
               partyName: "Party name",
               quoteNo: "Quote No.",
-              billingAddress: "Billing address",
+             
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewQuote}

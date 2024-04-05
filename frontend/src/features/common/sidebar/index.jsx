@@ -16,15 +16,13 @@ export default function Sidebar() {
       left={0}
       maxWidth={350}
     >
-      <Box w={"100%"}>
-        <Box marginBlock={4}>
-          <Banner />
-        </Box>
-        <Divider />
-        <CurrentOrganization />
-        <Divider />
-        <SidebarLinksList />
+      <Box marginBlock={4}>
+        <Banner />
       </Box>
+      <Divider />
+      <CurrentOrganization />
+      <Divider />
+      <SidebarLinksList />
       <AvatarProfileWithOptions />
     </Flex>
   );

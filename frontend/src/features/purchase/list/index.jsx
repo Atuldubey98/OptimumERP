@@ -46,7 +46,6 @@ export default function PurchasePage() {
         {purchase.party ? purchase.party.name : ""}
       </ChakraLink>
     ),
-    billingAddress: purchase?.billingAddress,
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
     date: new Date(purchase.date).toISOString().split("T")[0],
@@ -137,7 +136,6 @@ export default function PurchasePage() {
               status: "Status",
               partyName: "Party name",
               purchaseNo: "Purchase No.",
-              billingAddress: "Billing address",
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewInvoice}

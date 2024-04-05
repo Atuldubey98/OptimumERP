@@ -24,8 +24,8 @@ export const SidebarLinksList = () => {
   );
 
   return (
-    <Container marginBlock={3}>
-      <List spacing={3}>
+    <Container height={"100%"} overflowY={"auto"} marginBlock={3}>
+      <List  spacing={3}>
         {headerLinks.map((headerLink) => (
           <HeaderLink key={headerLink.label}>
             <Icon as={headerLink.icon} />

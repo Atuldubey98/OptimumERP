@@ -181,10 +181,10 @@ export default function ReportItem() {
           <Spinner />
         </Flex>
       ) : (
-        <Box>
+        <Box p={2}>
           {reportType && currentReport ? (
             <TableContainer>
-              <Table variant="simple">
+              <Table size={"sm"} variant="simple">
                 <TableCaption>{`Total Found ${reportType.toLocaleUpperCase()} : ${totalCount}`}</TableCaption>
                 <Thead>
                   <Tr>

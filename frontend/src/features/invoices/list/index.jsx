@@ -47,7 +47,6 @@ export default function InvoicesPage() {
         {invoice.party.name}
       </ChakraLink>
     ),
-    billingAddress: invoice.party.billingAddress,
     ...invoice,
     invoiceNo: invoice.num,
     date: new Date(invoice.date).toLocaleDateString(),
@@ -149,7 +148,6 @@ export default function InvoicesPage() {
               status: "Status",
               partyName: "Party name",
               invoiceNo: "Invoice No.",
-              billingAddress: "Billing address",
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewInvoice}
