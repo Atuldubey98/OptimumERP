@@ -67,6 +67,7 @@ const reportDataByType = {
       type: "Type",
       amount: "Amount",
       createdAt: "Done at",
+      relatedTo: "Related To",
       num: "Num",
     },
     bodyMapper: (item) => ({
@@ -74,7 +75,8 @@ const reportDataByType = {
       num: item.doc?.num || item.doc?.purchaseNo || "",
       type: item?.docModel,
       amount: (item.total + item.totalTax).toFixed(2),
-      createdAt: new Date(item.createdAt).toISOString().split("T")[0],
+      relatedTo: item?.party?.name || item.doc?.description || "",
+      createdAt: new Date(item.createdAt).toLocaleDateString(),
     }),
   },
   gstr1: {

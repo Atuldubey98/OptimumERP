@@ -168,6 +168,7 @@ export default function ExpensesPage() {
             item={{
               ...expenseSelected,
               date: new Date(expenseSelected.date).toDateString(),
+              amount: `${symbol} ${expenseSelected.amount}`,
               category: expenseSelected.category
                 ? expenseSelected.category.name
                 : "Miscellenous",

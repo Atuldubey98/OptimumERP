@@ -169,7 +169,12 @@ export default function ProductsPage() {
             isOpen={isProductDrawerOpen}
             item={{
               ...selectedToShowProduct,
-              um: ums.find((um) => um.value === selectedToShowProduct.um).label || "AU",
+              um:
+                ums.find((um) => um.value === selectedToShowProduct.um).label ||
+                "AU",
+              costPrice: `${symbol} ${selectedToShowProduct.costPrice}`,
+              sellingPrice: `${symbol} ${selectedToShowProduct.sellingPrice}`,
+              type: selectedToShowProduct.type?.toUpperCase(),
               createdAt: new Date(
                 selectedToShowProduct.createdAt
               ).toDateString(),

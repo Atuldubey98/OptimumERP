@@ -39,7 +39,7 @@ function TableLayoutMemoized({
       .forEach((element) => (tableRow[element] = row[element]));
     return tableRow;
   });
-  
+
   return (
     <Stack spacing={4}>
       <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} />

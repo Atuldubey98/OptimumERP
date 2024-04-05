@@ -2,7 +2,6 @@ const Invoice = require("../models/invoice.model");
 const Transaction = require("../models/transaction.model");
 const Purchase = require("../models/purchase.model");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const { default: mongoose } = require("mongoose");
 const xl = require("excel4node");
 function generateReportByReportType(reportType) {
   const reportMap = {
@@ -72,6 +71,7 @@ async function getTransactions(queryParams, orgId) {
   const transactions = await Transaction.find(filter)
     .sort({ createdAt: -1 })
     .populate("doc")
+    .populate("party", "name")
     .skip(skip)
     .limit(limit)
     .exec();
@@ -217,9 +217,9 @@ const reportDataByType = {
       partyName: item.party?.name,
       address: item.party?.billingAddress,
       poNo: item.poNo,
-      poDate: item.poDate,
+      poDate: item.poDate ? new Date(item.poDate).toLocaleDateString() : "",
       num: item.num,
-      date: item.date ? new Date(item.date)?.toISOString().split("T")[0] : "",
+      date: new Date(item.date).toLocaleDateString(),
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
       status: (item?.status || "").toLocaleUpperCase(),
@@ -239,7 +239,7 @@ const reportDataByType = {
       _id: item._id,
       partyName: item.party?.name,
       num: item.purchaseNo,
-      date: item.date ? new Date(item.date).toISOString().split("T")[0] : "",
+      date: new Date(item.date).toLocaleDateString(),
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
       status: (item?.status || "").toLocaleUpperCase(),
@@ -249,6 +249,7 @@ const reportDataByType = {
     header: {
       type: "Type",
       amount: "Amount",
+      relatedTo: "Related To",
       createdAt: "Done at",
       num: "Num",
     },
@@ -256,6 +257,7 @@ const reportDataByType = {
       _id: item._id,
       num: item.doc?.num || item.doc?.purchaseNo || "",
       type: item?.docModel,
+      relatedTo: item?.party?.name || item.doc?.description || "",
       amount: (item.total + item.totalTax).toFixed(2),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
@@ -357,14 +359,15 @@ async function downloadTransactionsReport(queryParams, orgId) {
   };
 
   if (queryParams.startDate && queryParams.endDate) {
-    filter.createdAt = {
+    filter.date = {
       $gte: new Date(queryParams.startDate),
       $lte: new Date(queryParams.endDate),
     };
   }
   const transactions = await Transaction.find(filter)
     .sort({ createdAt: -1 })
-    .populate("doc");
+    .populate("doc")
+    .populate("party");
   return transactions;
 }
 
@@ -395,7 +398,7 @@ exports.downloadReportByType = requestAsyncHandler(async (req, res) => {
       const row = index + 2;
       const col = fieldIndex + 1;
       if (key != "_id") {
-        ws.cell(row, col).string(reportItem[key])
+        ws.cell(row, col).string(reportItem[key]);
       }
     });
   });

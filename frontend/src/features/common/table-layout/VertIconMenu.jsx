@@ -50,7 +50,7 @@ export default function VertIconMenu({
             onClick={showProducts}
             command="⌘S"
           >
-            Show Products
+            Products
           </MenuItem>
         ) : null}
         {showContacts ? (
@@ -59,7 +59,7 @@ export default function VertIconMenu({
             onClick={showContacts}
             command="⌘C"
           >
-            Show Contacts
+            Contacts
           </MenuItem>
         ) : null}
         {recordPayment ? (
