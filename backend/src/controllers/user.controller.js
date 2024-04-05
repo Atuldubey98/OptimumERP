@@ -10,20 +10,11 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const User = require("../models/user.model");
 const bcryptjs = require("bcryptjs");
 const UserActivatedPlan = require("../models/user_activated_plans");
-const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const Otp = require("../models/otp.model");
 const Joi = require("joi");
 const path = require("path");
-const transporter = nodemailer.createTransport({
-  host: process.env.NODE_MAILER_HOST,
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.NODE_MAILER_USER_NAME,
-    pass: process.env.NODE_MAILER_APP_PASSWORD,
-  },
-});
+const transporter = require("../mailer");
 exports.registerUser = requestAsyncHandler(async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
   const { email, password, name } = body;

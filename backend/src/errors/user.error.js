@@ -47,9 +47,19 @@ class InvalidOtp extends Error {
     this.name = "InvalidOtp";
   }
 }
+class UpgradePlan extends Error {
+  constructor() {
+    super();
+    this.code = 400;
+    this.message = "Upgrade you plan";
+    this.name = "UpgradePlan";
+  }
+}
+
 module.exports = {
   UserDuplicate,
   UserNotFound,
+  UpgradePlan,
   PasswordDoesNotMatch,
   UnAuthenticated,
   UnAuthorizedUser,

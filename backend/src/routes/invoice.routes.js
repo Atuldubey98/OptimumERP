@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, checkPlan } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const {
   checkOrgAuthorization,
@@ -14,6 +14,7 @@ const {
   downloadInvoice,
   viewInvoice,
   recordPayment,
+  sendInvoice,
 } = require("../controllers/invoice.controller");
 
 const invoiceRouter = Router({
@@ -72,5 +73,12 @@ invoiceRouter.post(
   authenticate,
   checkOrgAuthorization,
   recordPayment
+);
+invoiceRouter.post(
+  "/:invoiceId/send",
+  authenticate,
+  checkPlan(["gold", "platinum"]),
+  checkOrgAuthorization,
+  sendInvoice
 );
 module.exports = invoiceRouter;
