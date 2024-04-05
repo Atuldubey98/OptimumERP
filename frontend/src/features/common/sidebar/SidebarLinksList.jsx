@@ -9,10 +9,12 @@ import SettingLinks from "./SettingLinks";
 import { SiAboutdotme } from "react-icons/si";
 import { TbCategory } from "react-icons/tb";
 import settingsLinks from "../../../constants/settingsLinks";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 export const SidebarLinksList = () => {
   const {
     orgId = localStorage.getItem("organization") || "",
     type = "expense",
+    reportType = "sale",
   } = useParams();
   const location = useLocation();
   const [openSettings, setOpenSettings] = useState(
@@ -38,11 +40,20 @@ export const SidebarLinksList = () => {
             </NavLink>
           </HeaderLink>
         ))}
+
         <HeaderLink>
           <Icon as={TbCategory} />
           <NavLink to={`/${orgId}/categories/${type}`}>
             {({ isActive }) => (
               <Box fontWeight={isActive ? "bold" : "400"}>Categories</Box>
+            )}
+          </NavLink>
+        </HeaderLink>
+        <HeaderLink>
+          <Icon as={HiOutlineDocumentReport} />
+          <NavLink to={`/${orgId}/reports/${reportType}`}>
+            {({ isActive }) => (
+              <Box fontWeight={isActive ? "bold" : "400"}>Reports</Box>
             )}
           </NavLink>
         </HeaderLink>

@@ -21,6 +21,7 @@ import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
 import { IoPrintOutline } from "react-icons/io5";
 import useAsyncCall from "../../../hooks/useAsyncCall";
+import Template from "./Template";
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
@@ -62,8 +63,10 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       templateImg: "/templates/border-land.png",
     },
   ];
-  const hoverBg = useColorModeValue("gray.200", "gray.600");
-
+  const onSelectTemplate = (currentTemplate) => {
+    setTemplateName(currentTemplate.value);
+    localStorage.setItem("template", currentTemplate.value);
+  };
   return (
     <Modal
       size={"full"}
@@ -93,29 +96,12 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
           </Skeleton>
           <Flex marginBlock={2} gap={3}>
             {templates.map((template) => (
-              <Flex
-                p={1}
-                justifyContent={"center"}
-                alignItems={"center"}
-                flexDir={"column"}
-                cursor={"pointer"}
-                width={60}
-                bg={template.value === templateName ? hoverBg : undefined}
+              <Template
                 key={template.value}
-                onClick={() => {
-                  setTemplateName(template.value);
-                  localStorage.setItem("template", template.value);
-                }}
-              >
-                <Image
-                  width={20}
-                  objectFit={"contain"}
-                  src={template.templateImg}
-                />
-                <Text fontSize={"sm"} textAlign={"center"}>
-                  {template.label}
-                </Text>
-              </Flex>
+                template={template}
+                currentTemplateName={templateName}
+                onSelectTemplate={onSelectTemplate}
+              />
             ))}
           </Flex>
         </ModalBody>

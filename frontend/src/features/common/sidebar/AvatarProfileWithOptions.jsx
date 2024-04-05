@@ -18,14 +18,14 @@ import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import AlertModal from "../AlertModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { logoutUser } from "../../../api/logout";
 export default function AvatarProfileWithOptions() {
   const hoverBg = useColorModeValue("gray.200", "gray.700");
   const { requestAsyncHandler } = useAsyncCall();
   const authContext = useAuth();
   const toast = useToast();
-  
+
   const [status, setStatus] = useState("idle");
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
@@ -45,6 +45,7 @@ export default function AvatarProfileWithOptions() {
   const loggingOut = status === "loggingOut";
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const { orgId } = useParams();
   return (
     <Menu>
       <MenuButton
@@ -68,7 +69,7 @@ export default function AvatarProfileWithOptions() {
         <MenuGroup title="Profile">
           <MenuItem
             onClick={() => {
-              navigate("/profile-settings");
+              navigate(`/${orgId}/profile-settings`);
             }}
             icon={<RiLockPasswordLine />}
           >

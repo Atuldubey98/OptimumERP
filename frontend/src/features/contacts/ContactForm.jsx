@@ -5,6 +5,7 @@ import {
   FormLabel,
   Input,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
 import FormDrawerLayout from "../common/form-drawer-layout";
@@ -19,6 +20,9 @@ export default function ContactForm({
   formik,
   handleFormSubmit,
 }) {
+  const currentSelectedContact = contactTypes.find(
+    (type) => type.value === formik.values.type
+  );
   return (
     <FormDrawerLayout
       formHeading={"Contact Form"}
@@ -78,10 +82,13 @@ export default function ContactForm({
             onChange={(e) => {
               formik.setFieldValue("type", e?.value);
             }}
-            value={contactTypes.find(
-              (type) => type.value === formik.values.type
-            )}
+            value={currentSelectedContact}
           />
+          <Box marginBlock={2}>
+            <Text fontSize={"xs"}>
+              {currentSelectedContact && currentSelectedContact.description}
+            </Text>
+          </Box>
           <FormErrorMessage>{formik.errors.type}</FormErrorMessage>
         </FormControl>
       </Stack>
