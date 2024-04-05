@@ -183,7 +183,7 @@ export default function ReportItem() {
       ) : (
         <Box>
           {reportType && currentReport ? (
-            <TableContainer>
+            <TableContainer whiteSpace={"wrap"}>
               <Table variant="simple">
                 <TableCaption>{`Total Found ${reportType.toLocaleUpperCase()} : ${totalCount}`}</TableCaption>
                 <Thead>
