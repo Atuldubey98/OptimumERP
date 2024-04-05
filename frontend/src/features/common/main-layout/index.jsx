@@ -13,7 +13,7 @@ export default function MainLayout({ children }) {
         <Hide below="xl">
           <Sidebar />
         </Hide>
-        <Flex height={"100svh"} flexDirection={"column"} width={"100%"}>
+        <Flex height={"100dvh"} flexDirection={"column"} width={"100%"}>
           <Box position={""} boxShadow={"md"} p={2}>
             <Header onSideNavOpen={onOpen} />
           </Box>
