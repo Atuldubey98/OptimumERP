@@ -12,6 +12,16 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         border: 1px solid black;
       }
+      @media screen and (max-width: 720px) {
+        body {
+          zoom: 0.75;
+        }
+      }
+      @media screen and (max-width: 450px) {
+        body {
+          zoom: 0.6;
+        }
+      }
       .item-table {
         width: 100%;
         border-collapse: collapse;
@@ -220,18 +230,17 @@
       </table>
       <div style="border-top: 1px solid black; display: -webkit-box">
         <div style="-webkit-box-flex: 8; border-right: 1px solid black">
-          <div style="padding: 5px;">
+          <div style="padding: 5px">
             <h4>Terms & Conditions</h4>
             <% entity.terms?.split("\n").forEach(term => { %>
             <p><%= term %></p>
             <% }) %>
           </div>
         </div>
-        <div style="-webkit-box-flex: 4; min-height: 150px; padding: 5px;">
-            <div class="">
-              <p>Authorized Signatory</p>
-
-            </div>
+        <div style="-webkit-box-flex: 4; min-height: 150px; padding: 5px">
+          <div class="">
+            <p>Authorized Signatory</p>
+          </div>
         </div>
       </div>
     </main>

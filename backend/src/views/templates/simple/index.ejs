@@ -11,6 +11,16 @@
         color: #333;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
+      @media screen and (max-width: 720px) {
+        body {
+          zoom: 0.75;
+        }
+      }
+      @media screen and (max-width: 450px) {
+        body {
+          zoom: 0.6;
+        }
+      }
       .invoice-container {
         margin: 0 auto;
         padding: 3px;
@@ -64,10 +74,10 @@
         text-align: left;
         border-bottom: 1px solid #ddd;
       }
-      .invoice-meta-info > div:nth-child(1){
+      .invoice-meta-info > div:nth-child(1) {
         -webkit-box-flex: 1;
       }
-      .invoice-meta-info > div:nth-child(2){
+      .invoice-meta-info > div:nth-child(2) {
         -webkit-box-flex: 1;
       }
       .total-table th {
@@ -79,14 +89,14 @@
       .bank-details {
         margin-bottom: 20px;
       }
-      .bank-details{
+      .bank-details {
         display: -webkit-box;
         justify-content: space-between;
       }
-      .bank-details > div:nth-child(1){
+      .bank-details > div:nth-child(1) {
         -webkit-box-flex: 1;
       }
-      .bank-details > div:nth-child(2){
+      .bank-details > div:nth-child(2) {
         -webkit-box-flex: 1;
       }
       .invoice-head {
@@ -116,10 +126,9 @@
           <p><%= entity.party.name %></p>
           <p><%= entity.billingAddress %></p>
           <% if (entity.party.gstNo) { %>
-            <p>GSTIN: <%= entity.party.gstNo %></p>
-          <% } %>
-          <% if (entity.party.panNo) { %>
-            <p>PAN: <%= entity.party.panNo %></p>
+          <p>GSTIN: <%= entity.party.gstNo %></p>
+          <% } %> <% if (entity.party.panNo) { %>
+          <p>PAN: <%= entity.party.panNo %></p>
           <% } %>
         </div>
         <div class="invoice-header">
@@ -200,33 +209,32 @@
       <div class="bank-details">
         <div>
           <h3>Bank Account Details:</h3>
-          <p>
-            Bank Name: <%= bank.name %>
-          </p>
-          <p>
-            Account Holder: <%= bank.accountHolderName %>
-          </p>
-          <p>
-            Account Number: <%= bank.accountNo %>
-          </p>
-          <p>
-            IFSC Code: <%= bank.ifscCode %>
-          </p>
+          <p>Bank Name: <%= bank.name %></p>
+          <p>Account Holder: <%= bank.accountHolderName %></p>
+          <p>Account Number: <%= bank.accountNo %></p>
+          <p>IFSC Code: <%= bank.ifscCode %></p>
         </div>
         <div>
           <% if (upiQr) { %>
-            <h3>UPI QR Code</h3>
-            <img src="<%= upiQr %>" alt="QR Code" width="100" />
-            <% } %>
+          <h3>UPI QR Code</h3>
+          <img src="<%= upiQr %>" alt="QR Code" width="100" />
+          <% } %>
         </div>
       </div>
       <% } %>
     </div>
-    <div style="-webkit-box-flex: 4; min-height: 150px; padding: 5px; border: 1px solid black; width: 150px;">
+    <div
+      style="
+        -webkit-box-flex: 4;
+        min-height: 150px;
+        padding: 5px;
+        border: 1px solid black;
+        width: 150px;
+      "
+    >
       <div class="">
         <p>Authorized Signatory</p>
-
       </div>
-  </div>
+    </div>
   </body>
 </html>

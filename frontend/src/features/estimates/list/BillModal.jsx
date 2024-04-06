@@ -85,7 +85,8 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
                 setBillLoadStatus("idle");
               }}
               style={{
-                padding: 2,
+                margin : "auto",
+                padding: 1,
                 borderRadius: 10,
                 border: "none",
               }}

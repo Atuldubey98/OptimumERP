@@ -8,12 +8,21 @@
       body {
         margin: 10px;
         color: #333;
+        box-sizing: border-box;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
-
+      @media screen and (max-width: 720px) {
+        body {
+          zoom: 0.75;
+        }
+      }
+      @media screen and (max-width: 450px) {
+        body {
+          zoom: 0.6;
+        }
+      }
       h1 {
         color: #333;
-
         padding-bottom: 10px;
       }
 
@@ -164,11 +173,18 @@
     </div>
     <h2>Terms & Conditions</h2>
     <p class="terms"><%= entity.terms %></p>
-    <div style="-webkit-box-flex: 4; min-height: 150px; padding: 5px; border: 1px solid black;width: 150px;">
+    <div
+      style="
+        -webkit-box-flex: 4;
+        min-height: 150px;
+        padding: 5px;
+        border: 1px solid black;
+        width: 150px;
+      "
+    >
       <div class="">
         <p>Authorized Signatory</p>
-
       </div>
-  </div>
+    </div>
   </body>
 </html>

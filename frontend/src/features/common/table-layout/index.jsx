@@ -45,7 +45,7 @@ function TableLayoutMemoized({
       <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} />
       {filter}
       <TableContainer>
-        <Table size={"sm"}>
+        <Table size={"sm"} variant={"simple"}>
           <TableCaption>{caption}</TableCaption>
           <Thead>
             <Tr>
