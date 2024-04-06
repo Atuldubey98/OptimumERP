@@ -1,7 +1,7 @@
 import { Avatar, Flex, Hide, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import useAuth from "../../../hooks/useAuth";
 import SettingContext from "../../../contexts/SettingContext";
+import useAuth from "../../../hooks/useAuth";
 export default function AvatarProfile() {
   const { user } = useAuth();
   const settingContext = useContext(SettingContext);
