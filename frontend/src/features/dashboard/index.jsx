@@ -2,15 +2,16 @@ import {
   Box,
   Flex,
   Heading,
+  SimpleGrid,
   Skeleton,
   Stack,
-  StatGroup,
   useDisclosure,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
-import { Select } from "chakra-react-select";
+import { purchaseStatusList } from "../../constants/purchase";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
@@ -19,7 +20,6 @@ import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
-import { purchaseStatusList } from "../../constants/purchase";
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -82,7 +82,6 @@ export default function DashboardPage() {
   return (
     <MainLayout>
       <Box p={5}>
-        <Heading fontSize={"3xl"}>Dashboard</Heading>
         <Stack marginBlock={2} spacing={3}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
             <Select
@@ -93,7 +92,7 @@ export default function DashboardPage() {
               value={periods.find((period) => period.value === currentPeriod)}
             />
           </Flex>
-          <StatGroup gap={3}>
+          <SimpleGrid minChildWidth={200} gap={5}>
             <Skeleton isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
@@ -111,13 +110,6 @@ export default function DashboardPage() {
             <Skeleton isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
-                dashType="Expenses"
-                dashTotal={dashboard.expensesThisMonth}
-              />
-            </Skeleton>
-            <Skeleton isLoaded={!loading}>
-              <Dashcard
-                period={currentPeriodLabel}
                 dashType="Quotation"
                 dashTotal={dashboard.quotesThisMonth}
               />
@@ -129,7 +121,7 @@ export default function DashboardPage() {
                 dashTotal={dashboard.purchasesThisMonth}
               />
             </Skeleton>
-          </StatGroup>
+          </SimpleGrid>
           <Stack>
             <Skeleton isLoaded={!loading}>
               <DashboardTable
@@ -143,7 +135,7 @@ export default function DashboardPage() {
                   status: (
                     <Status status={quote.status} statusList={statusList} />
                   ),
-                  date: new Date(quote.date).toLocaleDateString()
+                  date: new Date(quote.date).toLocaleDateString(),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />
@@ -183,7 +175,7 @@ export default function DashboardPage() {
                       statusList={purchaseStatusList}
                     />
                   ),
-                  date: new Date(purchase.date).toLocaleDateString()
+                  date: new Date(purchase.date).toLocaleDateString(),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
               />

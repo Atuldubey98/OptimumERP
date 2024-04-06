@@ -1,9 +1,11 @@
 import {
-  Box,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
+  Card,
+  Divider,
+  CardFooter,
+  CardHeader,
+  Heading,
+  Text,
+  Flex,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -13,18 +15,25 @@ export default function Dashcard({
   period = "This month",
 }) {
   return (
-    <Box
-      border={"1px"}
-      borderColor={"gray.200"}
-      boxShadow={"md"}
-      borderRadius={"md"}
-      p={4}
-    >
-      <Stat>
-        <StatLabel>{dashType}</StatLabel>
-        <StatNumber>{dashTotal}</StatNumber>
-        <StatHelpText>{period}</StatHelpText>
-      </Stat>
-    </Box>
+    <Card maxW={"md"}>
+      <CardHeader>
+        <Heading textAlign={"center"} fontSize={"xl"}>
+          {dashType}
+        </Heading>
+      </CardHeader>
+      <Divider />
+      <CardFooter textAlign={"center"}>
+        <Flex
+          width={"100%"}
+          fontSize={"sm"}
+          justifyContent={"space-around"}
+          alignItems={"center"}
+        >
+          <Text>{period}</Text>
+          <Divider orientation="vertical" />
+          <Text>{dashTotal}</Text>
+        </Flex>
+      </CardFooter>
+    </Card>
   );
 }
