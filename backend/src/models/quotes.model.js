@@ -11,6 +11,10 @@ const quoteSchema = new Schema(
       type: String,
       required: true,
     },
+    converted: {
+      type: Types.ObjectId,
+      ref: "invoice",
+    },
     total: {
       type: Number,
       default: 0,
@@ -114,7 +118,7 @@ const quoteSchema = new Schema(
           required: true,
         },
       },
-      _id : false,
+      _id: false,
       required: true,
     },
   },

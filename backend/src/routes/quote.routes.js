@@ -17,6 +17,7 @@ const {
   viewQuote,
   deleteQuote,
   downloadQuote,
+  convertQuoteToInvoice,
 } = require("../controllers/quotes.controller");
 const quoteRouter = Router({
   mergeParams: true,
@@ -37,6 +38,13 @@ quoteRouter.get(
   getNextQuotationNumber
 );
 quoteRouter.get("/:quoteId", authenticate, checkOrgAuthorization, getQuote);
+
+quoteRouter.post(
+  "/:quoteId/convert-to-invoice",
+  authenticate,
+  checkOrgAuthorization,
+  convertQuoteToInvoice
+);
 quoteRouter.delete(
   "/:quoteId",
   authenticate,

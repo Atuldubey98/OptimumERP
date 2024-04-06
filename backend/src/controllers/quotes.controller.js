@@ -14,6 +14,7 @@ const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
 const path = require("path");
+const Invoice = require("../models/invoice.model");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -342,4 +343,60 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
       pageSize: "A4",
     }).pipe(res);
   });
+});
+
+exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
+  const setting = await Setting.findOne({
+    org: req.params.orgId,
+  });
+  if (!setting) throw new OrgNotFound();
+  const quote = await Quote.findOne({
+    org: req.params.orgId,
+    _id: req.params.quoteId,
+  }).populate("party");
+  const invoicePrefix = setting.transactionPrefix.invoice;
+  const invoice = await Invoice.findOne(
+    {
+      org: req.params.orgId,
+      financialYear: setting.financialYear,
+    },
+    { invoiceNo: 1 },
+    { sort: { invoiceNo: -1 } }
+  ).select("invoiceNo");
+  const invoiceNo = (invoice?.invoiceNo || 0) + 1;
+  const newInvoice = new Invoice({
+    org: req.params.orgId,
+    total: quote.total,
+    num: invoicePrefix + invoiceNo,
+    totalTax: quote.totalTax,
+    igst: quote.igst,
+    sgst: quote.sgst,
+    cgst: quote.cgst,
+    financialYear: setting.financialYear,
+    billingAddress: quote.party.billingAddress,
+    description: quote.description,
+    items: quote.items,
+    party: quote.party._id,
+    poDate: quote.date,
+    poNo: quote.quoteNo,
+    status: "draft",
+  });
+  await newInvoice.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "invoice",
+    financialYear: setting.financialYear,
+    doc: newInvoice._id,
+    total: quote.total,
+    totalTax: quote.totalTax,
+    party: quote.party._id,
+    date: newInvoice.date,
+  });
+  await transaction.save();
+  await Quote.updateOne(
+    { _id: req.params.quoteId },
+    { $set: { converted: newInvoice.id } }
+  );
+  return res.status(200);
 });

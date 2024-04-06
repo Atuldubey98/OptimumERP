@@ -34,12 +34,12 @@ export default function App() {
     <Suspense fallback={<FullLoader />}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/:orgId">
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
           <Route element={<ContactsPage />} path="contacts" />
           <Route path="about" element={<AboutPage />} />
           <Route path="admin" element={<AdminPage />} />
-          <Route path="forgot-password" element={<ForgotPasswordPage />} />
           <Route
             path="transaction-settings"
             element={<TransactionSettingsPage />}
