@@ -1,5 +1,6 @@
 import {
   Box,
+  Heading,
   Flex,
   FormControl,
   FormLabel,
@@ -17,6 +18,7 @@ import instance from "../../../instance";
 import MainLayout from "../main-layout";
 import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
+import { GoOrganization } from "react-icons/go";
 export default function TransactionSettingsPage() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
@@ -147,7 +149,19 @@ export default function TransactionSettingsPage() {
                 </Box>
               </Flex>
             </>
-          ) : null}
+          ) : (
+            <Flex
+              minH={"50svh"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexDir={"column"}
+            >
+              <GoOrganization size={80} color="lightgray" />
+              <Heading color={"gray.300"} fontSize={"2xl"}>
+                Select Organization
+              </Heading>
+            </Flex>
+          )}
         </SimpleGrid>
       </Stack>
     </MainLayout>

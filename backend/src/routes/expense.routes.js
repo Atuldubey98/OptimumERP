@@ -49,6 +49,7 @@ expenseRouter.post(
   "/categories",
   authenticate,
   checkOrgAuthorization,
+  createModel,
   createExpenseCategory
 );
 

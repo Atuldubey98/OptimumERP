@@ -15,27 +15,26 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
-  Tooltip,
   Tr,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { GoDotFill, GoOrganization } from "react-icons/go";
 import { IoAdd } from "react-icons/io5";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
+import HelpPopover from "../common/HelpPopover";
 import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
-import HelpPopover from "../common/HelpPopover";
-import { GoDotFill } from "react-icons/go";
-import { useParams } from "react-router-dom";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -82,9 +81,7 @@ export default function AdminPage() {
   });
   const fetchOrgUsers = useCallback(
     requestAsyncHandler(async (org) => {
-      const { data } = await instance.get(
-        `/api/v1/organizations/${org}/users`
-      );
+      const { data } = await instance.get(`/api/v1/organizations/${org}/users`);
       setOrgUsers(
         data.data.map((responseData) => ({
           ...responseData.user,
@@ -94,7 +91,7 @@ export default function AdminPage() {
     }),
     []
   );
- 
+
   const defaultOrganization = {
     name: "",
     address: "",
@@ -163,31 +160,41 @@ export default function AdminPage() {
             <Spinner />
           </Flex>
         ) : (
-          <Box>
-            <FormControl>
-              <FormLabel fontWeight={"bold"}>Organization</FormLabel>
-              <Select
-                options={organizationsOptions}
-                value={organizationsOptions.find(
-                  (org) => org.value == organization
-                )}
-                onChange={({ value }) => {
-                  setOrganization(value);
-                  const currentOrg = authorizedOrgs.find(
-                    (authorizedOrg) => authorizedOrg.org._id === value
-                  ).org;
-                  setValues({
-                    ...defaultOrganization,
-                    ...currentOrg,
-                  });
-                  if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
-                  fetchOrgUsers(value);
-                }}
-              />
-            </FormControl>
-          </Box>
+          <FormControl>
+            <FormLabel fontWeight={"bold"}>Organization</FormLabel>
+            <Select
+              options={organizationsOptions}
+              value={organizationsOptions.find(
+                (org) => org.value == organization
+              )}
+              onChange={({ value }) => {
+                setOrganization(value);
+                const currentOrg = authorizedOrgs.find(
+                  (authorizedOrg) => authorizedOrg.org._id === value
+                ).org;
+                setValues({
+                  ...defaultOrganization,
+                  ...currentOrg,
+                });
+                if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
+                fetchOrgUsers(value);
+              }}
+            />
+          </FormControl>
         )}
-        {loading || !organization || !currentSelectedOrganization ? null : (
+        {loading || !organization || !currentSelectedOrganization ? (
+          <Flex
+            minH={"50svh"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDir={"column"}
+          >
+            <GoOrganization size={80} color="lightgray" />
+            <Heading color={"gray.300"} fontSize={"2xl"}>
+              Select Organization
+            </Heading>
+          </Flex>
+        ) : (
           <Fade in={!loading && organization}>
             <Stack marginBlock={3} spacing={1}>
               <SimpleGrid gap={4} minChildWidth={300}>

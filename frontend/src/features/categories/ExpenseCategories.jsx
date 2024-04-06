@@ -11,11 +11,12 @@ import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseCategoryForm from "./ExpenseCategoryForm";
 import * as Yup from "yup";
+import useAsyncCall from "../../hooks/useAsyncCall";
 const expenseCategorySchema = Yup.object({
-  name: Yup.string().required().max(30, "Cannot be greater than 30 characters"),
+  name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
   description: Yup.string()
     .optional()
-    .max(40, "Cannot be greater than 40 characters"),
+    .max(150, "Cannot be greater than 150 characters"),
 });
 export default function ExpenseCategories() {
   const { fetchExpenseCategories, expenseCategories, status } =
@@ -37,13 +38,14 @@ export default function ExpenseCategories() {
     openDeleteModal();
   };
   const loading = status === "loading";
+  const { requestAsyncHandler } = useAsyncCall();
   const [expenseCategoryStatus, setExpenseCategoryStatus] = useState("idle");
   const formik = useFormik({
     initialValues: {
       name: "",
       description: "",
     },
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...category } = values;
       await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/expenses/categories${
@@ -52,9 +54,17 @@ export default function ExpenseCategories() {
         category
       );
       fetchExpenseCategories();
+      toast({
+        title: "Success",
+        size : "sm",
+        description: `Expense category ${_id ? "updated" : "created"}`,
+        status: _id ? "info" : "success",
+        duration: 3000,
+        isClosable: true,
+      });
       closeExpenseCategoryForm();
       setSubmitting(false);
-    },
+    }),
     validationSchema: expenseCategorySchema,
     validateOnChange: false,
   });
@@ -77,6 +87,13 @@ export default function ExpenseCategories() {
       await instance.delete(
         `/api/v1/organizations/${orgId}/expenses/categories/${expenseCategory._id}`
       );
+      toast({
+        title: "Success",
+        description: "Expense category deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       fetchExpenseCategories();
     } catch (err) {
       toast({

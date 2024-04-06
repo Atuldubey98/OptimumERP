@@ -5,6 +5,7 @@ const expenseSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
+      maxLength : 150,
     },
     org: {
       type: mongoose.Types.ObjectId,
