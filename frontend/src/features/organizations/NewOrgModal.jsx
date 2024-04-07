@@ -11,6 +11,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  Box,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -50,7 +51,7 @@ export default function NewOrgModal({
     }),
   });
   return (
-    <Modal isOpen={isOpenNewOrgModal} onClose={onCloseNewOrgModal}>
+    <Modal size={"xl"} isOpen={isOpenNewOrgModal} onClose={onCloseNewOrgModal}>
       <ModalOverlay />
       <form onSubmit={formik.handleSubmit}>
         <ModalContent>
@@ -113,32 +114,42 @@ export default function NewOrgModal({
                 />
                 <FormErrorMessage>{formik.errors.gstNo}</FormErrorMessage>
               </FormControl>
+              <Text fontSize={"sm"}>
+                Rest organization details can be filled in settings
+              </Text>
               <Divider />
-             <Grid>
-              <Text fontWeight={"bold"} fontSize={"md"}>Fiscal Year</Text>
-             <Flex gap={3}>
-                <FormControl isRequired>
-                  <FormLabel fontWeight={"bold"}>Start Date</FormLabel>
-                  <Input
-                    name="financialYearStart"
-                    value={formik.values.financialYearStart}
-                    onChange={formik.handleChange}
-                    placeholder="dd-mm-yyyy"
-                    type="date"
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel fontWeight={"bold"}>End Date</FormLabel>
-                  <Input
-                    value={formik.values.financialYearEnd}
-                    placeholder="dd-mm-yyyy"
-                    type="date"
-                    name="financialYearEnd"
-                    onChange={formik.handleChange}
-                  />
-                </FormControl>
-              </Flex>
-             </Grid>
+              <Grid>
+                <Text fontWeight={"bold"} fontSize={"md"}>
+                  Fiscal Year
+                </Text>
+                <Flex gap={3}>
+                  <FormControl isRequired>
+                    <FormLabel>Start Date</FormLabel>
+                    <Input
+                      name="financialYearStart"
+                      value={formik.values.financialYearStart}
+                      onChange={formik.handleChange}
+                      placeholder="dd-mm-yyyy"
+                      type="date"
+                    />
+                  </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel>End Date</FormLabel>
+                    <Input
+                      value={formik.values.financialYearEnd}
+                      placeholder="dd-mm-yyyy"
+                      type="date"
+                      name="financialYearEnd"
+                      onChange={formik.handleChange}
+                    />
+                  </FormControl>
+                </Flex>
+                <Box marginBlock={2}>
+                  <Text fontSize={"sm"}>
+                    Select current fiscal year you are following
+                  </Text>
+                </Box>
+              </Grid>
               <Divider />
             </Grid>
           </ModalBody>

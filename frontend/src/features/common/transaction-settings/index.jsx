@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import SettingContext from "../../../contexts/SettingContext";
 import useOrganizations from "../../../hooks/useOrganizations";
 import instance from "../../../instance";
@@ -49,6 +49,10 @@ export default function TransactionSettingsPage() {
     label: authOrg.org.name,
     disabled: authOrg.role !== "admin",
   }));
+  const [initialFiscalYear, setInitialFiscalYear] = useState({
+    startDate: "",
+    endDate: "",
+  });
   const formik = useFormik({
     initialValues: {
       organization: "",
@@ -72,6 +76,7 @@ export default function TransactionSettingsPage() {
           end: values.endDate,
         },
       });
+     
       const currentOrg = localStorage.getItem("organization");
       if (
         currentOrg === values.organization &&
