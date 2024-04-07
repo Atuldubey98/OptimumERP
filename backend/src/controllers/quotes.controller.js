@@ -15,6 +15,7 @@ const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
+const { date } = require("joi");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -364,10 +365,13 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
     { sort: { invoiceNo: -1 } }
   ).select("invoiceNo");
   const invoiceNo = (invoice?.invoiceNo || 0) + 1;
+  const num = invoicePrefix + invoiceNo;
+  const date = new Date();
   const newInvoice = new Invoice({
     org: req.params.orgId,
     total: quote.total,
-    num: invoicePrefix + invoiceNo,
+    num,
+    invoiceNo,
     totalTax: quote.totalTax,
     igst: quote.igst,
     sgst: quote.sgst,
@@ -377,9 +381,12 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
     description: quote.description,
     items: quote.items,
     party: quote.party._id,
+    date: new Date(date.toDateString()),
     poDate: quote.date,
     poNo: quote.quoteNo,
+    createdBy: req.session.user._id,
     status: "draft",
+    terms: "Thanks for business !",
   });
   await newInvoice.save();
   const transaction = new Transaction({
@@ -392,11 +399,12 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
     totalTax: quote.totalTax,
     party: quote.party._id,
     date: newInvoice.date,
+    createdBy: req.session.user._id,
   });
   await transaction.save();
   await Quote.updateOne(
     { _id: req.params.quoteId },
     { $set: { converted: newInvoice.id } }
   );
-  return res.status(200);
+  return res.status(201).json({ message: `Invoice ${num} created` });
 });

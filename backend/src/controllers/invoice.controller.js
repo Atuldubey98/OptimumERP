@@ -4,6 +4,7 @@ const { PartyNotFound } = require("../errors/party.error");
 const {
   InvoiceNotFound,
   InvoiceDuplicate,
+  InvoiceNotDelete,
 } = require("../errors/invoice.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Party = require("../models/party.model");
@@ -21,6 +22,7 @@ const path = require("path");
 const QRCode = require("qrcode");
 const Joi = require("joi");
 const transporter = require("../mailer");
+const Quotes = require("../models/quotes.model");
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
     QRCode.toDataURL(value, function (err, url) {
@@ -119,11 +121,13 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
 exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;
   if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
+
   const invoice = await Invoice.findOneAndDelete({
     _id: invoiceId,
     org: req.params.orgId,
   });
   if (!invoice) throw new InvoiceNotFound();
+  await Quotes.findOneAndUpdate({ converted: invoiceId }, { converted: null });
   const transaction = await Transaction.findOneAndDelete({
     org: req.params.orgId,
     docModel: "invoice",
@@ -469,7 +473,7 @@ exports.sendInvoice = requestAsyncHandler(async (req, res) => {
                   content: pdfBuffer,
                 },
               ],
-              subject : ``,
+              subject: ``,
               text: `Here is your invoice with`,
             });
             return res.status(200).json({ message: "Invoice sent " });

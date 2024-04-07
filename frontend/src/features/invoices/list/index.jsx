@@ -3,12 +3,12 @@ import {
   Link as ChakraLink,
   Flex,
   Spinner,
-  useDisclosure
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../../constants/invoice";
-import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 import instance from "../../../instance";
@@ -21,6 +21,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
+import { isAxiosError } from "axios";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -59,7 +60,6 @@ export default function InvoicesPage() {
     setInvoice(currentInvoice);
     onOpen();
   };
-  const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
   const {
     isOpen: isDeleteModalOpen,
@@ -67,16 +67,30 @@ export default function InvoicesPage() {
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
   const [invoiceStatus, setInvoiceStatus] = useState("idle");
-  const deleteInvoice = requestAsyncHandler(async (invoice) => {
-    if (!invoice) return;
-    setInvoiceStatus("deleting");
-    await instance.delete(
-      `/api/v1/organizations/${orgId}/invoices/${invoice._id}`
-    );
-    onCloseDeleteModal();
-    setInvoiceStatus("idle");
-    fetchInvoices();
-  });
+  const toast = useToast();
+  const deleteInvoice = async (invoice) => {
+    try {
+      if (!invoice) return;
+      setInvoiceStatus("deleting");
+      await instance.delete(
+        `/api/v1/organizations/${orgId}/invoices/${invoice._id}`
+      );
+      onCloseDeleteModal();
+      fetchInvoices();
+    } catch (error) {
+      toast({
+        title: isAxiosError(error) ? error.response.data.name : "Error",
+        description: isAxiosError(error)
+          ? error.response.data.message
+          : "Some error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setInvoiceStatus("idle");
+    }
+  };
   const deleting = invoiceStatus === "deleting";
   const onClickAddNewInvoice = () => {
     navigate(`create`);

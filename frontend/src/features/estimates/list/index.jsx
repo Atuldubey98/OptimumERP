@@ -1,4 +1,4 @@
-import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncCall from "../../../hooks/useAsyncCall";
@@ -14,6 +14,7 @@ import BillFilter from "./BillFilter";
 import BillModal from "./BillModal";
 import Status from "./Status";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import { isAxiosError } from "axios";
 
 export default function EstimatesPage() {
   const { symbol } = useCurrentOrgCurrency();
@@ -49,7 +50,6 @@ export default function EstimatesPage() {
     setQuotation(estimate);
     onOpen();
   };
-  const { requestAsyncHandler } = useAsyncCall();
   const { orgId } = useParams();
   const {
     isOpen: isDeleteModalOpen,
@@ -57,19 +57,37 @@ export default function EstimatesPage() {
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
   const [estimateStatus, setEstimateStatus] = useState("idle");
-  const deleteQuote = requestAsyncHandler(async (estimate) => {
-    if (!estimate) return;
-    setEstimateStatus("deleting");
-    await instance.delete(
-      `/api/v1/organizations/${orgId}/quotes/${estimate._id}`
-    );
-    onCloseDeleteModal();
-    fetchQuotes();
-    setEstimateStatus("idle");
-  });
+  const deleteQuote = async (estimate) => {
+    try {
+      if (!estimate) return;
+      setEstimateStatus("deleting");
+      await instance.delete(
+        `/api/v1/organizations/${orgId}/quotes/${estimate._id}`
+      );
+      onCloseDeleteModal();
+      fetchQuotes();
+      setEstimateStatus("idle");
+    } catch (error) {
+      toast({
+        title: isAxiosError(error) ? error.response.data.name : "Error",
+        description: isAxiosError(error)
+          ? error.response.data.message
+          : "Some error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setEstimateStatus("idle");
+    }
+  };
   const onSaveBill = async (item) => {
     const currentEstimate = quotation || item;
-    const downloadBill = `/api/v1/organizations/${currentEstimate.org._id}/quotes/${currentEstimate._id}/download?template=${localStorage.getItem("template") || "simple"}`;
+    const downloadBill = `/api/v1/organizations/${
+      currentEstimate.org._id
+    }/quotes/${currentEstimate._id}/download?template=${
+      localStorage.getItem("template") || "simple"
+    }`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });
@@ -80,7 +98,31 @@ export default function EstimatesPage() {
     link.click();
     URL.revokeObjectURL(href);
   };
-
+  const toast = useToast();
+  const convertToInvoice = async (quote) => {
+    try {
+      const { data } = await instance.post(
+        `/api/v1/organizations/${orgId}/quotes/${quote._id}/convert-to-invoice`
+      );
+      toast({
+        title: "Success",
+        description: data.message,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: isAxiosError(error) ? error.response.data.name : "Error",
+        description: isAxiosError(error)
+          ? error.response.data.message
+          : "Some error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
   const deleting = estimateStatus === "deleting";
   return (
     <MainLayout>
@@ -102,6 +144,9 @@ export default function EstimatesPage() {
             caption={`Total estimates found : ${totalCount}`}
             operations={estimates.map((estimate) => (
               <VertIconMenu
+                convertToInvoice={() => {
+                  convertToInvoice(estimate);
+                }}
                 onDownloadItem={() => {
                   onSaveBill(estimate);
                 }}
@@ -120,7 +165,7 @@ export default function EstimatesPage() {
               status: "Status",
               partyName: "Party name",
               quoteNo: "Quote No.",
-             
+
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewQuote}

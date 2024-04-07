@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
 import { FaMoneyCheck } from "react-icons/fa";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 import { GoTag } from "react-icons/go";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
@@ -25,6 +26,7 @@ export default function VertIconMenu({
   showProducts,
   showContacts,
   downloading = false,
+  convertToInvoice,
 }) {
   return (
     <Menu>
@@ -42,6 +44,15 @@ export default function VertIconMenu({
             command="⌘S"
           >
             Show
+          </MenuItem>
+        ) : null}
+        {convertToInvoice ? (
+          <MenuItem
+            icon={<FaFileInvoiceDollar size={20} />}
+            onClick={convertToInvoice}
+            command="⌘S"
+          >
+            Convert to Invoice
           </MenuItem>
         ) : null}
         {showProducts ? (
