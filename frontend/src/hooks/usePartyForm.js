@@ -45,9 +45,8 @@ export default function usePartyForm(onAddedFetch, onCloseDrawer) {
         gstNo,
         org: orgId,
         panNo,
-        _id,
       };
-      if (party._id)
+      if (_id)
         await instance.patch(
           `/api/v1/organizations/${orgId}/parties/${_id}`,
           party
