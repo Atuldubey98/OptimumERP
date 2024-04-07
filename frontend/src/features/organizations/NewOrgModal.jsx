@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Divider,
   Flex,
@@ -11,7 +12,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  Box,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -20,8 +20,7 @@ import {
 import { useFormik } from "formik";
 import React from "react";
 import useAsyncCall from "../../hooks/useAsyncCall";
-import { createOrg } from "../../api/org";
-import DateFilter from "../estimates/list/DateFilter";
+import instance from "../../instance";
 export default function NewOrgModal({
   isOpen: isOpenNewOrgModal,
   onCloseNewOrgModal,
@@ -40,7 +39,7 @@ export default function NewOrgModal({
     },
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { financialYearEnd, financialYearStart, ...resetOrg } = values;
-      await createOrg({
+      await instance.post(`/api/v1/organizations`, {
         ...resetOrg,
         financialYear: { start: financialYearStart, end: financialYearEnd },
       });

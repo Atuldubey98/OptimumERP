@@ -1,8 +1,8 @@
 import { useFormik } from "formik";
 import useAsyncCall from "./useAsyncCall";
 import * as Yup from "yup";
-import { createProduct, updateProduct } from "../api/product";
 import { useParams } from "react-router-dom";
+import instance from "../instance";
 const productDto = Yup.object({
   name: Yup.string()
     .min(2, "Cannot be less than 2")
@@ -45,16 +45,17 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
         updatedAt,
         ...product
       } = values;
+
       if (productId)
-        await updateProduct({
-          product: {
+        await instance.patch(
+          `/api/v1/organizations/${orgId}/products/${productId}`,
+          {
             ...product,
             category: values.category ? values.category : null,
-          },
-          orgId,
-          productId,
-        });
-      else await createProduct({ product, orgId });
+          }
+        );
+      else
+        await instance.post(`/api/v1/organizations/${orgId}/products`, product);
       if (onAddedFetch) onAddedFetch();
       onCloseDrawer();
       formik.resetForm();

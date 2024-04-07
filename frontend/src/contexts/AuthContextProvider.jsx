@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { currentUser } from "../api/login";
+import instance from '../instance';
 import AuthContext from "./AuthContext";
 export default function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -8,7 +8,7 @@ export default function AuthContextProvider({ children }) {
     setUserLoading(true);
     (async () => {
       try {
-        const { data } = await currentUser();
+        const { data } = await instance.get(`/api/v1/users`);
         setUser(data);
       } catch (error) {
         setUser(null);

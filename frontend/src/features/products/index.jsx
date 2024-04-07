@@ -16,7 +16,6 @@ import ShowDrawer from "../common/ShowDrawer";
 import useQuery from "../../hooks/useQuery";
 import useProductForm from "../../hooks/useProductForm";
 import ProductFormDrawer from "./ProductFormDrawer";
-import { deletProduct } from "../../api/product";
 import { useParams } from "react-router-dom";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import Pagination from "../common/main-layout/Pagination";
@@ -107,7 +106,9 @@ export default function ProductsPage() {
   const onDeleteProduct = requestAsyncHandler(async () => {
     if (!selectedToShowProduct) return;
     setProductStatus("deleting");
-    await deletProduct(selectedToShowProduct._id, orgId);
+    await instance.delete(
+      `/api/v1/organizations/${orgId}/products/${selectedToShowProduct._id}`
+    );
     fetchProducts();
     closeDeleteModal();
     setProductStatus("idle");

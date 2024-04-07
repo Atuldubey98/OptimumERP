@@ -1,8 +1,9 @@
 import { useFormik } from "formik";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
-import { createParty, updateParty } from "../api/party";
+
 import useAsyncCall from "./useAsyncCall";
+import instance from "../instance";
 
 const partyDto = Yup.object({
   name: Yup.string()
@@ -46,12 +47,16 @@ export default function usePartyForm(onAddedFetch, onCloseDrawer) {
         panNo,
         _id,
       };
-      if (party._id) await updateParty(party, orgId);
-      else await createParty(party, orgId);
+      if (party._id)
+        await instance.patch(
+          `/api/v1/organizations/${orgId}/parties/${_id}`,
+          party
+        );
+      else await instance.post(`/api/v1/organizations/${orgId}/parties`, party);
       setSubmitting(false);
       onCloseDrawer();
       formik.resetForm();
-      if (onAddedFetch) onAddedFetch()
+      if (onAddedFetch) onAddedFetch();
     }),
   });
   return { formik };

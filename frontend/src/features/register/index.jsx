@@ -3,10 +3,10 @@ import { useFormik } from "formik";
 import React from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { registerUser } from "../../api/register";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import AuthLayout from "../common/auth-layout";
 import RegisterUserFields from "./RegisterUserFields";
+import instance from "../../instance";
 export default function RegisterPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function RegisterPage() {
     },
     validationSchema: registerSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { data } = await registerUser(values);
+      const { data } = await instance.post(`/api/v1/users/register`, values);
       toast({
         title: "Registered",
         description: data.message,

@@ -1,9 +1,10 @@
 import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import { isAxiosError } from "axios";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteParty } from "../../api/party";
-import usePartyForm from "../../hooks/usePartyForm";
 import useParties from "../../hooks/useParties";
+import usePartyForm from "../../hooks/usePartyForm";
+import instance from "../../instance";
 import AlertModal from "../common/AlertModal";
 import ShowDrawer from "../common/ShowDrawer";
 import MainLayout from "../common/main-layout";
@@ -12,7 +13,6 @@ import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import PartyFormDrawer from "./PartyFormDrawer";
 import PartyMenu from "./PartyMenu";
-import { isAxiosError } from "axios";
 export default function PartysPage() {
   const {
     isOpen: isDeleteModalOpen,
@@ -57,7 +57,9 @@ export default function PartysPage() {
   const onDeleteParty = async () => {
     try {
       setStatus("deleting");
-      await deleteParty(selectedToShowParty._id, orgId);
+      await instance.delete(
+        `/api/v1/organizations/${orgId}/parties/${selectedToShowParty._id}`
+      );
       fetchPartys();
       setStatus("idle");
     } catch (err) {

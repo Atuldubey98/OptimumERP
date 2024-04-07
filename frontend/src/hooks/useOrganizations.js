@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
-import { getOrgs } from "../api/org";
 
 export default function useOrganizations() {
   const [authorizedOrgs, setAuthorizedOrgs] = useState([]);
@@ -8,7 +8,7 @@ export default function useOrganizations() {
   const { requestAsyncHandler } = useAsyncCall();
   const fetchOrgs = requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await getOrgs();
+    const { data } = await instance.get(`/api/v1/organizations`);
     setAuthorizedOrgs(data.data);
     setStatus("success");
   });

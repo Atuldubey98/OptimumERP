@@ -10,16 +10,16 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { GoArrowSwitch } from "react-icons/go";
 import { IoIosLogOut } from "react-icons/io";
 import { RiLockPasswordLine } from "react-icons/ri";
-import AvatarProfile from "../../common/main-layout/AvatarProfile";
-import { useState } from "react";
-import useAuth from "../../../hooks/useAuth";
-import useAsyncCall from "../../../hooks/useAsyncCall";
-import AlertModal from "../AlertModal";
 import { useNavigate, useParams } from "react-router-dom";
-import { logoutUser } from "../../../api/logout";
+import useAsyncCall from "../../../hooks/useAsyncCall";
+import useAuth from "../../../hooks/useAuth";
+import AvatarProfile from "../../common/main-layout/AvatarProfile";
+import AlertModal from "../AlertModal";
+import instance from "../../../instance";
 export default function AvatarProfileWithOptions() {
   const hoverBg = useColorModeValue("gray.200", "gray.700");
   const { requestAsyncHandler } = useAsyncCall();
@@ -29,7 +29,7 @@ export default function AvatarProfileWithOptions() {
   const [status, setStatus] = useState("idle");
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
-    const { data } = await logoutUser();
+    const { data } = await instance.post(`/api/v1/users/logout`);
     toast({
       title: "Logout",
       description: data.message,

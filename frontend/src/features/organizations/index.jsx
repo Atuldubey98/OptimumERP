@@ -10,31 +10,29 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
   Portal,
   Spinner,
-  Text,
   useColorModeValue,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
+import { CiDollar } from "react-icons/ci";
 import { FaRegCircleDot } from "react-icons/fa6";
+import { IoIosLogOut } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../contexts/AuthContext";
+import SettingContext from "../../contexts/SettingContext";
+import useAsyncCall from "../../hooks/useAsyncCall";
 import useOrganizations from "../../hooks/useOrganizations";
+import instance from "../../instance";
+import AlertModal from "../common/AlertModal";
 import PrivateRoute from "../common/PrivateRoute";
 import NewOrgModal from "./NewOrgModal";
 import OrgItem from "./OrgItem";
-import { CiDollar } from "react-icons/ci";
-import AuthContext from "../../contexts/AuthContext";
-import { IoIosLogOut } from "react-icons/io";
-import AlertModal from "../common/AlertModal";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import { logoutUser } from "../../api/logout";
-import { useNavigate } from "react-router-dom";
-import SettingContext from "../../contexts/SettingContext";
 export default function OrgPage() {
   const {
     isOpen,
@@ -59,7 +57,7 @@ export default function OrgPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
-    const { data } = await logoutUser();
+    const { data } = await instance.post(`/api/v1/users/logout`);
     toast({
       title: "Logout",
       description: data.message,

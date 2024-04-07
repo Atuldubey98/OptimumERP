@@ -1,12 +1,12 @@
 import { Button, Link as ChakraLink, Flex, Grid } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
-import AuthLayout from "../common/auth-layout";
-import AuthFields from "./AuthFields";
-import { loginUser } from "../../api/login";
+import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useAuth from "../../hooks/useAuth";
+import instance from "../../instance";
+import AuthLayout from "../common/auth-layout";
+import AuthFields from "./AuthFields";
 export default function LoginPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function LoginPage() {
     },
     validationSchema: loginSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { data } = await loginUser(values);
+      const { data } = await instance.post(`/api/v1/users/login`, values);
       localStorage.setItem("user", JSON.stringify(data.data));
       if (auth.onSetCurrentUser) {
         auth.onSetCurrentUser(data.data);
