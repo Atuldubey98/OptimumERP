@@ -6,7 +6,6 @@ import {
 } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
 import { GoTag } from "react-icons/go";
-import { HiOutlineDocumentReport } from "react-icons/hi";
 import { TiContacts } from "react-icons/ti";
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },

@@ -18,6 +18,7 @@ const {
   updateExpenseCategory,
   deleteExpenseCategory,
   createExpense,
+  getExpenseCategory,
 } = require("../controllers/expenses.controller");
 
 const expenseRouter = Router({ mergeParams: true });
@@ -59,6 +60,13 @@ expenseRouter.patch(
   checkOrgAuthorization,
   updateModel,
   updateExpenseCategory
+);
+
+expenseRouter.get(
+  "/categories/:categoryId",
+  authenticate,
+  checkOrgAuthorization,
+  getExpenseCategory
 );
 expenseRouter.delete(
   "/categories/:categoryId",

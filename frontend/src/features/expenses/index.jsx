@@ -9,7 +9,7 @@ import ExpenseForm from "./ExpenseForm";
 import { useFormik } from "formik";
 import instance from "../../instance";
 import Pagination from "../common/main-layout/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShowDrawer from "../common/ShowDrawer";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import AlertModal from "../common/AlertModal";
@@ -17,10 +17,21 @@ import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import * as Yup from "yup";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
-  const { orgId } = useParams();
+  const { orgId, expenseCategoryId } = useParams();
+
   const { data, status, fetchFn } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/expenses`,
   });
+  const [heading, setHeading] = useState("Expenses");
+  const fetchExpenseCategoryById = async () => {
+    const { data } = await instance.get(
+      `/api/v1/organizations/${orgId}/expenses/categories/${expenseCategoryId}`
+    );
+    setHeading(`Expenses (${data.data.name})`);
+  };
+  useEffect(() => {
+    if (expenseCategoryId) fetchExpenseCategoryById();
+  }, [expenseCategoryId]);
   const { items: expenses, totalPages, currentPage, totalCount } = data;
   const loading = status === "loading";
   const {
@@ -114,7 +125,7 @@ export default function ExpensesPage() {
                 <SearchItem />
               </Box>
             }
-            heading={"Expenses"}
+            heading={heading}
             tableData={expenses.map((expense) => ({
               ...expense,
               amount: `${symbol} ${expense.amount}`,

@@ -53,6 +53,10 @@ export default function App() {
                 element={<ProductsPage />}
                 path=":productCategoryId/products"
               />
+              <Route
+                element={<ExpensesPage />}
+                path=":expenseCategoryId/expenses"
+              />
             </Route>
           </Route>
           <Route path="parties">

@@ -11,11 +11,13 @@ import React from "react";
 import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
 import { FaMoneyCheck } from "react-icons/fa";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
+import { GiExpense } from "react-icons/gi";
 import { GoTag } from "react-icons/go";
 import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
 import { TiContacts } from "react-icons/ti";
+
 export default function VertIconMenu({
   showItem,
   editItem,
@@ -24,6 +26,7 @@ export default function VertIconMenu({
   showTransactions,
   recordPayment,
   showProducts,
+  showExpenses,
   showContacts,
   downloading = false,
   convertToInvoice,
@@ -37,6 +40,15 @@ export default function VertIconMenu({
         variant="outline"
       />
       <MenuList>
+        {showExpenses ? (
+          <MenuItem
+            icon={<GiExpense size={20} />}
+            onClick={showExpenses}
+            command="⌘X"
+          >
+            Expenses
+          </MenuItem>
+        ) : null}
         {showItem ? (
           <MenuItem
             icon={<LiaEyeSolid size={20} />}

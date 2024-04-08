@@ -14,7 +14,7 @@ const usePaginatedFetch = ({ url }) => {
   const [status, setStatus] = useState("idle");
   const page = query.get("page") || 1;
   const search = query.get("query") || "";
-  const { partyId } = useParams();
+  const { partyId, expenseCategoryId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const fetchFn = useCallback(
     requestAsyncHandler(async () => {
@@ -24,6 +24,7 @@ const usePaginatedFetch = ({ url }) => {
           page,
           search,
           party: partyId,
+          category: expenseCategoryId,
         },
       });
       setData({

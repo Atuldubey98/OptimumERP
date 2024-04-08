@@ -2,7 +2,7 @@ import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useExpenseCategories from "../../hooks/useExpenseCategories";
 import instance from "../../instance";
 import AlertModal from "../common/AlertModal";
@@ -11,6 +11,8 @@ import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseCategoryForm from "./ExpenseCategoryForm";
 import * as Yup from "yup";
+import { GiExpense } from "react-icons/gi";
+
 import useAsyncCall from "../../hooks/useAsyncCall";
 const expenseCategorySchema = Yup.object({
   name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
@@ -56,7 +58,7 @@ export default function ExpenseCategories() {
       fetchExpenseCategories();
       toast({
         title: "Success",
-        size : "sm",
+        size: "sm",
         description: `Expense category ${_id ? "updated" : "created"}`,
         status: _id ? "info" : "success",
         duration: 3000,
@@ -111,7 +113,7 @@ export default function ExpenseCategories() {
     }
   };
   const deleting = expenseCategoryStatus === "deleting";
-
+  const navigate = useNavigate();
   return (
     <Box p={1}>
       {loading ? (
@@ -129,6 +131,9 @@ export default function ExpenseCategories() {
           onAddNewItem={onAddNewExpenseCategory}
           operations={expenseCategories.map((category) => (
             <VertIconMenu
+              showExpenses={() => {
+                navigate(`${category._id}/expenses`);
+              }}
               deleteItem={() => {
                 onDeleteExpenseCategory(category);
               }}

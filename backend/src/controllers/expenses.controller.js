@@ -21,6 +21,14 @@ exports.getExpense = requestAsyncHandler(async (req, res) => {
   if (!expense) return res.status(404).json({ message: "Expense not found" });
   return res.status(200).json({ data: expense });
 });
+exports.getExpenseCategory = requestAsyncHandler(async (req, res) => {
+  const expenseCategory = await ExpenseCategory.findOne({
+    org: req.params.orgId,
+    _id: req.params.categoryId,
+  });
+  if (!expenseCategory) return res.status(404).json({ message: "Expense not found" });
+  return res.status(200).json({ data: expenseCategory });
+});
 exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
   const body = await expenseCategoryDto.validateAsync(req.body);
   const category = await ExpenseCategory.create({
@@ -99,7 +107,10 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   };
   const search = req.query.search || "";
+  const category = req.query.category || "";
+  
   if (search) filter.$text = { $search: search };
+  if (category) filter.category = category;
   const totalCount = await Expense.countDocuments(filter);
   const totalPages = Math.ceil(totalCount / limit);
 
@@ -107,6 +118,7 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
     .skip((options.page - 1) * options.limit)
     .limit(options.limit)
     .populate("category")
+
     .exec();
 
   res.status(200).json({
