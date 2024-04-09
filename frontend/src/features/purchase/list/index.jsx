@@ -132,10 +132,10 @@ export default function PurchasePage() {
               />
             ))}
             selectedKeys={{
-              date: "Purchase Date",
-              status: "Status",
-              partyName: "Party name",
               purchaseNo: "Purchase No.",
+              date: "Purchase Date",
+              partyName: "Party name",
+              status: "Status",
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewInvoice}

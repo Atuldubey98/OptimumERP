@@ -161,11 +161,10 @@ export default function EstimatesPage() {
               />
             ))}
             selectedKeys={{
-              date: "Quotation Date",
-              status: "Status",
-              partyName: "Party name",
               quoteNo: "Quote No.",
-
+              date: "Quotation Date",
+              partyName: "Party name",
+              status: "Status",
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewQuote}

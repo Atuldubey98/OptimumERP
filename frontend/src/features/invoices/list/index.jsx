@@ -158,10 +158,10 @@ export default function InvoicesPage() {
               />
             ))}
             selectedKeys={{
-              date: "Invoice Date",
-              status: "Status",
-              partyName: "Party name",
               invoiceNo: "Invoice No.",
+              date: "Invoice Date",
+              partyName: "Party name",
+              status: "Status",
               grandTotal: "Total",
             }}
             onAddNewItem={onClickAddNewInvoice}
