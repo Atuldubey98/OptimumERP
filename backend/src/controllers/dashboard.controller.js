@@ -55,44 +55,7 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
 
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
-  const invoiceStatusTotal = await Invoice.aggregate([
-    {
-      $match: {
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
-      },
-    },
-    {
-      $group: {
-        _id: "$status",
-        totalAmount: {
-          $sum: { $sum: ["$total", "$totaTax"] },
-        },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-  const purchaseStatusTotal = await Purchase.aggregate([
-    {
-      $match: {
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
-      },
-    },
-    {
-      $group: {
-        _id: "$status",
-        totalAmount: {
-          $sum: { $sum: ["$total", "$totaTax"] },
-        },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
+
   const invoiceThisMonth = await Invoice.countDocuments({
     date: {
       $gte: startDate,
@@ -154,10 +117,8 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
       expensesThisMonth,
       partysThisMonth,
       recentInvoices,
-      purchaseStatusTotal,
       recentQuotes,
       purchasesThisMonth,
-      invoiceStatusTotal,
     },
   });
 });
