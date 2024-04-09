@@ -5,6 +5,7 @@ import {
   SimpleGrid,
   Skeleton,
   Stack,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
@@ -20,6 +21,7 @@ import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
+import useAuth from "../../hooks/useAuth";
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -79,9 +81,14 @@ export default function DashboardPage() {
   const currentPeriodLabel = periods.find(
     (period) => period.value === currentPeriod
   ).label;
+  const auth = useAuth();
   return (
     <MainLayout>
       <Box p={5}>
+        <Heading fontSize={"xl"}>
+          Hi, <strong>{auth.user.name}</strong>
+        </Heading>
+        <Text>Here's is overview of your business !</Text>
         <Stack marginBlock={2} spacing={3}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
             <Select
