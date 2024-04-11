@@ -129,7 +129,9 @@ export default function StatsPage() {
                     {stats.topFiveClientTotal.map((client, index) => (
                       <StatProgress
                         key={index}
-                        value={client.party.name}
+                        value={`${client.party.name} (${symbol} ${
+                          client.total + client.totalTax
+                        })`}
                         label={`${symbol} ${client.total + client.totalTax}`}
                         progress={
                           ((client.total + client.totalTax) /
@@ -169,8 +171,8 @@ export default function StatsPage() {
                         key={index}
                         value={
                           expeseCategory?._id
-                            ? expeseCategory.category.name
-                            : "Miscellenous"
+                            ? `${expeseCategory.category.name} (${symbol} ${expeseCategory.total})`
+                            : `Miscellenous (${symbol} ${expeseCategory.total})`
                         }
                         label={`${symbol} ${expeseCategory.total}`}
                         progress={(expeseCategory.total / expensesTotal) * 100}

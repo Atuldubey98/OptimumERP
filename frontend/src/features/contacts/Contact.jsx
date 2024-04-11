@@ -61,8 +61,9 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
       </CardBody>
       <CardFooter>
         <ButtonGroup justifyContent={"flex-end"} alignItems={"center"}>
-          <IconButton icon={<CiEdit />} onClick={onEditContact} />
+          <IconButton size={"sm"} icon={<CiEdit />} onClick={onEditContact} />
           <IconButton
+            size={"sm"}
             icon={<RiDeleteBin2Line color="red" />}
             onClick={onDeleteContact}
           />

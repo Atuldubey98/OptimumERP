@@ -26,10 +26,10 @@ const reportDataByType = {
   sale: {
     header: {
       num: "Invoice Number",
-      partyName: "Party Name",
       date: "Date",
-      totalTax: "Total Tax",
+      partyName: "Party Name",
       grandTotal: "Grand Total",
+      totalTax: "Total Tax",
       status: "Status",
     },
     bodyMapper: (item) => ({
@@ -45,10 +45,10 @@ const reportDataByType = {
   purchase: {
     header: {
       num: "Purchase Number",
-      partyName: "Party Name",
       date: "Date",
-      totalTax: "Total Tax",
+      partyName: "Party Name",
       grandTotal: "Grand Total",
+      totalTax: "Total Tax",
       status: "Status",
     },
 
@@ -64,11 +64,11 @@ const reportDataByType = {
   },
   transactions: {
     header: {
+      num: "Num",
       type: "Type",
       amount: "Amount",
-      createdAt: "Done at",
-      relatedTo: "Related To",
-      num: "Num",
+      createdAt: "Done on",
+      relatedTo: "Bill To/From",
     },
     bodyMapper: (item) => ({
       _id: item._id,
@@ -83,10 +83,10 @@ const reportDataByType = {
     header: {
       gstNo: "Party GST No",
       partyName: "Party Name",
+      grandTotal: "Grand Total",
       cgst: "CGST",
       sgst: "SGST",
       igst: "IGST",
-      grandTotal: "Grand Total",
     },
     bodyMapper: (item) => ({
       _id: item._id,
@@ -102,19 +102,19 @@ const reportDataByType = {
     header: {
       gstNo: "Party GST No",
       partyName: "Party Name",
+      grandTotal: "Grand Total",
       cgst: "CGST",
       sgst: "SGST",
       igst: "IGST",
-      grandTotal: "Grand Total",
     },
     bodyMapper: (item) => ({
       _id: item._id,
       partyName: item.party?.name,
       gstNo: item.party?.gstNo,
+      grandTotal: (item?.total + item?.totalTax).toFixed(2),
       cgst: item.cgst?.toFixed(2),
       sgst: item.sgst?.toFixed(2),
       igst: item.igst?.toFixed(2),
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
     }),
   },
 };
