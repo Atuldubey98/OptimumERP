@@ -96,6 +96,7 @@ export default function PartysPage() {
     openPartyFormDrawer();
   };
   const navigate = useNavigate();
+
   return (
     <MainLayout>
       <Box p={4}>

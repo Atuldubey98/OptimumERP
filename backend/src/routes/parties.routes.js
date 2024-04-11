@@ -8,6 +8,7 @@ const {
   searchParty,
   getInvoicesForParty,
   getPartyTransactions,
+  exportParties,
 } = require("../controllers/party.controller");
 const { authenticate } = require("../middlewares/auth.middleware");
 const {
@@ -27,12 +28,7 @@ partyRouter.get(
   paginateModel,
   getAllParty
 );
-partyRouter.get(
-  "/search",
-  authenticate,
-  checkOrgAuthorization,
-  searchParty
-);
+partyRouter.get("/search", authenticate, checkOrgAuthorization, searchParty);
 partyRouter.post(
   "/",
   authenticate,
@@ -47,12 +43,7 @@ partyRouter.patch(
   checkOrgAuthorization,
   updateParty
 );
-partyRouter.get(
-  "/:partyId",
-  authenticate,
-  checkOrgAuthorization,
-  getParty
-);
+partyRouter.get("/:partyId", authenticate, checkOrgAuthorization, getParty);
 partyRouter.get(
   "/:partyId/invoices",
   authenticate,

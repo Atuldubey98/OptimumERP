@@ -4,11 +4,11 @@ const { OrgNotFound } = require("../errors/org.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Party = require("../models/party.model");
 const Invoice = require("../models/invoice.model");
-const Quotation = require("../models/quotes.model");
 const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
 const { default: mongoose } = require("mongoose");
 const Purchase = require("../models/purchase.model");
+
 const Contact = require("../models/contacts.model");
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
@@ -72,6 +72,7 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
     data: parties,
   });
 });
+
 
 exports.deleteParty = requestAsyncHandler(async (req, res) => {
   if (!req.params.partyId) throw new PartyNotFound();

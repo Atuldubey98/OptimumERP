@@ -22,6 +22,7 @@ import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
 import { isAxiosError } from "axios";
+import PrintOptionsModal from "../../common/PrintOptionsModal";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -119,6 +120,7 @@ export default function InvoicesPage() {
     onOpen: openRecordPaymentModal,
     onClose: closeRecordPaymentModal,
   } = useDisclosure();
+  
   return (
     <MainLayout>
       <Box p={4}>
@@ -164,6 +166,7 @@ export default function InvoicesPage() {
               status: "Status",
               grandTotal: "Total",
             }}
+
             onAddNewItem={onClickAddNewInvoice}
           />
         )}
@@ -193,6 +196,7 @@ export default function InvoicesPage() {
             onClose={closeRecordPaymentModal}
           />
         ) : null}
+     
         {loading ? null : (
           <Pagination currentPage={currentPage} total={totalPages} />
         )}

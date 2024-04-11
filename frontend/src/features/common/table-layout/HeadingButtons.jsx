@@ -10,8 +10,10 @@ import {
 import React from "react";
 import { IoAdd, IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import ButtonIcon from "./ButtonIcon";
+import { TbTableExport } from "react-icons/tb";
 
-export default function HeadingButtons({ onAddNewItem, heading }) {
+export default function HeadingButtons({ onAddNewItem, heading, showExport }) {
   const navigate = useNavigate();
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -27,28 +29,18 @@ export default function HeadingButtons({ onAddNewItem, heading }) {
       </Flex>
       <ButtonGroup gap="4">
         {onAddNewItem ? (
-          <>
-            <Show above="md">
-              <Button
-                leftIcon={<IoAdd />}
-                onClick={onAddNewItem}
-                size={"sm"}
-                colorScheme="blue"
-              >
-                Add new
-              </Button>
-            </Show>
-            <Show below="md">
-              <IconButton
-                icon={<IoAdd />}
-                onClick={onAddNewItem}
-                size={"sm"}
-                colorScheme="blue"
-              >
-                Add new
-              </IconButton>
-            </Show>
-          </>
+          <ButtonIcon
+            icon={<IoAdd />}
+            label={"Add new"}
+            onClick={onAddNewItem}
+          />
+        ) : null}
+        {showExport ? (
+          <ButtonIcon
+            icon={<TbTableExport />}
+            label={"Export"}
+            onClick={showExport}
+          />
         ) : null}
       </ButtonGroup>
     </Flex>

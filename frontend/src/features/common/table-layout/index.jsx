@@ -42,7 +42,7 @@ function TableLayoutMemoized({
 
   return (
     <Stack spacing={4}>
-      <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} />
+      <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} showExport={showExport}/>
       {filter}
       <TableContainer>
         <Table size={"sm"} variant={"simple"}>
