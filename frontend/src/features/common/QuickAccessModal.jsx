@@ -1,11 +1,9 @@
 import {
-  Box,
   Button,
   Card,
   CardBody,
+  Grid,
   Flex,
-  Heading,
-  Image,
   Input,
   InputGroup,
   InputLeftElement,
@@ -16,7 +14,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Stack,
   Text,
   useColorModeValue,
@@ -25,16 +22,15 @@ import {
 import React, { useState } from "react";
 import { AiOutlineCustomerService } from "react-icons/ai";
 import { FaFileInvoice, FaFileInvoiceDollar } from "react-icons/fa6";
-import { IoSearchOutline } from "react-icons/io5";
-import { IoCreateOutline } from "react-icons/io5";
-import { useNavigate, useParams } from "react-router-dom";
-import { HiOutlineDocumentReport } from "react-icons/hi";
+import { GiExpense } from "react-icons/gi";
 import { GoTag } from "react-icons/go";
-import PartyFormDrawer from "../parties/PartyFormDrawer";
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { IoCreateOutline, IoSearchOutline } from "react-icons/io5";
+import { useNavigate, useParams } from "react-router-dom";
 import usePartyForm from "../../hooks/usePartyForm";
 import useProductForm from "../../hooks/useProductForm";
+import PartyFormDrawer from "../parties/PartyFormDrawer";
 import ProductFormDrawer from "../products/ProductFormDrawer";
-import { GiExpense } from "react-icons/gi";
 export default function QuickAccessModal({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { orgId = localStorage.getItem("organization") } = useParams();
@@ -134,6 +130,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   const { formik: productFormik } = useProductForm(undefined, closeProductForm);
   return (
     <Modal
+      scrollBehavior="inside"
       blockScrollOnMount={false}
       size={"2xl"}
       isOpen={isOpen}
@@ -141,58 +138,64 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Quick Access</ModalHeader>
+        <ModalHeader>
+          <Stack spacing={3}>
+            <Text>Quick Access</Text>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <IoSearchOutline color="blue.300" />
+              </InputLeftElement>
+              <Input
+                value={search}
+                autoFocus
+                onChange={(e) => setSearch(e.currentTarget.value)}
+                type="search"
+                placeholder="Search"
+              />
+            </InputGroup>
+          </Stack>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <IoSearchOutline color="blue.300" />
-            </InputLeftElement>
-            <Input
-              value={search}
-              autoFocus
-              onChange={(e) => setSearch(e.currentTarget.value)}
-              type="search"
-              placeholder="Search"
-            />
-          </InputGroup>
-          <Flex
-            marginBlock={4}
-            justifyContent={"center"}
-            alignItems={"center"}
-            flexWrap={"wrap"}
-            gap={2}
-          >
-            {quickAccessLabels
-              .filter(
-                (quickAccess) =>
-                  quickAccess.label
-                    .toLowerCase()
-                    .includes(search.toLowerCase()) || !search
-              )
-              .map((quickAccess) => (
-                <Card
-                  onClick={quickAccess.onClick}
-                  _hover={{
-                    bg: hoverBg,
-                  }}
-                  cursor={"pointer"}
-                  key={quickAccess.label}
-                  minW={200}
-                  maxW={200}
-                >
-                  <CardBody>
-                    <Flex justifyContent={"center"} alignItems={"center"}>
-                      {quickAccess.icon}
-                    </Flex>
-                    <Stack maxH={450} overflowY={"auto"} mt="6" spacing="3">
-                      <Text textAlign={"center"} size="md">
-                        {quickAccess.label}
-                      </Text>
-                    </Stack>
-                  </CardBody>
-                </Card>
-              ))}
+          <Flex justifyContent={"center"} width={"100%"} alignItems={"center"}>
+            <Grid
+              templateColumns={{
+                sm: "1fr",
+                md: "repeat(2, 1fr)",
+                lg: "repeat(3, 1fr)",
+              }}
+              gap={2}
+            >
+              {quickAccessLabels
+                .filter(
+                  (quickAccess) =>
+                    quickAccess.label
+                      .toLowerCase()
+                      .includes(search.toLowerCase()) || !search
+                )
+                .map((quickAccess) => (
+                  <Card
+                    onClick={quickAccess.onClick}
+                    _hover={{
+                      bg: hoverBg,
+                    }}
+                    w={"100%"}
+                    cursor={"pointer"}
+                    key={quickAccess.label}
+                  >
+                    <CardBody>
+                      <Flex justifyContent={"center"} alignItems={"center"}>
+                        {quickAccess.icon}
+                      </Flex>
+                      <Stack maxH={450} overflowY={"auto"} mt="6" spacing="3">
+                        <Text textAlign={"center"} size="md">
+                          {quickAccess.label}
+                        </Text>
+                      </Stack>
+                    </CardBody>
+                  </Card>
+                ))}
+            </Grid>
           </Flex>
         </ModalBody>
 
