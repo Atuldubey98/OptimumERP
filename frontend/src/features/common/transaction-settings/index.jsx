@@ -119,7 +119,7 @@ export default function TransactionSettingsPage() {
             </FormControl>
           </Box>
         )}
-        <SimpleGrid gap={4} minChildWidth={300}>
+        <SimpleGrid gap={8} minChildWidth={300}>
           {formik.values.organization ? (
             <>
               <Box

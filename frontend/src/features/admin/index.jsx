@@ -197,7 +197,7 @@ export default function AdminPage() {
         ) : (
           <Fade in={!loading && organization}>
             <Stack marginBlock={3} spacing={1}>
-              <SimpleGrid gap={4} minChildWidth={300}>
+              <SimpleGrid gap={8} minChildWidth={300}>
                 <Box>
                   <form onSubmit={handleSubmit}>
                     <Stack

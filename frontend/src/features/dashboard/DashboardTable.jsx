@@ -19,7 +19,7 @@ export default function DashboardTable({ heading, tableHeads, tableRows }) {
         <Heading fontSize={"xl"}>{heading}</Heading>
       </Box>
       <TableContainer>
-        <Table variant="simple">
+        <Table size={"sm"} variant="simple">
           {tableRows.length ? null : (
             <TableCaption>Nothing to show</TableCaption>
           )}

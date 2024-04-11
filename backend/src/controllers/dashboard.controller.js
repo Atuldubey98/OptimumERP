@@ -55,7 +55,7 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
 
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
-
+  
   const invoiceThisMonth = await Invoice.countDocuments({
     date: {
       $gte: startDate,

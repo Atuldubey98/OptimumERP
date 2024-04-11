@@ -1,11 +1,11 @@
 import {
   Card,
-  Divider,
+  CardBody,
   CardFooter,
-  CardHeader,
+  Divider,
+  Flex,
   Heading,
   Text,
-  Flex,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -13,15 +13,18 @@ export default function Dashcard({
   dashType = "invoice",
   dashTotal = "123",
   period = "This month",
+  icon,
 }) {
   return (
-    <Card maxW={"md"}>
-      <CardHeader>
-        <Heading textAlign={"center"} fontSize={"xl"}>
-          {dashType}
-        </Heading>
-      </CardHeader>
-      <Divider />
+    <Card width={"100%"} maxW={"sm"}>
+      <CardBody>
+        <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+          {icon}
+          <Heading textAlign={"center"} fontSize={"xl"}>
+            {dashType}
+          </Heading>
+        </Flex>
+      </CardBody>
       <CardFooter textAlign={"center"}>
         <Flex
           width={"100%"}

@@ -37,7 +37,7 @@ import ProductFormDrawer from "../products/ProductFormDrawer";
 import { GiExpense } from "react-icons/gi";
 export default function QuickAccessModal({ isOpen, onClose }) {
   const navigate = useNavigate();
-  const { orgId = localStorage.getItem("organization")} = useParams();
+  const { orgId = localStorage.getItem("organization") } = useParams();
   const quickAccessLabels = [
     {
       label: "Parties",
@@ -133,7 +133,12 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   const { formik } = usePartyForm(undefined, closePartyFormDrawer);
   const { formik: productFormik } = useProductForm(undefined, closeProductForm);
   return (
-    <Modal blockScrollOnMount={false} size={"2xl"} isOpen={isOpen} onClose={onClose}>
+    <Modal
+      blockScrollOnMount={false}
+      size={"2xl"}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Quick Access</ModalHeader>
@@ -145,6 +150,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
             </InputLeftElement>
             <Input
               value={search}
+              autoFocus
               onChange={(e) => setSearch(e.currentTarget.value)}
               type="search"
               placeholder="Search"

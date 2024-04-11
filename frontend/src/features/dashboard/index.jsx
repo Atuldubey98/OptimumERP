@@ -22,6 +22,10 @@ import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
 import useAuth from "../../hooks/useAuth";
+import PeriodSelect from "./PeriodSelect";
+import { FaFileInvoice, FaFileInvoiceDollar, FaMoneyBillTrendUp } from "react-icons/fa6";
+import { AiOutlineCustomerService } from "react-icons/ai";
+
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -91,12 +95,11 @@ export default function DashboardPage() {
         <Text>Here's is overview of your business !</Text>
         <Stack marginBlock={2} spacing={3}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
-            <Select
-              options={periods}
-              onChange={({ value }) => {
+            <PeriodSelect
+              onChangePeriod={({ value }) => {
                 setCurrentPeriod(value);
               }}
-              value={periods.find((period) => period.value === currentPeriod)}
+              currentPeriod={currentPeriod}
             />
           </Flex>
           <SimpleGrid minChildWidth={200} gap={5}>
@@ -104,11 +107,13 @@ export default function DashboardPage() {
               <Dashcard
                 period={currentPeriodLabel}
                 dashType="Invoice"
+                icon={<FaFileInvoiceDollar size={40} />}
                 dashTotal={dashboard.invoiceThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                icon={<AiOutlineCustomerService size={40} />}
                 period={currentPeriodLabel}
                 dashType="Party"
                 dashTotal={dashboard.partysThisMonth}
@@ -117,12 +122,14 @@ export default function DashboardPage() {
             <Skeleton isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
+                icon={<FaFileInvoice size={40} />}
                 dashType="Quotation"
                 dashTotal={dashboard.quotesThisMonth}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
               <Dashcard
+                icon={<FaMoneyBillTrendUp size={40} />}
                 period={currentPeriodLabel}
                 dashType="Purchase"
                 dashTotal={dashboard.purchasesThisMonth}

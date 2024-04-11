@@ -25,6 +25,7 @@ export default function ExportButton({
         borderRadius={"md"}
         bg={"blue.500"}
         padding={2}
+        download={true}
         colorScheme="green"
         fontSize={"md"}
         href={`${baseURL}/api/v1/organizations/${orgId}/reports/${reportType}/download?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}

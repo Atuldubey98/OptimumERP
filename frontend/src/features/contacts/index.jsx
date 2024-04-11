@@ -3,17 +3,16 @@ import {
   Container,
   Flex,
   Heading,
-  SimpleGrid,
   Spinner,
   Stack,
-  Wrap,
-  WrapItem,
+  Grid,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
+import { LuContact2 } from "react-icons/lu";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
@@ -21,12 +20,11 @@ import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 import instance from "../../instance";
 import AlertModal from "../common/AlertModal";
 import MainLayout from "../common/main-layout";
+import Pagination from "../common/main-layout/Pagination";
 import HeadingButtons from "../common/table-layout/HeadingButtons";
+import SearchItem from "../common/table-layout/SearchItem";
 import Contact from "./Contact";
 import ContactForm from "./ContactForm";
-import SearchItem from "../common/table-layout/SearchItem";
-import Pagination from "../common/main-layout/Pagination";
-import { LuContact2 } from "react-icons/lu";
 const contactDto = Yup.object({
   name: Yup.string().label("Name").required().min(2).max(40),
   email: Yup.string().email().max(40).optional(),
@@ -142,9 +140,16 @@ export default function ContactsPage() {
             <Box maxW={"md"}>
               <SearchItem placeholder="Search Contacts" />
             </Box>
-            <Container maxW={"container.xxl"}>
+            <Box maxW={"container.xxl"}>
               {data.items.length ? (
-                <SimpleGrid minChildWidth={300} spacing={3}>
+                <Grid
+                  templateColumns={{
+                    sm: "1fr",
+                    md: "repeat(2, 1fr)",
+                    lg: "repeat(3, 1fr)",
+                  }}
+                  gap={8}
+                >
                   {data.items.map((item) => (
                     <Contact
                       key={item._id}
@@ -169,10 +174,11 @@ export default function ContactsPage() {
                       }}
                     />
                   ))}
-                </SimpleGrid>
+                </Grid>
               ) : (
                 <Flex
                   minH={"50svh"}
+                  gap={8}
                   justifyContent={"center"}
                   alignItems={"center"}
                   flexDir={"column"}
@@ -183,7 +189,7 @@ export default function ContactsPage() {
                   </Heading>
                 </Flex>
               )}
-            </Container>
+            </Box>
             <Pagination
               currentPage={data.currentPage}
               total={data.totalPages}

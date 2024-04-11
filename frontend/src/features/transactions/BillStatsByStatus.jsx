@@ -1,6 +1,7 @@
 import { Box, Flex, Grid, Progress, Text, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import StatProgress from "./StatProgress";
 
 export default function BillStatsByStatus({ invoicesByStatus, label }) {
   const numberOfInvoices = invoicesByStatus.reduce(
@@ -16,19 +17,14 @@ export default function BillStatsByStatus({ invoicesByStatus, label }) {
       </Box>
       <Grid width={"100%"}>
         {invoicesByStatus.map((invByStatus) => (
-          <Box key={invByStatus._id}>
-            <Text fontSize={"sm"} textTransform={"capitalize"}>
-              {invByStatus._id} ({symbol} {invByStatus.total.toFixed(2)})
-            </Text>
-            <Tooltip label={`${invByStatus.count} Bill ${invByStatus._id}`}>
-              <Box marginBlock={1}>
-                <Progress
-                  value={(invByStatus.count / numberOfInvoices) * 100}
-                  colorScheme="pink"
-                />
-              </Box>
-            </Tooltip>
-          </Box>
+          <StatProgress
+            value={`${invByStatus._id} ${symbol} ${invByStatus.total.toFixed(
+              2
+            )})`}
+            key={invByStatus._id}
+            progress={(invByStatus.count / numberOfInvoices) * 100}
+            label={`${invByStatus.count} Bill ${invByStatus._id}`}
+          />
         ))}
       </Grid>
     </Box>

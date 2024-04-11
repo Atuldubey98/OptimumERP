@@ -72,7 +72,7 @@ export default function ExpensesPage() {
         .label("Amount"),
       date: Yup.string().required("Date is required").label("Date"),
     }),
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...expense } = values;
       await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/expenses${_id ? `/${_id}` : ``}`,
@@ -81,7 +81,7 @@ export default function ExpensesPage() {
       fetchFn();
       closeExpenseForm();
       setSubmitting(false);
-    },
+    }),
   });
   const onAddNewExpense = () => {
     formik.setValues({

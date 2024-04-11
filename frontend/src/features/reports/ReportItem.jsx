@@ -133,7 +133,7 @@ export default function ReportItem() {
     },
     {
       value: 30,
-      label: "Last Month",
+      label: "Last 30 Days",
     },
     {
       value: 180,
