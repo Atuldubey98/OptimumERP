@@ -41,7 +41,7 @@ export default function usePurchaseForm() {
       purchaseNo: "",
       billingAddress: "",
       date: new Date(Date.now()).toISOString().split("T")[0],
-      status: "paid",
+      status: "unpaid",
       items: [defaultInvoiceItem],
       description: "",
       poNo: "",

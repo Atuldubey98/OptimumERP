@@ -80,6 +80,16 @@ exports.deactivateUser = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ message: "User deactivated" });
 });
 
+exports.activateUser = requestAsyncHandler(async (req, res) => {
+  if (!isValidObjectId(req.body.userId)) throw new UserNotFound();
+  const userId = req.body.userId;
+  const activeUser = await User.findByIdAndUpdate(userId, {
+    active: true,
+  });
+  if (!activeUser) throw new UserNotFound();
+  return res.status(200).json({ message: "User activated" });
+});
+
 exports.resetPassword = requestAsyncHandler(async (req, res) => {
   const user = await User.findById(req.session.user._id);
   const { currentPassword = "", newPassword = "" } = req.body;

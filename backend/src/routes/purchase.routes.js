@@ -12,6 +12,7 @@ const {
   updatePurchase,
   viewPurchaseBill,
   downloadPurchaseInvoice,
+  payoutPurchase,
 } = require("../controllers/purchase.controller");
 
 const purchaseRouter = Router({
@@ -57,5 +58,11 @@ purchaseRouter.get(
   authenticate,
   checkOrgAuthorization,
   downloadPurchaseInvoice
+);
+purchaseRouter.post(
+  "/:purchaseId/payment",
+  authenticate,
+  checkOrgAuthorization,
+  payoutPurchase
 );
 module.exports = purchaseRouter;

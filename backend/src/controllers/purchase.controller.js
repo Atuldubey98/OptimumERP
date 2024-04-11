@@ -18,6 +18,7 @@ const taxRates = require("../constants/gst");
 const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
 const path = require("path");
+const Joi = require("joi");
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
   const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(body.items);
@@ -308,4 +309,28 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
       pageSize: "A4",
     }).pipe(res);
   });
+});
+const paymentDto = Joi.object({
+  description: Joi.string().allow("").required().label("Description"),
+  amount: Joi.number().required().label("Amount"),
+  paymentMode: Joi.string().allow("").label("Payment Mode"),
+  date: Joi.string().required().label("Date"),
+});
+exports.payoutPurchase = requestAsyncHandler(async (req, res) => {
+  const purchaseId = req.params.purchaseId;
+  if (!isValidObjectId(purchaseId)) throw new PurchaseNotFound();
+  const body = await paymentDto.validateAsync(req.body);
+  const purchase = await Purchase.findOne({
+    _id: purchaseId,
+    org: req.params.orgId,
+  });
+  const grandTotal = purchase.total + purchase.totalTax;
+  if (grandTotal > body.amount) {
+    purchase.status = "unpaid";
+  }
+  purchase.updatedBy = req.session.user._id;
+  purchase.payment = body;
+  await purchase.save();
+  if (!purchase) throw new PurchaseNotFound();
+  return res.status(201).json({ message: "Payment added" });
 });

@@ -17,6 +17,7 @@ import {
   Td,
   Text,
   Th,
+  Switch,
   Thead,
   Tr,
   useDisclosure,
@@ -35,6 +36,7 @@ import HelpPopover from "../common/HelpPopover";
 import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
 import RegisteUserDrawer from "./RegisteUserDrawer";
+import OrgUserRow from "./OrgUserRow";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -74,7 +76,7 @@ export default function AdminPage() {
         duration: 3000,
         isClosable: true,
       });
-      fetchOrgUsers();
+      fetchOrgUsers(organization);
       onClose();
       setSubmitting(false);
     }),
@@ -346,14 +348,12 @@ export default function AdminPage() {
                 </Thead>
                 <Tbody>
                   {orgUsers.map((orgUser) => (
-                    <Tr key={orgUser._id}>
-                      <Td>
-                        <GoDotFill color={orgUser.active ? "green" : "red"} />
-                      </Td>
-                      <Td>{orgUser.name}</Td>
-                      <Td>{orgUser.email}</Td>
-                      <Td textTransform={"capitalize"}>{orgUser.role}</Td>
-                    </Tr>
+                    <OrgUserRow
+                      fetchUsers={fetchOrgUsers}
+                      organization={organization}
+                      key={orgUser._id}
+                      orgUser={orgUser}
+                    />
                   ))}
                 </Tbody>
               </Table>

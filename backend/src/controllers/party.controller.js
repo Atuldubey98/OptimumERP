@@ -211,7 +211,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
       },
     },
   ]);
-  const balanceCalculator = await Invoice.aggregate([
+  const invoiceBalanceCalculator = await Invoice.aggregate([
     {
       $match: {
         org: new mongoose.Types.ObjectId(req.params.orgId),
@@ -227,9 +227,29 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
       },
     },
   ]);
-  const invoiceBalance = balanceCalculator.length
-    ? balanceCalculator[0]
+  const purchaseBalanceCalculator = await Purchase.aggregate([
+    {
+      $match: {
+        org: new mongoose.Types.ObjectId(req.params.orgId),
+        party: new mongoose.Types.ObjectId(req.params.partyId),
+        date: filter.date,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: { $sum: ["$total", "$totalTax"] } },
+        amountPaid: { $sum: "$payment.amount" },
+      },
+    },
+  ]);
+
+  const invoiceBalance = invoiceBalanceCalculator.length
+    ? invoiceBalanceCalculator[0]
     : { total: 0, amountReceived: 0 };
+  const purchaseBalance = purchaseBalanceCalculator.length
+    ? purchaseBalanceCalculator[0]
+    : { total: 0, amountPaid: 0 };
 
   const total = await Transaction.countDocuments(filter);
   const totalPages = Math.ceil(total / limit);
@@ -241,6 +261,7 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
     totalPages,
     party,
     purchasesByStatus,
+    purchaseBalance,
     invoicesByStatus,
     total,
     message: "Transactions retrieved successfully",

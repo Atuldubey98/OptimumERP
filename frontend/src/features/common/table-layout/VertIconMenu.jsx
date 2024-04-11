@@ -30,6 +30,7 @@ export default function VertIconMenu({
   showContacts,
   downloading = false,
   convertToInvoice,
+  payoutPurchase,
 }) {
   return (
     <Menu>
@@ -47,6 +48,15 @@ export default function VertIconMenu({
             command="⌘X"
           >
             Expenses
+          </MenuItem>
+        ) : null}
+        {payoutPurchase ? (
+          <MenuItem
+            icon={<GiExpense size={20} />}
+            onClick={payoutPurchase}
+            command="⌘P"
+          >
+            Payout
           </MenuItem>
         ) : null}
         {showItem ? (

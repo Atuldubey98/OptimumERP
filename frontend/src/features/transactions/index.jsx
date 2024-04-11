@@ -67,6 +67,10 @@ export default function TransactionsPage() {
     total: 0,
     amountReceived: 0,
   });
+  const [purchaseBalance, setPurchaseBalance] = useState({
+    total: 0,
+    amountPaid: 0,
+  });
   const transactionTypes = selectedTypeOfTransactions
     .map((option) => option.value)
     .join(",");
@@ -87,6 +91,7 @@ export default function TransactionsPage() {
       setPurchaseByStatus(data.purchasesByStatus);
       setInvoiceBalance(data.invoiceBalance);
       setInvoicesByStatus(data.invoicesByStatus);
+      setPurchaseBalance(data.purchaseBalance);
       setTransactionsResponse({
         items: data.data,
         page: data.page,
@@ -98,11 +103,7 @@ export default function TransactionsPage() {
     })();
   }, [orgId, partyId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
-  const purchaseTotal = purchasesByStatus.reduce(
-    (prev, purchaseType) =>
-      purchaseType._id === "unpaid" ? prev + purchaseType.total : prev,
-    0
-  );
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -131,7 +132,7 @@ export default function TransactionsPage() {
                     balance={
                       invoiceBalance.total -
                       invoiceBalance.amountReceived -
-                      purchaseTotal
+                      (purchaseBalance.total - purchaseBalance.amountPaid)
                     }
                   />
                 </SimpleGrid>

@@ -51,7 +51,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const defaultInvoice = {
     invoiceNo: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
-    status: "draft",
+    status: "sent",
     items: [defaultInvoiceItem],
     terms: "Thanks for business !",
     description: "",

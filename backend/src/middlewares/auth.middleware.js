@@ -5,9 +5,11 @@ const {
 } = require("../errors/user.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const OrgUser = require("../models/org_user.model");
-
+const User = require("../models/user.model");
 exports.authenticate = requestAsyncHandler(async (req, __, next) => {
   if (!req.session.user) next(new UnAuthenticated());
+  const user = await User.findById(req.session.user._id);
+  if(!user.active) next(new UnAuthenticated());
   next();
 });
 
