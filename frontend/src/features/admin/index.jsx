@@ -150,10 +150,13 @@ export default function AdminPage() {
       setSubmitting(false);
     },
   });
-  const organizationsOptions = authorizedOrgs.map(({ org }) => ({
-    label: org.name,
-    value: org._id,
-  }));
+  const organizationsOptions = authorizedOrgs.map(({ org, role }) => {
+    return {
+      label: org.name,
+      value: org._id,
+      disabled: role !== "admin",
+    };
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -166,6 +169,7 @@ export default function AdminPage() {
             <FormLabel fontWeight={"bold"}>Organization</FormLabel>
             <Select
               options={organizationsOptions}
+              isOptionDisabled={({ disabled }) => disabled}
               value={organizationsOptions.find(
                 (org) => org.value == organization
               )}

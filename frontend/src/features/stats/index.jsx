@@ -126,9 +126,9 @@ export default function StatsPage() {
                     Top 5 Clients
                   </Text>
                   <Grid marginBlock={2} gap={3}>
-                    {stats.topFiveClientTotal.map((client) => (
+                    {stats.topFiveClientTotal.map((client, index) => (
                       <StatProgress
-                        key={stats.topFiveClientTotal._id}
+                        key={index}
                         value={client.party.name}
                         label={`${symbol} ${client.total + client.totalTax}`}
                         progress={

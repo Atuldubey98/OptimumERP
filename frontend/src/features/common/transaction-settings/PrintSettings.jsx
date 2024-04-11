@@ -23,7 +23,7 @@ function PrintPopOverInstructions() {
   return (
     <Popover>
       <PopoverTrigger>
-        <IconButton size={"xs"} icon={<IoIosHelpCircleOutline />} />
+        <IconButton size={"sm"} icon={<IoIosHelpCircleOutline />} />
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />

@@ -50,15 +50,7 @@ export default function VertIconMenu({
             Expenses
           </MenuItem>
         ) : null}
-        {payoutPurchase ? (
-          <MenuItem
-            icon={<GiExpense size={20} />}
-            onClick={payoutPurchase}
-            command="⌘P"
-          >
-            Payout
-          </MenuItem>
-        ) : null}
+       
         {showItem ? (
           <MenuItem
             icon={<LiaEyeSolid size={20} />}
@@ -66,6 +58,15 @@ export default function VertIconMenu({
             command="⌘S"
           >
             Show
+          </MenuItem>
+        ) : null}
+         {payoutPurchase ? (
+          <MenuItem
+            icon={<GiExpense size={20} />}
+            onClick={payoutPurchase}
+            command="⌘P"
+          >
+            Payment out
           </MenuItem>
         ) : null}
         {convertToInvoice ? (
@@ -101,7 +102,7 @@ export default function VertIconMenu({
             icon={<FaMoneyCheck size={20} />}
             command="⌘M"
           >
-            Record Payment
+            Payment In
           </MenuItem>
         ) : null}
         {showTransactions ? (

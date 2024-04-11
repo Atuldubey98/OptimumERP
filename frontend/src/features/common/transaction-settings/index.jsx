@@ -49,10 +49,6 @@ export default function TransactionSettingsPage() {
     label: authOrg.org.name,
     disabled: authOrg.role !== "admin",
   }));
-  const [initialFiscalYear, setInitialFiscalYear] = useState({
-    startDate: "",
-    endDate: "",
-  });
   const formik = useFormik({
     initialValues: {
       organization: "",
