@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-import StatsPage from "./features/stats";
+const StatsPage = lazy(()=>import("./features/stats"))
 const ContactsPage = lazy(() => import("./features/contacts"));
 const AboutPage = lazy(() => import("./features/about"));
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
