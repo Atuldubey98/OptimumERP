@@ -146,7 +146,7 @@ export default function ReportItem() {
   ];
   return (
     <Box>
-      <Stack spacing={3} boxShadow={"md"} p={5}>
+      <Stack spacing={1} boxShadow={"md"} p={5}>
         <SimpleGrid minChildWidth={300} gap={3} width={"100%"}>
           <FormControl>
             <FormLabel fontWeight={"bold"}>Custom</FormLabel>
@@ -185,7 +185,7 @@ export default function ReportItem() {
           {reportType && currentReport ? (
             <TableContainer>
               <Table size={"sm"} variant="simple">
-                <TableCaption>{`Total Found ${reportType.toLocaleUpperCase()} : ${totalCount}`}</TableCaption>
+                <TableCaption>{`Total ${reportType.toLocaleUpperCase()} Found : ${totalCount}`}</TableCaption>
                 <Thead>
                   <Tr>
                     {Object.entries(currentReport.header).map(
