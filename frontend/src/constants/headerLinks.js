@@ -1,17 +1,19 @@
-import { AiOutlineCustomerService, AiOutlineDashboard } from "react-icons/ai";
+import { AiOutlineDashboard } from "react-icons/ai";
 import {
   FaFileInvoice,
   FaFileInvoiceDollar,
   FaMoneyBillTrendUp,
 } from "react-icons/fa6";
+
 import { GiExpense } from "react-icons/gi";
-import { GoTag } from "react-icons/go";
+import { GoPeople, GoTag } from "react-icons/go";
 import { ImStatsBars2 } from "react-icons/im";
+
 import { TiContacts } from "react-icons/ti";
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard" },
   { icon: ImStatsBars2, link: "/stats", label: "Stats" },
-  { icon: AiOutlineCustomerService, link: "/parties", label: "Parties" },
+  { icon: GoPeople, link: "/parties", label: "Parties" },
   { icon: TiContacts, link: "/contacts", label: "Contacts" },
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices" },
   { icon: FaFileInvoice, link: "/estimates", label: "Quotations" },

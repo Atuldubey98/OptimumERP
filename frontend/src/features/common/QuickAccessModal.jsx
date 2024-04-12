@@ -2,8 +2,8 @@ import {
   Button,
   Card,
   CardBody,
-  Grid,
   Flex,
+  Grid,
   Input,
   InputGroup,
   InputLeftElement,
@@ -20,10 +20,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { AiOutlineCustomerService } from "react-icons/ai";
 import { FaFileInvoice, FaFileInvoiceDollar } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
-import { GoTag } from "react-icons/go";
+import { GoPeople, GoTag } from "react-icons/go";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoCreateOutline, IoSearchOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
@@ -38,7 +37,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     {
       label: "Parties",
       onClick: () => navigate(`/${orgId}/parties`),
-      icon: <AiOutlineCustomerService size={50} />,
+      icon: <GoPeople size={50} />,
     },
     {
       label: "Create Party",

@@ -25,6 +25,7 @@ export default function ItemCategoryForm({ formik, isOpen, onClose }) {
         <FormLabel>Name</FormLabel>
         <Input
           name="name"
+          autoFocus
           value={formik.values.name}
           onChange={formik.handleChange}
         />

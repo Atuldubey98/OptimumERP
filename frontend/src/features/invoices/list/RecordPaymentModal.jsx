@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -83,6 +84,12 @@ export default function RecordPaymentModal({
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing={2}>
+              <Divider />
+              <Text fontSize={"xl"}>
+                <strong>Grand Total : </strong>
+                {symbol} {grandTotal.toFixed(2)}
+              </Text>
+              <Divider />
               <Text>
                 <strong>Customer Name : </strong>
                 {invoice.party.name}
@@ -95,10 +102,7 @@ export default function RecordPaymentModal({
                 <strong> Total Tax: </strong>
                 {symbol} {invoice.totalTax.toFixed(2)}
               </Text>
-              <Text fontSize={"xl"}>
-                <strong>Grand Total : </strong>
-                {symbol} {grandTotal.toFixed(2)}
-              </Text>
+              <Divider />
               <FormControl
                 isInvalid={formik.errors.amount && formik.touched.amount}
               >
@@ -106,6 +110,7 @@ export default function RecordPaymentModal({
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
                   <NumberInputInteger formik={formik} name={"amount"} min={0} />
                   <Button
+                    colorScheme="green"
                     onClick={() =>
                       formik.setFieldValue(
                         "amount",

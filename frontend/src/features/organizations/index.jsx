@@ -123,7 +123,7 @@ export default function OrgPage() {
           >
             <Heading
               as={"h5"}
-              fontSize={"2xl"}
+              fontSize={"xl"}
               fontWeight={"bold"}
               textAlign={"center"}
             >

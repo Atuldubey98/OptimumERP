@@ -7,7 +7,7 @@ export default function CurrentOrganization() {
   const orgName = settingContext?.setting?.org.name;
   return (
     <Box p={3}>
-      <Grid gap={1} gridTemplateColumns={"auto 1fr"} justifyContent={"flex-start"} alignItems={"center"}>
+      <Grid gap={3} gridTemplateColumns={"auto 1fr"} justifyContent={"flex-start"} alignItems={"center"}>
         <GoOrganization size={30} />
         <Heading textAlign={"center"} fontSize={"lg"}>
           {orgName}

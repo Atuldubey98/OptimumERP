@@ -34,6 +34,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
         >
           <FormLabel>Item Name</FormLabel>
           <Input
+            autoFocus
             onChange={formik.handleChange}
             name="name"
             type="text"

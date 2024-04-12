@@ -29,6 +29,7 @@ export default function PartyFormDrawer({ isOpen, onClose, formik }) {
           <Input
             onChange={formik.handleChange}
             name="name"
+            autoFocus
             type="text"
             value={formik.values.name}
             placeholder="Party Name"

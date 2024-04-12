@@ -40,7 +40,7 @@ export default function OrgItem({ org }) {
           <Text fontWeight={"bold"}>{org.name}</Text>
           {loading ? <Spinner /> : null}
         </Flex>
-        <Text fontSize={"sm"} fontStyle={"italic"}>
+        <Text fontSize={"xs"} fontStyle={"italic"}>
           {org.address}
         </Text>
       </Box>

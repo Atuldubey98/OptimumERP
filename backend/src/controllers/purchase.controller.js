@@ -70,7 +70,6 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
 exports.updatePurchase = requestAsyncHandler(async (req, res) => {
   const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(req.body.items);
   const body = await purchaseDto.validateAsync(req.body);
-
   const updatedInvoice = await Purchase.findOneAndUpdate(
     { _id: req.params.purchaseId, org: req.params.orgId },
     {
@@ -82,6 +81,7 @@ exports.updatePurchase = requestAsyncHandler(async (req, res) => {
       cgst,
     }
   );
+
   const updateTransaction = await Transaction.findOneAndUpdate(
     {
       org: req.params.orgId,

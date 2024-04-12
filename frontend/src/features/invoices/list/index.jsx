@@ -162,7 +162,7 @@ export default function InvoicesPage() {
             selectedKeys={{
               invoiceNo: "Invoice No.",
               date: "Invoice Date",
-              partyName: "Party name",
+              partyName: "Recipient",
               status: "Status",
               grandTotal: "Total",
             }}

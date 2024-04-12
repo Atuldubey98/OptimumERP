@@ -24,6 +24,7 @@ export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
       >
         <FormLabel>Expense Type</FormLabel>
         <Input
+          autoFocus
           name="name"
           value={formik.values.name}
           onChange={formik.handleChange}

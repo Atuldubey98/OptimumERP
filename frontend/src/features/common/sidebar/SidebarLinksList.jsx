@@ -1,11 +1,12 @@
 import {
   Container,
+  Divider,
   Flex,
   Icon,
   IconButton,
   List,
   ListItem,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
@@ -51,6 +52,7 @@ export const SidebarLinksList = () => {
             label: "Reports",
           }}
         />
+        <Divider />
         <ListItem>
           <Flex
             p={1}
@@ -59,14 +61,23 @@ export const SidebarLinksList = () => {
             alignItems={"center"}
             gap={2}
           >
-            <Icon as={IoSettingsOutline} />
-            <Text>Settings</Text>
-            <IconButton
-              size={15}
-              icon={openSettings ? <FaChevronUp /> : <FaChevronDown />}
-              cursor={"pointer"}
-              onClick={() => setOpenSettings(!openSettings)}
-            />
+            <Flex
+              w={"100%"}
+              justifyContent={"flex-start"}
+              gap={9}
+              alignItems={"center"}
+            >
+              <Flex gap={2} justifyContent={"center"} alignItems={"center"}>
+                <Icon as={IoSettingsOutline} />
+                <Text>Settings</Text>
+              </Flex>
+              <IconButton
+                size={"xs"}
+                icon={openSettings ? <FaChevronUp /> : <FaChevronDown />}
+                cursor={"pointer"}
+                onClick={() => setOpenSettings(!openSettings)}
+              />
+            </Flex>
           </Flex>
         </ListItem>
         {openSettings ? <SettingLinks /> : null}

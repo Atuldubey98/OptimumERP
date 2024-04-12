@@ -1,21 +1,22 @@
 import {
-    Button,
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    Grid,
-    Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Stack,
-    Text,
-    Textarea,
-    useToast
+  Button,
+  Divider,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Grid,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  Text,
+  Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -82,6 +83,12 @@ export default function PayoutModal({
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing={2}>
+              <Divider />
+              <Text fontSize={"xl"}>
+                <strong>Grand Total : </strong>
+                {symbol} {grandTotal.toFixed(2)}
+              </Text>
+              <Divider />
               <Text>
                 <strong>Vendor Name : </strong>
                 {purchase.party.name}
@@ -94,10 +101,7 @@ export default function PayoutModal({
                 <strong> Total Tax: </strong>
                 {symbol} {purchase.totalTax.toFixed(2)}
               </Text>
-              <Text fontSize={"xl"}>
-                <strong>Grand Total : </strong>
-                {symbol} {grandTotal.toFixed(2)}
-              </Text>
+              <Divider/>
               <FormControl
                 isInvalid={formik.errors.amount && formik.touched.amount}
               >
@@ -105,6 +109,7 @@ export default function PayoutModal({
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
                   <NumberInputInteger formik={formik} name={"amount"} min={0} />
                   <Button
+                    colorScheme="green"
                     onClick={() =>
                       formik.setFieldValue(
                         "amount",

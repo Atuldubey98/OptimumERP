@@ -1,5 +1,7 @@
 import {
   Box,
+  Button,
+  Flex,
   Heading,
   Table,
   TableCaption,
@@ -11,13 +13,33 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-export default function DashboardTable({ heading, tableHeads, tableRows }) {
+import { Link, useParams } from "react-router-dom";
+import { FaChevronRight } from "react-icons/fa6";
+export default function DashboardTable({
+  heading,
+  tableHeads,
+  tableRows,
+  onViewMore,
+}) {
   const { symbol } = useCurrentOrgCurrency();
+  const { orgId } = useParams();
   return (
     <Box borderRadius={"md"}>
-      <Box paddingBlock={5}>
+      <Flex
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        paddingBlock={5}
+      >
         <Heading fontSize={"xl"}>{heading}</Heading>
-      </Box>
+        <Button
+          rightIcon={<FaChevronRight />}
+          size={"xs"}
+          variant={"ghost"}
+          onClick={onViewMore}
+        >
+          More
+        </Button>
+      </Flex>
       <TableContainer>
         <Table size={"sm"} variant="simple">
           {tableRows.length ? null : (

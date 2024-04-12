@@ -2,18 +2,23 @@ import {
   Box,
   Flex,
   Heading,
-  SimpleGrid,
   Skeleton,
   Stack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Select } from "chakra-react-select";
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+  FaFileInvoice,
+  FaFileInvoiceDollar,
+  FaMoneyBillTrendUp,
+} from "react-icons/fa6";
+import { GoPeople } from "react-icons/go";
+import { useNavigate, useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
 import { purchaseStatusList } from "../../constants/purchase";
 import useAsyncCall from "../../hooks/useAsyncCall";
+import useAuth from "../../hooks/useAuth";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
 import { statusList } from "../estimates/create/data";
@@ -21,14 +26,7 @@ import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
-import useAuth from "../../hooks/useAuth";
 import PeriodSelect from "./PeriodSelect";
-import {
-  FaFileInvoice,
-  FaFileInvoiceDollar,
-  FaMoneyBillTrendUp,
-} from "react-icons/fa6";
-import { AiOutlineCustomerService } from "react-icons/ai";
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
@@ -90,6 +88,7 @@ export default function DashboardPage() {
     (period) => period.value === currentPeriod
   ).label;
   const auth = useAuth();
+  const navigate = useNavigate();
   return (
     <MainLayout>
       <Box p={5}>
@@ -116,16 +115,16 @@ export default function DashboardPage() {
             <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
-                dashType="Invoice"
+                dashType="Invoices"
                 icon={<FaFileInvoiceDollar size={30} />}
                 dashTotal={dashboard.invoiceThisMonth}
               />
             </Skeleton>
             <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
               <Dashcard
-                icon={<AiOutlineCustomerService size={30} />}
+                icon={<GoPeople size={30} />}
                 period={currentPeriodLabel}
-                dashType="Party"
+                dashType="Parties"
                 dashTotal={dashboard.partysThisMonth}
               />
             </Skeleton>
@@ -133,7 +132,7 @@ export default function DashboardPage() {
               <Dashcard
                 period={currentPeriodLabel}
                 icon={<FaFileInvoice size={30} />}
-                dashType="Quotation"
+                dashType="Quotations"
                 dashTotal={dashboard.quotesThisMonth}
               />
             </Skeleton>
@@ -162,6 +161,7 @@ export default function DashboardPage() {
                   date: new Date(quote.date).toLocaleDateString(),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
+                onViewMore={() => navigate(`/${orgId}/estimates`)}
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
@@ -182,6 +182,8 @@ export default function DashboardPage() {
                   date: new Date(invoice.date).toLocaleDateString(),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
+                onViewMore={() => navigate(`/${orgId}/invoices`)}
+
               />
             </Skeleton>
             <Skeleton isLoaded={!loading}>
@@ -202,6 +204,8 @@ export default function DashboardPage() {
                   date: new Date(purchase.date).toLocaleDateString(),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
+                onViewMore={() => navigate(`/${orgId}/purchases`)}
+
               />
             </Skeleton>
           </Stack>
