@@ -73,7 +73,6 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
   });
 });
 
-
 exports.deleteParty = requestAsyncHandler(async (req, res) => {
   if (!req.params.partyId) throw new PartyNotFound();
   const transaction = await Transaction.findOne({
@@ -179,71 +178,48 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .exec();
-
-  const invoicesByStatus = await Invoice.aggregate([
-    {
-      $match: {
-        org: new mongoose.Types.ObjectId(req.params.orgId),
-        party: new mongoose.Types.ObjectId(req.params.partyId),
-        date: filter.date,
-      },
-    },
-    {
-      $group: {
-        _id: "$status",
-        total: { $sum: { $sum: ["$total", "$totalTax"] } },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-  const purchasesByStatus = await Purchase.aggregate([
-    {
-      $match: {
-        org: new mongoose.Types.ObjectId(req.params.orgId),
-        party: new mongoose.Types.ObjectId(req.params.partyId),
-        date: filter.date,
-      },
-    },
-    {
-      $group: {
-        _id: "$status",
-        total: { $sum: { $sum: ["$total", "$totalTax"] } },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-  const invoiceBalanceCalculator = await Invoice.aggregate([
-    {
-      $match: {
-        org: new mongoose.Types.ObjectId(req.params.orgId),
-        party: new mongoose.Types.ObjectId(req.params.partyId),
-        date: filter.date,
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        total: { $sum: { $sum: ["$total", "$totalTax"] } },
-        amountReceived: { $sum: "$payment.amount" },
-      },
-    },
-  ]);
-  const purchaseBalanceCalculator = await Purchase.aggregate([
-    {
-      $match: {
-        org: new mongoose.Types.ObjectId(req.params.orgId),
-        party: new mongoose.Types.ObjectId(req.params.partyId),
-        date: filter.date,
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        total: { $sum: { $sum: ["$total", "$totalTax"] } },
-        amountPaid: { $sum: "$payment.amount" },
-      },
-    },
-  ]);
+  const entities = [Invoice, Purchase];
+  const [invoicesByStatus, purchasesByStatus] = await Promise.all(
+    entities.map((model) =>
+      model.aggregate([
+        {
+          $match: {
+            org: new mongoose.Types.ObjectId(req.params.orgId),
+            party: new mongoose.Types.ObjectId(req.params.partyId),
+            date: filter.date,
+          },
+        },
+        {
+          $group: {
+            _id: "$status",
+            total: { $sum: { $sum: ["$total", "$totalTax"] } },
+            count: { $sum: 1 },
+          },
+        },
+      ])
+    )
+  );
+  const [invoiceBalanceCalculator, purchaseBalanceCalculator] =
+    await Promise.all(
+      entities.map((model) =>
+        model.aggregate([
+          {
+            $match: {
+              org: new mongoose.Types.ObjectId(req.params.orgId),
+              party: new mongoose.Types.ObjectId(req.params.partyId),
+              date: filter.date,
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: { $sum: ["$total", "$totalTax"] } },
+              amountReceived: { $sum: "$payment.amount" },
+            },
+          },
+        ])
+      )
+    );
 
   const invoiceBalance = invoiceBalanceCalculator.length
     ? invoiceBalanceCalculator[0]

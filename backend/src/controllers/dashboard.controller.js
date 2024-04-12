@@ -55,60 +55,36 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
 
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
-  
-  const invoiceThisMonth = await Invoice.countDocuments({
-    date: {
-      $gte: startDate,
-      $lte: endDate,
-    },
-    org: orgId,
-  });
-  const quotesThisMonth = await Quotes.countDocuments({
-    date: {
-      $gte: startDate,
-      $lte: endDate,
-    },
-    org: orgId,
-  });
-  const partysThisMonth = await Party.countDocuments({
-    createdAt: {
-      $gte: startDate,
-      $lte: endDate,
-    },
-    org: orgId,
-  });
-  const expensesThisMonth = await Expense.countDocuments({
-    date: {
-      $gte: startDate,
-      $lte: endDate,
-    },
-    org: orgId,
-  });
-  const purchasesThisMonth = await Purchase.countDocuments({
-    date: {
-      $gte: startDate,
-      $lte: endDate,
-    },
-    org: orgId,
-  });
-  const recentInvoices = await Invoice.find({ org: orgId })
-    .sort({ createdAt: -1 })
-    .select("name invoiceNo total totalTax status party date num")
-    .populate("party", "name")
-    .limit(5)
-    .exec();
-  const recentQuotes = await Quotes.find({ org: orgId })
-    .sort({ createdAt: -1 })
-    .select("name quoteNo total totalTax status party date num")
-    .populate("party", "name")
-    .limit(5)
-    .exec();
-  const recentPurchases = await Purchase.find({ org: orgId })
-    .sort({ createdAt: -1 })
-    .select("name purchaseNo total totalTax status party date")
-    .populate("party", "name")
-    .limit(5)
-    .exec();
+  const countEntitiesPromises = [Invoice, Quotes, Party, Expense, Purchase];
+  const [
+    invoiceThisMonth,
+    quotesThisMonth,
+    partysThisMonth,
+    expensesThisMonth,
+    purchasesThisMonth,
+  ] = await Promise.all(
+    countEntitiesPromises.map((model) =>
+      model.countDocuments({
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        org: orgId,
+      })
+    )
+  );
+  const recentEntities = [Invoice, Quotes, Purchase];
+  const [recentInvoices, recentQuotes, recentPurchases] = await Promise.all(
+    recentEntities.map((model) =>
+      model
+        .find({ org: orgId })
+        .sort({ createdAt: -1 })
+        .select("name purchaseNo total totalTax status party date num")
+        .populate("party", "name")
+        .limit(5)
+        .exec()
+    )
+  );
   return res.status(200).json({
     data: {
       invoiceThisMonth,
