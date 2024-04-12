@@ -16,7 +16,7 @@ export default function Dashcard({
   icon,
 }) {
   return (
-    <Card width={"100%"} maxW={250}>
+    <Card w={"100%"}>
       <CardBody>
         <Flex justifyContent={"flex-start"} alignItems={"center"} gap={3}>
           {icon}

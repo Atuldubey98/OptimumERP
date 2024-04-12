@@ -1,8 +1,8 @@
 const contactTypes = [
   {
     value: "unknown",
-    label: "Unknown Contact",
-    description: "Unkown Contact",
+    label: "Default Contact",
+    description: "Contact is undentified",
   },
   {
     value: "customer",

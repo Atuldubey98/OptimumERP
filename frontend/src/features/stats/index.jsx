@@ -100,24 +100,30 @@ export default function StatsPage() {
               flexWrap={"wrap"}
               width={"100%"}
             >
-              <Dashcard
-                icon={<PiMoneyDuotone size={40} color="green" />}
-                dashType="Sales"
-                period={currentPeriodLabel}
-                dashTotal={`${symbol} ${totalSales.toFixed(2)}`}
-              />
-              <Dashcard
-                icon={<FaMoneyBillTrendUp size={40} color="gray" />}
-                dashType="Purchase"
-                period={currentPeriodLabel}
-                dashTotal={`${symbol} ${totalPurchase.toFixed(2)}`}
-              />
-              <Dashcard
-                icon={<GiExpense size={40} color="brown" />}
-                dashType="Expenses"
-                period={currentPeriodLabel}
-                dashTotal={`${symbol} ${expensesTotal.toFixed(2)}`}
-              />
+              <Box w={"100%"} maxW={350}>
+                <Dashcard
+                  icon={<PiMoneyDuotone size={40} color="green" />}
+                  dashType="Sales"
+                  period={currentPeriodLabel}
+                  dashTotal={`${symbol} ${totalSales.toFixed(2)}`}
+                />
+              </Box>
+              <Box w={"100%"} maxW={350}>
+                <Dashcard
+                  icon={<FaMoneyBillTrendUp size={40} color="gray" />}
+                  dashType="Purchase"
+                  period={currentPeriodLabel}
+                  dashTotal={`${symbol} ${totalPurchase.toFixed(2)}`}
+                />
+              </Box>
+              <Box w={"100%"} maxW={350}>
+                <Dashcard
+                  icon={<GiExpense size={40} color="brown" />}
+                  dashType="Expenses"
+                  period={currentPeriodLabel}
+                  dashTotal={`${symbol} ${expensesTotal.toFixed(2)}`}
+                />
+              </Box>
             </Flex>
             <SimpleGrid gap={8} minChildWidth={200}>
               {stats.topFiveClientTotal.length ? (

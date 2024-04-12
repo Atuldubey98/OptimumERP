@@ -1,8 +1,8 @@
 export const contactTypes = [
   {
     value: "unknown",
-    label: "Unknown",
-    description: "Unkown Contact",
+    label: "Default",
+    description: "Unidentified contact",
   },
   {
     value: "customer",

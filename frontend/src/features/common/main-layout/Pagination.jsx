@@ -27,6 +27,7 @@ export default function Pagination({ total, currentPage }) {
       justifyContent={"center"}
     >
       <Button
+        size={"sm"}
         onClick={() => onClick(--currentPage)}
         isDisabled={currentPage === 1}
       >
@@ -35,16 +36,18 @@ export default function Pagination({ total, currentPage }) {
       {paginate.map((page) => {
         return (
           <Button
+            size={"sm"}
             isActive={currentPage === page + 1}
             key={page}
             onClick={() => onClick(page + 1)}
-            colorScheme="green"
+            colorScheme={"green"}
           >
             {page + 1}
           </Button>
         );
       })}
       <Button
+        size={"sm"}
         onClick={() => onClick(++currentPage)}
         isDisabled={currentPage >= total}
       >

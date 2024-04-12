@@ -23,7 +23,11 @@ import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
 import useAuth from "../../hooks/useAuth";
 import PeriodSelect from "./PeriodSelect";
-import { FaFileInvoice, FaFileInvoiceDollar, FaMoneyBillTrendUp } from "react-icons/fa6";
+import {
+  FaFileInvoice,
+  FaFileInvoiceDollar,
+  FaMoneyBillTrendUp,
+} from "react-icons/fa6";
 import { AiOutlineCustomerService } from "react-icons/ai";
 
 export default function DashboardPage() {
@@ -102,40 +106,46 @@ export default function DashboardPage() {
               currentPeriod={currentPeriod}
             />
           </Flex>
-          <SimpleGrid minChildWidth={200} gap={5}>
-            <Skeleton isLoaded={!loading}>
+          <Flex
+            w={"100%"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            wrap={"wrap"}
+            gap={5}
+          >
+            <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
                 dashType="Invoice"
-                icon={<FaFileInvoiceDollar size={40} />}
+                icon={<FaFileInvoiceDollar size={30} />}
                 dashTotal={dashboard.invoiceThisMonth}
               />
             </Skeleton>
-            <Skeleton isLoaded={!loading}>
+            <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
               <Dashcard
-                icon={<AiOutlineCustomerService size={40} />}
+                icon={<AiOutlineCustomerService size={30} />}
                 period={currentPeriodLabel}
                 dashType="Party"
                 dashTotal={dashboard.partysThisMonth}
               />
             </Skeleton>
-            <Skeleton isLoaded={!loading}>
+            <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
-                icon={<FaFileInvoice size={40} />}
+                icon={<FaFileInvoice size={30} />}
                 dashType="Quotation"
                 dashTotal={dashboard.quotesThisMonth}
               />
             </Skeleton>
-            <Skeleton isLoaded={!loading}>
+            <Skeleton w={"100%"} maxW={300} isLoaded={!loading}>
               <Dashcard
-                icon={<FaMoneyBillTrendUp size={40} />}
+                icon={<FaMoneyBillTrendUp size={30} />}
                 period={currentPeriodLabel}
                 dashType="Purchase"
                 dashTotal={dashboard.purchasesThisMonth}
               />
             </Skeleton>
-          </SimpleGrid>
+          </Flex>
           <Stack>
             <Skeleton isLoaded={!loading}>
               <DashboardTable

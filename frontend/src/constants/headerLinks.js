@@ -14,7 +14,7 @@ const headerLinks = [
   { icon: AiOutlineCustomerService, link: "/parties", label: "Parties" },
   { icon: TiContacts, link: "/contacts", label: "Contacts" },
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices" },
-  { icon: FaFileInvoice, link: "/estimates", label: "Quotations/Estimates" },
+  { icon: FaFileInvoice, link: "/estimates", label: "Quotations" },
   { icon: GiExpense, link: "/expenses", label: "Expenses" },
   { icon: FaMoneyBillTrendUp, link: "/purchases", label: "Purchase" },
   { icon: GoTag, link: "/products", label: "Items" },
