@@ -6,5 +6,6 @@ export default function useAuth() {
   const user = authContext?.user;
   const onSetCurrentUser = authContext?.onSetCurrentUser;
   const loading = authContext?.userLoading;
-  return { user, loading, onSetCurrentUser };
+  const fetchUserDetails = authContext?.fetchUserDetails;
+  return { user, loading, onSetCurrentUser, fetchUserDetails };
 }

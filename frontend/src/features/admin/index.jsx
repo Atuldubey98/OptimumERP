@@ -14,10 +14,7 @@ import {
   TableCaption,
   TableContainer,
   Tbody,
-  Td,
-  Text,
   Th,
-  Switch,
   Thead,
   Tr,
   useDisclosure,
@@ -25,18 +22,19 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useCallback, useState } from "react";
-import { GoDotFill, GoOrganization } from "react-icons/go";
+import { useCallback, useContext, useState } from "react";
+import { GoOrganization } from "react-icons/go";
 import { IoAdd } from "react-icons/io5";
 import * as Yup from "yup";
+import SettingContext from "../../contexts/SettingContext";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
 import HelpPopover from "../common/HelpPopover";
 import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
-import RegisteUserDrawer from "./RegisteUserDrawer";
 import OrgUserRow from "./OrgUserRow";
+import RegisteUserDrawer from "./RegisteUserDrawer";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -49,7 +47,7 @@ export default function AdminPage() {
       .max(30, "Max length cannot be greater than 20"),
   });
   const { authorizedOrgs, loading } = useOrganizations();
-
+  const setting = useContext(SettingContext);
   const [organization, setOrganization] = useState("");
   const [orgUsers, setOrgUsers] = useState([]);
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -114,8 +112,15 @@ export default function AdminPage() {
     onSubmit: async (data, { setSubmitting }) => {
       const { _id, ...restOrg } = data;
       await instance.patch(`/api/v1/organizations/${organization}`, restOrg);
-      window.location.reload();
       setSubmitting(false);
+      toast({
+        title: "Success",
+        description: "Organization updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      if (setting.fetchSetting) setting.fetchSetting();
     },
   });
   const bankFormik = useFormik({

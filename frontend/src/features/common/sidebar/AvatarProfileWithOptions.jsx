@@ -69,7 +69,7 @@ export default function AvatarProfileWithOptions() {
         <MenuGroup title="Profile">
           <MenuItem
             onClick={() => {
-              navigate(`/${orgId}/profile-settings`);
+              navigate(`/${orgId}/profile-settings#changePasswordForm`);
             }}
             icon={<RiLockPasswordLine />}
           >

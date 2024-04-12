@@ -1,120 +1,86 @@
-import React from "react";
-import MainLayout from "../common/main-layout";
 import {
+  Avatar,
   Box,
-  Button,
   Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Stack,
+  Grid,
+  Heading,
+  IconButton,
   Text,
-  useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useFormik } from "formik";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import instance from "../../instance";
+import React from "react";
+import { AiFillEdit } from "react-icons/ai";
+import useAuth from "../../hooks/useAuth";
+import MainLayout from "../common/main-layout";
+import CardWrapper from "./CardWrapper";
+import ChangePasswordForm from "./ChangePasswordForm";
+import FormModalWrapper from "./FormModalWrapper";
+import ProfileForm from "./ProfileForm";
+import useProfileForm from "../../hooks/useProfileForm";
 
 export default function ProfileSettingsPage() {
-  const { requestAsyncHandler } = useAsyncCall();
-  const toast = useToast();
-  const {
-    setFieldError,
-    values,
-    handleChange,
-    errors,
-    resetForm,
-    handleSubmit,
-    isSubmitting,
-  } = useFormik({
-    initialValues: {
-      currentPassword: "",
-      confirmNewPassword: "",
-      newPassword: "",
-    },
-    onSubmit: requestAsyncHandler(async (data, { setSubmitting }) => {
-      if (data.confirmNewPassword !== data.newPassword) {
-        setFieldError(
-          "confirmNewPassword",
-          "Confirm password is not equal to new password"
-        );
-        setSubmitting(false);
-        return;
-      }
-      const response = await instance.post(`/api/v1/users/reset-password`, {
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-      });
-      toast({
-        title: "Password",
-        description: response.data.message,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      resetForm();
-      setSubmitting(false);
-    }),
-  });
+  const { user } = useAuth();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { formik } = useProfileForm({ closeForm: onClose });
   return (
     <MainLayout>
       <Box p={5}>
-        <Text fontStyle={"italic"} fontSize={"md"}>
-          Here you can change you account password
-        </Text>
-        <Box maxW={"xl"}>
-          <form onSubmit={handleSubmit}>
-            <Stack spacing={3} marginBlock={6}>
-              <FormControl
-                isRequired
-                isInvalid={errors.currentPassword && errors.currentPassword}
+        <Flex
+          w={"100%"}
+          maxW={"xl"}
+          justifyContent={"center"}
+          flexDir={"column"}
+          alignItems={"center"}
+          m={"auto"}
+          gap={5}
+        >
+          <Avatar name={user ? user.name : ""} size={"xl"} />
+          <Grid w={"100%"} gap={3}>
+            <Heading fontSize={"2xl"} textAlign={"center"}>
+              Welcome, {user ? user.name : ""}
+            </Heading>
+            <Text textAlign={"center"} fontSize={"sm"}>
+              Here you can manage your personnel information.
+            </Text>
+          </Grid>
+          <CardWrapper
+            title={"Profile info"}
+            subtitle={"Manage your personnel information below."}
+            footer={
+              <Flex
+                w={"100%"}
+                alignItems={"center"}
+                justifyContent={"flex-end"}
               >
-                <FormLabel>Current password</FormLabel>
-                <Input
-                  value={values.currentPassword}
-                  onChange={handleChange}
-                  name="currentPassword"
-                  placeholder="Current Password"
-                />
-                <FormErrorMessage>{errors.currentPassword}</FormErrorMessage>
-              </FormControl>
-              <FormControl
-                isRequired
-                isInvalid={errors.newPassword && errors.newPassword}
-              >
-                <FormLabel>New password</FormLabel>
-                <Input
-                  value={values.newPassword}
-                  onChange={handleChange}
-                  name="newPassword"
-                  placeholder="New password"
-                />
-                <FormErrorMessage>{errors.newPassword}</FormErrorMessage>
-              </FormControl>
-              <FormControl
-                isRequired
-                isInvalid={
-                  errors.confirmNewPassword && errors.confirmNewPassword
-                }
-              >
-                <FormLabel>Confirm password</FormLabel>
-                <Input
-                  value={values.confirmNewPassword}
-                  onChange={handleChange}
-                  name="confirmNewPassword"
-                  placeholder="Confirm Password"
-                />
-                <FormErrorMessage>{errors.confirmNewPassword}</FormErrorMessage>
-              </FormControl>
-            </Stack>
-            <Flex justifyContent={"center"} alignItems={"center"}>
-              <Button type="submit" colorScheme="blue" isLoading={isSubmitting}>
-                Update password
-              </Button>
-            </Flex>
-          </form>
-        </Box>
+                <IconButton icon={<AiFillEdit />} onClick={onOpen} />
+              </Flex>
+            }
+          >
+            <Box>
+              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+                <Text fontSize={"xs"}>Name</Text> <Text>{user.name}</Text>
+              </Flex>
+              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+                <Text fontSize={"xs"}>Email</Text> <Text>{user.email}</Text>
+              </Flex>
+            </Box>
+          </CardWrapper>
+          <CardWrapper
+            title={"Password"}
+            subtitle={"Here you can change your password"}
+          >
+            <ChangePasswordForm />
+          </CardWrapper>
+        </Flex>
+        <FormModalWrapper
+          isSubmitting={formik.isSubmitting}
+          isOpen={isOpen}
+          heading="Profile"
+          onClose={onClose}
+          handleSubmit={formik.handleSubmit}
+        >
+          <ProfileForm formik={formik} />
+        </FormModalWrapper>
       </Box>
     </MainLayout>
   );

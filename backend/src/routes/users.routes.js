@@ -9,6 +9,7 @@ const {
   forgotPassword,
   verifyOtpForgotPasswordAndReset,
   activateUser,
+  updateUserDetails,
 } = require("../controllers/user.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const userRoutes = Router();
@@ -16,6 +17,7 @@ const userRoutes = Router();
 userRoutes.post("/register", registerUser);
 userRoutes.post("/login", loginUser);
 userRoutes.get("/", authenticate, currentUser);
+userRoutes.patch("/", authenticate, updateUserDetails);
 userRoutes.post("/logout", authenticate, logoutUser);
 userRoutes.post("/reset-password", authenticate, resetPassword);
 userRoutes.post("/forgot-password", forgotPassword);

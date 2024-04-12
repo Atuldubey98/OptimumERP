@@ -5,6 +5,7 @@ const SettingContext = createContext({
   onSetSettingForOrganization: undefined,
   role: null,
   onSetCurrentOrgRole : undefined,
+  fetchSetting: undefined
 });
 
 export default SettingContext;

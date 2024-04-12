@@ -325,9 +325,7 @@ exports.payoutPurchase = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   const grandTotal = purchase.total + purchase.totalTax;
-  if (grandTotal > body.amount) {
-    purchase.status = "unpaid";
-  }
+  purchase.status = grandTotal > body.amount ? "unpaid" : "paid";
   purchase.updatedBy = req.session.user._id;
   purchase.payment = body;
   await purchase.save();
