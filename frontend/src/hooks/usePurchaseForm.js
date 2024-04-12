@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
 
-export default function usePurchaseForm() {
+export default function usePurchaseForm({ saveAndNew }) {
   const [status, setStatus] = useState("idle");
   const purchaseSchema = Yup.object().shape({
     purchaseNo: Yup.string().required("Purchase number is required"),
@@ -66,8 +66,21 @@ export default function usePurchaseForm() {
         duration: 3000,
         isClosable: true,
       });
-      navigate(`/${orgId}/purchases`);
       setSubmitting(false);
+      if (saveAndNew)
+        formik.resetForm({
+          purchaseNo: "",
+          billingAddress: "",
+          date: new Date(Date.now()).toISOString().split("T")[0],
+          status: "unpaid",
+          items: [defaultInvoiceItem],
+          description: "",
+          poNo: "",
+          poDate: "",
+          party : undefined,
+          partyDetails : undefined
+        });
+      else navigate(`/${orgId}/purchases`);
     }),
   });
   useEffect(() => {

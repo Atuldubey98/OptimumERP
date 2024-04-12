@@ -10,6 +10,7 @@ import {
   Input,
   SimpleGrid,
   Spinner,
+  Switch,
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
@@ -24,9 +25,14 @@ import SelectStatus from "../../estimates/create/SelectStatus";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
+import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
 
 export default function CreatePurchasePage() {
-  const { formik, status } = usePurchaseForm();
+  const { saveAndNew, onToggleSaveAndNew } =
+    useSaveAndNewForm("save-new:purchase");
+  const { formik, status } = usePurchaseForm({
+    saveAndNew,
+  });
   const loading = status === "loading";
   return (
     <MainLayout>
@@ -39,6 +45,24 @@ export default function CreatePurchasePage() {
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
+                {formik.values._id ? null : (
+                  <FormControl
+                    display="flex"
+                    justifyContent={"flex-end"}
+                    alignItems="center"
+                  >
+                    <FormLabel htmlFor="save-and-new" mb="0">
+                      Save & New
+                    </FormLabel>
+                    <Switch
+                      onChange={(e) => {
+                        onToggleSaveAndNew(e.currentTarget.checked);
+                      }}
+                      isChecked={saveAndNew}
+                      id="save-and-new"
+                    />
+                  </FormControl>
+                )}
                 <Button
                   leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}

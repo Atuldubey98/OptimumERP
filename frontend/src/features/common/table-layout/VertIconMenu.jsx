@@ -35,6 +35,7 @@ export default function VertIconMenu({
   return (
     <Menu>
       <MenuButton
+        size={"sm"}
         as={IconButton}
         aria-label="Options"
         icon={<RxDotsVertical />}
