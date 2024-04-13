@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= num %></title>
+   
     <style>
       body {
         margin: 1rem;
@@ -11,7 +12,6 @@
         box-sizing: border-box;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         border: 1px solid black;
-        zoom: 0.8;
       }
       .item-table {
         width: 100%;
@@ -51,7 +51,11 @@
         </h1>
         <div>
           <div
-            style="border-right: 1px solid black; border-top: 1px solid black;"
+            style="
+              border-right: 1px solid black;
+              border-top: 1px solid black;
+              text-align: center;
+            "
           >
             <p><%= entity.billingAddress %></p>
           </div>
@@ -86,7 +90,13 @@
           <p>PAN: <%= entity.party.panNo %></p>
           <% } %>
         </div>
-        <div style="-webkit-box-flex: 6; padding: 5px; border-left: 1px solid black;">
+        <div
+          style="
+            -webkit-box-flex: 6;
+            padding: 5px;
+            border-left: 1px solid black;
+          "
+        >
           <h3><%= billMetaHeading %></h3>
           <p>Date: <%= entity.date.toDateString() %></p>
           <p>Invoice Number: <%= num %></p>

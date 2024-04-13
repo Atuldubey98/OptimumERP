@@ -24,7 +24,12 @@ import instance from "../../../instance";
 export default function AvatarProfileWithOptions() {
   const hoverBg = useColorModeValue("gray.200", "gray.700");
   const { requestAsyncHandler } = useAsyncCall();
+
   const authContext = useAuth();
+  const currentPlan = authContext?.user?.currentPlan
+    ? authContext?.user?.currentPlan.plan
+    : "free";
+
   const toast = useToast();
 
   const [status, setStatus] = useState("idle");
@@ -72,9 +77,9 @@ export default function AvatarProfileWithOptions() {
             onClick={() => {
               navigate(`/${orgId}/profile-settings`);
             }}
-            icon={<RxAvatar  />}
+            icon={<RxAvatar />}
           >
-            Me
+            Me ({currentPlan})
           </MenuItem>
           <MenuItem
             onClick={() => {

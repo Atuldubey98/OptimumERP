@@ -78,33 +78,36 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       <ModalContent>
         <ModalHeader>{heading}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <Skeleton isLoaded={isBillLoading}>
+        <ModalBody h={"100%"}>
+          <Skeleton w={"100%"} h={"65svh"} isLoaded={isBillLoading}>
             <iframe
               onLoad={() => {
                 setBillLoadStatus("idle");
               }}
               style={{
-                margin : "auto",
+                margin: "auto",
                 padding: 1,
                 borderRadius: 10,
                 border: "none",
+                zoom : 0.8
               }}
               width={"100%"}
-              height={600}
+              height={"100%"}
               src={`${baseURL}${viewBill}`}
             />
           </Skeleton>
-          <Flex marginBlock={2} gap={3}>
-            {templates.map((template) => (
-              <Template
-                key={template.value}
-                template={template}
-                currentTemplateName={templateName}
-                onSelectTemplate={onSelectTemplate}
-              />
-            ))}
-          </Flex>
+          <Box>
+            <Flex justifyContent={"flex-start"} gap={3}>
+              {templates.map((template) => (
+                <Template
+                  key={template.value}
+                  template={template}
+                  currentTemplateName={templateName}
+                  onSelectTemplate={onSelectTemplate}
+                />
+              ))}
+            </Flex>
+          </Box>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
