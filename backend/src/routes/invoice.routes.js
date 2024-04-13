@@ -30,7 +30,7 @@ invoiceRouter.post(
 );
 
 invoiceRouter.get(
-  "/next-invoice-no",
+  "/nextInvoiceNo",
   authenticate,
   checkOrgAuthorization,
   getNextInvoiceNumber

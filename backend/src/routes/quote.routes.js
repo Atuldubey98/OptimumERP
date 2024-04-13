@@ -32,7 +32,7 @@ quoteRouter.post(
 );
 
 quoteRouter.get(
-  "/next-quote-no",
+  "/nextQuoteNo",
   authenticate,
   checkOrgAuthorization,
   getNextQuotationNumber
@@ -40,7 +40,7 @@ quoteRouter.get(
 quoteRouter.get("/:quoteId", authenticate, checkOrgAuthorization, getQuote);
 
 quoteRouter.post(
-  "/:quoteId/convert-to-invoice",
+  "/:quoteId/convertToInvoice",
   authenticate,
   checkOrgAuthorization,
   convertQuoteToInvoice

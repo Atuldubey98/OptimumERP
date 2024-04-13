@@ -91,7 +91,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
+      `/api/v1/organizations/${orgId}/invoices/nextInvoiceNo`
     );
     formik.setFieldValue("invoiceNo", data.data);
     setStatus("success");

@@ -23,6 +23,7 @@ const productCategoryRouter = require("./product_category.routes");
 const purchaseOrderRouter = require("./purchase_order.routes");
 const contactRouter = require("./contact.routes");
 const statsRouter = require("./stats.routes");
+const proformaInvoiceRouter = require("./proforma_invoice.routes");
 
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
@@ -59,6 +60,7 @@ organizationRouter.use("/:orgId/reports", reportRouter);
 organizationRouter.use("/:orgId/productCategories", productCategoryRouter);
 organizationRouter.use("/:orgId/purchaseOrders", purchaseOrderRouter);
 organizationRouter.use("/:orgId/contacts", contactRouter);
+organizationRouter.use("/:orgId/proformaInvoices", proformaInvoiceRouter);
 organizationRouter.use("/:orgId/stats", statsRouter);
 
 module.exports = organizationRouter;

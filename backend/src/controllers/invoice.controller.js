@@ -23,6 +23,7 @@ const QRCode = require("qrcode");
 const Joi = require("joi");
 const transporter = require("../mailer");
 const Quotes = require("../models/quotes.model");
+const ProformaInvoice = require("../models/proforma_invoice.model");
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
     QRCode.toDataURL(value, function (err, url) {
@@ -128,6 +129,10 @@ exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
   });
   if (!invoice) throw new InvoiceNotFound();
   await Quotes.findOneAndUpdate({ converted: invoiceId }, { converted: null });
+  await ProformaInvoice.findOneAndUpdate(
+    { converted: invoiceId },
+    { converted: null }
+  );
   const transaction = await Transaction.findOneAndDelete({
     org: req.params.orgId,
     docModel: "invoice",

@@ -38,7 +38,7 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
           {item.email ? (
             <Link href={`mailto:${item.email}`}>{item.email}</Link>
           ) : (
-            "Email not known"
+            "-Not-set-"
           )}
         </Text>
         <Text>
@@ -51,7 +51,7 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
               {item.party.name}
             </Link>
           ) : (
-            "Unkown company"
+            "-Not-set-"
           )}
         </Text>
         <Text>

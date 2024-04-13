@@ -16,6 +16,7 @@ const settingSchema = new Schema({
       invoice: "",
       quotation: "",
       purchaseOrder: "",
+      proformaInvoice: "",
     },
   },
   currency: {

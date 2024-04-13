@@ -102,7 +102,7 @@ export default function EstimatesPage() {
   const convertToInvoice = async (quote) => {
     try {
       const { data } = await instance.post(
-        `/api/v1/organizations/${orgId}/quotes/${quote._id}/convert-to-invoice`
+        `/api/v1/organizations/${orgId}/quotes/${quote._id}/convertToInvoice`
       );
       toast({
         title: "Success",

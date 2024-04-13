@@ -103,7 +103,7 @@ export default function useEstimateForm() {
       } else {
         setStatus("loading");
         const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/quotes/next-quote-no`
+          `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`
         );
         formik.setFieldValue("quoteNo", data.data);
         setStatus("success");
