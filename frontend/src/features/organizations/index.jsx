@@ -16,7 +16,7 @@ import {
   Spinner,
   useColorModeValue,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { CiDollar } from "react-icons/ci";
@@ -84,6 +84,12 @@ export default function OrgPage() {
   const popup = plansPopup[currentPlan];
   const settingContext = useContext(SettingContext);
   const role = settingContext?.role || "user";
+  const isAdmin = role === "admin";
+
+  const noOfOrgs = authorizedOrgs.length;
+  const isCurrentPlanAboveFree = currentPlan !== "free";
+  const showAddOrgBtn =
+    (isCurrentPlanAboveFree && noOfOrgs < 3 && isAdmin) || !noOfOrgs;
   return (
     <PrivateRoute>
       <Box padding={4}>
@@ -144,8 +150,7 @@ export default function OrgPage() {
               {authorizedOrgs.map((authorizedOrg) => (
                 <OrgItem org={authorizedOrg.org} key={authorizedOrg.org._id} />
               ))}
-              {(currentPlan !== "free" && role && role === "admin") ||
-              !authorizedOrgs.length ? (
+              {showAddOrgBtn ? (
                 <Flex
                   cursor={"pointer"}
                   _hover={{

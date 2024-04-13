@@ -74,6 +74,7 @@ export default function AvatarProfileWithOptions() {
       <MenuList>
         <MenuGroup title="Profile">
           <MenuItem
+            textTransform={"capitalize"}
             onClick={() => {
               navigate(`/${orgId}/profile-settings`);
             }}
