@@ -234,7 +234,7 @@ export default function AdminPage() {
                           }
                         />
                       </Flex>
-                      <FormControl>
+                      <FormControl isRequired>
                         <FormLabel>Name</FormLabel>
                         <Input
                           onChange={handleChange}
@@ -242,7 +242,7 @@ export default function AdminPage() {
                           value={currentSelectedOrganization.name}
                         />
                       </FormControl>
-                      <FormControl>
+                      <FormControl isRequired>
                         <FormLabel>Address</FormLabel>
                         <Input
                           onChange={handleChange}
@@ -258,7 +258,7 @@ export default function AdminPage() {
                           value={currentSelectedOrganization.gstNo}
                         />
                       </FormControl>
-                      <FormControl>
+                      <FormControl isRequired>
                         <FormLabel>PAN No</FormLabel>
                         <Input
                           onChange={handleChange}

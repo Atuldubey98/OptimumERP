@@ -112,7 +112,7 @@ export default function DashboardPage() {
             wrap={"wrap"}
             gap={5}
           >
-            <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
+            <Skeleton maxW={350} w={"100%"} isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
                 dashType="Invoices"
@@ -120,7 +120,7 @@ export default function DashboardPage() {
                 dashTotal={dashboard.invoiceThisMonth}
               />
             </Skeleton>
-            <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
+            <Skeleton maxW={350} w={"100%"} isLoaded={!loading}>
               <Dashcard
                 icon={<GoPeople size={30} />}
                 period={currentPeriodLabel}
@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 dashTotal={dashboard.partysThisMonth}
               />
             </Skeleton>
-            <Skeleton maxW={300} w={"100%"} isLoaded={!loading}>
+            <Skeleton maxW={350} w={"100%"} isLoaded={!loading}>
               <Dashcard
                 period={currentPeriodLabel}
                 icon={<FaFileInvoice size={30} />}
@@ -136,7 +136,7 @@ export default function DashboardPage() {
                 dashTotal={dashboard.quotesThisMonth}
               />
             </Skeleton>
-            <Skeleton w={"100%"} maxW={300} isLoaded={!loading}>
+            <Skeleton w={"100%"} maxW={350} isLoaded={!loading}>
               <Dashcard
                 icon={<FaMoneyBillTrendUp size={30} />}
                 period={currentPeriodLabel}

@@ -17,10 +17,10 @@ export default function Reportspage() {
   return (
     <MainLayout>
       <Box>
-        <Box p={5} width={"100%"} boxShadow={"md"}>
+        <Box p={2} width={"100%"} boxShadow={"md"}>
           <Flex justifyContent={"flex-start"} gap={5} alignItems={"center"}>
             <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />
-            <Heading fontSize={"xl"}>{reportType.toLocaleUpperCase()}</Heading>
+            <Heading textTransform={"capitalize"} fontSize={"xl"}>{reportType}</Heading>
           </Flex>
         </Box>
         {reportType ? <ReportItem /> : null}
