@@ -66,26 +66,6 @@ export default function ProfileSettingsPage() {
               <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
                 <Text fontSize={"xs"}>Email</Text> <Text>{user?.email}</Text>
               </Flex>
-              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-                <Text fontSize={"xs"}>Plan</Text>{" "}
-                <Status
-                  status={currentPlan}
-                  statusList={[
-                    {
-                      type: "free",
-                      colorSchema: "blue",
-                    },
-                    {
-                      type: "gold",
-                      colorSchema: "yellow",
-                    },
-                    {
-                      type: "platinum",
-                      colorSchema: "green",
-                    },
-                  ]}
-                />
-              </Flex>
             </Stack>
           </CardWrapper>
           <CardWrapper
