@@ -3,6 +3,8 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -44,58 +46,69 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <FormControl
-        isInvalid={formik.errors.amount && formik.touched.amount}
-        isRequired
-      >
-        <FormLabel>Amount</FormLabel>
-        <NumberInputInteger formik={formik} name={"amount"} />
-        <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
-      </FormControl>
-      <FormControl
-        isInvalid={formik.errors.description && formik.touched.description}
-        isRequired
-      >
-        <FormLabel>Description</FormLabel>
-        <Textarea
-          value={formik.values.description}
-          name="description"
-          onChange={formik.handleChange}
-        />
-        <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
-      </FormControl>
-      {status === "loading" ? null : (
+      <Stack spacing={1}>
         <FormControl
-          isInvalid={formik.errors.category && formik.touched.category}
+          isInvalid={formik.errors.amount && formik.touched.amount}
+          isRequired
         >
-          <FormLabel>Expense Category</FormLabel>
-          <Select
-            onChange={({ value }) => {
-              formik.setFieldValue("category", value);
-            }}
-            options={expenseCategoryOptions}
-            name="category"
-            value={expenseCategoryOptions.find(
-              (expenseCategory) =>
-                expenseCategory.value == formik.values.category
-            )}
-          ></Select>
-          <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
+          <FormLabel>Amount</FormLabel>
+          <NumberInputInteger formik={formik} name={"amount"} />
+          <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
         </FormControl>
-      )}
-      <FormControl
-        isInvalid={formik.errors.date && formik.touched.date}
-        isRequired
-      >
-        <FormLabel>Date</FormLabel>
-        <Input
-          name="date"
-          type="date"
-          onChange={formik.handleChange}
-          value={formik.values.date}
-        />
-        <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
-      </FormControl>
+        <FormControl
+          isInvalid={formik.errors.description && formik.touched.description}
+          isRequired
+        >
+          <FormLabel>Description</FormLabel>
+          <Textarea
+            value={formik.values.description}
+            name="description"
+            onChange={formik.handleChange}
+          />
+          <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
+        </FormControl>
+        {status === "loading" ? null : (
+          <FormControl
+            isInvalid={formik.errors.category && formik.touched.category}
+          >
+            <FormLabel>Expense Category</FormLabel>
+            <Select
+              isClearable
+              onChange={(option) => {
+                formik.setFieldValue(
+                  "category",
+                  option ? option.value : undefined
+                );
+              }}
+              options={expenseCategoryOptions}
+              name="category"
+              value={expenseCategoryOptions.find(
+                (expenseCategory) =>
+                  expenseCategory.value == formik.values.category
+              )}
+            />
+            <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
+          </FormControl>
+        )}
+        {formik.values.category ? null : (
+          <Text fontSize={"sm"}>
+            Note : Expense without category will be counted as Miscellenous
+          </Text>
+        )}
+        <FormControl
+          isInvalid={formik.errors.date && formik.touched.date}
+          isRequired
+        >
+          <FormLabel>Date</FormLabel>
+          <Input
+            name="date"
+            type="date"
+            onChange={formik.handleChange}
+            value={formik.values.date}
+          />
+          <FormErrorMessage>{formik.errors.date}</FormErrorMessage>
+        </FormControl>
+      </Stack>
     </FormDrawerLayout>
   );
 }

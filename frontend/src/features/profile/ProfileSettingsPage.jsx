@@ -5,6 +5,7 @@ import {
   Grid,
   Heading,
   IconButton,
+  Stack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -17,9 +18,11 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import FormModalWrapper from "./FormModalWrapper";
 import ProfileForm from "./ProfileForm";
 import useProfileForm from "../../hooks/useProfileForm";
+import Status from "../estimates/list/Status";
 
 export default function ProfileSettingsPage() {
-  const { user } = useAuth();
+  const { user, activePlan } = useAuth();
+  const currentPlan = user?.currentPlan ? user?.currentPlan.plan : "free";
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { formik } = useProfileForm({ closeForm: onClose });
   return (
@@ -56,14 +59,34 @@ export default function ProfileSettingsPage() {
               </Flex>
             }
           >
-            <Box>
+            <Stack spacing={1}>
               <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-                <Text fontSize={"xs"}>Name</Text> <Text>{user.name}</Text>
+                <Text fontSize={"xs"}>Name</Text> <Text>{user?.name}</Text>
               </Flex>
               <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-                <Text fontSize={"xs"}>Email</Text> <Text>{user.email}</Text>
+                <Text fontSize={"xs"}>Email</Text> <Text>{user?.email}</Text>
               </Flex>
-            </Box>
+              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+                <Text fontSize={"xs"}>Plan</Text>{" "}
+                <Status
+                  status={currentPlan}
+                  statusList={[
+                    {
+                      type: "free",
+                      colorSchema: "blue",
+                    },
+                    {
+                      type: "gold",
+                      colorSchema: "yellow",
+                    },
+                    {
+                      type: "platinum",
+                      colorSchema: "green",
+                    },
+                  ]}
+                />
+              </Flex>
+            </Stack>
           </CardWrapper>
           <CardWrapper
             title={"Password"}
