@@ -11,6 +11,7 @@ const settingSchema = new Schema({
       invoice: String,
       quotation: String,
       purchaseOrder: String,
+      proformaInvoice: String,
     },
     default: {
       invoice: "",

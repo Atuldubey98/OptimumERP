@@ -8,8 +8,13 @@ const {
   updateProformaInvoice,
   deleteProformaInvoice,
   getNextProformaInvoiceNo,
+  createProformaInvoice,
+  getProformaInvoiceById,
+  viewProformaInvoicce,
+  downloadProformaInvoice,
+  convertProformaToInvoice,
 } = require("../controllers/proforma_invoice.controller");
-const { updateModel } = require("../middlewares/crud.middleware");
+const { updateModel, createModel } = require("../middlewares/crud.middleware");
 
 const proformaInvoiceRouter = Router({
   mergeParams: true,
@@ -33,10 +38,44 @@ proformaInvoiceRouter.patch(
   updateModel,
   updateProformaInvoice
 );
+proformaInvoiceRouter.get(
+  "/:id",
+  authenticate,
+  checkOrgAuthorization,
+  getProformaInvoiceById
+);
+
+proformaInvoiceRouter.post(
+  "/:id/convertToInvoice",
+  authenticate,
+  checkOrgAuthorization,
+  convertProformaToInvoice
+);
+proformaInvoiceRouter.post(
+  "/",
+  authenticate,
+  checkOrgAuthorization,
+  createModel,
+  createProformaInvoice
+);
 proformaInvoiceRouter.delete(
   "/:id",
   authenticate,
   checkOrgAuthorization,
   deleteProformaInvoice
+);
+
+proformaInvoiceRouter.get(
+  "/:id/view",
+  authenticate,
+  checkOrgAuthorization,
+  viewProformaInvoicce
+);
+
+proformaInvoiceRouter.get(
+  "/:id/download",
+  authenticate,
+  checkOrgAuthorization,
+  downloadProformaInvoice
 );
 module.exports = proformaInvoiceRouter;

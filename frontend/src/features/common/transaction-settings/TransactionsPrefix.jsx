@@ -49,6 +49,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           invoice: "",
           currency: "INR",
           quotation: "",
+          proformaInvoice: "",
           startDate: "",
           endDate: "",
         });
@@ -62,6 +63,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         organization: formik.values.organization,
         invoice: data.data.transactionPrefix.invoice,
         quotation: data.data.transactionPrefix.quotation,
+        proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
         endDate: new Date(data.data.financialYear.end)
           .toISOString()
@@ -116,6 +118,15 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               <Input
                 name="quotation"
                 value={formik.values.quotation}
+                onChange={formik.handleChange}
+                placeholder="ABC-ORG/23-24/XXXX"
+              />
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Proforma Invoice Prefix</FormLabel>
+              <Input
+                name="proformaInvoice"
+                value={formik.values.proformaInvoice}
                 onChange={formik.handleChange}
                 placeholder="ABC-ORG/23-24/XXXX"
               />

@@ -102,7 +102,7 @@ const proformaInvoiceSchema = new Schema({
     default: "sent",
     enum: ["draft", "sent", "pending"],
   },
-  proformaInvoicecNo: {
+  proformaInvoiceNo: {
     type: Number,
     required: true,
     min: 1,

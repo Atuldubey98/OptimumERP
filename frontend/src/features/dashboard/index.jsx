@@ -148,25 +148,7 @@ export default function DashboardPage() {
           <Stack>
             <Skeleton isLoaded={!loading}>
               <DashboardTable
-                heading={"Recent Quotations"}
-                tableRows={dashboard.recentQuotes.map((quote) => ({
-                  _id: quote._id,
-                  num: quote.num,
-                  partyName: quote?.party.name,
-                  total: quote.total,
-                  totalTax: quote.totalTax,
-                  status: (
-                    <Status status={quote.status} statusList={statusList} />
-                  ),
-                  date: new Date(quote.date).toLocaleDateString(),
-                }))}
-                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
-                onViewMore={() => navigate(`/${orgId}/estimates`)}
-              />
-            </Skeleton>
-            <Skeleton isLoaded={!loading}>
-              <DashboardTable
-                heading={"Recent Invoices"}
+                heading={"Recent Sales"}
                 tableRows={dashboard.recentInvoices.map((invoice) => ({
                   _id: invoice._id,
                   num: invoice.num,
@@ -183,9 +165,9 @@ export default function DashboardPage() {
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/invoices`)}
-
               />
             </Skeleton>
+
             <Skeleton isLoaded={!loading}>
               <DashboardTable
                 heading={"Recent Purchases"}
@@ -205,7 +187,24 @@ export default function DashboardPage() {
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/purchases`)}
-
+              />
+            </Skeleton>
+            <Skeleton isLoaded={!loading}>
+              <DashboardTable
+                heading={"Recent Quotations"}
+                tableRows={dashboard.recentQuotes.map((quote) => ({
+                  _id: quote._id,
+                  num: quote.num,
+                  partyName: quote?.party.name,
+                  total: quote.total,
+                  totalTax: quote.totalTax,
+                  status: (
+                    <Status status={quote.status} statusList={statusList} />
+                  ),
+                  date: new Date(quote.date).toLocaleDateString(),
+                }))}
+                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
+                onViewMore={() => navigate(`/${orgId}/estimates`)}
               />
             </Skeleton>
           </Stack>

@@ -10,6 +10,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { RxAvatar } from "react-icons/rx";
 import { useState } from "react";
 import { GoArrowSwitch } from "react-icons/go";
 import { IoIosLogOut } from "react-icons/io";
@@ -67,6 +68,14 @@ export default function AvatarProfileWithOptions() {
       </MenuButton>
       <MenuList>
         <MenuGroup title="Profile">
+          <MenuItem
+            onClick={() => {
+              navigate(`/${orgId}/profile-settings`);
+            }}
+            icon={<RxAvatar  />}
+          >
+            Me
+          </MenuItem>
           <MenuItem
             onClick={() => {
               navigate(`/${orgId}/profile-settings#changePasswordForm`);

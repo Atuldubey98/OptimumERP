@@ -87,8 +87,16 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
   const body = await invoiceDto.validateAsync(req.body);
   const setting = await Setting.findOne({
     org: req.params.orgId,
-  }).select("transactionPrefix");
+  }).select("transactionPrefix financialYear");
   if (!setting) throw new OrgNotFound();
+  const existingInvoiceFilter = {
+    org: req.params.orgId,
+    _id: { $ne: req.params.invoiceId },
+    invoiceNo: body.invoiceNo,
+    financialYear: setting.financialYear,
+  };
+  const existingInvoice = await Invoice.findOne(existingInvoiceFilter);
+  if (existingInvoice) throw new InvoiceDuplicate(body.invoiceNo);
   const updatedInvoice = await Invoice.findOneAndUpdate(
     { _id: req.params.invoiceId, org: req.params.orgId },
     {

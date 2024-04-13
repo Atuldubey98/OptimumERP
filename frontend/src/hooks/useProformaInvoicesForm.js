@@ -7,10 +7,11 @@ import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
 
-export default function useInvoicesForm({ saveAndNew = false }) {
+export default function useProformaInvoicesForm() {
   const [status, setStatus] = useState("idle");
-  const invoiceSchema = Yup.object().shape({
-    invoiceNo: Yup.number()
+
+  const proformaInvoiceSchema = Yup.object().shape({
+    proformaInvoiceNo: Yup.number()
       .required("Invoice number is required")
       .label("Invoice Number"),
     party: Yup.string().required("Party is required").label("Party"),
@@ -45,11 +46,11 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       .label("Description"),
   });
   const { requestAsyncHandler } = useAsyncCall();
-  const { orgId, invoiceId } = useParams();
+  const { orgId, proformaInvoiceId } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const defaultInvoice = {
-    invoiceNo: 1,
+    proformaInvoiceNo: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultInvoiceItem],
@@ -61,13 +62,13 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   };
   const formik = useFormik({
     initialValues: defaultInvoice,
-    validationSchema: invoiceSchema,
+    validationSchema: proformaInvoiceSchema,
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { _id, ...invoice } = values;
+      const { _id, partyDetails, ...invoice } = values;
       const items = values.items.map(({ _id, ...item }) => item);
       await instance[_id ? "patch" : "post"](
-        `/api/v1/organizations/${orgId}/invoices/${_id || ""}`,
+        `/api/v1/organizations/${orgId}/proformaInvoices/${_id || ""}`,
         {
           ...invoice,
           items,
@@ -75,39 +76,37 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       );
       toast({
         title: "Success",
-        description: _id ? "Invoice updated" : "Invoice created",
+        description: _id
+          ? "Proforma Invoice updated"
+          : "Proforma Invoice created",
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,
       });
-      if (!saveAndNew || _id) {
-        navigate(`/${orgId}/invoices`);
-      } else {
-        resetForm();
-      }
+      navigate(`/${orgId}/proformaInvoices`);
       setSubmitting(false);
     }),
   });
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
+      `/api/v1/organizations/${orgId}/proformaInvoices/nextProformaInvoiceNo`
     );
-    formik.setFieldValue("invoiceNo", data.data);
+    formik.setFieldValue("proformaInvoiceNo", data.data);
     setStatus("success");
   });
   useEffect(() => {
     (async () => {
-      if (invoiceId) {
+      if (proformaInvoiceId) {
         requestAsyncHandler(async () => {
           setStatus("loading");
           const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
+            `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceId}`
           );
           const {
             party,
             terms,
-            invoiceNo,
+            proformaInvoiceNo,
             date,
             status,
             items,
@@ -120,7 +119,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             _id: data.data._id,
             party: party._id,
             terms,
-            invoiceNo,
+            proformaInvoiceNo,
             date: new Date(date).toISOString().split("T")[0],
             status,
             partyDetails: party,
@@ -137,9 +136,5 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       }
     })();
   }, []);
-  const resetForm = async () => {
-    formik.resetForm();
-    fetchNextInvoiceNumber();
-  };
-  return { formik, status, resetForm };
+  return { formik, status };
 }

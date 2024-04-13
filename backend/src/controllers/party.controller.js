@@ -10,6 +10,7 @@ const { default: mongoose } = require("mongoose");
 const Purchase = require("../models/purchase.model");
 
 const Contact = require("../models/contacts.model");
+const ProformaInvoice = require("../models/proforma_invoice.model");
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -86,6 +87,12 @@ exports.deleteParty = requestAsyncHandler(async (req, res) => {
     party: req.params.partyId,
   });
   if (contact) throw new PartyNotDelete({ reason: "contact is linked" });
+  const proforma = await ProformaInvoice.findOne({
+    org: req.params.orgId,
+    party: req.params.partyId,
+  });
+  if (proforma)
+    throw new PartyNotDelete({ reason: "proforma invoice is linked" });
   const party = await Party.findOneAndDelete({
     _id: req.params.partyId,
     org: req.params.orgId,

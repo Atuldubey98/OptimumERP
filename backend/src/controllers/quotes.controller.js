@@ -62,8 +62,8 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     quoteNo: body.quoteNo,
     financialYear: setting.financialYear,
   });
+  if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
   const transactionPrefix = setting.transactionPrefix.quotation;
-  if (existingQuotation) throw QuotationDuplicate(req.params.quoteNo);
 
   const newQuote = new Quote({
     org: req.params.orgId,
@@ -102,7 +102,13 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
   });
   if (!setting) throw new OrgNotFound();
   const transactionPrefix = setting.transactionPrefix.quotation;
-
+  const existingQuotation = await Quote.findOne({
+    org: req.params.orgId,
+    quoteNo: body.quoteNo,
+    _id: { $ne: req.params.quoteId },
+    financialYear: setting.financialYear,
+  });
+  if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
   const updatedQuote = await Quote.findOneAndUpdate(
     { _id: req.params.quoteId, org: req.params.orgId },
     {
@@ -377,7 +383,7 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
     sgst: quote.sgst,
     cgst: quote.cgst,
     financialYear: setting.financialYear,
-    billingAddress: quote.party.billingAddress,
+    billingAddress: quote.billingAddress,
     description: quote.description,
     items: quote.items,
     party: quote.party._id,

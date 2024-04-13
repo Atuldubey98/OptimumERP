@@ -54,6 +54,7 @@ export default function TransactionSettingsPage() {
       organization: "",
       invoice: "",
       quotation: "",
+      proformaInvoice: "",
       currency: "INR",
       startDate: "",
       endDate: "",
@@ -65,6 +66,7 @@ export default function TransactionSettingsPage() {
         transactionPrefix: {
           invoice: values.invoice,
           quotation: values.quotation,
+          proformaInvoice: values.proformaInvoice || "",
         },
         currency: values.currency,
         financialYear: {
@@ -72,7 +74,7 @@ export default function TransactionSettingsPage() {
           end: values.endDate,
         },
       });
-     
+
       const currentOrg = localStorage.getItem("organization");
       if (
         currentOrg === values.organization &&

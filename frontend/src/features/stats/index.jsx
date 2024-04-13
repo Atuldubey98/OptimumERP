@@ -7,12 +7,13 @@ import {
   Heading,
   Stack,
   Text,
+  Icon,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
 import { PiMoneyDuotone } from "react-icons/pi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
 import MainLayout from "../common/main-layout";
@@ -20,6 +21,7 @@ import Dashcard from "../dashboard/Dashcard";
 import StatProgress from "../transactions/StatProgress";
 import PeriodSelect from "../dashboard/PeriodSelect";
 import { MdOutlineQueryStats } from "react-icons/md";
+import { IoArrowBack } from "react-icons/io5";
 export default function StatsPage() {
   const [stats, setStats] = useState({
     invoicesTotal: null,
@@ -75,16 +77,22 @@ export default function StatsPage() {
   const totalPurchase = stats.purchaseTotal
     ? stats.purchaseTotal.total + stats.purchaseTotal.totalTax
     : 0;
+  const navigate = useNavigate();
   return (
     <MainLayout>
-      <Box p={5}>
+      <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Spinner />
           </Flex>
         ) : (
           <Stack spacing={8}>
-            <Flex justifyContent={"flex-end"} alignItems={"center"}>
+            <Flex justifyContent={"space-between"} alignItems={"center"}>
+              <Icon
+                cursor={"pointer"}
+                as={IoArrowBack}
+                onClick={() => navigate(-1)}
+              />
               <PeriodSelect
                 onChangePeriod={({ value }) => {
                   setCurrentPeriod(value);

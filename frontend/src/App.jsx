@@ -1,7 +1,9 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-const StatsPage = lazy(()=>import("./features/stats"))
+import ProformaInvoicesPage from "./features/proformaInvoices/list";
+import ProformaInvoiceFormPage from "./features/proformaInvoices/create";
+const StatsPage = lazy(() => import("./features/stats"));
 const ContactsPage = lazy(() => import("./features/contacts"));
 const AboutPage = lazy(() => import("./features/about"));
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
@@ -79,6 +81,19 @@ export default function App() {
             <Route element={<InvoicesPage />} path="" />
             <Route element={<CreateInvoicePage />} path="create" />
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
+          </Route>
+          <Route path="invoices">
+            <Route element={<InvoicesPage />} path="" />
+            <Route element={<CreateInvoicePage />} path="create" />
+            <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
+          </Route>
+          <Route path="proformaInvoices">
+            <Route element={<ProformaInvoicesPage />} path="" />
+            <Route element={<ProformaInvoiceFormPage />} path="create" />
+            <Route
+              element={<ProformaInvoiceFormPage />}
+              path=":proformaInvoiceId/edit"
+            />
           </Route>
           <Route path="purchases">
             <Route element={<PurchasePage />} path="" />
