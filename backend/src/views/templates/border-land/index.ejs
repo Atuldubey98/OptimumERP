@@ -30,9 +30,6 @@
         background-color: #f2f2f2;
       }
 
-      .total-section {
-        margin-bottom: 20px;
-      }
       .total-table {
         width: 100%;
         border-collapse: collapse;
@@ -52,38 +49,34 @@
         <h1 style="text-align: center; color: rgb(56, 14, 95)">
           <%= entity.org.name %>
         </h1>
-        <div style="display: -webkit-box">
+        <div>
           <div
-            style="
-              -webkit-box-flex: 1;
-              border-right: 1px solid black;
-              border-top: 1px solid black;
-            "
+            style="border-right: 1px solid black; border-top: 1px solid black;"
           >
             <p><%= entity.billingAddress %></p>
-          </div>
-          <div
-            style="
-              -webkit-box-flex: 1;
-              border-top: 1px solid black;
-              padding: 5px;
-            "
-          >
-            <p>Telephone: <%= entity.org.gstNo %></p>
-            <p>Email Id : <%= entity.org.panNo %></p>
-            <p>Web: <%= entity.org.panNo %></p>
           </div>
         </div>
       </div>
       <div
-        style="border-top: 1px solid black; display: -webkit-box; padding: 5px"
+        style="
+          border-top: 1px solid black;
+          display: -webkit-box;
+          -webkit-box-align: center;
+          padding: 5px;
+        "
       >
-        <p style="-webkit-box-flex: 1">GSTIN: <%= entity.org.gstNo %></p>
-        <h2 style="-webkit-box-flex: 1"><%= title %></h2>
-        <p style="-webkit-box-flex: 1">Original for recipient</p>
+        <p style="-webkit-box-flex: 1; text-align: center">
+          GSTIN: <%= entity.org.gstNo %>
+        </p>
+        <h2 style="-webkit-box-flex: 1; text-align: center; margin: 0">
+          <%= title %>
+        </h2>
+        <p style="-webkit-box-flex: 1; text-align: center">
+          Original for recipient
+        </p>
       </div>
       <div style="border-top: 1px solid black; display: -webkit-box">
-        <div style="-webkit-box-flex: 5; padding: 5px">
+        <div style="-webkit-box-flex: 6; padding: 5px">
           <h3><%= partyMetaHeading %></h3>
           <p><%= entity.party.name %></p>
           <p><%= entity.billingAddress %></p>
@@ -93,7 +86,7 @@
           <p>PAN: <%= entity.party.panNo %></p>
           <% } %>
         </div>
-        <div style="-webkit-box-flex: 7; padding: 5px">
+        <div style="-webkit-box-flex: 6; padding: 5px; border-left: 1px solid black;">
           <h3><%= billMetaHeading %></h3>
           <p>Date: <%= entity.date.toDateString() %></p>
           <p>Invoice Number: <%= num %></p>
@@ -149,6 +142,7 @@
         </table>
 
         <div style="display: -webkit-box">
+          <% if (bank) { %>
           <div
             style="
               -webkit-box-flex: 4;
@@ -156,7 +150,6 @@
               padding: 5px;
             "
           >
-            <% if (bank) { %>
             <div class="bank-details">
               <div>
                 <h3>Bank Account Details:</h3>
@@ -166,8 +159,8 @@
                 <p>IFSC Code: <%= bank.ifscCode %></p>
               </div>
             </div>
-            <% } %>
           </div>
+          <% } %>
           <div
             style="
               -webkit-box-flex: 4;
