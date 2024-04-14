@@ -103,7 +103,6 @@ export default function TransactionsPage() {
     })();
   }, [orgId, partyId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
-
   return (
     <MainLayout>
       <Box p={5}>
@@ -131,8 +130,8 @@ export default function TransactionsPage() {
                   <BalanceStats
                     balance={
                       invoiceBalance.total -
-                      invoiceBalance.amountReceived -
-                      (purchaseBalance.total - purchaseBalance.amountPaid)
+                      invoiceBalance.payment -
+                      (purchaseBalance.total - purchaseBalance.payment)
                     }
                   />
                 </SimpleGrid>

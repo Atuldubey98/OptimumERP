@@ -1,9 +1,9 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-import ProformaInvoicesPage from "./features/proformaInvoices/list";
-import ProformaInvoiceFormPage from "./features/proformaInvoices/create";
 const StatsPage = lazy(() => import("./features/stats"));
+const ProformaInvoiceFormPage = lazy(() => import("./features/proformaInvoices/create"));
+const ProformaInvoicesPage = lazy(() => import("./features/proformaInvoices/list"));
 const ContactsPage = lazy(() => import("./features/contacts"));
 const AboutPage = lazy(() => import("./features/about"));
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));

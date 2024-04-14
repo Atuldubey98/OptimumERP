@@ -221,19 +221,18 @@ exports.getPartyTransactions = requestAsyncHandler(async (req, res) => {
             $group: {
               _id: null,
               total: { $sum: { $sum: ["$total", "$totalTax"] } },
-              amountReceived: { $sum: "$payment.amount" },
+              payment: { $sum: "$payment.amount" },
             },
           },
         ])
       )
     );
-
   const invoiceBalance = invoiceBalanceCalculator.length
     ? invoiceBalanceCalculator[0]
-    : { total: 0, amountReceived: 0 };
+    : { total: 0, payment: 0 };
   const purchaseBalance = purchaseBalanceCalculator.length
     ? purchaseBalanceCalculator[0]
-    : { total: 0, amountPaid: 0 };
+    : { total: 0, payment: 0 };
 
   const total = await Transaction.countDocuments(filter);
   const totalPages = Math.ceil(total / limit);

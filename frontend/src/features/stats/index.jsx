@@ -88,11 +88,16 @@ export default function StatsPage() {
         ) : (
           <Stack spacing={8}>
             <Flex justifyContent={"space-between"} alignItems={"center"}>
-              <Icon
-                cursor={"pointer"}
-                as={IoArrowBack}
-                onClick={() => navigate(-1)}
-              />
+              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={4}>
+                <Icon
+                  cursor={"pointer"}
+                  as={IoArrowBack}
+                  onClick={() => navigate(-1)}
+                />
+                <Text fontSize={"xl"} fontWeight={"bold"}>
+                  Statistics
+                </Text>
+              </Flex>
               <PeriodSelect
                 onChangePeriod={({ value }) => {
                   setCurrentPeriod(value);

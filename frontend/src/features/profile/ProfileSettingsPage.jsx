@@ -5,26 +5,33 @@ import {
   Grid,
   Heading,
   IconButton,
+  List,
+  ListIcon,
+  ListItem,
+  SimpleGrid,
   Stack,
   Text,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import useAuth from "../../hooks/useAuth";
+import { VscDebugBreakpointFunctionUnverified } from "react-icons/vsc";
+import useProfileForm from "../../hooks/useProfileForm";
 import MainLayout from "../common/main-layout";
 import CardWrapper from "./CardWrapper";
 import ChangePasswordForm from "./ChangePasswordForm";
 import FormModalWrapper from "./FormModalWrapper";
 import ProfileForm from "./ProfileForm";
-import useProfileForm from "../../hooks/useProfileForm";
-import Status from "../estimates/list/Status";
+import { FiCheck } from "react-icons/fi";
 
 export default function ProfileSettingsPage() {
   const { user, activePlan } = useAuth();
   const currentPlan = user?.currentPlan ? user?.currentPlan.plan : "free";
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { formik } = useProfileForm({ closeForm: onClose });
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -68,6 +75,7 @@ export default function ProfileSettingsPage() {
               </Flex>
             </Stack>
           </CardWrapper>
+
           <CardWrapper
             title={"Password"}
             subtitle={"Here you can change your password"}
