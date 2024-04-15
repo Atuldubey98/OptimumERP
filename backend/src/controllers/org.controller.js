@@ -12,6 +12,7 @@ const logger = require("../logger");
 const Setting = require("../models/settings.model");
 const ExpenseCategory = require("../models/expense_category");
 const expenseCategories = require("../constants/expense_categories");
+const OrgModel = require("../models/org.model");
 exports.createOrg = requestAsyncHandler(async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
@@ -72,9 +73,11 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
     password: hashedPassword,
     name,
   });
+  const org = await OrgModel.findById(req.params.orgId);
   await UserActivatedPlan.create({
     user: registeredUser.id,
     plan: req.session?.user?.currentPlan?.plan,
+    purchasedBy: org.createdBy,
   });
   const orgUser = new OrgUser({
     org: req.params.orgId,

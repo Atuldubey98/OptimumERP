@@ -29,7 +29,10 @@ exports.registerUser = requestAsyncHandler(async (req, res) => {
     password: hashedPassword,
     name,
   });
-  await UserActivatedPlan.create({ user: registeredUser.id });
+  await UserActivatedPlan.create({
+    user: registeredUser.id,
+    purchasedBy: registeredUser.id,
+  });
   return res.status(201).json({
     data: { email, name, _id: registeredUser.id },
     message: "User registered successfully !",

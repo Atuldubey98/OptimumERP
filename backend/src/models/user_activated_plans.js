@@ -11,6 +11,11 @@ const userActivatedPlan = new Schema({
     enum: ["free", "gold", "platinum"],
     default: "free",
   },
+  purchasedBy: {
+    type: Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
 });
 
 const UserActivatedPlan = model("user_activated_plan", userActivatedPlan);

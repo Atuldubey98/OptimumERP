@@ -266,6 +266,8 @@ const reportDataByType = {
     header: {
       gstNo: "Party GST No",
       partyName: "Party Name",
+      date: "Invoice Date",
+      num: "Invoice No.",
       cgst: "CGST",
       sgst: "SGST",
       igst: "IGST",
@@ -274,6 +276,8 @@ const reportDataByType = {
     bodyMapper: (item) => ({
       _id: item._id,
       partyName: item.party?.name,
+      num: item.num,
+      date: new Date(item.date).toLocaleDateString(),
       gstNo: item.party?.gstNo,
       cgst: item.cgst.toFixed(2),
       sgst: item.sgst.toFixed(2),
@@ -285,6 +289,8 @@ const reportDataByType = {
     header: {
       gstNo: "Party GST No",
       partyName: "Party Name",
+      purchaseNo: "Invoice no",
+      date: "Purchase Date",
       cgst: "IGST",
       sgst: "IGST",
       igst: "IGST",
@@ -293,7 +299,9 @@ const reportDataByType = {
     bodyMapper: (item) => ({
       _id: item._id,
       partyName: item.party?.name,
+      purchaseNo: item.purchaseNo,
       gstNo: item.party?.gstNo,
+      date: new Date(item.date).toLocaleDateString(),
       cgst: item.cgst.toFixed(2),
       sgst: item.sgst.toFixed(2),
       igst: item.igst.toFixed(2),
