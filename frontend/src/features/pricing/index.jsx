@@ -45,7 +45,7 @@ export default function PricingPage() {
     },
     {
       value: "Proforma Invoicing enabled",
-      valid: ["gold", "platinum"],
+      valid: ["free", "gold", "platinum"],
     },
     {
       value: "QR Code enabled on invoices",

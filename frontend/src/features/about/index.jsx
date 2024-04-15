@@ -33,7 +33,7 @@ export default function AboutPage() {
             colorScheme="teal"
             target="_blank"
             leftIcon={<PiDiscordLogo />}
-            href="https://discord.com/invite/FFWvQnqj"
+            href="https://discord.com/invite/SHvSnXYvQF"
             as={"a"}
           >
             Join Discord

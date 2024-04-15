@@ -8,10 +8,11 @@ import {
   ListItem,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoSettingsOutline } from "react-icons/io5";
+import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
 import { SiAboutdotme } from "react-icons/si";
 import { TbCategory } from "react-icons/tb";
 import { useLocation, useParams } from "react-router-dom";
@@ -19,7 +20,7 @@ import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
-import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+import AuthContext from "../../../contexts/AuthContext";
 export const SidebarLinksList = () => {
   const {
     orgId = localStorage.getItem("organization") || "",
@@ -32,7 +33,10 @@ export const SidebarLinksList = () => {
       .map((settingLink) => `/${orgId}${settingLink.link}`)
       .includes(location.pathname)
   );
-
+  const auth = useContext(AuthContext);
+  const currentPlan = auth?.user?.currentPlan
+    ? auth?.user?.currentPlan.plan
+    : "free";
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
@@ -83,17 +87,17 @@ export const SidebarLinksList = () => {
         </ListItem>
         {openSettings ? <SettingLinks /> : null}
         <HeaderLink
+         headerLink={{
+           icon: LiaMoneyBillWaveAltSolid,
+           link: `/pricings`,
+           label: "Plans",
+         }}
+       />
+        <HeaderLink
           headerLink={{
             icon: SiAboutdotme,
             link: `/about`,
             label: "About",
-          }}
-        />
-         <HeaderLink
-          headerLink={{
-            icon: LiaMoneyBillWaveAltSolid,
-            link: `/pricings`,
-            label: "Plans",
           }}
         />
       </List>
