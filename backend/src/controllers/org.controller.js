@@ -16,7 +16,6 @@ const OrgModel = require("../models/org.model");
 exports.createOrg = requestAsyncHandler(async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
-  const newOrg = await organization.save();
   const activatedPlan = await UserActivatedPlan.findOne({
     user: req.session.user._id,
   });
@@ -32,6 +31,15 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
     return res
       .status(400)
       .json({ message: "Please upgrade your plan to gold" });
+  if (
+    activatedPlan &&
+    activatedPlan.plan === "gold" &&
+    countOfOrganizationByUser >= 3
+  )
+    return res
+      .status(400)
+      .json({ message: "Please upgrade your plan to platinum" });
+  const newOrg = await organization.save();
   const orgUser = new OrgUser({
     org: newOrg.id,
     user: req.session.user._id,
@@ -78,6 +86,8 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
     user: registeredUser.id,
     plan: req.session?.user?.currentPlan?.plan,
     purchasedBy: org.createdBy,
+    expiresOn: req.session?.user.currentPlan?.expiresOn,
+    purchasedOn: req.session?.user.currentPlan?.purchasedOn,
   });
   const orgUser = new OrgUser({
     org: req.params.orgId,
