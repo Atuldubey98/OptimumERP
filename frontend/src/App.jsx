@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 const StatsPage = lazy(() => import("./features/stats"));
+const PricingPage = lazy(() => import("./features/pricing"));
 const ProformaInvoiceFormPage = lazy(() => import("./features/proformaInvoices/create"));
 const ProformaInvoicesPage = lazy(() => import("./features/proformaInvoices/list"));
 const ContactsPage = lazy(() => import("./features/contacts"));
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/:orgId">
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
+          <Route element={<PricingPage />} path="pricings" />
           <Route element={<ContactsPage />} path="contacts" />
           <Route element={<StatsPage />} path="stats" />
           <Route path="about" element={<AboutPage />} />

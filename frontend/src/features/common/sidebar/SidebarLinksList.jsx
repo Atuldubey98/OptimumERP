@@ -19,6 +19,7 @@ import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
+import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
 export const SidebarLinksList = () => {
   const {
     orgId = localStorage.getItem("organization") || "",
@@ -86,6 +87,13 @@ export const SidebarLinksList = () => {
             icon: SiAboutdotme,
             link: `/about`,
             label: "About",
+          }}
+        />
+         <HeaderLink
+          headerLink={{
+            icon: LiaMoneyBillWaveAltSolid,
+            link: `/pricings`,
+            label: "Plans",
           }}
         />
       </List>
