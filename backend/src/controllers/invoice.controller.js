@@ -120,6 +120,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       total,
       totalTax,
       party: body.party,
+      num : setting.transactionPrefix.invoice + body.invoiceNo,
       date: updatedInvoice.date,
     }
   );

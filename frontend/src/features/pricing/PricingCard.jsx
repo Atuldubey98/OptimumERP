@@ -20,7 +20,7 @@ export default function PricingCard({ plan, planOfferings, price }) {
   return (
     <Box maxW={"sm"} border={"1px solid lightgray"} borderRadius={"md"}>
       <Box p={3} borderBottom={"1px solid lightgray"}>
-        <Heading textTransform={"capitalize"} fontSize={"md"}>
+        <Heading textAlign={"center"} textTransform={"capitalize"} fontSize={"md"}>
           {plan}
         </Heading>
       </Box>
