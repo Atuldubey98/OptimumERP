@@ -21,10 +21,10 @@ export default function useDateFilterFetch({ entity }) {
     : parseInt(query.get("page"));
   const searchQuery = query.get("query");
   const today = new Date();
-  const sevenDaysAgo = new Date(today);
-  sevenDaysAgo.setDate(today.getDate() - 7);
+  const monthAgo = new Date(today);
+  monthAgo.setDate(today.getDate() - 30);
   const [dateFilter, setDateFilter] = useState({
-    startDate: sevenDaysAgo.toISOString().split("T")[0],
+    startDate: monthAgo.toISOString().split("T")[0],
     endDate: today.toISOString().split("T")[0],
   });
   const fetchItems = requestAsyncHandler(async () => {

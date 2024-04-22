@@ -126,7 +126,7 @@ export default function PurchasePage() {
                 dateFilter={dateFilter}
               />
             }
-            heading={"Purchases"}
+            heading={"Purchase"}
             tableData={purchases.map(purchaseTableMapper)}
             caption={`Total purchases found : ${totalCount}`}
             operations={purchases.map((purchase) => (
