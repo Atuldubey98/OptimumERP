@@ -120,7 +120,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       total,
       totalTax,
       party: body.party,
-      num : setting.transactionPrefix.invoice + body.invoiceNo,
+      num: setting.transactionPrefix.invoice + body.invoiceNo,
       date: updatedInvoice.date,
     }
   );
@@ -197,9 +197,10 @@ exports.getInvoice = requestAsyncHandler(async (req, res) => {
     _id: req.params.invoiceId,
     org: req.params.orgId,
   })
-    .populate("party", "name _id")
-    .populate("createdBy", "name email _id")
-    .populate("org", "name address _id");
+    .populate("party")
+    .populate("createdBy", "name email ")
+    .populate("updatedBy", "name email")
+    .populate("org", "name address ");
   if (!invoice) throw new InvoiceNotFound();
   return res.status(200).json({ data: invoice });
 });

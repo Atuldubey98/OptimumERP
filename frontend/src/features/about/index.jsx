@@ -21,7 +21,7 @@ export default function AboutPage() {
           flexDir={"column"}
           alignItems={"center"}
         >
-          <Image w={"md"} src="/favicon-white.svg" />
+          <Image w={"sm"} src="/favicon-white.svg" />
           <Heading textAlign={"center"}>
             Unlock the Power of Seamless Business Operations
           </Heading>
