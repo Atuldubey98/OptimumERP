@@ -24,6 +24,7 @@ const Joi = require("joi");
 const transporter = require("../mailer");
 const Quotes = require("../models/quotes.model");
 const ProformaInvoice = require("../models/proforma_invoice.model");
+const logger = require("../logger");
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
     QRCode.toDataURL(value, function (err, url) {
@@ -77,6 +78,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     date: newInvoice.date,
   });
   await transaction.save();
+  logger.info(`Invoice created ${newInvoice.id}`);
   return res
     .status(201)
     .json({ message: "Invoice created !", data: newInvoice });
@@ -125,6 +127,8 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
     }
   );
   if (!updatedInvoice || !updateTransaction) throw new InvoiceNotFound();
+  logger.info(`Invoice updated ${updatedInvoice.id}`);
+
   return res.status(200).json({ message: "Invoice updated !" });
 });
 
@@ -148,6 +152,7 @@ exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
     doc: invoiceId,
   });
   if (!transaction) throw new InvoiceNotFound();
+  logger.info(`Invoice deleted ${invoice.id}`);
   return res.status(200).json({ message: "Invoice deleted !" });
 });
 

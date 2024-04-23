@@ -5,6 +5,7 @@ const { PartyNotFound } = require("../errors/party.error");
 const Contact = require("../models/contacts.model");
 const { ContactNotFound } = require("../errors/contact.error");
 const { isValidObjectId } = require("mongoose");
+const logger = require("../logger");
 exports.createContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   if (body.party) {
@@ -12,6 +13,7 @@ exports.createContact = requestAsyncHandler(async (req, res) => {
     if (!party) throw new PartyNotFound();
   }
   const contact = await Contact.create({ ...body, org: req.params.orgId });
+  logger.log("info", `Contact created with id ${contact.id}`)
   return res.status(200).json({ data: contact });
 });
 
@@ -55,6 +57,8 @@ exports.updateContact = requestAsyncHandler(async (req, res) => {
     body
   );
   if (!updatedContact) throw new ContactNotFound();
+  logger.log("info", `Contact updated with id ${updatedContact.id}`)
+
   return res
     .status(200)
     .json({ data: updatedContact, message: "Contact updated" });
@@ -65,6 +69,7 @@ exports.deleteContact = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!deletedContact) throw new ContactNotFound();
+  logger.log("info", `Contact deleted with id ${deletedContact.id}`)
   return res.status(200).json({ message: "Contact deleted" });
 });
 

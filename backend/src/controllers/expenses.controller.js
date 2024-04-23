@@ -26,7 +26,8 @@ exports.getExpenseCategory = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
     _id: req.params.categoryId,
   });
-  if (!expenseCategory) return res.status(404).json({ message: "Expense not found" });
+  if (!expenseCategory)
+    return res.status(404).json({ message: "Expense not found" });
   return res.status(200).json({ data: expenseCategory });
 });
 exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
@@ -49,6 +50,8 @@ exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {
       new: true,
     }
   );
+  logger.info(`updated expense category ${category.id}`);
+
   return res.status(200).json({ data: category });
 });
 exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
@@ -56,15 +59,18 @@ exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
     category: req.params.categoryId,
   });
-  if (expense)
+  if (expense) {
+    logger.warn(`Expense category not deleted`);
     throw new ExpenseCategoryNotDeleted({
       reason: "Expense category linked to expense",
     });
+  }
   const category = await ExpenseCategory.findOneAndDelete({
     org: req.params.orgId,
     _id: req.params.categoryId,
   });
   if (!category) throw new Error("Expense category not found");
+  logger.info(`deleted expense category ${category.id}`);
   return res.status(200).json({ data: category });
 });
 
@@ -93,6 +99,8 @@ exports.createExpense = requestAsyncHandler(async (req, res) => {
     total: req.body.amount,
   });
   await transaction.save();
+  logger.info(`expense created ${expense.id}`);
+
   return res.status(201).json(expense);
 });
 
@@ -108,7 +116,7 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
   };
   const search = req.query.search || "";
   const category = req.query.category || "";
-  
+
   if (search) filter.$text = { $search: search };
   if (category) filter.category = category;
   const totalCount = await Expense.countDocuments(filter);
@@ -151,6 +159,8 @@ exports.updateExpense = requestAsyncHandler(async (req, res) => {
     { updatedBy: req.body.updatedBy, ...req.body }
   );
   if (!updatedExpense || !updateTransaction) throw new ExpenseNotFound();
+  logger.info(`expense category updated ${updatedExpense.id}`);
+
   res.status(200).json(updatedExpense);
 });
 
@@ -171,5 +181,6 @@ exports.deleteExpense = requestAsyncHandler(async (req, res) => {
     doc: expenseId,
   });
   if (!transaction) throw new ExpenseNotFound();
+  logger.info(`expense category deleted ${deletedExpense.id}`);
   return res.status(200).json({ message: "Expense deleted successfully" });
 });
