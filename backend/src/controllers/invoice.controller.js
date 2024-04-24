@@ -25,6 +25,7 @@ const transporter = require("../mailer");
 const Quotes = require("../models/quotes.model");
 const ProformaInvoice = require("../models/proforma_invoice.model");
 const logger = require("../logger");
+const OrgModel = require("../models/org.model");
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
     QRCode.toDataURL(value, function (err, url) {
@@ -79,6 +80,10 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
   });
   await transaction.save();
   logger.info(`Invoice created ${newInvoice.id}`);
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.invoices": 1 } }
+  );
   return res
     .status(201)
     .json({ message: "Invoice created !", data: newInvoice });
@@ -153,6 +158,10 @@ exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
   });
   if (!transaction) throw new InvoiceNotFound();
   logger.info(`Invoice deleted ${invoice.id}`);
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.invoices": -1 } }
+  );
   return res.status(200).json({ message: "Invoice deleted !" });
 });
 

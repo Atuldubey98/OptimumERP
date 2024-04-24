@@ -19,6 +19,7 @@ const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
 const path = require("path");
 const Joi = require("joi");
+const OrgModel = require("../models/org.model");
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
   const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(body.items);
@@ -62,6 +63,10 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
     party: body.party,
   });
   await transaction.save();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.purchases": 1 } }
+  );
   return res
     .status(201)
     .json({ message: "Purchase created !", data: newPurchase });
@@ -114,6 +119,10 @@ exports.deletePurchase = requestAsyncHandler(async (req, res) => {
   });
   if (!transaction) throw new PurchaseNotFound();
   if (!purchase) throw new PurchaseNotFound();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.purchases": -1 } }
+  );
   return res.status(200).json({ message: "Purchase deleted !" });
 });
 

@@ -3,12 +3,17 @@ const { createProductDto, updateProductDto } = require("../dto/product.dto");
 const Product = require("../models/product.model");
 const { OrgNotFound } = require("../errors/org.error");
 const { ProductNotFound } = require("../errors/product.error");
+const OrgModel = require("../models/org.model");
 exports.createProduct = requestAsyncHandler(async (req, res) => {
   const body = await createProductDto.validateAsync(req.body);
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
   const product = new Product({ org: orgId, ...body });
   const newProduct = await product.save();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.products": 1 } }
+  );
   return res
     .status(201)
     .json({ data: newProduct, message: "New product created !" });
@@ -90,6 +95,10 @@ exports.deleteProduct = requestAsyncHandler(async (req, res) => {
   }).exec();
 
   if (!deletedProduct) throw new ProductNotFound();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.products": -1 } }
+  );
   return res.status(200).json({ message: "Product deleted successfully!" });
 });
 

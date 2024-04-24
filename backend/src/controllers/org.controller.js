@@ -16,6 +16,7 @@ const OrgModel = require("../models/org.model");
 exports.createOrg = requestAsyncHandler(async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
+  organization.relatedDocsCount.organizationUsers = 1;
   const activatedPlan = await UserActivatedPlan.findOne({
     user: req.session.user._id,
   });
@@ -39,6 +40,8 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
     return res
       .status(400)
       .json({ message: "Please upgrade your plan to platinum" });
+  organization.relatedDocsCount.expenseCategories = expenseCategories.length;
+
   const newOrg = await organization.save();
   const orgUser = new OrgUser({
     org: newOrg.id,
@@ -55,6 +58,7 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
   await ExpenseCategory.insertMany(
     expenseCategories.map((category) => ({ ...category, org: newOrg.id }))
   );
+
   return res
     .status(201)
     .json({ message: "Organization registered", data: organization });
@@ -95,7 +99,10 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
     role: body.role,
   });
   await orgUser.save();
-
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { organizationUsers: 1 } }
+  );
   logger.info(`Organization user created with id ${orgUser.id}`);
   return res
     .status(201)

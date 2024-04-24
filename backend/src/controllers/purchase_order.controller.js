@@ -4,6 +4,7 @@ const { PartyNotFound } = require("../errors/party.error");
 const { PurchaseNotFound } = require("../errors/purchase.error");
 const { PurchaseOrderDuplicate } = require("../errors/purchase_order.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
+const OrgModel = require("../models/org.model");
 const Party = require("../models/party.model");
 const PurchaseOrder = require("../models/purchase_order.model");
 const Setting = require("../models/settings.model");
@@ -40,6 +41,10 @@ exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
     igst,
   });
   await purchaseOrder.save();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.purchaseOrders": 1 } }
+  );
   return res
     .status(201)
     .json({ message: "Purchase order created !", data: purchaseOrder });
@@ -91,6 +96,10 @@ exports.deletePurchaseOrder = requestAsyncHandler(async (req, res) => {
     _id: req.params.id,
   });
   if (!po) throw new PurchaseNotFound();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.purchaseOrders": -1 } }
+  );
   return res.status(200).json({ message: "Purchase order deleted" });
 });
 

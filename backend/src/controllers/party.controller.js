@@ -11,6 +11,7 @@ const Purchase = require("../models/purchase.model");
 
 const Contact = require("../models/contacts.model");
 const ProformaInvoice = require("../models/proforma_invoice.model");
+const OrgModel = require("../models/org.model");
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -20,6 +21,7 @@ exports.createParty = requestAsyncHandler(async (req, res) => {
   });
   const party = new Party(body);
   await party.save();
+  await OrgModel.updateOne({ _id: orgId }, { $inc: { "relatedDocsCount.parties": 1 } });
   logger.info(`created party ${party.id}`);
   return res.status(201).json({ message: "Party created !" });
 });
@@ -32,6 +34,7 @@ exports.updateParty = requestAsyncHandler(async (req, res) => {
     body
   );
   if (!updatedParty) throw new PartyNotFound();
+  
   return res.status(200).json({ message: "Party updated !" });
 });
 
@@ -98,6 +101,7 @@ exports.deleteParty = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!party) throw new PartyNotFound();
+  await OrgModel.updateOne({ _id: req.params.orgId }, { $inc: { "relatedDocsCount.parties": -1 } });
   return res.status(200).json({ message: "Party deleted" });
 });
 

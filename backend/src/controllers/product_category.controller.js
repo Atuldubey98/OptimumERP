@@ -1,6 +1,7 @@
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const ProductCategory = require("../models/product_category.model");
 const Product = require("../models/product.model");
+const OrgModel = require("../models/org.model");
 exports.createProductCategory = requestAsyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const newProductCategory = new ProductCategory({
@@ -9,6 +10,10 @@ exports.createProductCategory = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   await newProductCategory.save();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.productCategories": 1 } }
+  );
   return res.status(201).json({ data: newProductCategory });
 });
 
@@ -76,6 +81,10 @@ exports.deleteProductCategory = requestAsyncHandler(async (req, res) => {
 
   if (!deletedProductCategory)
     return res.status(404).json({ message: "Product category not found" });
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.productCategories": -1 } }
+  );
   return res
     .status(200)
     .json({ message: "Product category deleted successfully" });

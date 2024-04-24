@@ -11,6 +11,7 @@ const { OrgNotFound } = require("../errors/org.error");
 const { ExpenseNotFound } = require("../errors/expense.error");
 const logger = require("../logger");
 const { expenseCategoryDto } = require("../dto/expense_category.dto");
+const OrgModel = require("../models/org.model");
 const { Types } = mongoose;
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
@@ -37,6 +38,10 @@ exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   logger.info(`created expense category ${category.id}`);
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.expenseCategories": 1 } }
+  );
   return res.status(201).json(category);
 });
 exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {
@@ -71,6 +76,10 @@ exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
   });
   if (!category) throw new Error("Expense category not found");
   logger.info(`deleted expense category ${category.id}`);
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.expenseCategories": -1 } }
+  );
   return res.status(200).json({ data: category });
 });
 
@@ -100,7 +109,10 @@ exports.createExpense = requestAsyncHandler(async (req, res) => {
   });
   await transaction.save();
   logger.info(`expense created ${expense.id}`);
-
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.expenses": 1 } }
+  );
   return res.status(201).json(expense);
 });
 
@@ -182,5 +194,9 @@ exports.deleteExpense = requestAsyncHandler(async (req, res) => {
   });
   if (!transaction) throw new ExpenseNotFound();
   logger.info(`expense category deleted ${deletedExpense.id}`);
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.expenses": -1 } }
+  );
   return res.status(200).json({ message: "Expense deleted successfully" });
 });

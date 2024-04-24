@@ -20,6 +20,7 @@ const ejs = require("ejs");
 const wkhtmltopdf = require("wkhtmltopdf");
 const Invoice = require("../models/invoice.model");
 const Transaction = require("../models/transaction.model");
+const OrgModel = require("../models/org.model");
 exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
   const body = await proformaInvoiceDto.validateAsync(req.body);
   const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
@@ -52,6 +53,10 @@ exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   await newProformaInvoice.save();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.proformaInvoices": 1 } }
+  );
   return res
     .status(200)
     .json({ message: "Proforma Invoice created", data: newProformaInvoice });
@@ -116,6 +121,10 @@ exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!proformaInvoice) throw new ProformaInvoiceNotFound();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.proformaInvoices": -1 } }
+  );
   return res.status(200).json({ message: "Proforma invoice deleted." });
 });
 

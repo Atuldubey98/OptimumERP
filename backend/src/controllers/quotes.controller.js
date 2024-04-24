@@ -16,6 +16,7 @@ const currencies = require("../constants/currencies");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
 const { date } = require("joi");
+const OrgModel = require("../models/org.model");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -89,6 +90,10 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
     party: body.party,
   });
   await transaction.save();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.quotes": 1 } }
+  );
   return res.status(201).json({ message: "Quote created !", data: newQuote });
 });
 
@@ -153,6 +158,10 @@ exports.deleteQuote = requestAsyncHandler(async (req, res) => {
     doc: quoteId,
   });
   if (!transaction) throw new QuoteNotFound();
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.quotes": -1 } }
+  );
   return res.status(200).json({ message: "Quote deleted !" });
 });
 
