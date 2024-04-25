@@ -112,6 +112,7 @@ export default function PartysPage() {
               </Box>
             }
             heading={"Parties"}
+            limitKey={"parties"}
             tableData={parties}
             caption={`Total parties found : ${totalPartys}`}
             operations={parties.map((party) => (

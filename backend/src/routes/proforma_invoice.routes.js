@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
@@ -49,6 +49,7 @@ proformaInvoiceRouter.post(
   "/:id/convertToInvoice",
   authenticate,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("invoices"),
   convertProformaToInvoice
 );
 proformaInvoiceRouter.post(
@@ -56,6 +57,7 @@ proformaInvoiceRouter.post(
   authenticate,
   checkOrgAuthorization,
   createModel,
+  limitFreePlanOnCreateEntityForOrganization("proformaInvoices"),
   createProformaInvoice
 );
 proformaInvoiceRouter.delete(

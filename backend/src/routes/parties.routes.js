@@ -10,7 +10,7 @@ const {
   getPartyTransactions,
   exportParties,
 } = require("../controllers/party.controller");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
   createModel,
   updateModel,
@@ -34,6 +34,7 @@ partyRouter.post(
   authenticate,
   createModel,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("parties"),
   createParty
 );
 partyRouter.patch(

@@ -126,6 +126,7 @@ export default function PurchasePage() {
                 dateFilter={dateFilter}
               />
             }
+            limitKey={"purchases"}
             heading={"Purchase"}
             tableData={purchases.map(purchaseTableMapper)}
             caption={`Total purchases found : ${totalCount}`}

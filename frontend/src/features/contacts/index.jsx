@@ -25,6 +25,7 @@ import HeadingButtons from "../common/table-layout/HeadingButtons";
 import SearchItem from "../common/table-layout/SearchItem";
 import Contact from "./Contact";
 import ContactForm from "./ContactForm";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 const contactDto = Yup.object({
   name: Yup.string().label("Name").required().min(2).max(40),
   email: Yup.string().email().max(40).optional(),
@@ -121,10 +122,12 @@ export default function ContactsPage() {
       setDeleting(false);
     }
   };
+  const { disable } = useLimitsInFreePlan({ key: "contacts" });
   return (
     <MainLayout>
       <Box p={4}>
         <HeadingButtons
+          isAddDisabled={disable}
           heading={"Contacts"}
           onAddNewItem={() => {
             formik.resetForm(defaultContact);

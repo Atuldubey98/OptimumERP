@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
@@ -19,6 +19,7 @@ productCategoryRouter.post(
   "/",
   authenticate,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("productCategories"),
   createProductCategory
 );
 productCategoryRouter.get(

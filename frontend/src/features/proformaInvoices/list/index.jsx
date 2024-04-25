@@ -119,6 +119,7 @@ export default function ProformaInvoicesPage() {
           </Flex>
         ) : (
           <TableLayout
+            limitKey={"proformaInvoices"}
             caption={`Total proforma invoices found : ${totalCount}`}
             heading={"Proforma Invoices"}
             operations={items.map((item) => (

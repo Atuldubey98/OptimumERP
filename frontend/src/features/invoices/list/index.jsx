@@ -136,6 +136,7 @@ export default function InvoicesPage() {
                 onChangeDateFilter={onChangeDateFilter}
               />
             }
+            limitKey={"invoices"}
             heading={"Invoices"}
             tableData={invoices.map(invoiceTableMapper)}
             caption={`Total invoices found : ${totalCount}`}

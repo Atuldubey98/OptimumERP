@@ -151,6 +151,7 @@ export default function ProductsPage() {
                 <SearchItem />
               </Box>
             }
+            limitKey={"products"}
             heading={heading}
             tableData={products.map(productsMapper)}
             caption={`Total items found : ${totalCount}`}

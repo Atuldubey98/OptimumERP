@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
   createModel,
   paginateModel,
@@ -18,6 +18,7 @@ purchaseOrderRouter.post(
   authenticate,
   checkOrgAuthorization,
   createModel,
+  limitFreePlanOnCreateEntityForOrganization("purchaseOrders"),
   createPurchaseOrder
 );
 purchaseOrderRouter.get(

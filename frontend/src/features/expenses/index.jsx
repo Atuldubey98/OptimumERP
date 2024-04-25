@@ -125,6 +125,7 @@ export default function ExpensesPage() {
                 <SearchItem />
               </Box>
             }
+            limitKey={"expenses"}
             heading={heading}
             tableData={expenses.map((expense) => ({
               ...expense,

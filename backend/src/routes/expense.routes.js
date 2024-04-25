@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
@@ -36,6 +36,7 @@ expenseRouter.post(
   authenticate,
   createModel,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("expenses"),
   createExpense
 );
 
@@ -51,6 +52,7 @@ expenseRouter.post(
   authenticate,
   checkOrgAuthorization,
   createModel,
+  limitFreePlanOnCreateEntityForOrganization("expenseCategories"),
   createExpenseCategory
 );
 

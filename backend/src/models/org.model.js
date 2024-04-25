@@ -54,6 +54,7 @@ const orgSchema = new Schema(
       upi: String,
     },
     relatedDocsCount: {
+      _id : false,
       type: {
         contacts: relatedDocsCountSchema,
         invoices: relatedDocsCountSchema,

@@ -7,7 +7,7 @@ const {
   updateModel,
   paginateModel,
 } = require("../middlewares/crud.middleware");
-const { authenticate } = require("../middlewares/auth.middleware");
+const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
   createQuote,
   updateQuote,
@@ -28,6 +28,7 @@ quoteRouter.post(
   authenticate,
   createModel,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("quotes"),
   createQuote
 );
 
@@ -43,6 +44,7 @@ quoteRouter.post(
   "/:quoteId/convertToInvoice",
   authenticate,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("invoices"),
   convertQuoteToInvoice
 );
 quoteRouter.delete(

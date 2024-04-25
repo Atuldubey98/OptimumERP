@@ -128,6 +128,7 @@ export default function ExpenseCategories() {
               <SearchItem />
             </Box>
           }
+          limitKey={"expenseCategories"}
           onAddNewItem={onAddNewExpenseCategory}
           operations={expenseCategories.map((category) => (
             <VertIconMenu

@@ -6,7 +6,10 @@ const {
   updateContact,
   deleteContact,
 } = require("../controllers/contact.controller");
-const { authenticate } = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
@@ -18,6 +21,7 @@ contactRouter.post(
   authenticate,
   checkOrgAuthorization,
   createModel,
+  limitFreePlanOnCreateEntityForOrganization("contacts"),
   createContact
 );
 contactRouter.get("/:id", authenticate, checkOrgAuthorization, getContact);

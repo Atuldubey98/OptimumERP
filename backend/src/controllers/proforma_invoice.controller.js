@@ -380,5 +380,9 @@ exports.convertProformaToInvoice = requestAsyncHandler(async (req, res) => {
     { _id: req.params.id },
     { $set: { converted: newInvoice.id } }
   );
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.invoices": 1 } }
+  );
   return res.status(201).json({ message: `Invoice ${num} created` });
 });

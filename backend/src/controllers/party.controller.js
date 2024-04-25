@@ -55,9 +55,10 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
   const filter = {
     org: req.params.orgId,
   };
+  
   const search = req.query.search || "";
   if (search) filter.$text = { $search: search };
-
+  
   const totalPartys = await Party.countDocuments(filter);
   const totalPages = Math.ceil(totalPartys / limit);
 

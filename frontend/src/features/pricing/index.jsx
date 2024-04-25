@@ -66,10 +66,10 @@ export default function PricingPage() {
           indivisuals to organizations
         </Text>
         <SimpleGrid gap={8} minChildWidth={350}>
-          {plans.map((plan) => (
+          {plans.map((plan, index) => (
             <PricingCard
               plan={plan.value}
-              key={plan.value}
+              key={index}
               price={plan.price}
               planOfferings={planOfferings}
             />

@@ -2,7 +2,7 @@ const { Router } = require("express");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
-const {authenticate} = require("../middlewares/auth.middleware");
+const {authenticate, limitFreePlanOnCreateEntityForOrganization} = require("../middlewares/auth.middleware");
 const {
   getAllProducts,
   createProduct,
@@ -23,6 +23,7 @@ productRouter.post(
   authenticate,
   createModel,
   checkOrgAuthorization,
+  limitFreePlanOnCreateEntityForOrganization("products"),
   createProduct
 );
 productRouter.patch(

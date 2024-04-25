@@ -63,7 +63,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
             </Box>
             <Tooltip
               label={
-                currentPlan === "free" ? "Upgrade your current plan" : null
+                currentPlan === "free" ? "Upgrade your plan" : null
               }
               aria-label="qr code tool tip"
             >

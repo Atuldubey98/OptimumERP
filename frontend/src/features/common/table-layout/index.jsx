@@ -16,10 +16,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { IoAdd, IoArrowBack } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import HeadingButtons from "./HeadingButtons";
+import instance from "../../../instance";
+import useAuth from "../../../hooks/useAuth";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 function TableLayoutMemoized({
   heading,
   onAddNewItem,
@@ -28,6 +31,7 @@ function TableLayoutMemoized({
   caption,
   filter,
   showExport,
+  limitKey,
   operations,
 }) {
   const tableRows = tableData.map((row) => {
@@ -39,10 +43,15 @@ function TableLayoutMemoized({
       .forEach((element) => (tableRow[element] = row[element]));
     return tableRow;
   });
-
+  const { disable } = useLimitsInFreePlan({ key: limitKey });
   return (
     <Stack spacing={4}>
-      <HeadingButtons heading={heading} onAddNewItem={onAddNewItem} showExport={showExport}/>
+      <HeadingButtons
+        heading={heading}
+        isAddDisabled={disable}
+        onAddNewItem={onAddNewItem}
+        showExport={showExport}
+      />
       {filter}
       <TableContainer>
         <Table size={"sm"} variant={"simple"}>

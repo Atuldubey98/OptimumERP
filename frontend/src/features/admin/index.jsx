@@ -35,6 +35,8 @@ import MainLayout from "../common/main-layout";
 import BankAccounts from "./BankAccounts";
 import OrgUserRow from "./OrgUserRow";
 import RegisteUserDrawer from "./RegisteUserDrawer";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
+import useAuth from "../../hooks/useAuth";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -162,6 +164,10 @@ export default function AdminPage() {
       disabled: role !== "admin",
     };
   });
+  const auth = useAuth();
+  const currentPlan = auth?.user?.currentPlan
+    ? auth?.user?.currentPlan.plan
+    : "free";
   return (
     <MainLayout>
       <Box p={5}>
@@ -326,6 +332,7 @@ export default function AdminPage() {
               <Flex justifyContent={"flex-end"} alignItems={"center"}>
                 {organization ? (
                   <Button
+                    isDisabled={currentPlan === "free" && orgUsers.length >= 5}
                     leftIcon={<IoAdd />}
                     colorScheme="blue"
                     onClick={() => {

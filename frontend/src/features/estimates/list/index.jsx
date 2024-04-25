@@ -139,6 +139,7 @@ export default function EstimatesPage() {
                 onChangeDateFilter={onChangeDateFilter}
               />
             }
+            limitKey={"quotes"}
             heading={"Quotations"}
             tableData={estimates.map(estimateTableMapper)}
             caption={`Total estimates found : ${totalCount}`}

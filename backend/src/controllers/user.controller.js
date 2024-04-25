@@ -15,6 +15,7 @@ const Otp = require("../models/otp.model");
 const Joi = require("joi");
 const path = require("path");
 const transporter = require("../mailer");
+const freePlanLimits = require("../constants/freePlanLimits");
 exports.registerUser = requestAsyncHandler(async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
   const { email, password, name } = body;
@@ -54,6 +55,12 @@ exports.loginUser = requestAsyncHandler(async (req, res) => {
     name: user.name,
     _id: user._id,
     currentPlan: activatedPlan,
+    limits:
+      activatedPlan.plan === "free"
+        ? freePlanLimits
+        : activatedPlan.plan === "gold"
+        ? { organizations: 3 }
+        : {},
   };
   req.session.user = loggedInUser;
   return res.status(200).json({ data: loggedInUser });

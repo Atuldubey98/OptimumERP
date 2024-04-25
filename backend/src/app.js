@@ -8,20 +8,13 @@ const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const organizationRouter = require("./routes/org.routes");
-const { rateLimit } = require("express-rate-limit");
 const { NODE_ENV, SESSION_SECRET, MONGO_URI } = require("./config");
 
 const logger = require("./logger");
 
 const app = express();
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 100,
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-});
-app.use(limiter);
+
 mongoose
   .connect(MONGO_URI)
   .then(() => {

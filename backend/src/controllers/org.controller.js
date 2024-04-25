@@ -65,8 +65,7 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getOrg = requestAsyncHandler(async (req, res) => {
-  const userId = req.session.user._id;
-  const org = await Org.findByIdAndUserId(userId, req.params.orgId);
+  const org = await Org.findById(req.params.orgId);
   if (!org) throw new OrgNotFound();
   return res.status(200).json({ data: org });
 });
@@ -101,7 +100,7 @@ exports.createNewUserForOrg = requestAsyncHandler(async (req, res) => {
   await orgUser.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
-    { $inc: { organizationUsers: 1 } }
+    { $inc: { "relatedDocsCount.organizationUsers": 1 } }
   );
   logger.info(`Organization user created with id ${orgUser.id}`);
   return res
