@@ -53,7 +53,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   const invoicePrefix = setting.transactionPrefix.invoice;
-  if (existingInvoice) throw InvoiceDuplicate(body.invoiceNo);
+  if (existingInvoice) throw new InvoiceDuplicate(body.invoiceNo);
   const newInvoice = new Invoice({
     org: req.params.orgId,
     ...body,

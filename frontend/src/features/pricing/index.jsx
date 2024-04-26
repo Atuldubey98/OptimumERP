@@ -1,17 +1,11 @@
-import React from "react";
-import MainLayout from "../common/main-layout";
 import {
-  Box,
   Heading,
-  List,
-  ListIcon,
-  ListItem,
   SimpleGrid,
   Stack,
-  Text,
+  Text
 } from "@chakra-ui/react";
-import { MdCheckCircle, MdSettings } from "react-icons/md";
-import { FaRegCircle } from "react-icons/fa6";
+import React from "react";
+import MainLayout from "../common/main-layout";
 import PricingCard from "./PricingCard";
 export default function PricingPage() {
   const plans = [
