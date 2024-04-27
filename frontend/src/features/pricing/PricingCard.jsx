@@ -18,11 +18,20 @@ export default function PricingCard({ plan, planOfferings, price }) {
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
     : "free";
-  const bg = useColorModeValue("gray.100", "gray.700")
+  const bg = useColorModeValue("gray.100", "gray.700");
   return (
-    <Box boxShadow={"md"} maxW={"sm"} border={"1px solid lightgray"} borderRadius={"md"}>
+    <Box
+      boxShadow={"md"}
+      maxW={"sm"}
+      border={"1px solid lightgray"}
+      borderRadius={"md"}
+    >
       <Box p={3} borderBottom={"1px solid lightgray"}>
-        <Heading textAlign={"center"} textTransform={"capitalize"} fontSize={"md"}>
+        <Heading
+          textAlign={"center"}
+          textTransform={"capitalize"}
+          fontSize={"md"}
+        >
           {plan}
         </Heading>
       </Box>
@@ -50,7 +59,11 @@ export default function PricingCard({ plan, planOfferings, price }) {
           title={plan === "platinum" && "Coming soon"}
           isDisabled={currentPlan === plan || plan === "platinum"}
         >
-          {currentPlan === plan ? "Active" : "Upgrade"}
+          {currentPlan === plan
+            ? "Active"
+            : plan === "platinum"
+            ? "Coming Soon"
+            : "Upgrade"}
         </Button>
       </Stack>
     </Box>
