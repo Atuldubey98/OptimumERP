@@ -26,7 +26,7 @@ import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
-
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 export default function CreatePurchasePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:purchase");
@@ -34,6 +34,9 @@ export default function CreatePurchasePage() {
     saveAndNew,
   });
   const loading = status === "loading";
+  const { disable } = useLimitsInFreePlan({
+    key: "purchases",
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -64,6 +67,7 @@ export default function CreatePurchasePage() {
                   </FormControl>
                 )}
                 <Button
+                  isDisabled={formik.values._id ? false : disable}
                   leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"

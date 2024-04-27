@@ -28,10 +28,14 @@ import { defaultQuoteItem, statusList } from "./data";
 import { AiOutlineSave } from "react-icons/ai";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const loading = status === "loading";
   const { transactionPrefix } = useCurrentOrgCurrency();
+  const { disable } = useLimitsInFreePlan({
+    key: "quotes",
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -44,6 +48,7 @@ export default function CreateEstimatePage() {
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 <Button
+                  isDisabled={formik.values._id ? false : disable}
                   leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"

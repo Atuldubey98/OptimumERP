@@ -31,6 +31,7 @@ import PartySelectBill from "./PartySelectBill";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
@@ -39,6 +40,9 @@ export default function CreateInvoicePage() {
   });
   const loading = status === "loading";
   const { transactionPrefix } = useCurrentOrgCurrency();
+  const { disable } = useLimitsInFreePlan({
+    key: "invoices",
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -69,6 +73,7 @@ export default function CreateInvoicePage() {
                   </FormControl>
                 )}
                 <Button
+                  isDisabled={formik.values._id ? false : disable}
                   leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"

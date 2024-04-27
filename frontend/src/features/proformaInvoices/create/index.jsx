@@ -30,10 +30,14 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 export default function ProformaInvoiceFormPage() {
   const { formik, status } = useProformaInvoicesForm();
   const loading = status === "loading";
   const { transactionPrefix } = useCurrentOrgCurrency();
+  const { disable } = useLimitsInFreePlan({
+    key: "proformaInvoices",
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -46,6 +50,7 @@ export default function ProformaInvoiceFormPage() {
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 <Button
+                  isDisabled={formik.values._id ? false : disable}
                   leftIcon={<AiOutlineSave />}
                   isLoading={formik.isSubmitting || loading}
                   type="submit"

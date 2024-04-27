@@ -14,3 +14,4 @@ const freePlanLimits = {
   organizationUsers: 1,
 };
 module.exports = freePlanLimits;
+  
