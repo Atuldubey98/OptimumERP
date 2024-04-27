@@ -26,6 +26,7 @@ import { MdOutlineHomeRepairService } from "react-icons/md";
 import { CgProductHunt } from "react-icons/cg";
 import { ums } from "../estimates/create/data";
 import instance from "../../instance";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 export default function ProductsPage() {
   const {
     isOpen: isProductFormOpen,
@@ -137,6 +138,8 @@ export default function ProductsPage() {
       </Tag>
     ),
   });
+  const { disable } = useLimitsInFreePlan({ key: "products" });
+
   return (
     <MainLayout>
       <Box p={5}>
@@ -146,6 +149,7 @@ export default function ProductsPage() {
           </Flex>
         ) : (
           <TableLayout
+            isAddDisabled={disable}
             filter={
               <Box maxW={"md"}>
                 <SearchItem />
@@ -180,6 +184,7 @@ export default function ProductsPage() {
         )}
         {selectedToShowProduct ? (
           <ShowDrawer
+            disable={disable}
             onClickNewItem={onOpenDrawerForAddingNewProduct}
             heading={"Products"}
             formBtnLabel={"Add new product"}

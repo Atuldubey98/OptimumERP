@@ -11,6 +11,7 @@ import AlertModal from "../common/AlertModal";
 import instance from "../../instance";
 import { isAxiosError } from "axios";
 import SearchItem from "../common/table-layout/SearchItem";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 
 export default function ItemCategories() {
   const { orgId } = useParams();
@@ -72,6 +73,8 @@ export default function ItemCategories() {
     openItemCategoryDeleteModal();
   };
   const navigate = useNavigate();
+  const { disable } = useLimitsInFreePlan({ key: "productCategories" });
+
   const location = useLocation();
   return (
     <Box p={1}>
@@ -81,6 +84,7 @@ export default function ItemCategories() {
         </Flex>
       ) : (
         <TableLayout
+        isAddDisabled={disable}
           filter={
             <Box maxW={"md"}>
               <SearchItem />

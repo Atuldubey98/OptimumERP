@@ -23,6 +23,7 @@ export default function ShowDrawer({
   selectedKeys,
   heading,
   onClickNewItem,
+  disable,
 }) {
   const getFieldsToShow = () => {
     const fields = [];
@@ -68,7 +69,11 @@ export default function ShowDrawer({
             Close
           </Button>
           {onClickNewItem ? (
-            <Button onClick={onClickNewItem} colorScheme="blue">
+            <Button
+              isDisabled={disable}
+              onClick={onClickNewItem}
+              colorScheme="blue"
+            >
               {formBtnLabel}
             </Button>
           ) : null}

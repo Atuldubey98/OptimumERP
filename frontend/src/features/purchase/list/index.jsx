@@ -26,6 +26,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import PayoutModal from "./PayoutModal";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 export default function PurchasePage() {
   const {
     items: purchases,
@@ -111,6 +112,8 @@ export default function PurchasePage() {
     onOpen: openPayout,
     onClose: closePayout,
   } = useDisclosure();
+  const { disable } = useLimitsInFreePlan({ key: "purchases" });
+
   return (
     <MainLayout>
       <Box p={4}>
@@ -120,6 +123,7 @@ export default function PurchasePage() {
           </Flex>
         ) : (
           <TableLayout
+            isAddDisabled={disable}
             filter={
               <TableDateFilter
                 onChangeDateFilter={onChangeDateFilter}

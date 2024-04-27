@@ -30,8 +30,8 @@ function TableLayoutMemoized({
   tableData,
   caption,
   filter,
+  isAddDisabled,
   showExport,
-  limitKey,
   operations,
 }) {
   const tableRows = tableData.map((row) => {
@@ -43,12 +43,11 @@ function TableLayoutMemoized({
       .forEach((element) => (tableRow[element] = row[element]));
     return tableRow;
   });
-  const { disable } = useLimitsInFreePlan({ key: limitKey });
   return (
     <Stack spacing={4}>
       <HeadingButtons
         heading={heading}
-        isAddDisabled={disable}
+        isAddDisabled={isAddDisabled}
         onAddNewItem={onAddNewItem}
         showExport={showExport}
       />

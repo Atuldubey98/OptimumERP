@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import { GiExpense } from "react-icons/gi";
 
 import useAsyncCall from "../../hooks/useAsyncCall";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 const expenseCategorySchema = Yup.object({
   name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
   description: Yup.string()
@@ -114,6 +115,8 @@ export default function ExpenseCategories() {
   };
   const deleting = expenseCategoryStatus === "deleting";
   const navigate = useNavigate();
+  const { disable } = useLimitsInFreePlan({ key: "expenseCategories" });
+
   return (
     <Box p={1}>
       {loading ? (
@@ -122,6 +125,7 @@ export default function ExpenseCategories() {
         </Flex>
       ) : (
         <TableLayout
+          isAddDisabled={disable}
           caption={`Total expense categories : ${expenseCategories.length}`}
           filter={
             <Box maxW={"md"}>
@@ -144,6 +148,7 @@ export default function ExpenseCategories() {
               }}
             />
           ))}
+          
           heading={"Expense Categories"}
           tableData={expenseCategories}
           selectedKeys={{

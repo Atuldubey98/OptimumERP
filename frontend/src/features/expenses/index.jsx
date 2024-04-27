@@ -15,6 +15,7 @@ import useAsyncCall from "../../hooks/useAsyncCall";
 import AlertModal from "../common/AlertModal";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import * as Yup from "yup";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, expenseCategoryId } = useParams();
@@ -110,6 +111,8 @@ export default function ExpensesPage() {
   });
   const deleting = expenseStatus === "deleting";
   const { symbol } = useCurrentOrgCurrency();
+  const { disable } = useLimitsInFreePlan({ key: "expenses" });
+
   return (
     <MainLayout>
       <Box p={4}>
@@ -119,6 +122,7 @@ export default function ExpensesPage() {
           </Flex>
         ) : (
           <TableLayout
+            isAddDisabled={disable}
             onAddNewItem={onAddNewExpense}
             filter={
               <Box maxW={"md"}>
@@ -177,6 +181,7 @@ export default function ExpensesPage() {
             heading={"Expense"}
             formBtnLabel={"Create New"}
             isOpen={isExpenseOpen}
+            disable={disable}
             item={{
               ...expenseSelected,
               date: new Date(expenseSelected.date).toDateString(),

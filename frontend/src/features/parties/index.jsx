@@ -13,6 +13,7 @@ import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import PartyFormDrawer from "./PartyFormDrawer";
 import PartyMenu from "./PartyMenu";
+import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 export default function PartysPage() {
   const {
     isOpen: isDeleteModalOpen,
@@ -96,6 +97,7 @@ export default function PartysPage() {
     openPartyFormDrawer();
   };
   const navigate = useNavigate();
+  const { disable } = useLimitsInFreePlan({ key: "parties" });
 
   return (
     <MainLayout>
@@ -106,6 +108,7 @@ export default function PartysPage() {
           </Flex>
         ) : (
           <TableLayout
+            isAddDisabled={disable}
             filter={
               <Box maxW={"md"}>
                 <SearchItem />
@@ -154,6 +157,7 @@ export default function PartysPage() {
             heading={"Party"}
             formBtnLabel={"Create New"}
             isOpen={isPartyDrawerOpen}
+            disable={disable}
             item={selectedToShowParty}
             onClose={onCloseParty}
             selectedKeys={{

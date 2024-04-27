@@ -15,6 +15,7 @@ import BillModal from "./BillModal";
 import Status from "./Status";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import { isAxiosError } from "axios";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 
 export default function EstimatesPage() {
   const { symbol } = useCurrentOrgCurrency();
@@ -123,6 +124,8 @@ export default function EstimatesPage() {
       });
     }
   };
+  const { disable } = useLimitsInFreePlan({ key: "quotes" });
+
   const deleting = estimateStatus === "deleting";
   return (
     <MainLayout>
@@ -133,6 +136,7 @@ export default function EstimatesPage() {
           </Flex>
         ) : (
           <TableLayout
+            isAddDisabled={disable}
             filter={
               <BillFilter
                 dateFilter={dateFilter}

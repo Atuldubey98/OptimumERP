@@ -14,6 +14,7 @@ import BillModal from "../../estimates/list/BillModal";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 export default function ProformaInvoicesPage() {
   const {
     items,
@@ -110,6 +111,8 @@ export default function ProformaInvoicesPage() {
       });
     }
   };
+  const { disable } = useLimitsInFreePlan({ key: "proformaInvoices" });
+
   return (
     <MainLayout>
       <Box p={4}>
@@ -119,6 +122,7 @@ export default function ProformaInvoicesPage() {
           </Flex>
         ) : (
           <TableLayout
+            isAddDisabled={disable}
             limitKey={"proformaInvoices"}
             caption={`Total proforma invoices found : ${totalCount}`}
             heading={"Proforma Invoices"}
