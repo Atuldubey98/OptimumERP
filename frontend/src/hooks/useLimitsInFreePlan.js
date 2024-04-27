@@ -17,12 +17,13 @@ export default function useLimitsInFreePlan({ key, orgId }) {
   const { user } = useAuth();
   const userLimits = user?.limits || {};
   const currentEntityLimit = userLimits[key] || 0;
-  const currentUserEntityLimit = limits[key];
+  const currentUserEntityCount = limits[key];
+  console.log({currentUserEntityCount, currentEntityLimit});
   return {
-    disable: currentUserEntityLimit
-      ? currentUserEntityLimit >= currentEntityLimit
+    disable: currentEntityLimit
+      ? currentUserEntityCount >= currentEntityLimit
       : false,
     currentEntityLimit,
-    currentUserEntityLimit,
+    currentUserEntityCount,
   };
 }

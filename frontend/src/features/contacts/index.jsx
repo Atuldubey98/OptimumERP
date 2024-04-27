@@ -122,7 +122,9 @@ export default function ContactsPage() {
       setDeleting(false);
     }
   };
-  const { disable } = useLimitsInFreePlan({ key: "contacts" });
+  const { disable, currentEntityLimit, currentUserEntityLimit } =
+    useLimitsInFreePlan({ key: "contacts" });
+  console.log({ currentEntityLimit, currentUserEntityLimit });
   return (
     <MainLayout>
       <Box p={4}>

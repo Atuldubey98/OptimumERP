@@ -86,7 +86,7 @@ export default function ItemCategories() {
               <SearchItem />
             </Box>
           }
-          limitKey={"products"}
+          limitKey={"productCategories"}
           caption={`Total item types : ${data.totalCount}`}
           tableData={data.items}
           operations={data.items.map((itemType) => (

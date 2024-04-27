@@ -67,9 +67,11 @@ export default function ShowDrawer({
           <Button variant="outline" mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button onClick={onClickNewItem} colorScheme="blue">
-            {formBtnLabel}
-          </Button>
+          {onClickNewItem ? (
+            <Button onClick={onClickNewItem} colorScheme="blue">
+              {formBtnLabel}
+            </Button>
+          ) : null}
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

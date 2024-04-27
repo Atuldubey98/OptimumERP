@@ -36,15 +36,19 @@ exports.checkPlan = (plans) =>
 exports.limitFreePlanOnCreateEntityForOrganization = (entityKey) =>
   requestAsyncHandler(async (req, __, next) => {
     const orgId = req.params.orgId;
+    const plan = req.session.user.currentPlan?.plan;
+    if (plan !== "free") {
+      return next();
+    }
     const organization = await OrgModel.findById(orgId).select(
       "relatedDocsCount"
     );
-    
+
     const limit = freePlanLimits[entityKey];
     if (
       organization.relatedDocsCount &&
       organization.relatedDocsCount[entityKey] >= limit
     )
       next(new UpgradePlan());
-    next();
+    return next();
   });
