@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Code, Flex } from "@chakra-ui/react";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import useQuery from "../../../hooks/useQuery";
 
@@ -14,10 +14,6 @@ export default function Pagination({ total, currentPage }) {
       }).toString(),
     });
   };
-  const start = Math.max(0, currentPage - 10);
-  const end = Math.min(start + 9, total - 1);
-  const paginate = [];
-  for (let i = start; i <= end; i++) paginate.push(i);
   return (
     <Flex
       alignItems={"center"}
@@ -33,19 +29,7 @@ export default function Pagination({ total, currentPage }) {
       >
         Previous
       </Button>
-      { currentPage >= total ? null :  paginate.map((page) => {
-        return (
-          <Button
-            size={"sm"}
-            isActive={currentPage === page + 1}
-            key={page}
-            onClick={() => onClick(page + 1)}
-            colorScheme={"green"}
-          >
-            {page + 1}
-          </Button>
-        );
-      })}
+      <Code borderRadius={"md"}>{`${currentPage} / ${total} `}</Code>
       <Button
         size={"sm"}
         onClick={() => onClick(++currentPage)}
