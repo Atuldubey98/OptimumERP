@@ -14,7 +14,7 @@ const Setting = require("../models/settings.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const currencies = require("../constants/currencies");
 const taxRates = require("../constants/gst");
-const { ToWords } = require('to-words');
+const { ToWords } = require("to-words");
 const ums = require("../constants/um");
 const path = require("path");
 const ejs = require("ejs");
@@ -54,6 +54,18 @@ exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   await newProformaInvoice.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "proforma_invoice",
+    financialYear: setting.financialYear,
+    doc: newProformaInvoice._id,
+    total,
+    totalTax,
+    party: body.party,
+    date: newProformaInvoice.date,
+  });
+  await transaction.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": 1 } }
@@ -126,6 +138,11 @@ exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": -1 } }
   );
+  await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "proforma_invoice",
+    doc: req.params.id,
+  });
   return res.status(200).json({ message: "Proforma invoice deleted." });
 });
 
@@ -161,7 +178,23 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
       new: true,
     }
   );
-  if (!updatedInvoice) throw new ProformaInvoiceNotFound();
+  const updateTransaction = await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "proforma_invoice",
+      doc: updatedInvoice.id,
+    },
+    {
+      updatedBy: req.body.updatedBy,
+      total,
+      totalTax,
+      party: body.party,
+      num: proformaInvoicePrefix + body.proformaInvoiceNo,
+      date: updatedInvoice.date,
+    }
+  );
+  if (!updatedInvoice || !updateTransaction)
+    throw new ProformaInvoiceNotFound();
   return res
     .status(200)
     .json({ message: "Invoice updated !", data: updatedInvoice });

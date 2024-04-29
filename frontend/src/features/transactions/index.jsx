@@ -59,6 +59,10 @@ export default function TransactionsPage() {
       value: "quotes",
       label: "Quotation",
     },
+    {
+      value: "proforma_invoice",
+      label: "Proforma Invoice",
+    },
   ];
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
     typeOfTransactions.slice(0, 2)
@@ -168,6 +172,8 @@ export default function TransactionsPage() {
                       ? "yellow"
                       : item.docModel === "invoice"
                       ? "green"
+                      : item.docModel === "proformaInvoice"
+                      ? "blue"
                       : "cyan"
                   }
                 >

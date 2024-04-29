@@ -21,7 +21,7 @@ const transactionSchema = new Schema(
     },
     docModel: {
       type: String,
-      enum: ["invoice", "purchase", "expense", "quotes"],
+      enum: ["invoice", "purchase", "expense", "quotes", "proforma_invoice", "sale_order", "purchase_order"],
       required: true,
     },
     total: {
@@ -58,7 +58,7 @@ const transactionSchema = new Schema(
     date: {
       type: Date,
       required: true,
-      default : getTodayDate
+      default: getTodayDate,
     },
   },
   { timestamps: true, versionKey: false }
