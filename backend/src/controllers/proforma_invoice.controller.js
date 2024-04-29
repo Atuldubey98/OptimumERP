@@ -14,6 +14,7 @@ const Setting = require("../models/settings.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const currencies = require("../constants/currencies");
 const taxRates = require("../constants/gst");
+const { ToWords } = require('to-words');
 const ums = require("../constants/um");
 const path = require("path");
 const ejs = require("ejs");
@@ -224,11 +225,18 @@ exports.viewProformaInvoicce = requestAsyncHandler(async (req, res) => {
       ).toFixed(2)}`,
     })
   );
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   return res.render(locationTemplate, {
     entity: invoice,
     num: invoice.num,
     items,
     bank,
+    grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
     upiQr: null,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
@@ -288,6 +296,12 @@ exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
       ).toFixed(2)}`,
     })
   );
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   const bank = setting.printSettings.bank && invoice.org.bank;
   ejs.renderFile(
     locationTemplate,
@@ -298,6 +312,7 @@ exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
       upiQr: null,
       bank,
       grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+      grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
       total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
       sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
       cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,

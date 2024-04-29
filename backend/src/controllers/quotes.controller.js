@@ -255,7 +255,6 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   const currencySymbol = currencies[setting.currency].symbol;
-
   const items = quote.items.map(({ name, price, quantity, gst, um }) => ({
     name,
     quantity,
@@ -275,6 +274,7 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     items,
     bank: null,
+    grandTotalInWords: null,
     upiQr: null,
     currencySymbol,
     total: `${currencySymbol} ${quote.total.toFixed(2)}`,
@@ -336,6 +336,7 @@ exports.downloadQuote = requestAsyncHandler(async (req, res) => {
     upiQr: null,
     currencySymbol,
     total: `${currencySymbol} ${quote.total.toFixed(2)}`,
+    grandTotalInWords: null,
     sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
     cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
     igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,

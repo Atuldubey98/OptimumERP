@@ -56,6 +56,7 @@ export default function TransactionSettingsPage() {
       quotation: "",
       proformaInvoice: "",
       currency: "INR",
+      localeCode : "en-IN",
       startDate: "",
       endDate: "",
     },
@@ -69,6 +70,7 @@ export default function TransactionSettingsPage() {
           proformaInvoice: values.proformaInvoice || "",
         },
         currency: values.currency,
+        localeCode: values.localeCode,
         financialYear: {
           start: values.startDate,
           end: values.endDate,
