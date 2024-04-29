@@ -145,6 +145,7 @@ export default function ProformaInvoicesPage() {
             tableData={items.map((item) => ({
               ...item,
               date: new Date(item.date).toLocaleDateString(),
+              recipient : item.party.name,
               status: (
                 <Status status={item.status} statusList={invoiceStatusList} />
               ),
@@ -162,8 +163,8 @@ export default function ProformaInvoicesPage() {
             selectedKeys={{
               num: "Number",
               date: "Date",
+              recipient : "Recipient",
               status: "Status",
-              billingAddress: "Billing Address",
               grandTotal: "Grand Total",
             }}
           />
