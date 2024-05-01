@@ -8,11 +8,7 @@ const {
   updateOrganizationUser,
   updateOrganization,
 } = require("../controllers/org.controller");
-const {
-  authenticate,
-  authorize,
-  limitFreePlanOnCreateEntityForOrganization,
-} = require("../middlewares/auth.middleware");
+const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const { createModel } = require("../middlewares/crud.middleware");
 const partyRouter = require("./parties.routes");
 const productRouter = require("./product.routes");
@@ -31,6 +27,7 @@ const proformaInvoiceRouter = require("./proforma_invoice.routes");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
+const saleOrderRouter = require("./sale_order.routes");
 
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
@@ -71,6 +68,7 @@ organizationRouter.use("/:orgId/purchases", purchaseRouter);
 organizationRouter.use("/:orgId/reports", reportRouter);
 organizationRouter.use("/:orgId/productCategories", productCategoryRouter);
 organizationRouter.use("/:orgId/purchaseOrders", purchaseOrderRouter);
+organizationRouter.use("/:orgId/saleOrders", saleOrderRouter);
 organizationRouter.use("/:orgId/contacts", contactRouter);
 organizationRouter.use("/:orgId/proformaInvoices", proformaInvoiceRouter);
 organizationRouter.use("/:orgId/stats", statsRouter);

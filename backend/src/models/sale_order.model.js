@@ -1,4 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
+const OrgModel = require("./org.model");
 
 const saleOrderSchema = new Schema(
   {
@@ -80,8 +81,14 @@ const saleOrderSchema = new Schema(
     },
     status: {
       type: String,
-      default: "sent",
-      enum: ["draft", "sent", "paid"],
+      default: "draft",
+      enum: [
+        "draft",
+        "sent",
+        "pending-client-approval",
+        "ready-for-invoicing",
+        "closed",
+      ],
     },
     items: [
       {
@@ -137,4 +144,5 @@ const saleOrderSchema = new Schema(
 );
 
 const SaleOrder = model("sale_order", saleOrderSchema);
+
 module.exports = SaleOrder;
