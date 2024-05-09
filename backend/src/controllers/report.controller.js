@@ -337,7 +337,8 @@ async function downloadSaleReport(queryParams, orgId) {
   }
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
-    .populate("party");
+    .populate("party")
+    .exec();
   return invoices;
 }
 async function downloadPurchaseReport(queryParams, orgId) {
