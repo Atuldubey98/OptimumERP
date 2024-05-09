@@ -1,8 +1,15 @@
-import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  useDisclosure,
+  useToast,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import usePaginatedFetch from "../../../hooks/usePaginatedFetch";
 import MainLayout from "../../common/main-layout";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import TableLayout from "../../common/table-layout";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
@@ -158,6 +165,14 @@ export default function PurchaseOrderPage() {
                 partyName: item.party.name,
                 grandTotal: `${(item.total + item.totalTax).toFixed(2)}`,
                 date: new Date(item.date).toLocaleDateString(),
+                partyName: (
+                  <ChakraLink
+                    to={`/${orgId}/parties/${item.party._id}/transactions`}
+                    as={Link}
+                  >
+                    {item.party.name}
+                  </ChakraLink>
+                ),
                 status: (
                   <Status status={item.status} statusList={invoiceStatusList} />
                 ),

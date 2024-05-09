@@ -50,18 +50,27 @@ export default function TransactionsPage() {
     {
       value: "invoice",
       label: "Invoice",
+      color: "green",
     },
     {
       value: "purchase",
       label: "Purchase",
+      color: "cyan",
     },
     {
       value: "quotes",
       label: "Quotation",
+      color: "yellow",
     },
     {
       value: "proforma_invoice",
       label: "Proforma Invoice",
+      color: "blue",
+    },
+    {
+      value: "purchase_order",
+      label: "Purchase Orders",
+      color: "red",
     },
   ];
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
@@ -116,6 +125,7 @@ export default function TransactionsPage() {
           </Flex>
         ) : (
           <TableLayout
+            showExport={() => {}}
             filter={
               <Stack spacing={3}>
                 <SimpleGrid gap={3} minChildWidth={200}>
@@ -168,16 +178,16 @@ export default function TransactionsPage() {
                   size={"md"}
                   variant="subtle"
                   colorScheme={
-                    item.docModel === "quotes"
-                      ? "yellow"
-                      : item.docModel === "invoice"
-                      ? "green"
-                      : item.docModel === "proformaInvoice"
-                      ? "blue"
-                      : "cyan"
+                    typeOfTransactions.find(
+                      (tranType) => tranType.value === item.docModel
+                    )?.color || "cyan"
                   }
                 >
-                  <TagLabel>{item.docModel.toUpperCase()}</TagLabel>
+                  <TagLabel>
+                    {typeOfTransactions.find(
+                      (tranType) => tranType.value === item.docModel
+                    )?.label || "TRANSACTION"}
+                  </TagLabel>
                 </Tag>
               ),
             }))}

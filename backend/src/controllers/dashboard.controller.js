@@ -55,11 +55,10 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
 
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
-  const countEntitiesPromises = [Invoice, Quotes, Party, Expense, Purchase];
+  const countEntitiesPromises = [Invoice, Quotes, Expense, Purchase];
   const [
     invoiceThisMonth,
     quotesThisMonth,
-    partysThisMonth,
     expensesThisMonth,
     purchasesThisMonth,
   ] = await Promise.all(
@@ -73,6 +72,13 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
       })
     )
   );
+  const partysThisMonth = await Party.countDocuments({
+    createdAt: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+    org: orgId,
+  }).exec();
   const recentEntities = [Invoice, Quotes, Purchase];
   const [recentInvoices, recentQuotes, recentPurchases] = await Promise.all(
     recentEntities.map((model) =>
