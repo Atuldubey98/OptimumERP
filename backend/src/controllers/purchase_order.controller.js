@@ -101,7 +101,7 @@ exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {
     .limit(limit)
     .exec();
 
-  const total = await PurchaseOrder.countDocuments(filter);
+  const total = await PurchaseOrder.countDocuments(filter).exec();
 
   const totalPages = Math.ceil(total / limit);
   return res.status(200).json({
@@ -118,17 +118,17 @@ exports.deletePurchaseOrder = requestAsyncHandler(async (req, res) => {
   const po = await PurchaseOrder.findOneAndDelete({
     org: req.params.orgId,
     _id: req.params.id,
-  });
+  }).exec();
   if (!po) throw new PurchaseNotFound();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.purchaseOrders": -1 } }
-  );
+  ).exec();
   await Transaction.findOneAndDelete({
     docModel: "purchase_order",
     org: req.params.orgId,
     doc: req.params.id,
-  });
+  }).exec();
   return res.status(200).json({ message: "Purchase order deleted" });
 });
 
@@ -173,7 +173,7 @@ exports.updatePurchaseOrder = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getNextPurchaseOrderNumber = requestAsyncHandler(async (req, res) => {
-  const setting = await Setting.findOne({ org: req.params.orgId });
+  const setting = await Setting.findOne({ org: req.params.orgId }).exec();
   const po = await PurchaseOrder.findOne(
     {
       org: req.params.orgId,
@@ -181,7 +181,9 @@ exports.getNextPurchaseOrderNumber = requestAsyncHandler(async (req, res) => {
     },
     { poNo: 1 },
     { sort: { poNo: -1 } }
-  ).select("poNo");
+  )
+    .select("poNo")
+    .exec();
   return res.status(200).json({ data: po ? po.poNo + 1 : 1 });
 });
 
@@ -236,7 +238,7 @@ exports.viewPurchaseOrder = requestAsyncHandler(async (req, res) => {
       gst: taxRates.find((taxRate) => taxRate.value === gst)?.label,
       um: ums.find((unit) => unit.value === um)?.label,
       price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${( 
+      total: `${currencySymbol} ${(
         price *
         quantity *
         ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)

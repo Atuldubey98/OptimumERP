@@ -95,7 +95,7 @@ export default function StatsPage() {
                   onClick={() => navigate(-1)}
                 />
                 <Text fontSize={"xl"} fontWeight={"bold"}>
-                  Statistics
+                  Stats
                 </Text>
               </Flex>
               <PeriodSelect
