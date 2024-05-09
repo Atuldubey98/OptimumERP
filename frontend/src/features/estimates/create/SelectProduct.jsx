@@ -71,7 +71,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
         page: data.page,
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }, [deboucedSearch, currentPage]);
   const { formik: productsFormFormik } = useProductForm(
