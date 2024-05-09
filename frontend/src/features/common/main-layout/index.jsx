@@ -4,7 +4,6 @@ import Sidebar from "../sidebar";
 import Header from "./Header";
 import PrivateRoute from "../PrivateRoute";
 import NavDrawer from "./NavDrawer";
-
 export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (

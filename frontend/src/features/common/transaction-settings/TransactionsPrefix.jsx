@@ -47,6 +47,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       if (!formik.values.organization) {
         formik.setValues({
           organization: "",
+          purchaseOrder: "",
           invoice: "",
           currency: "INR",
           quotation: "",
@@ -61,10 +62,12 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       const { data } = await instance.get(
         `/api/v1/organizations/${formik.values.organization}/settings`
       );
+      console.log(data.data);
       formik.setValues({
         organization: formik.values.organization,
         invoice: data.data.transactionPrefix.invoice,
         quotation: data.data.transactionPrefix.quotation,
+        purchaseOrder: data.data.transactionPrefix.purchaseOrder || "",
         localeCode: data.data.localeCode || "en-IN",
         proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
@@ -150,6 +153,15 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               <Input
                 name="proformaInvoice"
                 value={formik.values.proformaInvoice}
+                onChange={formik.handleChange}
+                placeholder="ABC-ORG/23-24/XXXX"
+              />
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Purchase Order Prefix</FormLabel>
+              <Input
+                name="purchaseOrder"
+                value={formik.values.purchaseOrder}
                 onChange={formik.handleChange}
                 placeholder="ABC-ORG/23-24/XXXX"
               />

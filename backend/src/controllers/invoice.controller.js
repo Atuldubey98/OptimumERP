@@ -4,7 +4,6 @@ const { PartyNotFound } = require("../errors/party.error");
 const {
   InvoiceNotFound,
   InvoiceDuplicate,
-  InvoiceNotDelete,
 } = require("../errors/invoice.error");
 const { ToWords } = require("to-words");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -323,6 +322,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
     .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo bank");
+  if (!invoice) throw new InvoiceNotFound();
   const grandTotal = invoice.items.reduce(
     (total, invoiceItem) =>
       total +

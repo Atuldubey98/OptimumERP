@@ -130,4 +130,8 @@ const purchaseOrderSchema = new Schema(
 );
 
 const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
+purchaseOrderSchema.index({
+  num : "text",
+  description : "text"
+})
 module.exports = PurchaseOrder;

@@ -343,7 +343,7 @@ exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
       num: invoice.num,
       items,
       upiQr: null,
-      bank,
+      bank : null,
       grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
       grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
       total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
