@@ -162,7 +162,6 @@ export default function PurchaseOrderPage() {
               heading={"Purchase Orders"}
               tableData={purchaseOrderItems.map((item) => ({
                 ...item,
-                partyName: item.party.name,
                 grandTotal: `${(item.total + item.totalTax).toFixed(2)}`,
                 date: new Date(item.date).toLocaleDateString(),
                 partyName: (
