@@ -38,8 +38,8 @@ export default function PricingCard({ plan, planOfferings, price }) {
       <Stack bg={bg} spacing={3} p={5}>
         <Heading>{price}</Heading>
         <List spacing={3}>
-          {planOfferings.map((planOffering) => (
-            <ListItem>
+          {planOfferings.map((planOffering, index) => (
+            <ListItem key={index}>
               <ListIcon
                 as={
                   planOffering.valid.includes(plan)
@@ -56,7 +56,7 @@ export default function PricingCard({ plan, planOfferings, price }) {
           colorScheme="blue"
           as={"a"}
           href={`mailto:optimum.erp2024@gmail.com?subject=Upgrade to ${plan}&body=Please write down your business name, business address and reason for upgrading your plan`}
-          title={plan === "platinum" && "Coming soon"}
+          title={plan === "platinum" ? "Coming soon" : undefined}
           isDisabled={currentPlan === plan || plan === "platinum"}
         >
           {currentPlan === plan

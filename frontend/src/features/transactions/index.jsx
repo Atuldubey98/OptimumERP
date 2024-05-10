@@ -7,6 +7,7 @@ import {
   Stack,
   Tag,
   TagLabel,
+  useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import React, { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ import TableLayout from "../common/table-layout";
 import DateFilter from "../estimates/list/DateFilter";
 import BalanceStats from "./BalanceStats";
 import BillStatsByStatus from "./BillStatsByStatus";
+import { isAxiosError } from "axios";
 export default function TransactionsPage() {
   const { partyId, orgId } = useParams();
   const query = useQuery();
@@ -116,6 +118,42 @@ export default function TransactionsPage() {
     })();
   }, [orgId, partyId, currentPage, transactionTypes, dateFilter]);
   const loading = status === "loading";
+  const toast = useToast();
+  const onExportTransactions = async () => {
+    try {
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/parties/${partyId}/transactions/download`,
+
+        {
+          params: {
+            startDate: dateFilter.startDate,
+            endDate: dateFilter.endDate,
+            transactionTypes,
+          },
+          responseType: "blob",
+        }
+      );
+      const href = URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.setAttribute("download", partyName);
+      link.href = href;
+      link.click();
+      URL.revokeObjectURL(href);
+    } catch (error) {
+      toast({
+        title: isAxiosError(error) ? error.response.data.name : "Error",
+        description: isAxiosError(error)
+          ? error.response.data.message
+          : "Some error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+  const partyName = transactionsResponse.party
+    ? transactionsResponse.party.name
+    : "";
   return (
     <MainLayout>
       <Box p={5}>
@@ -125,7 +163,7 @@ export default function TransactionsPage() {
           </Flex>
         ) : (
           <TableLayout
-            showExport={() => {}}
+            showExport={onExportTransactions}
             filter={
               <Stack spacing={3}>
                 <SimpleGrid gap={3} minChildWidth={200}>
@@ -163,9 +201,7 @@ export default function TransactionsPage() {
                 </Grid>
               </Stack>
             }
-            heading={`${
-              transactionsResponse.party ? transactionsResponse.party.name : ""
-            } - Transactions`}
+            heading={`${partyName} - Transactions`}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
               date: new Date(item.doc.date).toLocaleDateString(),
