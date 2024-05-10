@@ -1,83 +1,38 @@
 const { Schema, Types, model } = require("mongoose");
-
-const purchaseOrderSchema = new Schema(
+const recurringInvoiceSchema = new Schema(
   {
     party: {
       type: Types.ObjectId,
       required: true,
-      ref: "party",
-    },
-    billingAddress: {
-      type: String,
-      required: true,
-    },
-    discount: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 100,
-    },
-    total: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    poNo: {
-      type: Number,
-      required: true,
-    },
-    date: {
-      type: Date,
-    },
-    totalTax: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    sgst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    cgst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    igst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    description: {
-      type: String,
-      default: "Thanks for the business.",
-    },
-    terms: {
-      type: String,
+      ref: "parties",
     },
     org: {
       type: Types.ObjectId,
       required: true,
       ref: "organization",
     },
-    num: {
+    billingAddress: {
+      type: String,
+      required: true,
+    },
+    poNo: {
       type: String,
       default: "",
     },
+    poDate: {
+      type: Date,
+    },
+    terms: {
+      type: String,
+    },
     createdBy: {
       type: Types.ObjectId,
-      required: true,
       ref: "user",
+      required: true,
     },
     updatedBy: {
       type: Types.ObjectId,
       ref: "user",
-    },
-    status: {
-      type: String,
-      default: "sent",
-      enum: ["draft", "sent", "paid"],
     },
     items: [
       {
@@ -122,16 +77,30 @@ const purchaseOrderSchema = new Schema(
       _id: false,
       required: true,
     },
+    period: {
+      type: String,
+      enum: ["weekly", "monthly", "quarterly", "biannually"],
+      required: true,
+    },
+    lastInvoiceDate: {
+      type: Date,
+    },
+    recurrenceNumber: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      required : true,
+    },
   },
   {
-    versionKey: false,
     timestamps: true,
+    versionKey: false,
   }
 );
 
-const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
-purchaseOrderSchema.index({
-  num : "text",
-  description : "text"
-})
-module.exports = PurchaseOrder;
+const RecurringInvoice = model("recurring_invoice", recurringInvoiceSchema);
+
+module.exports = RecurringInvoice;

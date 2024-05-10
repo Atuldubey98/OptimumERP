@@ -1,6 +1,7 @@
 const { Schema, Types, model } = require("mongoose");
+const OrgModel = require("./org.model");
 
-const purchaseOrderSchema = new Schema(
+const saleOrderSchema = new Schema(
   {
     party: {
       type: Types.ObjectId,
@@ -22,12 +23,16 @@ const purchaseOrderSchema = new Schema(
       default: 0,
       required: true,
     },
-    poNo: {
+    soNo: {
       type: Number,
       required: true,
     },
     date: {
       type: Date,
+    },
+    num: {
+      type: String,
+      required: true,
     },
     totalTax: {
       type: Number,
@@ -76,8 +81,14 @@ const purchaseOrderSchema = new Schema(
     },
     status: {
       type: String,
-      default: "sent",
-      enum: ["draft", "sent", "paid"],
+      default: "draft",
+      enum: [
+        "draft",
+        "sent",
+        "pending-client-approval",
+        "ready-for-invoicing",
+        "closed",
+      ],
     },
     items: [
       {
@@ -122,6 +133,9 @@ const purchaseOrderSchema = new Schema(
       _id: false,
       required: true,
     },
+    terms: {
+      type: String,
+    },
   },
   {
     versionKey: false,
@@ -129,9 +143,6 @@ const purchaseOrderSchema = new Schema(
   }
 );
 
-const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
-purchaseOrderSchema.index({
-  num : "text",
-  description : "text"
-})
-module.exports = PurchaseOrder;
+const SaleOrder = model("sale_order", saleOrderSchema);
+
+module.exports = SaleOrder;

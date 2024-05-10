@@ -9,8 +9,12 @@ const {
   getInvoicesForParty,
   getPartyTransactions,
   exportParties,
+  downloadPartyTransactions,
 } = require("../controllers/party.controller");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   createModel,
   updateModel,
@@ -56,6 +60,12 @@ partyRouter.get(
   authenticate,
   checkOrgAuthorization,
   getPartyTransactions
+);
+partyRouter.get(
+  "/:partyId/transactions/download",
+  authenticate,
+  checkOrgAuthorization,
+  downloadPartyTransactions
 );
 partyRouter.delete(
   "/:partyId",

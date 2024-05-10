@@ -1,7 +1,14 @@
-import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  useDisclosure,
+  useToast,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 import instance from "../../../instance";
@@ -145,6 +152,14 @@ export default function ProformaInvoicesPage() {
             tableData={items.map((item) => ({
               ...item,
               date: new Date(item.date).toLocaleDateString(),
+              recipient: (
+                <ChakraLink
+                  to={`/${orgId}/parties/${item.party._id}/transactions`}
+                  as={Link}
+                >
+                  {item.party.name}
+                </ChakraLink>
+              ),
               status: (
                 <Status status={item.status} statusList={invoiceStatusList} />
               ),
@@ -162,8 +177,8 @@ export default function ProformaInvoicesPage() {
             selectedKeys={{
               num: "Number",
               date: "Date",
+              recipient: "Recipient",
               status: "Status",
-              billingAddress: "Billing Address",
               grandTotal: "Grand Total",
             }}
           />

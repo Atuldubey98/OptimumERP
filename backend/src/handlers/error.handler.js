@@ -11,8 +11,6 @@ module.exports = (err, req, res, next) => {
     message = err.message;
   }
   if (err.name === "MongoServerError") {
-    console.log(err.message);
-
     code = 400;
     switch (err.code) {
       case 11000:

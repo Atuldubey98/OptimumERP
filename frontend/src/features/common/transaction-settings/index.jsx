@@ -55,7 +55,9 @@ export default function TransactionSettingsPage() {
       invoice: "",
       quotation: "",
       proformaInvoice: "",
+      purchaseOrder: "",
       currency: "INR",
+      localeCode: "en-IN",
       startDate: "",
       endDate: "",
     },
@@ -66,9 +68,11 @@ export default function TransactionSettingsPage() {
         transactionPrefix: {
           invoice: values.invoice,
           quotation: values.quotation,
+          purchaseOrder: values.purchaseOrder,
           proformaInvoice: values.proformaInvoice || "",
         },
         currency: values.currency,
+        localeCode: values.localeCode,
         financialYear: {
           start: values.startDate,
           end: values.endDate,

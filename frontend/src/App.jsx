@@ -2,9 +2,15 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 const StatsPage = lazy(() => import("./features/stats"));
+const PurchaseOrderPage = lazy(() => import("./features/purchaseOrders/list"));
+const PurchaseOrderEditPage = lazy(() => import("./features/purchaseOrders/create"));
 const PricingPage = lazy(() => import("./features/pricing"));
-const ProformaInvoiceFormPage = lazy(() => import("./features/proformaInvoices/create"));
-const ProformaInvoicesPage = lazy(() => import("./features/proformaInvoices/list"));
+const ProformaInvoiceFormPage = lazy(() =>
+  import("./features/proformaInvoices/create")
+);
+const ProformaInvoicesPage = lazy(() =>
+  import("./features/proformaInvoices/list")
+);
 const ContactsPage = lazy(() => import("./features/contacts"));
 const AboutPage = lazy(() => import("./features/about"));
 const ForgotPasswordPage = lazy(() => import("./features/forgot-password"));
@@ -74,6 +80,11 @@ export default function App() {
             <Route element={<ContactsPage />} path=":partyId/contacts" />
           </Route>
           <Route element={<ExpensesPage />} path="expenses" />
+          <Route path="purchaseOrders">
+            <Route element={<PurchaseOrderPage />} path="" />
+            <Route element={<PurchaseOrderEditPage />} path="create" />
+            <Route element={<PurchaseOrderEditPage />} path=":purchaseOrderId/edit" />
+          </Route>
           <Route path="estimates">
             <Route element={<EstimatesPage />} path="" />
             <Route element={<CreateEstimatePage />} path="create" />
@@ -83,15 +94,11 @@ export default function App() {
             <Route element={<InvoicesPage />} path="" />
             <Route element={<CreateInvoicePage />} path="create" />
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
-          </Route>
-          <Route path="invoices">
-            <Route element={<InvoicesPage />} path="" />
-            <Route element={<CreateInvoicePage />} path="create" />
-            <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
-          </Route>
+          </Route>   
           <Route path="proformaInvoices">
             <Route element={<ProformaInvoicesPage />} path="" />
             <Route element={<ProformaInvoiceFormPage />} path="create" />
+            <Route element={<ProformaInvoiceFormPage />} path=":purchaseOrderId/edit" />
             <Route
               element={<ProformaInvoiceFormPage />}
               path=":proformaInvoiceId/edit"

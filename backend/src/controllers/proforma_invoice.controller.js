@@ -14,6 +14,7 @@ const Setting = require("../models/settings.model");
 const { getTotalAndTax } = require("./quotes.controller");
 const currencies = require("../constants/currencies");
 const taxRates = require("../constants/gst");
+const { ToWords } = require("to-words");
 const ums = require("../constants/um");
 const path = require("path");
 const ejs = require("ejs");
@@ -53,6 +54,18 @@ exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   await newProformaInvoice.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "proforma_invoice",
+    financialYear: setting.financialYear,
+    doc: newProformaInvoice._id,
+    total,
+    totalTax,
+    party: body.party,
+    date: newProformaInvoice.date,
+  });
+  await transaction.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": 1 } }
@@ -125,6 +138,11 @@ exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": -1 } }
   );
+  await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "proforma_invoice",
+    doc: req.params.id,
+  });
   return res.status(200).json({ message: "Proforma invoice deleted." });
 });
 
@@ -160,7 +178,23 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
       new: true,
     }
   );
-  if (!updatedInvoice) throw new ProformaInvoiceNotFound();
+  const updateTransaction = await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "proforma_invoice",
+      doc: updatedInvoice.id,
+    },
+    {
+      updatedBy: req.body.updatedBy,
+      total,
+      totalTax,
+      party: body.party,
+      num: proformaInvoicePrefix + body.proformaInvoiceNo,
+      date: updatedInvoice.date,
+    }
+  );
+  if (!updatedInvoice || !updateTransaction)
+    throw new ProformaInvoiceNotFound();
   return res
     .status(200)
     .json({ message: "Invoice updated !", data: updatedInvoice });
@@ -224,11 +258,18 @@ exports.viewProformaInvoicce = requestAsyncHandler(async (req, res) => {
       ).toFixed(2)}`,
     })
   );
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   return res.render(locationTemplate, {
     entity: invoice,
     num: invoice.num,
     items,
     bank,
+    grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
     upiQr: null,
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
@@ -288,6 +329,12 @@ exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
       ).toFixed(2)}`,
     })
   );
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   const bank = setting.printSettings.bank && invoice.org.bank;
   ejs.renderFile(
     locationTemplate,
@@ -296,8 +343,9 @@ exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
       num: invoice.num,
       items,
       upiQr: null,
-      bank,
+      bank : null,
       grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+      grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
       total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
       sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
       cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,

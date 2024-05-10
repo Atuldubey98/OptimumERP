@@ -8,6 +8,8 @@ export default function useCurrentOrgCurrency() {
   const transactionPrefix = setting?.transactionPrefix || {
     invoice: "",
     quotation: "",
+    purchaseOrder: "",
+    proformaInvoice: "",
   };
   const symbol = currencies[currency].symbol;
   return { currency, symbol, transactionPrefix };

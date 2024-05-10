@@ -4,8 +4,8 @@ const { PartyNotFound } = require("../errors/party.error");
 const {
   InvoiceNotFound,
   InvoiceDuplicate,
-  InvoiceNotDelete,
 } = require("../errors/invoice.error");
+const { ToWords } = require("to-words");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Party = require("../models/party.model");
 const Invoice = require("../models/invoice.model");
@@ -283,6 +283,12 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
       ).toFixed(2)}`,
     })
   );
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   return res.render(locationTemplate, {
     entity: invoice,
     num: invoice.num,
@@ -294,6 +300,7 @@ exports.viewInvoice = requestAsyncHandler(async (req, res) => {
     sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
     cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,
     igst: `${currencySymbol} ${invoice.igst.toFixed(2)}`,
+    grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
     title: "Invoice",
     billMetaHeading: "Invoice information",
     partyMetaHeading: "Bill To",
@@ -315,6 +322,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
     .populate("party", "name gstNo panNo")
     .populate("createdBy", "name email")
     .populate("org", "name address gstNo panNo bank");
+  if (!invoice) throw new InvoiceNotFound();
   const grandTotal = invoice.items.reduce(
     (total, invoiceItem) =>
       total +
@@ -331,7 +339,12 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   const currencySymbol = currencies[setting.currency].symbol;
-
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   const items = invoice.items.map(
     ({ name, price, quantity, gst, um, code }) => ({
       name,
@@ -362,6 +375,7 @@ exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
       upiQr,
       bank,
       grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
+      grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
       total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
       sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
       cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,
@@ -438,7 +452,12 @@ exports.sendInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   const currencySymbol = currencies[setting.currency].symbol;
-
+  const toWords = new ToWords({
+    localeCode: setting.localeCode || "en-IN",
+    converterOptions: {
+      ignoreDecimal: true,
+    },
+  });
   const items = invoice.items.map(
     ({ name, price, quantity, gst, um, code }) => ({
       name,
@@ -446,6 +465,7 @@ exports.sendInvoice = requestAsyncHandler(async (req, res) => {
       code,
       gst: taxRates.find((taxRate) => taxRate.value === gst).label,
       um: ums.find((unit) => unit.value === um).label,
+      grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
       price: `${currencySymbol} ${price.toFixed(2)}`,
       total: `${currencySymbol} ${(
         price *

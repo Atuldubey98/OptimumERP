@@ -13,7 +13,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   SimpleGrid,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -170,12 +170,14 @@ export default function QuoteItem({
           />
         </GridItem>
       </SimpleGrid>
-      <SelectProduct
-        isOpen={isOpen}
-        onClose={onClose}
-        formik={formik}
-        index={index}
-      />
+      {isOpen && (
+        <SelectProduct
+          isOpen={isOpen}
+          onClose={onClose}
+          formik={formik}
+          index={index}
+        />
+      )}
     </Box>
   );
 }

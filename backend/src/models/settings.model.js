@@ -12,18 +12,24 @@ const settingSchema = new Schema({
       quotation: String,
       purchaseOrder: String,
       proformaInvoice: String,
+      saleOrder : String,
     },
     default: {
       invoice: "",
       quotation: "",
       purchaseOrder: "",
       proformaInvoice: "",
+      saleOrder: "",
     },
   },
   currency: {
     type: String,
     default: "INR",
     required: true,
+  },
+  localeCode: {
+    type: String,
+    default: "en-IN",
   },
   financialYear: {
     _id: false,

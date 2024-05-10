@@ -4,7 +4,7 @@ import {
   FaFileInvoiceDollar,
   FaMoneyBillTrendUp,
 } from "react-icons/fa6";
-
+import { IoCartOutline } from "react-icons/io5";
 import { GiExpense } from "react-icons/gi";
 import { GoPeople, GoTag } from "react-icons/go";
 import { ImStatsBars2 } from "react-icons/im";
@@ -20,6 +20,11 @@ const headerLinks = [
     icon: LiaFileInvoiceDollarSolid,
     link: "/proformaInvoices",
     label: "Proforma Invoices",
+  },
+  {
+    icon: IoCartOutline,
+    link: "/purchaseOrders",
+    label: "Purchase Orders",
   },
   { icon: FaFileInvoice, link: "/estimates", label: "Quotations" },
   { icon: GiExpense, link: "/expenses", label: "Expenses" },

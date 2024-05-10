@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import currencies from "../../../assets/currency.json";
 import instance from "../../../instance";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import localeCodes from "../../../constants/localeCodes";
 function TransactionPopoverInstructions() {
   return (
     <Popover>
@@ -46,9 +47,11 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       if (!formik.values.organization) {
         formik.setValues({
           organization: "",
+          purchaseOrder: "",
           invoice: "",
           currency: "INR",
           quotation: "",
+          localeCode: "en-IN",
           proformaInvoice: "",
           startDate: "",
           endDate: "",
@@ -63,6 +66,8 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         organization: formik.values.organization,
         invoice: data.data.transactionPrefix.invoice,
         quotation: data.data.transactionPrefix.quotation,
+        purchaseOrder: data.data.transactionPrefix.purchaseOrder || "",
+        localeCode: data.data.localeCode || "en-IN",
         proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
         endDate: new Date(data.data.financialYear.end)
@@ -81,6 +86,10 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
     label: `${currency} - ${currencies[currency].symbol}`,
     value: currency,
   }));
+  const localeCodeOptions = localeCodes.map((localeCode) => ({
+    label: `${localeCode.country} [${localeCode.locale}]`,
+    value: localeCode.locale,
+  }));
   return (
     <Stack spacing={6}>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -90,20 +99,36 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={3}>
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Currency</FormLabel>
-              <Select
-                name="currency"
-                value={currencyOptions.find(
-                  (currencyOption) =>
-                    currencyOption.value === formik.values.currency
-                )}
-                options={currencyOptions}
-                onChange={({ value }) => {
-                  formik.setFieldValue("currency", value);
-                }}
-              />
-            </FormControl>
+            <Flex gap={2}>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>Currency</FormLabel>
+                <Select
+                  name="currency"
+                  value={currencyOptions.find(
+                    (currencyOption) =>
+                      currencyOption.value === formik.values.currency
+                  )}
+                  options={currencyOptions}
+                  onChange={({ value }) => {
+                    formik.setFieldValue("currency", value);
+                  }}
+                />
+              </FormControl>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>Locale Code</FormLabel>
+                <Select
+                  name="localeCode"
+                  value={localeCodeOptions.find(
+                    (localeCode) =>
+                      localeCode.value === formik.values.localeCode
+                  )}
+                  onChange={({ value }) => {
+                    formik.setFieldValue("localeCode", value);
+                  }}
+                  options={localeCodeOptions}
+                />
+              </FormControl>
+            </Flex>
             <FormControl isDisabled={!formik.values.organization}>
               <FormLabel>Invoice Prefix</FormLabel>
               <Input
@@ -127,6 +152,15 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               <Input
                 name="proformaInvoice"
                 value={formik.values.proformaInvoice}
+                onChange={formik.handleChange}
+                placeholder="ABC-ORG/23-24/XXXX"
+              />
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Purchase Order Prefix</FormLabel>
+              <Input
+                name="purchaseOrder"
+                value={formik.values.purchaseOrder}
                 onChange={formik.handleChange}
                 placeholder="ABC-ORG/23-24/XXXX"
               />
