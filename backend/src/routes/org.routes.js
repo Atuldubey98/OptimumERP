@@ -28,6 +28,7 @@ const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
 const saleOrderRouter = require("./sale_order.routes");
+const recurringInvoiceRouter = require("./recurring_invoices.routes");
 
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
@@ -71,6 +72,7 @@ organizationRouter.use("/:orgId/purchaseOrders", purchaseOrderRouter);
 organizationRouter.use("/:orgId/saleOrders", saleOrderRouter);
 organizationRouter.use("/:orgId/contacts", contactRouter);
 organizationRouter.use("/:orgId/proformaInvoices", proformaInvoiceRouter);
+organizationRouter.use("/:orgId/recurringInvoices", recurringInvoiceRouter);
 organizationRouter.use("/:orgId/stats", statsRouter);
 
 module.exports = organizationRouter;
