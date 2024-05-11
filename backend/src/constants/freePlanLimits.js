@@ -12,6 +12,6 @@ const freePlanLimits = {
   proformaInvoices: 200,
   quotes: 200,
   organizationUsers: 1,
+  recurringInvoices: 0,
 };
 module.exports = freePlanLimits;
-  

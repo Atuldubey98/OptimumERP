@@ -54,7 +54,7 @@ const orgSchema = new Schema(
       upi: String,
     },
     relatedDocsCount: {
-      _id : false,
+      _id: false,
       type: {
         contacts: relatedDocsCountSchema,
         invoices: relatedDocsCountSchema,
@@ -71,6 +71,7 @@ const orgSchema = new Schema(
         saleOrders: relatedDocsCountSchema,
         creditNotes: relatedDocsCountSchema,
         debitNotes: relatedDocsCountSchema,
+        recurringInvoices: relatedDocsCountSchema,
       },
       default: {
         contacts: 0,
@@ -89,6 +90,7 @@ const orgSchema = new Schema(
         saleOrders: 0,
         creditNotes: 0,
         debitNotes: 0,
+        recurringInvoices: 0,
       },
     },
   },

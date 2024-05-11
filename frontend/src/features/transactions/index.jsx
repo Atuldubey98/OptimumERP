@@ -204,11 +204,11 @@ export default function TransactionsPage() {
             heading={`${partyName} - Transactions`}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
-              date: new Date(item.doc.date).toLocaleDateString(),
-              totalItems: item.doc.items.length,
-              status: item.doc.status,
-              num: item.doc.num || item.doc.purchaseNo,
-              grandTotal: (item.total + item.totalTax).toFixed(2),
+              date: new Date(item.doc?.date).toLocaleDateString(),
+              totalItems: item.doc?.items.length,
+              status: item.doc?.status,
+              num: item.doc?.num || item.doc?.purchaseNo,
+              grandTotal: (item.total + item?.totalTax).toFixed(2),
               type: (
                 <Tag
                   size={"md"}

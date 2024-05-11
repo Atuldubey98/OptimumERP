@@ -1,10 +1,14 @@
 const Joi = require("joi");
+const ums = require("../constants/um");
 const itemSchema = Joi.object({
   name: Joi.string().required().label("Item name"),
   price: Joi.number().required().label("Price"),
   quantity: Joi.number().required().label("Quantity"),
   code: Joi.string().allow("").optional().label("Code"),
-  um: Joi.string().default("none").label("Unit of measurement"),
+  um: Joi.string()
+    .valid(...ums.map((um) => um.value))
+    .default("none")
+    .label("Unit of measurement"),
   gst: Joi.string().default("none").label("GST applicable"),
 });
 

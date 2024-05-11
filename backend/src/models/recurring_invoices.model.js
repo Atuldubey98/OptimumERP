@@ -1,10 +1,15 @@
 const { Schema, Types, model } = require("mongoose");
+const recurringInvoicesPeriods = require("../constants/recurringInvoicesPeriods");
 const recurringInvoiceSchema = new Schema(
   {
     party: {
       type: Types.ObjectId,
       required: true,
       ref: "parties",
+    },
+    name: {
+      type: String,
+      required: true,
     },
     org: {
       type: Types.ObjectId,
@@ -79,20 +84,27 @@ const recurringInvoiceSchema = new Schema(
     },
     period: {
       type: String,
-      enum: ["weekly", "monthly", "quarterly", "biannually"],
+      enum: recurringInvoicesPeriods.map(
+        (recurrInvoicesPeriod) => recurrInvoicesPeriod.value
+      ),
       required: true,
     },
     lastInvoiceDate: {
       type: Date,
     },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      required: true,
+    },
     recurrenceNumber: {
       type: Number,
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["active", "inactive"],
-      required : true,
+    noOfInvoicesGenerated: {
+      type: Number,
+      required: true,
+      default: 0,
     },
   },
   {
