@@ -22,7 +22,7 @@ import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 
 export default function ItemCategories() {
   const { orgId } = useParams();
-  const { data, status, fetchFn } = usePaginatedFetch({
+  const { data, status, fetchFn, onSetItems } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/productCategories`,
   });
   const loading = status === "loading";
@@ -107,11 +107,19 @@ export default function ItemCategories() {
                 isChecked={item.enabled}
                 onChange={async () => {
                   const { _id, ...productCategory } = item;
+                  const toggleEnable = data.items.map((productCategoryItem) =>
+                    productCategoryItem._id === _id
+                      ? {
+                          ...productCategoryItem,
+                          enabled: !productCategoryItem.enabled,
+                        }
+                      : productCategoryItem
+                  );
+                  onSetItems(toggleEnable);
                   await instance.patch(
                     `/api/v1/organizations/${orgId}/productCategories/${_id}`,
                     { ...productCategory, enabled: !item.enabled }
                   );
-                  fetchFn();
                 }}
               />
             ),

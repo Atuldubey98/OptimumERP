@@ -10,7 +10,7 @@ export default function useExpenseCategories() {
   const { orgId } = useParams();
   const query = useQuery();
   const search = query.get("query") || "";
-  const { requestAsyncHandler } = useAsyncCall(); 
+  const { requestAsyncHandler } = useAsyncCall();
   const fetchExpenseCategories = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");
@@ -30,5 +30,11 @@ export default function useExpenseCategories() {
   useEffect(() => {
     fetchExpenseCategories();
   }, [search]);
-  return { fetchExpenseCategories, status, expenseCategories };
+  const onSetExpenseCategories = (items) => setExpenseCategories(items);
+  return {
+    fetchExpenseCategories,
+    status,
+    expenseCategories,
+    onSetExpenseCategories,
+  };
 }

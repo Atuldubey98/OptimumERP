@@ -1,17 +1,33 @@
-import {
-  Heading,
-  SimpleGrid,
-  Stack,
-  Text
-} from "@chakra-ui/react";
+import { Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import MainLayout from "../common/main-layout";
 import PricingCard from "./PricingCard";
 export default function PricingPage() {
   const plans = [
-    { value: "free", price: "Free" },
-    { value: "gold", price: "Rs. 999" },
-    { value: "platinum", price: "Rs. 1999" },
+    {
+      value: "free",
+      price: (
+        <>
+          Free <Text fontSize={"sm"}>lifetime</Text>
+        </>
+      ),
+    },
+    {
+      value: "gold",
+      price: (
+        <>
+          Rs. 999 <Text fontSize={"sm"}>per Year</Text>
+        </>
+      ),
+    },
+    {
+      value: "platinum",
+      price: (
+        <>
+          Rs. 1999 <Text fontSize={"sm"}>per Year</Text>
+        </>
+      ),
+    },
   ];
   const allPlans = plans.map((plan) => plan.value);
   const planOfferings = [
