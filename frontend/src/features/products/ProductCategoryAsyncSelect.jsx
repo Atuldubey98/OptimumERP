@@ -24,6 +24,7 @@ export default function ProductCategoryAsyncSelect({ formik }) {
           const res = data.data.map((category) => ({
             value: category,
             label: category.name,
+            isDisabled: !category.enabled,
           }));
           response(res);
         } catch (error) {

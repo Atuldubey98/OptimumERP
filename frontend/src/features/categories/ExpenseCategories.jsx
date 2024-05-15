@@ -17,6 +17,7 @@ import useAsyncCall from "../../hooks/useAsyncCall";
 import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 const expenseCategorySchema = Yup.object({
   name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
+  enabled: Yup.boolean().optional().default(true),
   description: Yup.string()
     .optional()
     .max(150, "Cannot be greater than 150 characters"),
@@ -47,6 +48,7 @@ export default function ExpenseCategories() {
     initialValues: {
       name: "",
       description: "",
+      enabled: true,
     },
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...category } = values;
@@ -75,10 +77,12 @@ export default function ExpenseCategories() {
     formik.setValues({
       name: "",
       description: "",
+      enabled: true,
     });
     formik.setTouched({
       name: false,
       description: false,
+      enabled: false,
     });
     openExpenseCategoryForm();
   };
@@ -148,7 +152,6 @@ export default function ExpenseCategories() {
               }}
             />
           ))}
-          
           heading={"Expense Categories"}
           tableData={expenseCategories}
           selectedKeys={{

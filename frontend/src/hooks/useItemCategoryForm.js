@@ -15,6 +15,9 @@ const itemCategorySchema = Yup.object({
     .max(40, "Cannot be greater than 40")
     .optional()
     .label("Description"),
+  enabled: Yup.boolean()
+    .optional()
+    .label("Enabled"),
 });
 export default function useItemCategoryForm({
   fetchItemCategories,
@@ -28,6 +31,7 @@ export default function useItemCategoryForm({
     initialValues: {
       name: "",
       description: "",
+      enabled: true,
     },
     validationSchema: itemCategorySchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {

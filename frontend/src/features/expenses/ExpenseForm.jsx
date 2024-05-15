@@ -36,6 +36,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
   const expenseCategoryOptions = expenseCategories.map((expenseCategory) => ({
     value: expenseCategory._id,
     label: expenseCategory.name,
+    isDisabled: !expenseCategory.enabled,
   }));
   return (
     <FormDrawerLayout

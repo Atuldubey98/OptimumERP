@@ -15,6 +15,10 @@ const productCategorySchema = new Schema(
       maxLength: 80,
       default: "",
     },
+    enabled: {
+      type: Boolean,
+      default: true,
+    },
     org: {
       type: Types.ObjectId,
       ref: "organization",
@@ -24,7 +28,7 @@ const productCategorySchema = new Schema(
   {
     versionKey: false,
     timestamps: true,
-    collection : "product_categories"
+    collection: "product_categories",
   }
 );
 productCategorySchema.index({
