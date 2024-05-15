@@ -158,7 +158,11 @@ export default function PartysPage() {
             formBtnLabel={"Create New"}
             isOpen={isPartyDrawerOpen}
             disable={disable}
-            item={selectedToShowParty}
+            item={{
+              ...selectedToShowParty,
+              updatedByName: selectedToShowParty?.updatedBy?.name,
+              createdByName: selectedToShowParty?.createdBy?.name,
+            }}
             onClose={onCloseParty}
             selectedKeys={{
               name: "Name",
@@ -166,6 +170,8 @@ export default function PartysPage() {
               billingAddress: "Billing address",
               gstNo: "GST No",
               panNo: "PAN No",
+              updatedByName: "Updated By",
+              createdByName: "Created By",
             }}
           />
         ) : null}

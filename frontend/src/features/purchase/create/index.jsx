@@ -118,7 +118,26 @@ export default function CreatePurchasePage() {
                   />
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
+
                 <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
+                {formik.values._id ? null : (
+                  <FormControl display="flex" alignItems="center">
+                    <FormLabel htmlFor="autoItems" mb="0">
+                      Auto create items
+                    </FormLabel>
+                    <Switch
+                      id="autoItems"
+                      name="autoItems"
+                      isChecked={formik.values.autoItems}
+                      onChange={(e) =>
+                        formik.setFieldValue(
+                          "autoItems",
+                          e.currentTarget.checked
+                        )
+                      }
+                    />
+                  </FormControl>
+                )}
                 <TotalsBox quoteItems={formik.values.items} />
                 <DescriptionField formik={formik} />
               </Grid>

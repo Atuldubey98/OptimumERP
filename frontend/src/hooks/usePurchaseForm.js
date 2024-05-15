@@ -43,6 +43,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       date: new Date(Date.now()).toISOString().split("T")[0],
       status: "unpaid",
       items: [defaultInvoiceItem],
+      autoItems: false,
       description: "",
       poNo: "",
       poDate: "",
@@ -50,8 +51,22 @@ export default function usePurchaseForm({ saveAndNew }) {
     validationSchema: purchaseSchema,
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { _id, ...purchase } = values;
+      const { _id, autoItems, ...purchase } = values;
       const items = values.items.map(({ _id, ...item }) => item);
+      if (!_id && values.autoItems) {
+        await instance.post(`/api/v1/organizations/${orgId}/products/many`, {
+          items: items.map((item) => ({
+            name: item.name,
+            costPrice: item.price,
+            sellingPrice: item.sellingPrice,
+            description: "",
+            um: item.um,
+            type: "goods",
+            code: item.code,
+            category: null,
+          })),
+        });
+      }
       await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/purchases/${_id || ""}`,
         {
@@ -77,8 +92,8 @@ export default function usePurchaseForm({ saveAndNew }) {
           description: "",
           poNo: "",
           poDate: "",
-          party : undefined,
-          partyDetails : undefined
+          party: undefined,
+          partyDetails: undefined,
         });
       else navigate(`/${orgId}/purchases`);
     }),

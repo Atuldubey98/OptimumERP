@@ -121,6 +121,7 @@ export default function TransactionsPage() {
   const toast = useToast();
   const onExportTransactions = async () => {
     try {
+      setStatus("exporting");
       const { data } = await instance.get(
         `/api/v1/organizations/${orgId}/parties/${partyId}/transactions/download`,
 
@@ -149,6 +150,8 @@ export default function TransactionsPage() {
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setStatus("idle");
     }
   };
   const partyName = transactionsResponse.party
@@ -163,7 +166,10 @@ export default function TransactionsPage() {
           </Flex>
         ) : (
           <TableLayout
-            showExport={onExportTransactions}
+            showExport={{
+              onExport: onExportTransactions,
+              status,
+            }}
             filter={
               <Stack spacing={3}>
                 <SimpleGrid gap={3} minChildWidth={200}>

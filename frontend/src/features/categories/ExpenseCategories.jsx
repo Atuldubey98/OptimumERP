@@ -1,4 +1,11 @@
-import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  Switch,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
@@ -153,10 +160,26 @@ export default function ExpenseCategories() {
             />
           ))}
           heading={"Expense Categories"}
-          tableData={expenseCategories}
+          tableData={expenseCategories.map((item) => ({
+            ...item,
+            enabled: (
+              <Switch
+                isChecked={item.enabled}
+                onChange={async () => {
+                  const { _id, ...expenseCategory } = item;
+                  await instance.patch(
+                    `/api/v1/organizations/${orgId}/expenses/categories/${_id}`,
+                    { ...expenseCategory, enabled: !item.enabled }
+                  );
+                  fetchExpenseCategories();
+                }}
+              />
+            ),
+          }))}
           selectedKeys={{
             name: "Name",
             description: "Description",
+            enabled: "Enabled",
           }}
         />
       )}

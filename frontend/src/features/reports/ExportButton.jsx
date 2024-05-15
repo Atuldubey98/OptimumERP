@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import React from "react";
-import { SiMicrosoftexcel } from "react-icons/si";
+import { TbTableExport } from "react-icons/tb";
 import { useParams } from "react-router-dom";
 import { baseURL } from "../../instance";
 
@@ -13,8 +13,8 @@ export default function ExportButton({ dateFilter, typeOfReport }) {
         as={"a"}
         size={"sm"}
         download
-        colorScheme="blue"
-        leftIcon={<SiMicrosoftexcel />}
+        colorScheme="green"
+        leftIcon={<TbTableExport />}
         href={`${baseURL}/api/v1/organizations/${orgId}/reports/${reportType}/download?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
       >
         Export

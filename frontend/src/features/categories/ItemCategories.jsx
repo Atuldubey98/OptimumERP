@@ -1,4 +1,11 @@
-import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  Switch,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -84,7 +91,7 @@ export default function ItemCategories() {
         </Flex>
       ) : (
         <TableLayout
-        isAddDisabled={disable}
+          isAddDisabled={disable}
           filter={
             <Box maxW={"md"}>
               <SearchItem />
@@ -92,7 +99,23 @@ export default function ItemCategories() {
           }
           limitKey={"productCategories"}
           caption={`Total item types : ${data.totalCount}`}
-          tableData={data.items}
+          tableData={data.items.map((item) => ({
+            ...item,
+
+            enabled: (
+              <Switch
+                isChecked={item.enabled}
+                onChange={async () => {
+                  const { _id, ...productCategory } = item;
+                  await instance.patch(
+                    `/api/v1/organizations/${orgId}/productCategories/${_id}`,
+                    { ...productCategory, enabled: !item.enabled }
+                  );
+                  fetchFn();
+                }}
+              />
+            ),
+          }))}
           operations={data.items.map((itemType) => (
             <VertIconMenu
               showProducts={() =>
@@ -115,6 +138,7 @@ export default function ItemCategories() {
           selectedKeys={{
             name: "Name",
             description: "Description",
+            enabled: "Enabled",
           }}
           heading={"Product Categories"}
         />
