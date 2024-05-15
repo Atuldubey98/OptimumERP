@@ -214,7 +214,21 @@ exports.getRecurringInvoice = requestAsyncHandler(async (req, res) => {
   const recurringInvoice = await RecurringInvoice.findOne({
     org: req.params.orgId,
     _id: id,
-  });
+  }).exec();
   if (!recurringInvoice) throw new RecurringInvoiceNotFound();
   return res.status(200).json({ data: recurringInvoice });
+});
+
+exports.updateRecurringInvoice = requestAsyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const body = await recurringInvoicesSchema.validateAsync(req.body);
+  const recurringInvoice = await RecurringInvoice.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      _id: id,
+    },
+    body
+  );
+
+  
 });

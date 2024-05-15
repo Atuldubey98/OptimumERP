@@ -25,7 +25,6 @@ import { IoIosLogOut } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../contexts/AuthContext";
-import SettingContext from "../../contexts/SettingContext";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
@@ -55,6 +54,7 @@ export default function OrgPage() {
   const loggingOut = status === "loggingOut";
   const navigate = useNavigate();
   const { requestAsyncHandler } = useAsyncCall();
+
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
     const { data } = await instance.post(`/api/v1/users/logout`);
@@ -80,16 +80,19 @@ export default function OrgPage() {
       description: "Gold Plan allows you to have 3 organizations",
       name: "Gold Plan",
     },
+    platinum: {
+      description: "This has numerous benefits",
+      name: "Platinum Plan",
+    },
   };
   const popup = plansPopup[currentPlan];
-  const settingContext = useContext(SettingContext);
-  const role = settingContext?.role || "user";
-  const isAdmin = role === "admin";
-
   const noOfOrgs = authorizedOrgs.length;
   const isCurrentPlanAboveFree = currentPlan !== "free";
+  const didUserPurchasePlan =
+    auth?.user?.currentPlan?.purchasedBy === auth?.user?._id;
   const showAddOrgBtn =
-    (isCurrentPlanAboveFree && noOfOrgs < 3 && isAdmin) || !noOfOrgs;
+    (isCurrentPlanAboveFree && noOfOrgs < 3 && didUserPurchasePlan) ||
+    !noOfOrgs;
   return (
     <PrivateRoute>
       <Box padding={4}>
