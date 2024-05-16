@@ -27,6 +27,7 @@ import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import PayoutModal from "./PayoutModal";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 export default function PurchasePage() {
   const {
     items: purchases,
@@ -58,7 +59,7 @@ export default function PurchasePage() {
     ),
     ...purchase,
     purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
-    date: new Date(purchase.date).toISOString().split("T")[0],
+    date: moment(purchase.date).format("LL"),
     grandTotal: `${symbol} ${(purchase.total + purchase.totalTax).toFixed(2)}`,
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
   });

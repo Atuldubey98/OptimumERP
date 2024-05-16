@@ -16,6 +16,7 @@ import AlertModal from "../common/AlertModal";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import * as Yup from "yup";
 import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, expenseCategoryId } = useParams();
@@ -137,7 +138,7 @@ export default function ExpensesPage() {
               category: expense.category
                 ? expense.category.name
                 : "Miscellenous",
-              date: new Date(expense.date).toISOString().split("T")[0],
+              date: moment(expense.date).format("LL"),
             }))}
             caption={`Total expenses found : ${totalCount}`}
             operations={expenses.map((expense) => (
@@ -148,7 +149,7 @@ export default function ExpensesPage() {
                     description: expense.description,
                     amount: expense.amount,
                     category: expense.category ? expense.category._id : "",
-                    date: new Date(expense.date).toISOString().split("T")[0],
+                    date: moment(expense.date).format("YYYY-MM-DD"),
                   });
                   openExpenseForm();
                 }}
@@ -184,7 +185,7 @@ export default function ExpensesPage() {
             disable={disable}
             item={{
               ...expenseSelected,
-              date: new Date(expenseSelected.date).toDateString(),
+              date: moment(expenseSelected.date).format("LL"),
               amount: `${symbol} ${expenseSelected.amount}`,
               category: expenseSelected.category
                 ? expenseSelected.category.name

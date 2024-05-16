@@ -23,6 +23,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
+import moment from "moment";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -51,7 +52,7 @@ export default function InvoicesPage() {
     ),
     ...invoice,
     invoiceNo: invoice.num,
-    date: new Date(invoice.date).toLocaleDateString(),
+    date: moment(invoice.date).format("LL"),
     grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });

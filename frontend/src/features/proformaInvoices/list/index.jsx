@@ -22,6 +22,7 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import moment from 'moment';
 export default function ProformaInvoicesPage() {
   const {
     items,
@@ -151,7 +152,7 @@ export default function ProformaInvoicesPage() {
             ))}
             tableData={items.map((item) => ({
               ...item,
-              date: new Date(item.date).toLocaleDateString(),
+              date: moment(item.date).format("LL"),
               recipient: (
                 <ChakraLink
                   to={`/${orgId}/parties/${item.party._id}/transactions`}
