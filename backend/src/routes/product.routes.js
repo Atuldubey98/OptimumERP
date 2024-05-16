@@ -2,7 +2,10 @@ const { Router } = require("express");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
-const {authenticate, limitFreePlanOnCreateEntityForOrganization} = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   getAllProducts,
   createProduct,
@@ -10,6 +13,7 @@ const {
   getProduct,
   deleteProduct,
   addManyProducts,
+  createManyProducts,
 } = require("../controllers/product.controller");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const productRouter = Router({
@@ -17,7 +21,12 @@ const productRouter = Router({
 });
 
 productRouter.get("/", authenticate, checkOrgAuthorization, getAllProducts);
-productRouter.post("/bulk", authenticate, checkOrgAuthorization, addManyProducts);
+productRouter.post(
+  "/bulk",
+  authenticate,
+  checkOrgAuthorization,
+  addManyProducts
+);
 productRouter.post(
   "/",
   authenticate,
@@ -25,6 +34,13 @@ productRouter.post(
   checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("products"),
   createProduct
+);
+productRouter.post(
+  "/many",
+  authenticate,
+  createModel,
+  checkOrgAuthorization,
+  createManyProducts
 );
 productRouter.patch(
   "/:productId",

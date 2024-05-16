@@ -4,6 +4,7 @@ const Product = require("../models/product.model");
 const { OrgNotFound } = require("../errors/org.error");
 const { ProductNotFound } = require("../errors/product.error");
 const OrgModel = require("../models/org.model");
+const Joi = require("joi");
 exports.createProduct = requestAsyncHandler(async (req, res) => {
   const body = await createProductDto.validateAsync(req.body);
   const orgId = req.params.orgId;
@@ -17,6 +18,25 @@ exports.createProduct = requestAsyncHandler(async (req, res) => {
   return res
     .status(201)
     .json({ data: newProduct, message: "New product created !" });
+});
+
+exports.createManyProducts = requestAsyncHandler(async (req, res) => {
+  const body = await Joi.array()
+    .items(createProductDto)
+    .validateAsync(req.body.items);
+  const orgId = req.params.orgId;
+  if (!orgId) throw new OrgNotFound();
+  const productsToInsert = body.map((product) => ({
+    ...product,
+    org: orgId,
+    createdBy: req.body.createdBy,
+  }));
+  const insertedProducts = await Product.insertMany(productsToInsert);
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.products": insertedProducts.length } }
+  );
+  return res.status(201).json({ message: "Products created" });
 });
 
 exports.getAllProducts = requestAsyncHandler(async (req, res) => {

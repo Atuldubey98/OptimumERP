@@ -56,7 +56,11 @@ exports.createOrg = requestAsyncHandler(async (req, res) => {
   await orgUser.save();
   logger.info(`Organization created with id ${newOrg.id}`);
   await ExpenseCategory.insertMany(
-    expenseCategories.map((category) => ({ ...category, org: newOrg.id }))
+    expenseCategories.map((category) => ({
+      ...category,
+      org: newOrg.id,
+      enabled: true,
+    }))
   );
 
   return res

@@ -98,7 +98,6 @@ export default function App() {
           <Route path="proformaInvoices">
             <Route element={<ProformaInvoicesPage />} path="" />
             <Route element={<ProformaInvoiceFormPage />} path="create" />
-            <Route element={<ProformaInvoiceFormPage />} path=":purchaseOrderId/edit" />
             <Route
               element={<ProformaInvoiceFormPage />}
               path=":proformaInvoiceId/edit"

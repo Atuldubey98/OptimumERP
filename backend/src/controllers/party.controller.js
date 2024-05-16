@@ -71,7 +71,9 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
   const parties = await Party.find(filter)
     .sort({ createdAt: -1 })
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .populate("createdBy", "name active")
+    .populate("updatedBy", "name active");
 
   return res.status(200).json({
     page,

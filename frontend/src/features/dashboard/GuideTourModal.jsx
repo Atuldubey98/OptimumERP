@@ -31,7 +31,7 @@ export default function GuideTourModal({ isOpen, onClose }) {
           imgSrc={dashboard}
           label={"Dashboard"}
           description={
-            " Get an overview of your business's performance at a glance. Track key metrics, such as sales, expenses, and profit margins, through intuitive charts and graphs."
+            "Get a quick overview of your business operations and key metrics in one centralized dashboard."
           }
         />
       ),
@@ -43,7 +43,31 @@ export default function GuideTourModal({ isOpen, onClose }) {
           imgSrc={dashboard}
           label={"Parties"}
           description={
-            "Manage your party relationships efficiently. Add new parties, view their details, and track interactions to provide excellent service"
+            "Manage all your business contacts, customers, and suppliers efficiently in one place."
+          }
+        />
+      ),
+    },
+    {
+      label: "Stats",
+      children: (
+        <TourGuide
+          imgSrc={dashboard}
+          label={"Stats"}
+          description={
+            "Access detailed statistics and analytics to gain insights into your business performance and make informed decisions."
+          }
+        />
+      ),
+    },
+    {
+      label: "Contacts",
+      children: (
+        <TourGuide
+          imgSrc={dashboard}
+          label={"Contacts"}
+          description={
+            "Organize and maintain a comprehensive database of all your business contacts, ensuring smooth communication and relationship management."
           }
         />
       ),
@@ -55,7 +79,7 @@ export default function GuideTourModal({ isOpen, onClose }) {
           imgSrc={dashboard}
           label={"Invoices"}
           description={
-            "Streamline your billing process with our easy-to-use invoicing system. Create, send, and track invoices effortlessly, ensuring timely payments and improving cash flow."
+            "Create, track, and manage invoices seamlessly, streamlining your billing processes and improving cash flow management."
           }
         />
       ),
@@ -67,19 +91,19 @@ export default function GuideTourModal({ isOpen, onClose }) {
           imgSrc={dashboard}
           label={"Expenses"}
           description={
-            "Keep track of your expenses seamlessly. Record expenses incurred for various purposes, categorize them accurately, and monitor spending to stay within budget."
+            "Track and manage all business expenses effectively, ensuring accurate financial reporting and budget control."
           }
         />
       ),
     },
     {
-      label: "Products",
+      label: "Items",
       children: (
         <TourGuide
           imgSrc={dashboard}
-          label={"Products"}
+          label={"Items & Categories"}
           description={
-            " Manage your product inventory with ease. Add new products, update existing ones, and track stock levels to ensure smooth operations."
+            "Organize and categorize your inventory items efficiently, making it easy to manage and track stock levels."
           }
         />
       ),
@@ -92,6 +116,18 @@ export default function GuideTourModal({ isOpen, onClose }) {
           label={"Purchases"}
           description={
             "Simplify your procurement process with our purchase management feature. Create purchase orders, track deliveries, and manage vendor relationships efficiently."
+          }
+        />
+      ),
+    },
+    {
+      label: "Reports",
+      children: (
+        <TourGuide
+          imgSrc={dashboard}
+          label={"Reports"}
+          description={
+            "Generate comprehensive reports and analytics to gain insights into various aspects of your business, facilitating data-driven decision-making."
           }
         />
       ),

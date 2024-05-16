@@ -1,8 +1,16 @@
-import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  Switch,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
 import useExpenseCategories from "../../hooks/useExpenseCategories";
 import instance from "../../instance";
 import AlertModal from "../common/AlertModal";
@@ -10,20 +18,23 @@ import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseCategoryForm from "./ExpenseCategoryForm";
-import * as Yup from "yup";
-import { GiExpense } from "react-icons/gi";
 
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 const expenseCategorySchema = Yup.object({
   name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
+  enabled: Yup.boolean().optional().default(true),
   description: Yup.string()
     .optional()
     .max(150, "Cannot be greater than 150 characters"),
 });
 export default function ExpenseCategories() {
-  const { fetchExpenseCategories, expenseCategories, status } =
-    useExpenseCategories();
+  const {
+    fetchExpenseCategories,
+    expenseCategories,
+    status,
+    onSetExpenseCategories,
+  } = useExpenseCategories();
   const { orgId } = useParams();
   const {
     isOpen: isExpenseCategoryFormOpen,
@@ -47,6 +58,7 @@ export default function ExpenseCategories() {
     initialValues: {
       name: "",
       description: "",
+      enabled: true,
     },
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...category } = values;
@@ -75,10 +87,12 @@ export default function ExpenseCategories() {
     formik.setValues({
       name: "",
       description: "",
+      enabled: true,
     });
     formik.setTouched({
       name: false,
       description: false,
+      enabled: false,
     });
     openExpenseCategoryForm();
   };
@@ -148,12 +162,36 @@ export default function ExpenseCategories() {
               }}
             />
           ))}
-          
           heading={"Expense Categories"}
-          tableData={expenseCategories}
+          tableData={expenseCategories.map((item) => ({
+            ...item,
+            enabled: (
+              <Switch
+                isChecked={item.enabled}
+                onChange={async () => {
+                  const { _id, ...expenseCategory } = item;
+                  onSetExpenseCategories(
+                    expenseCategories.map((expenseCategory) =>
+                      expenseCategory._id === _id
+                        ? {
+                            ...expenseCategory,
+                            enabled: !expenseCategory.enabled,
+                          }
+                        : expenseCategory
+                    )
+                  );
+                  await instance.patch(
+                    `/api/v1/organizations/${orgId}/expenses/categories/${_id}`,
+                    { ...expenseCategory, enabled: !item.enabled }
+                  );
+                }}
+              />
+            ),
+          }))}
           selectedKeys={{
             name: "Name",
             description: "Description",
+            enabled: "Enabled",
           }}
         />
       )}

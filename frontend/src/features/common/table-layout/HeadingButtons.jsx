@@ -1,4 +1,11 @@
-import { ButtonGroup, Flex, Icon, Text, Tooltip } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroup,
+  Flex,
+  Icon,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import React from "react";
 import { IoAdd, IoArrowBack } from "react-icons/io5";
 import { TbTableExport } from "react-icons/tb";
@@ -39,11 +46,15 @@ export default function HeadingButtons({
           </Tooltip>
         ) : null}
         {showExport ? (
-          <ButtonIcon
-            icon={<TbTableExport />}
-            label={"Export"}
-            onClick={showExport}
-          />
+          <Button
+            colorScheme="green"
+            size={"sm"}
+            isLoading={showExport.status === "exporting"}
+            leftIcon={<TbTableExport />}
+            onClick={showExport.onExport}
+          >
+            Export
+          </Button>
         ) : null}
       </ButtonGroup>
     </Flex>

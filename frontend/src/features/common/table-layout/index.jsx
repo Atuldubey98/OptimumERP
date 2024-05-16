@@ -1,28 +1,16 @@
 import {
-  Button,
-  ButtonGroup,
-  Flex,
-  Icon,
-  IconButton,
-  Show,
   Stack,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
-  Tr,
+  Tr
 } from "@chakra-ui/react";
-import React, { memo, useEffect, useState } from "react";
-import { IoAdd, IoArrowBack } from "react-icons/io5";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { memo } from "react";
 import HeadingButtons from "./HeadingButtons";
-import instance from "../../../instance";
-import useAuth from "../../../hooks/useAuth";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 function TableLayoutMemoized({
   heading,
   onAddNewItem,

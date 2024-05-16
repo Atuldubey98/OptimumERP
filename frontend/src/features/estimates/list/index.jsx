@@ -16,6 +16,7 @@ import Status from "./Status";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import { isAxiosError } from "axios";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 
 export default function EstimatesPage() {
   const { symbol } = useCurrentOrgCurrency();
@@ -41,7 +42,7 @@ export default function EstimatesPage() {
     partyName: estimate.party.name,
     ...estimate,
     quoteNo: estimate.num,
-    date: new Date(estimate.date).toLocaleDateString(),
+    date: moment(estimate.date).format("LL"),
     grandTotal: `${symbol} ${(estimate.total + estimate.totalTax).toFixed(2)}`,
     status: <Status status={estimate.status} statusList={statusList} />,
   });

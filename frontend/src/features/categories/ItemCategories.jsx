@@ -1,4 +1,11 @@
-import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spinner,
+  Switch,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -15,7 +22,7 @@ import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 
 export default function ItemCategories() {
   const { orgId } = useParams();
-  const { data, status, fetchFn } = usePaginatedFetch({
+  const { data, status, fetchFn, onSetItems } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/productCategories`,
   });
   const loading = status === "loading";
@@ -84,7 +91,7 @@ export default function ItemCategories() {
         </Flex>
       ) : (
         <TableLayout
-        isAddDisabled={disable}
+          isAddDisabled={disable}
           filter={
             <Box maxW={"md"}>
               <SearchItem />
@@ -92,7 +99,31 @@ export default function ItemCategories() {
           }
           limitKey={"productCategories"}
           caption={`Total item types : ${data.totalCount}`}
-          tableData={data.items}
+          tableData={data.items.map((item) => ({
+            ...item,
+
+            enabled: (
+              <Switch
+                isChecked={item.enabled}
+                onChange={async () => {
+                  const { _id, ...productCategory } = item;
+                  const toggleEnable = data.items.map((productCategoryItem) =>
+                    productCategoryItem._id === _id
+                      ? {
+                          ...productCategoryItem,
+                          enabled: !productCategoryItem.enabled,
+                        }
+                      : productCategoryItem
+                  );
+                  onSetItems(toggleEnable);
+                  await instance.patch(
+                    `/api/v1/organizations/${orgId}/productCategories/${_id}`,
+                    { ...productCategory, enabled: !item.enabled }
+                  );
+                }}
+              />
+            ),
+          }))}
           operations={data.items.map((itemType) => (
             <VertIconMenu
               showProducts={() =>
@@ -115,6 +146,7 @@ export default function ItemCategories() {
           selectedKeys={{
             name: "Name",
             description: "Description",
+            enabled: "Enabled",
           }}
           heading={"Product Categories"}
         />

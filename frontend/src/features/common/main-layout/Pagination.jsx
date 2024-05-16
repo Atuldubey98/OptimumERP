@@ -1,4 +1,4 @@
-import { Button, Code, Flex } from "@chakra-ui/react";
+import { Button, Code, Flex, Text } from "@chakra-ui/react";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import useQuery from "../../../hooks/useQuery";
 
@@ -29,7 +29,10 @@ export default function Pagination({ total, currentPage }) {
       >
         Previous
       </Button>
-      <Code borderRadius={"md"}>{`${currentPage} / ${total} `}</Code>
+      <Text
+        fontSize={"sm"}
+        borderRadius={"md"}
+      >{`Pages ${currentPage} of ${total} `}</Text>
       <Button
         size={"sm"}
         onClick={() => onClick(++currentPage)}

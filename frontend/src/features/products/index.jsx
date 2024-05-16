@@ -27,6 +27,7 @@ import { CgProductHunt } from "react-icons/cg";
 import { ums } from "../estimates/create/data";
 import instance from "../../instance";
 import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 export default function ProductsPage() {
   const {
     isOpen: isProductFormOpen,
@@ -197,9 +198,7 @@ export default function ProductsPage() {
               costPrice: `${symbol} ${selectedToShowProduct.costPrice}`,
               sellingPrice: `${symbol} ${selectedToShowProduct.sellingPrice}`,
               type: selectedToShowProduct.type?.toUpperCase(),
-              createdAt: new Date(
-                selectedToShowProduct.createdAt
-              ).toDateString(),
+              createdAt: moment(selectedToShowProduct.createdAt).format("LL"),
             }}
             onClose={closeProductDrawer}
             selectedKeys={{

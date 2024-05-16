@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
-
+import moment from 'moment';
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("idle");
   const invoiceSchema = Yup.object().shape({
@@ -50,7 +50,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const navigate = useNavigate();
   const defaultInvoice = {
     invoiceNo: 1,
-    date: new Date(Date.now()).toISOString().split("T")[0],
+    date: moment(new Date()).format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultInvoiceItem],
     terms: "Thanks for business !",
@@ -121,7 +121,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             party: party._id,
             terms,
             invoiceNo,
-            date: new Date(date).toISOString().split("T")[0],
+            date: moment(date).format("YYYY-MM-DD"),
             status,
             partyDetails: party,
             items,

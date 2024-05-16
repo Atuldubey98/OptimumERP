@@ -39,10 +39,12 @@ const usePaginatedFetch = ({ url }) => {
   useEffect(() => {
     fetchFn();
   }, [search, page]);
+  const onSetItems = (items) => setData({ ...data, items });
   return {
     fetchFn,
     data,
     status,
+    onSetItems,
   };
 };
 

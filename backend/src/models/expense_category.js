@@ -5,11 +5,15 @@ const expenseCategorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      maxLength : 80,
+      maxLength: 80,
     },
     description: {
       type: String,
       maxLength: 150,
+    },
+    enabled: {
+      type: Boolean,
+      default: true,
     },
     org: {
       type: mongoose.Types.ObjectId,

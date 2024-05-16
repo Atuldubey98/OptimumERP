@@ -164,6 +164,7 @@ export default function QuoteItem({
             </InputGroup>
           </FormControl>
           <IconButton
+            colorScheme="red"
             onClick={deleteQuote}
             icon={<AiOutlineDelete />}
             size={"sm"}

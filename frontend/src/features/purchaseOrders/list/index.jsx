@@ -22,6 +22,7 @@ import { isAxiosError } from "axios";
 import AlertModal from "../../common/AlertModal";
 import BillModal from "../../estimates/list/BillModal";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 
 export default function PurchaseOrderPage() {
   const { orgId } = useParams();
@@ -163,7 +164,7 @@ export default function PurchaseOrderPage() {
               tableData={purchaseOrderItems.map((item) => ({
                 ...item,
                 grandTotal: `${(item.total + item.totalTax).toFixed(2)}`,
-                date: new Date(item.date).toLocaleDateString(),
+                date: moment(item.date).format("LL"),
                 partyName: (
                   <ChakraLink
                     to={`/${orgId}/parties/${item.party._id}/transactions`}
