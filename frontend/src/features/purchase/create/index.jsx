@@ -98,7 +98,7 @@ export default function CreatePurchasePage() {
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
-                    isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
+                    isInvalid={formik.errors.num && formik.touched.num}
                   >
                     <FormLabel>Purchase No.</FormLabel>
                     <Input

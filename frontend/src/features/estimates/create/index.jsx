@@ -88,7 +88,7 @@ export default function CreateEstimatePage() {
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
-                    isInvalid={formik.errors.quoteNo && formik.touched.quoteNo}
+                    isInvalid={formik.errors.sequence && formik.touched.sequence}
                   >
                     <FormLabel>Quotation No.</FormLabel>
                     <InputGroup>
@@ -99,12 +99,12 @@ export default function CreateEstimatePage() {
                       ) : null}
                       <Input
                         type="number"
-                        name="quoteNo"
+                        name="sequence"
                         onChange={formik.handleChange}
-                        value={formik.values.quoteNo}
+                        value={formik.values.sequence}
                       />
                     </InputGroup>
-                    <FormErrorMessage>{formik.errors.quoteNo}</FormErrorMessage>
+                    <FormErrorMessage>{formik.errors.sequence}</FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />
                   <SelectStatus formik={formik} statusList={statusList} />

@@ -40,7 +40,6 @@ export default function EstimatesPage() {
   const estimateTableMapper = (estimate) => ({
     partyName: estimate.party.name,
     ...estimate,
-    quoteNo: estimate.num,
     date: new Date(estimate.date).toLocaleDateString(),
     grandTotal: `${symbol} ${(estimate.total + estimate.totalTax).toFixed(2)}`,
     status: <Status status={estimate.status} statusList={statusList} />,
@@ -166,7 +165,7 @@ export default function EstimatesPage() {
               />
             ))}
             selectedKeys={{
-              quoteNo: "Quote No.",
+              num: "Quote No.",
               date: "Quotation Date",
               partyName: "Party name",
               status: "Status",

@@ -44,6 +44,10 @@ const quoteSchema = new Schema(
       type: String,
       default: "",
     },
+    prefix: {
+      type: String,
+      default: "",
+    },
     description: {
       type: String,
       default: "Thanks for the business.",
@@ -89,7 +93,7 @@ const quoteSchema = new Schema(
       type: Date,
       default: new Date(Date.now()),
     },
-    quoteNo: {
+    sequence: {
       type: Number,
       required: true,
     },

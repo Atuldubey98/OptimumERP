@@ -9,7 +9,7 @@ import useAsyncCall from "./useAsyncCall";
 export default function useEstimateForm() {
   const [status, setStatus] = useState("idle");
   const quoteSchema = Yup.object().shape({
-    quoteNo: Yup.number().required("Quote number is required"),
+    sequence: Yup.number().required("Quote number is required"),
     party: Yup.string().required("Party is required"),
     billingAddress: Yup.string().required("Billing Address is required"),
     date: Yup.date().required("Date is required"),
@@ -39,7 +39,7 @@ export default function useEstimateForm() {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      quoteNo: 1,
+      sequence: 1,
       date: new Date(Date.now()).toISOString().split("T")[0],
       billingAddress: "",
       status: "draft",
@@ -81,7 +81,7 @@ export default function useEstimateForm() {
           party,
           billingAddress = "",
           terms,
-          quoteNo,
+          sequence,
           date,
           status,
           items,
@@ -92,7 +92,7 @@ export default function useEstimateForm() {
           party: party._id,
           terms,
           billingAddress,
-          quoteNo,
+          sequence,
           date: new Date(date).toISOString().split("T")[0],
           status,
           items,
@@ -105,7 +105,7 @@ export default function useEstimateForm() {
         const { data } = await instance.get(
           `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`
         );
-        formik.setFieldValue("quoteNo", data.data);
+        formik.setFieldValue("sequence", data.data);
         setStatus("success");
       }
     })();

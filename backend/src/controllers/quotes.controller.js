@@ -60,18 +60,19 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
   if (!party) throw new PartyNotFound();
   const existingQuotation = await Quote.findOne({
     org: req.params.orgId,
-    quoteNo: body.quoteNo,
+    sequence: body.sequence,
     financialYear: setting.financialYear,
   });
   if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
-  const transactionPrefix = setting.transactionPrefix.quotation;
+  const prefix = setting.transactionPrefix.quotation;
 
   const newQuote = new Quote({
     org: req.params.orgId,
     ...body,
     total,
     totalTax,
-    num: transactionPrefix + body.quoteNo,
+    num: prefix + body.sequence,
+    prefix,
     financialYear: setting.financialYear,
     sgst,
     cgst,
@@ -109,7 +110,7 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
   const transactionPrefix = setting.transactionPrefix.quotation;
   const existingQuotation = await Quote.findOne({
     org: req.params.orgId,
-    quoteNo: body.quoteNo,
+    sequence: body.sequence,
     _id: { $ne: req.params.quoteId },
     financialYear: setting.financialYear,
   });
@@ -119,7 +120,7 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
     {
       ...body,
       total,
-      num: transactionPrefix + body.quoteNo,
+      num: transactionPrefix + body.sequence,
       totalTax,
       cgst,
       igst,
@@ -223,10 +224,10 @@ exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       financialYear: setting.financialYear,
     },
-    { quoteNo: 1 },
-    { sort: { quoteNo: -1 } }
-  ).select("quoteNo");
-  return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
+    { sequence: 1 },
+    { sort: { sequence: -1 } }
+  ).select("sequence");
+  return res.status(200).json({ data: quote ? quote.sequence + 1 : 1 });
 });
 
 exports.viewQuote = requestAsyncHandler(async (req, res) => {

@@ -15,7 +15,7 @@ const quoteDto = Joi.object({
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   items: Joi.array().items(itemSchema).required().label("Quotation Items"),
   date: Joi.date().required().label("Quotation date"),
-  quoteNo: Joi.number()
+  sequence: Joi.number()
     .required()
     .label("Quote No."),
   status: Joi.string()
