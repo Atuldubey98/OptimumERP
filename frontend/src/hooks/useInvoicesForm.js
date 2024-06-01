@@ -10,7 +10,7 @@ import { defaultInvoiceItem } from "../features/estimates/create/data";
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("idle");
   const invoiceSchema = Yup.object().shape({
-    invoiceNo: Yup.number()
+    sequence: Yup.number()
       .required("Invoice number is required")
       .label("Invoice Number"),
     party: Yup.string().required("Party is required").label("Party"),
@@ -49,7 +49,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const toast = useToast();
   const navigate = useNavigate();
   const defaultInvoice = {
-    invoiceNo: 1,
+    sequence: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultInvoiceItem],
@@ -93,7 +93,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     const { data } = await instance.get(
       `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
     );
-    formik.setFieldValue("invoiceNo", data.data);
+    formik.setFieldValue("sequence", data.data);
     setStatus("success");
   });
   useEffect(() => {
@@ -107,7 +107,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
           const {
             party,
             terms,
-            invoiceNo,
+            sequence,
             date,
             status,
             items,
@@ -120,7 +120,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             _id: data.data._id,
             party: party._id,
             terms,
-            invoiceNo,
+            sequence,
             date: new Date(date).toISOString().split("T")[0],
             status,
             partyDetails: party,

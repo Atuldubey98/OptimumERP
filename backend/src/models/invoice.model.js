@@ -111,9 +111,13 @@ const invoiceSchema = new Schema(
       type: String,
       default: "",
     },
-    invoiceNo: {
+    sequence: {
       type: Number,
       required: true,
+    },
+    prefix: {
+      type: String,
+      default: "",
     },
     createdBy: {
       type: Types.ObjectId,

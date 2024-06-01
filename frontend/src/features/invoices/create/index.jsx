@@ -117,7 +117,7 @@ export default function CreateInvoicePage() {
                   <FormControl
                     isRequired
                     isInvalid={
-                      formik.errors.invoiceNo && formik.touched.invoiceNo
+                      formik.errors.sequence && formik.touched.sequence
                     }
                   >
                     <FormLabel>Invoice No.</FormLabel>
@@ -130,13 +130,13 @@ export default function CreateInvoicePage() {
                       <NumberInputInteger
                         min={1}
                         formik={formik}
-                        name={"invoiceNo"}
+                        name={"sequence"}
                         onlyInt={true}
                       />
                     </InputGroup>
 
                     <FormErrorMessage>
-                      {formik.errors.invoiceNo}
+                      {formik.errors.sequence}
                     </FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />

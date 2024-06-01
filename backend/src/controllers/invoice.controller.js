@@ -49,16 +49,16 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
   if (!party) throw new PartyNotFound();
   const existingInvoice = await Invoice.findOne({
     org: req.params.orgId,
-    invoiceNo: body.invoiceNo,
+    sequence: body.sequence,
     financialYear: setting.financialYear,
   });
   const invoicePrefix = setting.transactionPrefix.invoice;
-  if (existingInvoice) throw new InvoiceDuplicate(body.invoiceNo);
+  if (existingInvoice) throw new InvoiceDuplicate(body.sequence);
   const newInvoice = new Invoice({
     org: req.params.orgId,
     ...body,
     total,
-    num: invoicePrefix + body.invoiceNo,
+    num: invoicePrefix + body.sequence,
     totalTax,
     igst,
     sgst,
@@ -99,17 +99,17 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
   const existingInvoiceFilter = {
     org: req.params.orgId,
     _id: { $ne: req.params.invoiceId },
-    invoiceNo: body.invoiceNo,
+    sequence: body.sequence,
     financialYear: setting.financialYear,
   };
   const existingInvoice = await Invoice.findOne(existingInvoiceFilter);
-  if (existingInvoice) throw new InvoiceDuplicate(body.invoiceNo);
+  if (existingInvoice) throw new InvoiceDuplicate(body.sequence);
   const updatedInvoice = await Invoice.findOneAndUpdate(
     { _id: req.params.invoiceId, org: req.params.orgId },
     {
       ...body,
       total,
-      num: setting.transactionPrefix.invoice + body.invoiceNo,
+      num: setting.transactionPrefix.invoice + body.sequence,
       totalTax,
       sgst,
       cgst,
@@ -127,7 +127,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       total,
       totalTax,
       party: body.party,
-      num: setting.transactionPrefix.invoice + body.invoiceNo,
+      num: setting.transactionPrefix.invoice + body.sequence,
       date: updatedInvoice.date,
     }
   );
@@ -226,10 +226,10 @@ exports.getNextInvoiceNumber = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       financialYear: setting.financialYear,
     },
-    { invoiceNo: 1 },
-    { sort: { invoiceNo: -1 } }
-  ).select("invoiceNo");
-  return res.status(200).json({ data: invoice ? invoice.invoiceNo + 1 : 1 });
+    { sequence: 1 },
+    { sort: { sequence: -1 } }
+  ).select("sequence");
+  return res.status(200).json({ data: invoice ? invoice.sequence + 1 : 1 });
 });
 
 exports.viewInvoice = requestAsyncHandler(async (req, res) => {

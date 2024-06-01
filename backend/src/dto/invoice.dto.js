@@ -15,7 +15,7 @@ const invoiceDto = Joi.object({
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Invoice date"),
-  invoiceNo: Joi.number().label("Invoice No.").required(),
+  sequence: Joi.number().label("Invoice No.").required(),
   poNo: Joi.string().label("PO Number").allow("").optional(),
   poDate: Joi.string().label("PO Date").allow("").optional(),
   status: Joi.string()

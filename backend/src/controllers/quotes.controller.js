@@ -377,17 +377,17 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       financialYear: setting.financialYear,
     },
-    { invoiceNo: 1 },
-    { sort: { invoiceNo: -1 } }
-  ).select("invoiceNo");
-  const invoiceNo = (invoice?.invoiceNo || 0) + 1;
-  const num = invoicePrefix + invoiceNo;
+    { sequence: 1 },
+    { sort: { sequence: -1 } }
+  ).select("sequence");
+  const sequence = (invoice?.sequence || 0) + 1;
+  const num = invoicePrefix + sequence;
   const date = new Date();
   const newInvoice = new Invoice({
     org: req.params.orgId,
     total: quote.total,
     num,
-    invoiceNo,
+    sequence,
     totalTax: quote.totalTax,
     igst: quote.igst,
     sgst: quote.sgst,

@@ -51,7 +51,6 @@ export default function InvoicesPage() {
       </ChakraLink>
     ),
     ...invoice,
-    invoiceNo: invoice.num,
     date: new Date(invoice.date).toLocaleDateString(),
     grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
@@ -164,7 +163,7 @@ export default function InvoicesPage() {
               />
             ))}
             selectedKeys={{
-              invoiceNo: "Invoice No.",
+              num: "Invoice No.",
               date: "Invoice Date",
               partyName: "Recipient",
               status: "Status",
