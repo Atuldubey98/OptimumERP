@@ -15,7 +15,7 @@ const purchaseDto = Joi.object({
   terms: Joi.string().optional().allow("").label("Terms & Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Purchase Invoice date"),
-  purchaseNo: Joi.string().label("Purchase No.").required(),
+  num: Joi.string().label("Purchase No.").required(),
   status: Joi.string()
     .default("unpaid")
     .valid("unpaid", "paid")

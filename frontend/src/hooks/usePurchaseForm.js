@@ -10,7 +10,7 @@ import { defaultInvoiceItem } from "../features/estimates/create/data";
 export default function usePurchaseForm({ saveAndNew }) {
   const [status, setStatus] = useState("idle");
   const purchaseSchema = Yup.object().shape({
-    purchaseNo: Yup.string().required("Purchase number is required"),
+    num: Yup.string().required("Purchase number is required"),
     billingAddress: Yup.string().required("Party Address is required"),
     party: Yup.string().required("Party is required"),
     date: Yup.date().required("Date is required"),
@@ -38,7 +38,7 @@ export default function usePurchaseForm({ saveAndNew }) {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      purchaseNo: "",
+      num: "",
       billingAddress: "",
       date: new Date(Date.now()).toISOString().split("T")[0],
       status: "unpaid",
@@ -69,7 +69,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       setSubmitting(false);
       if (saveAndNew)
         formik.resetForm({
-          purchaseNo: "",
+          num: "",
           billingAddress: "",
           date: new Date(Date.now()).toISOString().split("T")[0],
           status: "unpaid",
@@ -94,7 +94,7 @@ export default function usePurchaseForm({ saveAndNew }) {
           const {
             party,
             billingAddress = "",
-            purchaseNo,
+            num,
             date,
             status,
             items,
@@ -107,7 +107,7 @@ export default function usePurchaseForm({ saveAndNew }) {
             _id: data.data._id,
             party: party._id,
             partyDetails: party,
-            purchaseNo,
+            num,
             date: new Date(date).toISOString().split("T")[0],
             status,
             items,

@@ -79,7 +79,7 @@ exports.getDashboard = requestAsyncHandler(async (req, res) => {
       model
         .find({ org: orgId })
         .sort({ createdAt: -1 })
-        .select("name purchaseNo total totalTax status party date num")
+        .select("name num total totalTax status party date num")
         .populate("party", "name")
         .limit(5)
         .exec()

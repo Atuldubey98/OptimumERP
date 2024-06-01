@@ -157,7 +157,7 @@ export default function TransactionsPage() {
               date: new Date(item.doc.date).toLocaleDateString(),
               totalItems: item.doc.items.length,
               status: item.doc.status,
-              num: item.doc.num || item.doc.purchaseNo,
+              num: item.doc.num,
               grandTotal: (item.total + item.totalTax).toFixed(2),
               type: (
                 <Tag

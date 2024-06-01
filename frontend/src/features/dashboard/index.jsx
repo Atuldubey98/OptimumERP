@@ -173,7 +173,7 @@ export default function DashboardPage() {
                 heading={"Recent Purchases"}
                 tableRows={dashboard.recentPurchases.map((purchase) => ({
                   _id: purchase._id,
-                  num: purchase.purchaseNo,
+                  num: purchase.num,
                   partyName: purchase.party.name,
                   total: purchase.total,
                   totalTax: purchase.totalTax,

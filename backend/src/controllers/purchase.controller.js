@@ -34,11 +34,11 @@ exports.createPurchase = requestAsyncHandler(async (req, res) => {
   if (!party) throw new PartyNotFound();
   const existingInvoice = await Purchase.findOne({
     org: req.params.orgId,
-    purchaseNo: body.purchaseNo,
+    num: body.num,
     financialYear: setting.financialYear,
     party: body.party,
   });
-  if (existingInvoice) throw new PurchaseDuplicate(body.purchaseNo);
+  if (existingInvoice) throw new PurchaseDuplicate(body.num);
   const newPurchase = new Purchase({
     org: req.params.orgId,
     ...body,
@@ -226,7 +226,7 @@ exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
   );
   const data = {
     entity: purchase,
-    num: purchase.purchaseNo,
+    num: purchase.num,
     grandTotal,
     items,
     bank: null,
@@ -288,7 +288,7 @@ exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
   );
   const data = {
     entity: purchase,
-    num: purchase.purchaseNo,
+    num: purchase.num,
     grandTotal,
     bank: null,
     upiQr: null,

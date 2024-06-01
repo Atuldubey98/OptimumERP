@@ -97,7 +97,7 @@ const purchaseInvoice = new Schema(
       type: Date,
       default: new Date(Date.now()),
     },
-    purchaseNo: {
+    num: {
       type: String,
       required: true,
     },
@@ -138,5 +138,6 @@ const purchaseInvoice = new Schema(
 const Purchase = model("purchase", purchaseInvoice);
 purchaseInvoice.index({
   description: "text",
+  num: "text",
 });
 module.exports = Purchase;

@@ -55,7 +55,7 @@ const reportDataByType = {
     bodyMapper: (item) => ({
       _id: item._id,
       partyName: item.party?.name,
-      num: item.purchaseNo,
+      num: item.num,
       date: item.date ? new Date(item.date).toISOString().split("T")[0] : "",
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
@@ -72,7 +72,7 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      num: item.doc?.num || item.doc?.purchaseNo || "",
+      num: item.doc?.num,
       type: item?.docModel,
       amount: (item.total + item.totalTax).toFixed(2),
       relatedTo: item?.party?.name || item.doc?.description || "",

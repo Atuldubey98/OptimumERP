@@ -57,7 +57,7 @@ export default function PurchasePage() {
       </ChakraLink>
     ),
     ...purchase,
-    purchaseNo: transactionPrefixInvoice + purchase.purchaseNo,
+    num: purchase.num,
     date: new Date(purchase.date).toISOString().split("T")[0],
     grandTotal: `${symbol} ${(purchase.total + purchase.totalTax).toFixed(2)}`,
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
@@ -102,7 +102,7 @@ export default function PurchasePage() {
     });
     const href = URL.createObjectURL(data);
     const link = document.createElement("a");
-    link.setAttribute("download", `Purchase-${currentPurchase.purchaseNo}.pdf`);
+    link.setAttribute("download", `Purchase-${currentPurchase.num}.pdf`);
     link.href = href;
     link.click();
     URL.revokeObjectURL(href);
@@ -154,7 +154,7 @@ export default function PurchasePage() {
               />
             ))}
             selectedKeys={{
-              purchaseNo: "Purchase No.",
+              num: "Purchase No.",
               date: "Purchase Date",
               partyName: "Party name",
               status: "Status",

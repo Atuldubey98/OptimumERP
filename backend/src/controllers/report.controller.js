@@ -238,7 +238,7 @@ const reportDataByType = {
     bodyMapper: (item) => ({
       _id: item._id,
       partyName: item.party?.name,
-      num: item.purchaseNo,
+      num: item.num,
       date: new Date(item.date).toLocaleDateString(),
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
@@ -255,7 +255,7 @@ const reportDataByType = {
     },
     bodyMapper: (item) => ({
       _id: item._id,
-      num: item.doc?.num || item.doc?.purchaseNo || "",
+      num: item.doc?.num,
       type: item?.docModel,
       relatedTo: item?.party?.name || item.doc?.description || "",
       amount: (item.total + item.totalTax).toFixed(2),
@@ -289,7 +289,7 @@ const reportDataByType = {
     header: {
       gstNo: "Party GST No",
       partyName: "Party Name",
-      purchaseNo: "Invoice no",
+      num: "Invoice no",
       date: "Purchase Date",
       cgst: "IGST",
       sgst: "IGST",
@@ -299,7 +299,7 @@ const reportDataByType = {
     bodyMapper: (item) => ({
       _id: item._id,
       partyName: item.party?.name,
-      purchaseNo: item.purchaseNo,
+      num: item.num,
       gstNo: item.party?.gstNo,
       date: new Date(item.date).toLocaleDateString(),
       cgst: item.cgst.toFixed(2),
