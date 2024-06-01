@@ -15,7 +15,6 @@ const ums = require("../constants/um");
 const currencies = require("../constants/currencies");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
-const { date } = require("joi");
 const OrgModel = require("../models/org.model");
 
 exports.getTotalAndTax = (items = []) => {
@@ -107,7 +106,6 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   });
   if (!setting) throw new OrgNotFound();
-  const transactionPrefix = setting.transactionPrefix.quotation;
   const existingQuotation = await Quote.findOne({
     org: req.params.orgId,
     sequence: body.sequence,
@@ -120,7 +118,8 @@ exports.updateQuote = requestAsyncHandler(async (req, res) => {
     {
       ...body,
       total,
-      num: transactionPrefix + body.sequence,
+      num: body.prefix + body.sequence,
+      prefix: body.prefix,
       totalTax,
       cgst,
       igst,

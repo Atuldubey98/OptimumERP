@@ -31,7 +31,6 @@ import PrefixFormField from "../../common/PrefixFormField";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const loading = status === "loading";
-  const { transactionPrefix } = useCurrentOrgCurrency();
   const { disable } = useLimitsInFreePlan({
     key: "quotes",
   });
