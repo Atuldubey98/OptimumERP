@@ -53,6 +53,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           currency: "INR",
           quotation: "",
           proformaInvoice: "",
+          localeCode: "en-IN",
           startDate: "",
           endDate: "",
           prefixes: {
@@ -125,6 +126,10 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 options={currencyOptions}
                 onChange={({ value }) => {
                   formik.setFieldValue("currency", value);
+                  formik.setFieldValue(
+                    "localeCode",
+                    currencies[value].localeCode
+                  );
                 }}
               />
             </FormControl>
