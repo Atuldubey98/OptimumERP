@@ -71,7 +71,7 @@ export default function PrefixForm({
             </InputGroup>
             <FormErrorMessage>{error}</FormErrorMessage>
           </FormControl>
-          <HStack marginBlock={2} spacing={4}>
+          <HStack flexWrap={"wrap"} marginBlock={2} spacing={4}>
             {prefixes.map((prefix) => (
               <Tooltip
                 key={prefix}
