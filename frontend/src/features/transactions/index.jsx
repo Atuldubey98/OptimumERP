@@ -50,14 +50,22 @@ export default function TransactionsPage() {
     {
       value: "invoice",
       label: "Invoice",
+      colorScheme: "green",
     },
     {
       value: "purchase",
       label: "Purchase",
+      colorScheme: "red",
     },
     {
       value: "quotes",
       label: "Quotation",
+      colorScheme: "yellow",
+    },
+    {
+      value: "proforma_invoice",
+      label: "Proforma Invoice",
+      colorScheme: "purple",
     },
   ];
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
@@ -164,11 +172,9 @@ export default function TransactionsPage() {
                   size={"md"}
                   variant="subtle"
                   colorScheme={
-                    item.docModel === "quotes"
-                      ? "yellow"
-                      : item.docModel === "invoice"
-                      ? "green"
-                      : "cyan"
+                    typeOfTransactions.find(
+                      (tranType) => tranType.value === item.docModel
+                    ).colorScheme || "cyan"
                   }
                 >
                   <TagLabel>{item.docModel.toUpperCase()}</TagLabel>

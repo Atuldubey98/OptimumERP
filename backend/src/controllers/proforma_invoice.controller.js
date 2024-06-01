@@ -38,8 +38,7 @@ exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
     sequence: body.sequence,
     financialYear: setting.financialYear,
   });
-  if (existingInvoice)
-    throw new ProformaInvoiceDuplicate(body.sequence);
+  if (existingInvoice) throw new ProformaInvoiceDuplicate(body.sequence);
   const prefix = setting.transactionPrefix.proformaInvoice || "";
   const newProformaInvoice = new ProformaInvoice({
     org: req.params.orgId,
@@ -54,6 +53,18 @@ exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
   });
   await newProformaInvoice.save();
+  const transaction = new Transaction({
+    org: req.params.orgId,
+    createdBy: req.body.createdBy,
+    docModel: "proforma_invoice",
+    financialYear: setting.financialYear,
+    doc: newProformaInvoice._id,
+    total,
+    totalTax,
+    party: body.party,
+    date: newProformaInvoice.date,
+  });
+  await transaction.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": 1 } }
@@ -111,9 +122,7 @@ exports.getNextProformaInvoiceNo = requestAsyncHandler(async (req, res) => {
     { sequence: 1 },
     { sort: { sequence: -1 } }
   ).select("sequence");
-  return res
-    .status(200)
-    .json({ data: invoice ? invoice.sequence + 1 : 1 });
+  return res.status(200).json({ data: invoice ? invoice.sequence + 1 : 1 });
 });
 
 exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
@@ -126,6 +135,11 @@ exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": -1 } }
   );
+  await Transaction.findOneAndDelete({
+    org: req.params.orgId,
+    docModel: "proforma_invoice",
+    doc: proformaInvoice.id,
+  });
   return res.status(200).json({ message: "Proforma invoice deleted." });
 });
 
@@ -136,7 +150,7 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   }).select("transactionPrefix financialYear");
   if (!setting) throw new OrgNotFound();
-  const proformaInvoicePrefix = setting.transactionPrefix.proformaInvoice || "";
+  const prefix = setting.transactionPrefix.proformaInvoice || "";
   if (!setting) throw new OrgNotFound();
   const existingInvoiceFilter = {
     org: req.params.orgId,
@@ -151,7 +165,8 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
     {
       ...body,
       total,
-      num: proformaInvoicePrefix + body.sequence,
+      num: prefix + body.sequence,
+      prefix,
       totalTax,
       sgst,
       cgst,
@@ -162,6 +177,21 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
     }
   );
   if (!updatedInvoice) throw new ProformaInvoiceNotFound();
+  await Transaction.findOneAndUpdate(
+    {
+      org: req.params.orgId,
+      docModel: "proforma_invoice",
+      doc: updatedInvoice.id,
+    },
+    {
+      updatedBy: req.body.updatedBy,
+      total,
+      totalTax,
+      party: body.party,
+      num: setting.transactionPrefix.proformaInvoice + body.sequence,
+      date: updatedInvoice.date,
+    }
+  );
   return res
     .status(200)
     .json({ message: "Invoice updated !", data: updatedInvoice });
