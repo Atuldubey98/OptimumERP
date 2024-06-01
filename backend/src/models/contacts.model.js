@@ -1,5 +1,6 @@
 const { Schema, Types, model } = require("mongoose");
 const contactTypes = require("../constants/contactType");
+const Party = require("./party.model");
 
 const contactSchema = new Schema(
   {
@@ -19,6 +20,14 @@ const contactSchema = new Schema(
     party: {
       type: Types.ObjectId,
       ref: "party",
+      validate: {
+        validator: async (value) => {
+          if (!value) return true;
+          const party = await Party.findById(value);
+          return party !== null;
+        },
+        message: "Party not found",
+      },
     },
     telephone: {
       type: String,
