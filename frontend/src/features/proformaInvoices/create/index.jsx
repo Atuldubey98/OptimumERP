@@ -9,16 +9,13 @@ import {
   Heading,
   Input,
   InputGroup,
-  InputLeftAddon,
   SimpleGrid,
   Spinner,
-  Switch,
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
-import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useProformaInvoicesForm from "../../../hooks/useProformaInvoicesForm";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import MainLayout from "../../common/main-layout";
@@ -30,11 +27,12 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
+
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import PrefixFormField from "../../common/PrefixFormField";
 export default function ProformaInvoiceFormPage() {
   const { formik, status } = useProformaInvoicesForm();
   const loading = status === "loading";
-  const { transactionPrefix } = useCurrentOrgCurrency();
   const { disable } = useLimitsInFreePlan({
     key: "proformaInvoices",
   });
@@ -94,16 +92,15 @@ export default function ProformaInvoiceFormPage() {
                   <FormControl
                     isRequired
                     isInvalid={
-                      formik.errors.invoiceNo && formik.touched.invoiceNo
+                      formik.errors.sequence && formik.touched.sequence
                     }
                   >
                     <FormLabel>Proforma Invoice No.</FormLabel>
                     <InputGroup>
-                      {transactionPrefix.proformaInvoice ? (
-                        <InputLeftAddon>
-                          {transactionPrefix.proformaInvoice}
-                        </InputLeftAddon>
-                      ) : null}
+                      <PrefixFormField
+                        formik={formik}
+                        prefixType="proformaInvoice"
+                      />
                       <NumberInputInteger
                         min={1}
                         formik={formik}
@@ -113,7 +110,7 @@ export default function ProformaInvoiceFormPage() {
                     </InputGroup>
 
                     <FormErrorMessage>
-                      {formik.errors.invoiceNo}
+                      {formik.errors.sequence}
                     </FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />

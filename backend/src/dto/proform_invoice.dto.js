@@ -12,6 +12,7 @@ const proformaInvoiceDto = Joi.object({
   billingAddress: Joi.string().required().label("Billing Address"),
   sequence : Joi.number().required().label("Proforma Invoice No"),
   description: Joi.string().optional().allow("").label("Description"),
+  prefix : Joi.string().required().allow("").label("Prefix"),
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Invoice date"),

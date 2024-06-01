@@ -17,6 +17,7 @@ import {
   TagLabel,
   TagCloseButton,
   HStack,
+  Tooltip,
 } from "@chakra-ui/react";
 
 export default function PrefixForm({
@@ -28,6 +29,7 @@ export default function PrefixForm({
   const [prefix, setPrefix] = useState("");
   const [error, setError] = useState("");
   const prefixes = formik.values.prefixes[currentSelectedPrefix] || [];
+  const selectedPrefix = formik.values[currentSelectedPrefix];
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -59,7 +61,8 @@ export default function PrefixForm({
                       prefix,
                       ...prefixes,
                     ]);
-                    setError("")
+                    setError("");
+                    setPrefix("");
                   }}
                 >
                   Add
@@ -70,19 +73,35 @@ export default function PrefixForm({
           </FormControl>
           <HStack marginBlock={2} spacing={4}>
             {prefixes.map((prefix) => (
-              <Tag size={"md"} key={prefix} variant="solid" colorScheme="blue">
-                <TagLabel>{prefix || "NONE"}</TagLabel>
-                <TagCloseButton
-                  isDisabled={!prefix}
-                  onClick={() => {
-                    formik.setFieldValue(
-                      `prefixes.${currentSelectedPrefix}`,
-                      prefixes.filter((item) => item !== prefix)
-                    );
-                    setError("")
-                  }}
-                />
-              </Tag>
+              <Tooltip
+                key={prefix}
+                label={
+                  !prefix
+                    ? "Default"
+                    : prefix === selectedPrefix
+                    ? "Current used"
+                    : undefined
+                }
+              >
+                <Tag
+                  size={"md"}
+                  key={prefix}
+                  variant="solid"
+                  colorScheme="blue"
+                >
+                  <TagLabel>{prefix || "NONE"}</TagLabel>
+                  <TagCloseButton
+                    isDisabled={!prefix || prefix === selectedPrefix}
+                    onClick={() => {
+                      formik.setFieldValue(
+                        `prefixes.${currentSelectedPrefix}`,
+                        prefixes.filter((item) => item !== prefix)
+                      );
+                      setError("");
+                    }}
+                  />
+                </Tag>
+              </Tooltip>
             ))}
           </HStack>
         </ModalBody>

@@ -129,15 +129,15 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <Flex justifyContent={"flex-start"} alignItems={"center"}>
-                <FormLabel>Invoice Prefix</FormLabel>
+              <FormLabel>
+                Invoice Prefix{" "}
                 <IconButton
                   icon={<IoAdd />}
                   size={"xs"}
                   isRound
                   onClick={() => onOpenPrefixForm("invoice")}
                 />
-              </Flex>
+              </FormLabel>
               <Select
                 onChange={({ value }) => {
                   formik.setFieldValue("invoice", value);
@@ -149,15 +149,16 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <Flex justifyContent={"flex-start"} alignItems={"center"}>
-                <FormLabel>Quotation Prefix</FormLabel>
+              <FormLabel>
+                Quotation Prefix{" "}
                 <IconButton
                   icon={<IoAdd />}
                   size={"xs"}
                   isRound
                   onClick={() => onOpenPrefixForm("quotation")}
                 />
-              </Flex>
+              </FormLabel>
+
               <Select
                 onChange={({ value }) => {
                   formik.setFieldValue("quotation", value);
@@ -170,15 +171,15 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <Flex justifyContent={"flex-start"} alignItems={"center"}>
-                <FormLabel>Proforma Invoice Prefix</FormLabel>
+              <FormLabel>
+                Proforma Invoice Prefix{" "}
                 <IconButton
                   icon={<IoAdd />}
                   size={"xs"}
                   isRound
                   onClick={() => onOpenPrefixForm("proformaInvoice")}
                 />
-              </Flex>
+              </FormLabel>
               <Select
                 onChange={({ value }) =>
                   formik.setFieldValue("proformaInvoice", value)

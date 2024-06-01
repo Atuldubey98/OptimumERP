@@ -150,7 +150,6 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
   }).select("transactionPrefix financialYear");
   if (!setting) throw new OrgNotFound();
-  const prefix = setting.transactionPrefix.proformaInvoice || "";
   if (!setting) throw new OrgNotFound();
   const existingInvoiceFilter = {
     org: req.params.orgId,
@@ -165,8 +164,8 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
     {
       ...body,
       total,
-      num: prefix + body.sequence,
-      prefix,
+      num: body.prefix + body.sequence,
+      prefix: body.prefix,
       totalTax,
       sgst,
       cgst,
@@ -188,7 +187,7 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
       total,
       totalTax,
       party: body.party,
-      num: setting.transactionPrefix.proformaInvoice + body.sequence,
+      num: body.prefix + body.sequence,
       date: updatedInvoice.date,
     }
   );
@@ -366,18 +365,19 @@ exports.convertProformaToInvoice = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       financialYear: setting.financialYear,
     },
-    { invoiceNo: 1 },
-    { sort: { invoiceNo: -1 } }
-  ).select("invoiceNo");
-  const invoiceNo = (invoice?.invoiceNo || 0) + 1;
-  const num = invoicePrefix + invoiceNo;
+    { sequence: 1 },
+    { sort: { sequence: -1 } }
+  ).select("sequence");
+  const sequence = (invoice?.sequence || 0) + 1;
+  const num = invoicePrefix + sequence;
   const date = new Date();
   const newInvoice = new Invoice({
     org: req.params.orgId,
     total: proformaInvoice.total,
     num,
-    invoiceNo,
+    sequence,
     totalTax: proformaInvoice.totalTax,
+    prefix: invoicePrefix,
     igst: proformaInvoice.igst,
     sgst: proformaInvoice.sgst,
     cgst: proformaInvoice.cgst,
@@ -399,6 +399,7 @@ exports.convertProformaToInvoice = requestAsyncHandler(async (req, res) => {
     createdBy: req.body.createdBy,
     docModel: "invoice",
     financialYear: setting.financialYear,
+    num: newInvoice.num,
     doc: newInvoice._id,
     total: proformaInvoice.total,
     totalTax: proformaInvoice.totalTax,
