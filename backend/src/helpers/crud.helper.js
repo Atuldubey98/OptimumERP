@@ -14,6 +14,9 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
       if (req.query.type) filter.type = req.query.type;
       if (isValidObjectId(req.query.party)) filter.party = party;
       break;
+    case config.EXPENSES:
+      if (req.query.search) filter.$text = { $search: req.query.search };
+      if (req.query.category) filter.category = category;
     default:
       break;
   }
