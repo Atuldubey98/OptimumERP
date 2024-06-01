@@ -11,7 +11,7 @@ export default function useProformaInvoicesForm() {
   const [status, setStatus] = useState("idle");
 
   const proformaInvoiceSchema = Yup.object().shape({
-    proformaInvoiceNo: Yup.number()
+    sequence: Yup.number()
       .required("Invoice number is required")
       .label("Invoice Number"),
     party: Yup.string().required("Party is required").label("Party"),
@@ -50,7 +50,7 @@ export default function useProformaInvoicesForm() {
   const toast = useToast();
   const navigate = useNavigate();
   const defaultInvoice = {
-    proformaInvoiceNo: 1,
+    sequence: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultInvoiceItem],
@@ -92,7 +92,7 @@ export default function useProformaInvoicesForm() {
     const { data } = await instance.get(
       `/api/v1/organizations/${orgId}/proformaInvoices/nextProformaInvoiceNo`
     );
-    formik.setFieldValue("proformaInvoiceNo", data.data);
+    formik.setFieldValue("sequence", data.data);
     setStatus("success");
   });
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function useProformaInvoicesForm() {
           const {
             party,
             terms,
-            proformaInvoiceNo,
+            sequence,
             date,
             status,
             items,
@@ -119,7 +119,7 @@ export default function useProformaInvoicesForm() {
             _id: data.data._id,
             party: party._id,
             terms,
-            proformaInvoiceNo,
+            sequence,
             date: new Date(date).toISOString().split("T")[0],
             status,
             partyDetails: party,

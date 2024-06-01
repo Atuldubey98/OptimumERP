@@ -107,7 +107,7 @@ export default function ProformaInvoiceFormPage() {
                       <NumberInputInteger
                         min={1}
                         formik={formik}
-                        name={"proformaInvoiceNo"}
+                        name={"sequence"}
                         onlyInt={true}
                       />
                     </InputGroup>

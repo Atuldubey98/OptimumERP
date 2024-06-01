@@ -10,7 +10,7 @@ const itemSchema = Joi.object({
 const proformaInvoiceDto = Joi.object({
   party: Joi.string().required().label("Party"),
   billingAddress: Joi.string().required().label("Billing Address"),
-  proformaInvoiceNo : Joi.number().required().label("Proforma Invoice No"),
+  sequence : Joi.number().required().label("Proforma Invoice No"),
   description: Joi.string().optional().allow("").label("Description"),
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),

@@ -35,17 +35,18 @@ exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
   if (!setting) throw new OrgNotFound();
   const existingInvoice = await ProformaInvoice.findOne({
     org: req.params.orgId,
-    proformaInvoiceNo: body.proformaInvoiceNo,
+    sequence: body.sequence,
     financialYear: setting.financialYear,
   });
   if (existingInvoice)
-    throw new ProformaInvoiceDuplicate(body.proformaInvoiceNo);
-  const proformaInvoicePrefix = setting.transactionPrefix.proformaInvoice || "";
+    throw new ProformaInvoiceDuplicate(body.sequence);
+  const prefix = setting.transactionPrefix.proformaInvoice || "";
   const newProformaInvoice = new ProformaInvoice({
     org: req.params.orgId,
     ...body,
     total,
-    num: proformaInvoicePrefix + body.proformaInvoiceNo,
+    num: prefix + body.sequence,
+    prefix,
     totalTax,
     igst,
     sgst,
@@ -107,12 +108,12 @@ exports.getNextProformaInvoiceNo = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       financialYear: setting.financialYear,
     },
-    { proformaInvoiceNo: 1 },
-    { sort: { proformaInvoiceNo: -1 } }
-  ).select("proformaInvoiceNo");
+    { sequence: 1 },
+    { sort: { sequence: -1 } }
+  ).select("sequence");
   return res
     .status(200)
-    .json({ data: invoice ? invoice.proformaInvoiceNo + 1 : 1 });
+    .json({ data: invoice ? invoice.sequence + 1 : 1 });
 });
 
 exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
@@ -140,7 +141,7 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
   const existingInvoiceFilter = {
     org: req.params.orgId,
     _id: { $ne: req.params.id },
-    proformaInvoiceNo: body.proformaInvoiceNo,
+    sequence: body.sequence,
     financialYear: setting.financialYear,
   };
   const existingInvoice = await ProformaInvoice.findOne(existingInvoiceFilter);
@@ -150,7 +151,7 @@ exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
     {
       ...body,
       total,
-      num: proformaInvoicePrefix + body.proformaInvoiceNo,
+      num: proformaInvoicePrefix + body.sequence,
       totalTax,
       sgst,
       cgst,
