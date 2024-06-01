@@ -8,15 +8,21 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
   const filter = {
     org: req.params.orgId,
   };
+  if (req.query.search) filter.$text = { $search: req.query.search };
   switch (modelName) {
     case config.CONTACTS:
-      if (req.query.search) filter.$text = { $search: req.query.search };
       if (req.query.type) filter.type = req.query.type;
       if (isValidObjectId(req.query.party)) filter.party = party;
       break;
     case config.EXPENSES:
-      if (req.query.search) filter.$text = { $search: req.query.search };
       if (req.query.category) filter.category = category;
+    case config.INVOICES:
+      if (req.query.startDate && req.query.endDate) {
+        filter.date = {
+          $gte: new Date(req.query.startDate),
+          $lte: new Date(req.query.endDate),
+        };
+      }
     default:
       break;
   }

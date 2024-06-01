@@ -26,6 +26,8 @@ const Quotes = require("../models/quotes.model");
 const ProformaInvoice = require("../models/proforma_invoice.model");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const config = require("../constants/config");
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
     QRCode.toDataURL(value, function (err, url) {
@@ -168,24 +170,11 @@ exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getInvoices = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search;
-  if (search) {
-    filter.$text = { $search: search };
-  }
-
-  if (req.query.startDate && req.query.endDate) {
-    filter.date = {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    };
-  }
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+  const { filter, skip, limit, total, totalPages } = await getPaginationParams({
+    req,
+    modelName: config.INVOICES,
+    model: Invoice,
+  });
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
     .populate("party")
@@ -193,10 +182,6 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .exec();
-
-  const total = await Invoice.countDocuments(filter);
-
-  const totalPages = Math.ceil(total / limit);
   return res.status(200).json({
     data: invoices,
     page,
