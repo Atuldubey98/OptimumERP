@@ -8,13 +8,16 @@ export default function PrefixFormField({ prefixType = "invoice", formik }) {
   const currentSelectedPrefixes = prefixes[prefixType] || [];
   return (
     <Select
+      isDisabled={!formik.values._id}
       onChange={(e) => {
         formik.setFieldValue("prefix", e.currentTarget.value);
       }}
-      value={prefix || transactionPrefix[prefixType]}
+      value={formik.values._id ? prefix : transactionPrefix[prefixType]}
     >
       {currentSelectedPrefixes.map((option) => (
-        <option>{option}</option>
+        <option key={option} value={option}>
+          {option || "NONE"}
+        </option>
       ))}
     </Select>
   );

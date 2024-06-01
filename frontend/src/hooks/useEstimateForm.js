@@ -22,7 +22,7 @@ export default function useEstimateForm() {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
-          code : Yup.string().optional(),
+          code: Yup.string().optional(),
           gst: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")
@@ -44,6 +44,7 @@ export default function useEstimateForm() {
       billingAddress: "",
       status: "draft",
       items: [defaultQuoteItem],
+      prefix: "",
       terms: "Thanks for business !",
       description: "",
     },
@@ -84,6 +85,7 @@ export default function useEstimateForm() {
           sequence,
           date,
           status,
+          prefix,
           items,
           description,
         } = data.data;
@@ -91,6 +93,7 @@ export default function useEstimateForm() {
           _id: data.data._id,
           party: party._id,
           terms,
+          prefix,
           billingAddress,
           sequence,
           date: new Date(date).toISOString().split("T")[0],

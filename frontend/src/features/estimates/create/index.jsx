@@ -9,26 +9,25 @@ import {
   Heading,
   Input,
   InputGroup,
-  InputLeftAddon,
   SimpleGrid,
   Spinner,
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { AiOutlineSave } from "react-icons/ai";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useEstimateForm from "../../../hooks/useEstimateForm";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import MainLayout from "../../common/main-layout";
+import PartySelectBill from "../../invoices/create/PartySelectBill";
 import DateField from "./DateField";
 import DescriptionField from "./DescriptionField";
 import ItemsList from "./ItemList";
-import SelectParty from "./SelectParty";
 import SelectStatus from "./SelectStatus";
 import TermsAndCondtions from "./TermsConditions";
 import TotalsBox from "./TotalsBox";
 import { defaultQuoteItem, statusList } from "./data";
-import { AiOutlineSave } from "react-icons/ai";
-import PartySelectBill from "../../invoices/create/PartySelectBill";
-import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import PrefixFormField from "../../common/PrefixFormField";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const loading = status === "loading";
@@ -88,15 +87,13 @@ export default function CreateEstimatePage() {
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
-                    isInvalid={formik.errors.sequence && formik.touched.sequence}
+                    isInvalid={
+                      formik.errors.sequence && formik.touched.sequence
+                    }
                   >
                     <FormLabel>Quotation No.</FormLabel>
                     <InputGroup>
-                      {transactionPrefix.quotation ? (
-                        <InputLeftAddon>
-                          {transactionPrefix.quotation}
-                        </InputLeftAddon>
-                      ) : null}
+                      <PrefixFormField formik={formik} prefixType="quotation" />
                       <Input
                         type="number"
                         name="sequence"
@@ -104,7 +101,9 @@ export default function CreateEstimatePage() {
                         value={formik.values.sequence}
                       />
                     </InputGroup>
-                    <FormErrorMessage>{formik.errors.sequence}</FormErrorMessage>
+                    <FormErrorMessage>
+                      {formik.errors.sequence}
+                    </FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />
                   <SelectStatus formik={formik} statusList={statusList} />

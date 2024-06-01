@@ -60,6 +60,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     total,
     num: invoicePrefix + body.sequence,
     totalTax,
+    prefix: invoicePrefix,
     igst,
     sgst,
     cgst,
@@ -76,6 +77,7 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
     total,
     totalTax,
     party: body.party,
+    num: newInvoice.num,
     date: newInvoice.date,
   });
   await transaction.save();
@@ -109,7 +111,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
     {
       ...body,
       total,
-      num: setting.transactionPrefix.invoice + body.sequence,
+      num: body.prefix + body.sequence,
       totalTax,
       sgst,
       cgst,
@@ -127,7 +129,7 @@ exports.updateInvoice = requestAsyncHandler(async (req, res) => {
       total,
       totalTax,
       party: body.party,
-      num: setting.transactionPrefix.invoice + body.sequence,
+      num: body.prefix + body.sequence,
       date: updatedInvoice.date,
     }
   );

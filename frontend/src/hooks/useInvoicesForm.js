@@ -54,6 +54,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     status: "sent",
     items: [defaultInvoiceItem],
     terms: "Thanks for business !",
+    prefix: "",
     description: "",
     poNo: "",
     billingAddress: "",
