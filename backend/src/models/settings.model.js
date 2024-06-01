@@ -20,6 +20,20 @@ const settingSchema = new Schema({
       proformaInvoice: "",
     },
   },
+  prefixes: {
+    type: {
+      invoice: [String],
+      quotation: [String],
+      purchaseOrder: [String],
+      proformaInvoice: [String],
+    },
+    default: {
+      invoice: [""],
+      quotation: [""],
+      purchaseOrder: [""],
+      proformaInvoice: [""],
+    },
+  },
   currency: {
     type: String,
     default: "INR",

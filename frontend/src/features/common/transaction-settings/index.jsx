@@ -58,6 +58,12 @@ export default function TransactionSettingsPage() {
       currency: "INR",
       startDate: "",
       endDate: "",
+      prefixes: {
+        invoice: [""],
+        quotation: [""],
+        purchaseOrder: [""],
+        proformaInvoice: [""],
+      },
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (!values.organization) return;
@@ -73,6 +79,7 @@ export default function TransactionSettingsPage() {
           start: values.startDate,
           end: values.endDate,
         },
+        prefixes: values.prefixes,
       });
 
       const currentOrg = localStorage.getItem("organization");

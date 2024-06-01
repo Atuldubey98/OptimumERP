@@ -16,12 +16,15 @@ import {
   PopoverTrigger,
   Skeleton,
   Stack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import currencies from "../../../assets/currency.json";
 import instance from "../../../instance";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import PrefixForm from "./PrefixForm";
+import { IoAdd } from "react-icons/io5";
 function TransactionPopoverInstructions() {
   return (
     <Popover>
@@ -52,6 +55,12 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           proformaInvoice: "",
           startDate: "",
           endDate: "",
+          prefixes: {
+            invoice: [""],
+            quotation: [""],
+            purchaseOrder: [""],
+            proformaInvoice: [""],
+          },
         });
         printFormik.setValues({ bank: false, upiQr: false });
         return;
@@ -71,6 +80,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         startDate: new Date(data.data.financialYear.start)
           .toISOString()
           .split("T")[0],
+        prefixes: data.data.prefixes,
       });
       printFormik.setValues(data.data.printSettings);
     })();
@@ -81,6 +91,20 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
     label: `${currency} - ${currencies[currency].symbol}`,
     value: currency,
   }));
+  const getPrefixOptions = (prefixType) =>
+    formik.values.prefixes[prefixType].map((prefix) => ({
+      value: prefix,
+      label: prefix || "NONE",
+    }));
+  const invoicePrefixOptions = getPrefixOptions("invoice");
+  const quotationPrefixOptions = getPrefixOptions("quotation");
+  const proformaInvoicePrefixOptions = getPrefixOptions("proformaInvoice");
+  const [currentSelectedPrefix, setCurrentSelectedPrefix] = useState("invoice");
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const onOpenPrefixForm = (prefixType) => {
+    setCurrentSelectedPrefix(prefixType);
+    onOpen();
+  };
   return (
     <Stack spacing={6}>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -105,30 +129,66 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Invoice Prefix</FormLabel>
-              <Input
-                name="invoice"
-                value={formik.values.invoice}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
+              <Flex justifyContent={"flex-start"} alignItems={"center"}>
+                <FormLabel>Invoice Prefix</FormLabel>
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("invoice")}
+                />
+              </Flex>
+              <Select
+                onChange={({ value }) => {
+                  formik.setFieldValue("invoice", value);
+                }}
+                options={invoicePrefixOptions}
+                value={invoicePrefixOptions.find(
+                  (prefixOption) => prefixOption.value === formik.values.invoice
+                )}
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Quotation Prefix</FormLabel>
-              <Input
-                name="quotation"
-                value={formik.values.quotation}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
+              <Flex justifyContent={"flex-start"} alignItems={"center"}>
+                <FormLabel>Quotation Prefix</FormLabel>
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("quotation")}
+                />
+              </Flex>
+              <Select
+                onChange={({ value }) => {
+                  formik.setFieldValue("quotation", value);
+                }}
+                options={quotationPrefixOptions}
+                value={quotationPrefixOptions.find(
+                  (prefixOption) =>
+                    prefixOption.value === formik.values.quotation
+                )}
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Proforma Invoice Prefix</FormLabel>
-              <Input
+              <Flex justifyContent={"flex-start"} alignItems={"center"}>
+                <FormLabel>Proforma Invoice Prefix</FormLabel>
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("proformaInvoice")}
+                />
+              </Flex>
+              <Select
+                onChange={({ value }) =>
+                  formik.setFieldValue("proformaInvoice", value)
+                }
                 name="proformaInvoice"
-                value={formik.values.proformaInvoice}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
+                options={proformaInvoicePrefixOptions}
+                value={proformaInvoicePrefixOptions.find(
+                  (prefixOption) =>
+                    prefixOption.value === formik.values.proformaInvoice
+                )}
               />
             </FormControl>
             <Box>
@@ -176,6 +236,12 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           </Flex>
         </form>
       </Skeleton>
+      <PrefixForm
+        isOpen={isOpen}
+        onClose={onClose}
+        formik={formik}
+        currentSelectedPrefix={currentSelectedPrefix}
+      />
     </Stack>
   );
 }
