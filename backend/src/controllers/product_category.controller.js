@@ -3,7 +3,7 @@ const ProductCategory = require("../models/product_category.model");
 const Product = require("../models/product.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 exports.createProductCategory = requestAsyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const newProductCategory = new ProductCategory({
@@ -24,7 +24,7 @@ exports.getAllProductCategories = requestAsyncHandler(async (req, res) => {
     await getPaginationParams({
       req,
       model: ProductCategory,
-      modelName: config.PRODUCT_CATEGORIES,
+      modelName: entitiesConfig.PRODUCT_CATEGORIES,
     });
   const productCategories = await ProductCategory.find(filter)
     .skip(skip)

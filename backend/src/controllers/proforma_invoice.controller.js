@@ -4,7 +4,6 @@ const { OrgNotFound } = require("../errors/org.error");
 const { PartyNotFound } = require("../errors/party.error");
 const {
   ProformaInvoiceDuplicate,
-  ProformaInvoiceNotDelete,
   ProformaInvoiceNotFound,
 } = require("../errors/proforma_invoice.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -22,7 +21,7 @@ const Invoice = require("../models/invoice.model");
 const Transaction = require("../models/transaction.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
   const body = await proformaInvoiceDto.validateAsync(req.body);
   const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
@@ -80,7 +79,7 @@ exports.getProformaInvoices = requestAsyncHandler(async (req, res) => {
   const { filter, skip, limit, page, totalPages, total } =
     await getPaginationParams({
       req,
-      modelName: config.PROFORMA_INVOICES,
+      modelName: entitiesConfig.PROFORMA_INVOICES,
       model: ProformaInvoice,
     });
   const invoices = await ProformaInvoice.find(filter)

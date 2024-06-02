@@ -5,7 +5,7 @@ const { OrgNotFound } = require("../errors/org.error");
 const { ProductNotFound } = require("../errors/product.error");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 exports.createProduct = requestAsyncHandler(async (req, res) => {
   const body = await createProductDto.validateAsync(req.body);
   const orgId = req.params.orgId;
@@ -26,7 +26,7 @@ exports.getAllProducts = requestAsyncHandler(async (req, res) => {
     await getPaginationParams({
       req,
       model: Product,
-      modelName: config.PRODUCTS,
+      modelName: entitiesConfig.PRODUCTS,
     });
   const products = await Product.find(filter)
     .skip(skip)

@@ -1,4 +1,4 @@
-const config = require("../constants/config");
+const config = require("../constants/entities");
 const { isValidObjectId } = require("mongoose");
 
 exports.getPaginationParams = async ({ req, modelName, model }) => {

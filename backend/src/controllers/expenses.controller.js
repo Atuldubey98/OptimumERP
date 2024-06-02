@@ -14,7 +14,7 @@ const { expenseCategoryDto } = require("../dto/expense_category.dto");
 const OrgModel = require("../models/org.model");
 const { expenseDto } = require("../dto/expense.dto");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
   const expense = await Expense.findOne({
@@ -121,7 +121,7 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
   const { skip, limit, filter, page, total, totalPages } =
     await getPaginationParams({
       req,
-      modelName: config.EXPENSES,
+      modelName: entitiesConfig.EXPENSES,
       model: Expense,
     });
   const expenses = await Expense.find(filter)

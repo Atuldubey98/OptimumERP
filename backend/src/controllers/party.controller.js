@@ -6,14 +6,13 @@ const Party = require("../models/party.model");
 const Invoice = require("../models/invoice.model");
 const Transaction = require("../models/transaction.model");
 const logger = require("../logger");
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 const Purchase = require("../models/purchase.model");
-
 const Contact = require("../models/contacts.model");
 const ProformaInvoice = require("../models/proforma_invoice.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -58,7 +57,7 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
     await getPaginationParams({
       req,
       model: Party,
-      modelName: config.PARTIES,
+      modelName: entitiesConfig.PARTIES,
     });
 
   const parties = await Party.find(filter)

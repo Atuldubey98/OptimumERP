@@ -27,7 +27,9 @@ const ProformaInvoice = require("../models/proforma_invoice.model");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
+
+
 const promiseQrCode = (value) => {
   return new Promise((res, rej) => {
     QRCode.toDataURL(value, function (err, url) {
@@ -173,7 +175,7 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
   const { filter, skip, limit, total, totalPages, page } =
     await getPaginationParams({
       req,
-      modelName: config.INVOICES,
+      modelName: entitiesConfig.INVOICES,
       model: Invoice,
     });
   const invoices = await Invoice.find(filter)

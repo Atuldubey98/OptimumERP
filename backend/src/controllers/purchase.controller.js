@@ -21,7 +21,7 @@ const path = require("path");
 const Joi = require("joi");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
   const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(body.items);
@@ -133,7 +133,7 @@ exports.getPurchases = requestAsyncHandler(async (req, res) => {
     await getPaginationParams({
       req,
       model: Purchase,
-      modelName: config.PURCHASE_INVOICES,
+      modelName: entitiesConfig.PURCHASE_INVOICES,
     });
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })

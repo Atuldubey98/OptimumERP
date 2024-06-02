@@ -5,7 +5,7 @@ const { ContactNotFound } = require("../errors/contact.error");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 exports.createContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   body.org = req.params.orgId;
@@ -24,7 +24,7 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
     await getPaginationParams({
       req,
       model: Contact,
-      modelName: config.CONTACTS,
+      modelName: entitiesConfig.CONTACTS,
     });
   const contacts = await Contact.find(filter)
     .populate("party")

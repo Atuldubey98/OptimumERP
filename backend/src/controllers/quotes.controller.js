@@ -17,7 +17,7 @@ const path = require("path");
 const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
-const config = require("../constants/config");
+const entitiesConfig = require("../constants/entities");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -172,7 +172,7 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
     await getPaginationParams({
       req,
       model: Quote,
-      modelName: config.QUOTATION,
+      modelName: entitiesConfig.QUOTATION,
     });
   const quotes = Quote.find(filter)
     .populate("party")
