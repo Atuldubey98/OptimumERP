@@ -174,7 +174,7 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
       model: Quote,
       modelName: entitiesConfig.QUOTATION,
     });
-  const quotes = Quote.find(filter)
+  const quotes = await Quote.find(filter)
     .populate("party")
     .populate("org")
     .sort({ createdAt: -1 })

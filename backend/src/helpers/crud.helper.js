@@ -1,4 +1,4 @@
-const config = require("../constants/entities");
+const entitiesConfig = require("../constants/entities");
 const { isValidObjectId } = require("mongoose");
 
 exports.getPaginationParams = async ({ req, modelName, model }) => {
@@ -10,14 +10,20 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
   };
   if (req.query.search) filter.$text = { $search: req.query.search };
   switch (modelName) {
-    case config.CONTACTS:
+    
+    case entitiesConfig.CONTACTS:
       if (req.query.type) filter.type = req.query.type;
       if (isValidObjectId(req.query.party)) filter.party = party;
       break;
-    case config.EXPENSES || config.PRODUCTS:
+
+    case entitiesConfig.EXPENSES || entitiesConfig.PRODUCTS:
       if (req.query.category) filter.category = category;
       break;
-    case config.INVOICES || config.PROFORMA_INVOICES || config.QUOTATION:
+
+    case entitiesConfig.INVOICES ||
+      entitiesConfig.PROFORMA_INVOICES ||
+      entitiesConfig.QUOTATION ||
+      entitiesConfig.PURCHASE_INVOICES:
       if (req.query.startDate && req.query.endDate) {
         filter.date = {
           $gte: new Date(req.query.startDate),
@@ -25,6 +31,7 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
         };
       }
       break;
+    
     default:
       break;
   }

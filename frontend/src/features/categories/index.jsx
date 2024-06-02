@@ -16,7 +16,7 @@ export default function CategoriesPage() {
   const tabIndex = currentIndex < 0 ? 0 : currentIndex;
   return (
     <MainLayout>
-      <Tabs isLazy index={tabIndex}>
+      <Tabs size={"sm"} isLazy index={tabIndex}>
         <TabList>
           {tabs.map((tab) => (
             <Tab
