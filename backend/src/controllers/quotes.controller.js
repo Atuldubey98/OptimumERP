@@ -18,6 +18,7 @@ const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
+const { createBill } = require("../helpers/bill.helper");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -46,57 +47,20 @@ exports.getTotalAndTax = (items = []) => {
   };
 };
 exports.createQuote = requestAsyncHandler(async (req, res) => {
-  const body = await quoteDto.validateAsync(req.body);
-  const { total, totalTax, sgst, cgst, igst } = this.getTotalAndTax(
-    req.body.items
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const bill = await createBill({
+    dto: quoteDto,
+    requestBody,
+    billType: "quotes",
+    Duplicate: QuotationDuplicate,
+    Bill: Quote,
   });
-  if (!setting) throw new OrgNotFound();
-  const party = await Party.findOne({
-    _id: body.party,
-    org: req.params.orgId,
-  });
-  if (!party) throw new PartyNotFound();
-  const existingQuotation = await Quote.findOne({
-    org: req.params.orgId,
-    sequence: body.sequence,
-    financialYear: setting.financialYear,
-  });
-  if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
-  const prefix = setting.transactionPrefix.quotation;
-
-  const newQuote = new Quote({
-    org: req.params.orgId,
-    ...body,
-    total,
-    totalTax,
-    num: prefix + body.sequence,
-    prefix,
-    financialYear: setting.financialYear,
-    sgst,
-    cgst,
-    igst,
-  });
-  await newQuote.save();
-  const transaction = new Transaction({
-    org: req.params.orgId,
-    createdBy: req.body.createdBy,
-    docModel: "quotes",
-    financialYear: setting.financialYear,
-    doc: newQuote._id,
-    date: newQuote.date,
-    total,
-    totalTax,
-    party: body.party,
-  });
-  await transaction.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.quotes": 1 } }
   );
-  return res.status(201).json({ message: "Quote created !", data: newQuote });
+  return res.status(201).json({ message: "Quote created !", data: bill });
 });
 
 exports.updateQuote = requestAsyncHandler(async (req, res) => {

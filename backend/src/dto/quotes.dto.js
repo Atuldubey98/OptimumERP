@@ -14,6 +14,7 @@ const quoteDto = Joi.object({
   billingAddress: Joi.string().required().label("Party Address"),
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
   prefix : Joi.string().required().allow("").label("Prefix"),
+  org : Joi.string().optional(),
   items: Joi.array().items(itemSchema).required().label("Quotation Items"),
   date: Joi.date().required().label("Quotation date"),
   sequence: Joi.number()

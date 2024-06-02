@@ -15,5 +15,6 @@ exports.checkOrgAuthorization = requestAsyncHandler(async (req, res, next) => {
     org: orgId,
   });
   if (!orgUser) throw new OrgNotFound();
+  res.locals.organization = organization;
   next();
 });
