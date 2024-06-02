@@ -16,6 +16,8 @@ const currencies = require("../constants/currencies");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const config = require("../constants/config");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -166,40 +168,25 @@ exports.deleteQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getQuotes = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search;
-  if (search) {
-    filter.$text = { $search: search };
-  }
-
-  if (req.query.startDate && req.query.endDate) {
-    filter.date = {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    };
-  }
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  const quotesQuery = Quote.find(filter).populate("party").populate("org");
-
-  const totalCount = await Quote.countDocuments(filter);
-
-  const quotes = await quotesQuery
+  const { filter, limit, skip, page, total, totalPages } =
+    await getPaginationParams({
+      req,
+      model: Quote,
+      modelName: config.QUOTATION,
+    });
+  const quotes = Quote.find(filter)
+    .populate("party")
+    .populate("org")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
     .exec();
-
   return res.status(200).json({
     data: quotes,
     page: page,
     limit: limit,
-    total: totalCount,
-    totalPages: Math.ceil(totalCount / limit),
+    total,
+    totalPages,
     message: "Quotes retrieved successfully",
   });
 });

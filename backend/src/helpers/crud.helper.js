@@ -14,15 +14,17 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
       if (req.query.type) filter.type = req.query.type;
       if (isValidObjectId(req.query.party)) filter.party = party;
       break;
-    case config.EXPENSES:
+    case config.EXPENSES || config.PRODUCTS:
       if (req.query.category) filter.category = category;
-    case config.INVOICES:
+      break;
+    case config.INVOICES || config.PROFORMA_INVOICES || config.QUOTATION:
       if (req.query.startDate && req.query.endDate) {
         filter.date = {
           $gte: new Date(req.query.startDate),
           $lte: new Date(req.query.endDate),
         };
       }
+      break;
     default:
       break;
   }

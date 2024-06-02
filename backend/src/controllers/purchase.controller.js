@@ -20,6 +20,8 @@ const currencies = require("../constants/currencies");
 const path = require("path");
 const Joi = require("joi");
 const OrgModel = require("../models/org.model");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const config = require("../constants/config");
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const body = await purchaseDto.validateAsync(req.body);
   const { total, totalTax, sgst, cgst, igst } = getTotalAndTax(body.items);
@@ -127,24 +129,12 @@ exports.deletePurchase = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getPurchases = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search;
-  if (search) {
-    filter.$text = { $search: search };
-  }
-
-  if (req.query.startDate && req.query.endDate) {
-    filter.date = {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    };
-  }
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+  const { skip, limit, filter, page, total, totalPages } =
+    await getPaginationParams({
+      req,
+      model: Purchase,
+      modelName: config.PURCHASE_INVOICES,
+    });
   const purchases = await Purchase.find(filter)
     .sort({ createdAt: -1 })
     .populate("party")
@@ -153,9 +143,6 @@ exports.getPurchases = requestAsyncHandler(async (req, res) => {
     .limit(limit)
     .exec();
 
-  const total = await Purchase.countDocuments(filter);
-
-  const totalPages = Math.ceil(total / limit);
   return res.status(200).json({
     data: purchases,
     page,

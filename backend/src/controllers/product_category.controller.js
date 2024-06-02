@@ -2,6 +2,8 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const ProductCategory = require("../models/product_category.model");
 const Product = require("../models/product.model");
 const OrgModel = require("../models/org.model");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const config = require("../constants/config");
 exports.createProductCategory = requestAsyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const newProductCategory = new ProductCategory({
@@ -18,28 +20,22 @@ exports.createProductCategory = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getAllProductCategories = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    org: req.params.orgId,
-  };
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  const search = req.query.search || "";
-  if (search) filter.$text = { $search: search };
-  const totalDocuments = await ProductCategory.countDocuments(filter);
+  const { skip, limit, page, total, filter, totalPages } =
+    await getPaginationParams({
+      req,
+      model: ProductCategory,
+      modelName: config.PRODUCT_CATEGORIES,
+    });
   const productCategories = await ProductCategory.find(filter)
     .skip(skip)
     .limit(limit)
     .sort({ createdAt: -1 });
-
-  const totalPages = Math.ceil(totalDocuments / limit);
-
   return res.status(200).json({
     data: productCategories,
     currentPage: page,
     limit,
     totalPages,
-    totalCount: totalDocuments,
+    totalCount: total,
   });
 });
 

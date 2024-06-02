@@ -170,11 +170,12 @@ exports.deleteInvoice = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getInvoices = requestAsyncHandler(async (req, res) => {
-  const { filter, skip, limit, total, totalPages } = await getPaginationParams({
-    req,
-    modelName: config.INVOICES,
-    model: Invoice,
-  });
+  const { filter, skip, limit, total, totalPages, page } =
+    await getPaginationParams({
+      req,
+      modelName: config.INVOICES,
+      model: Invoice,
+    });
   const invoices = await Invoice.find(filter)
     .sort({ createdAt: -1 })
     .populate("party")
