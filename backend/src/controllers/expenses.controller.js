@@ -5,7 +5,6 @@ const {
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Expense = require("../models/expense.model");
 const ExpenseCategory = require("../models/expense_category");
-const mongoose = require("mongoose");
 const Transaction = require("../models/transaction.model");
 const Setting = require("../models/settings.model");
 const { OrgNotFound } = require("../errors/org.error");
@@ -16,7 +15,6 @@ const OrgModel = require("../models/org.model");
 const { expenseDto } = require("../dto/expense.dto");
 const { getPaginationParams } = require("../helpers/crud.helper");
 const config = require("../constants/config");
-const { Types } = mongoose;
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
   const expense = await Expense.findOne({

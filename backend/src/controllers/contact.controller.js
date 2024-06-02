@@ -9,7 +9,8 @@ const config = require("../constants/config");
 exports.createContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   body.org = req.params.orgId;
-  const contact = await Contact.create(body);
+  const contact = new Contact(body);
+  await contact.save();
   logger.log("info", `Contact created with id ${contact.id}`);
   await OrgModel.updateOne(
     { _id: req.params.orgId },
