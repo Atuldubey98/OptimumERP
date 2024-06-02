@@ -45,11 +45,11 @@ exports.createBill = async ({
   prefixType = "quotation",
 }) => {
   const body = await dto.validateAsync(requestBody);
-  const totals = getTotalAndTax(body.items);
+  const totalWithTaxes = getTotalAndTax(body.items);
   const setting = await getSettingForOrg(body.org);
   const bill = {
     ...body,
-    ...totals,
+    ...totalWithTaxes,
   };
   const transaction = {
     org: body.org,
@@ -57,8 +57,8 @@ exports.createBill = async ({
     docModel: billType,
     financialYear: setting.financialYear,
     date: body.date,
-    total: totals.total,
-    totalTax: totals.totalTax,
+    total: totalWithTaxes.total,
+    totalTax: totalWithTaxes.totalTax,
     party: body.party,
   };
   switch (billType) {
