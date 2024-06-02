@@ -2,7 +2,6 @@ const { contactDto } = require("../dto/contact.dto");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Contact = require("../models/contacts.model");
 const { ContactNotFound } = require("../errors/contact.error");
-const { isValidObjectId } = require("mongoose");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
