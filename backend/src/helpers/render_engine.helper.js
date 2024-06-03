@@ -1,5 +1,6 @@
 const ejs = require("ejs");
 const wkhtmltopdf = require("wkhtmltopdf");
+const QRCode = require("qrcode");
 
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
@@ -19,4 +20,13 @@ exports.sendHtmlToPdfResponse = ({ html, res, pdfName }) => {
     enableLocalFileAccess: true,
     pageSize: "A4",
   }).pipe(res);
+};
+
+exports.promiseQrCode = (value) => {
+  return new Promise((res, rej) => {
+    QRCode.toDataURL(value, function (err, url) {
+      if (err) rej(err);
+      res(url);
+    });
+  });
 };

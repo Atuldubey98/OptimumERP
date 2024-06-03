@@ -4,6 +4,7 @@ const ums = require("../constants/um");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
+const { promiseQrCode } = require("./render_engine.helper");
 
 const calculateTaxes = (items = []) => {
   const total = items.reduce(
@@ -65,6 +66,7 @@ exports.saveBill = async ({
     party: body.party,
   };
   switch (Bill.modelName) {
+    case "invoice":
     case "quotes":
       const prefix = setting.transactionPrefix[prefixType];
       const existingBill = await Bill.findOne({
@@ -126,14 +128,13 @@ exports.getNextSequence = async ({ Bill, org }) => {
   return bill ? bill.sequence + 1 : 1;
 };
 
-exports.getBillDetail = async ({ Bill, filter }) => {
+exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const bill = await Bill.findOne(filter)
     .populate("party")
     .populate("createdBy", "name email _id")
     .populate("org");
-  const setting = await Setting.findOne({
-    org: filter.org,
-  });
+  if (!bill) throw new NotFound();
+  const setting = await getSettingForOrg(filter.org);
   const currencySymbol = currencies[setting.currency].symbol;
   const grandTotal = bill.total + bill.totalTax;
   const items = bill.items.map(({ name, price, quantity, gst, um }) => ({
@@ -151,11 +152,11 @@ exports.getBillDetail = async ({ Bill, filter }) => {
   const data = {
     entity: bill,
     num: bill.num,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     items,
     bank: null,
     upiQr: null,
     currencySymbol,
+    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
     sgst: `${currencySymbol} ${bill.sgst.toFixed(2)}`,
     cgst: `${currencySymbol} ${bill.cgst.toFixed(2)}`,
@@ -170,6 +171,22 @@ exports.getBillDetail = async ({ Bill, filter }) => {
         partyMetaHeading: "Estimate to",
       };
       return quote;
+    case "invoice":
+      const upiUrl = `upi://pay?pa=${bill.org?.bank?.upi}&am=${grandTotal}`;
+      const upiQr =
+        setting.printSettings.upiQr && bill.org.bank.upi
+          ? await promiseQrCode(upiUrl)
+          : null;
+      const bank = setting.printSettings.bank && bill.org.bank;
+      const invoice = {
+        ...data,
+        title: "Invoice",
+        billMetaHeading: "Invoice information",
+        partyMetaHeading: "Bill To",
+        bank,
+        upiQr,
+      };
+      return invoice;
     default:
       return data;
   }

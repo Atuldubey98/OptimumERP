@@ -161,6 +161,7 @@ exports.viewQuote = requestAsyncHandler(async (req, res) => {
   const data = await getBillDetail({
     Bill: Quote,
     filter,
+    NotFound: QuoteNotFound,
   });
   return res.render(locationTemplate, data);
 });
