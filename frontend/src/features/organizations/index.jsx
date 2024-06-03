@@ -80,6 +80,10 @@ export default function OrgPage() {
       description: "Gold Plan allows you to have 3 organizations",
       name: "Gold Plan",
     },
+    platinum: {
+      description: "This is platinum plan",
+      name: "PlatinumPlan",
+    },
   };
   const popup = plansPopup[currentPlan];
   const settingContext = useContext(SettingContext);
