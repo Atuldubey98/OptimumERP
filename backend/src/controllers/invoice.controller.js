@@ -62,6 +62,8 @@ exports.createInvoice = requestAsyncHandler(async (req, res) => {
 exports.updateInvoice = requestAsyncHandler(async (req, res) => {
   const invoiceId = req.params.invoiceId;
   if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
   const updatedInvoice = await saveBill({
     Bill: Invoice,
     dto: invoiceDto,

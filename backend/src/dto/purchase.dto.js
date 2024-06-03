@@ -11,10 +11,13 @@ const itemSchema = Joi.object({
 const purchaseDto = Joi.object({
   party: Joi.string().required().label("Party"),
   description: Joi.string().optional().allow("").label("Description"),
+  org: Joi.string().optional().label("Organization"),
   billingAddress: Joi.string().required().label("Party Address"),
   terms: Joi.string().optional().allow("").label("Terms & Conditions"),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Purchase Invoice date"),
+  createdBy: Joi.string().optional(),
+  updatedBy: Joi.string().optional(),
   num: Joi.string().label("Purchase No.").required(),
   status: Joi.string()
     .default("unpaid")

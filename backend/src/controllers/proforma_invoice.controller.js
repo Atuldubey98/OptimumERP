@@ -22,50 +22,24 @@ const Transaction = require("../models/transaction.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
+const { saveBill, getNextSequence, getBillDetail, deleteBill } = require("../helpers/bill.helper");
+const logger = require("../logger");
+const {
+  sendHtmlToPdfResponse,
+  renderHtml,
+} = require("../helpers/render_engine.helper");
+
 exports.createProformaInvoice = requestAsyncHandler(async (req, res) => {
-  const body = await proformaInvoiceDto.validateAsync(req.body);
-  const { total, totalTax, igst, sgst, cgst } = getTotalAndTax(body.items);
-  const party = await Party.findOne({
-    _id: body.party,
-    org: req.params.orgId,
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const newProformaInvoice = await saveBill({
+    Bill: ProformaInvoice,
+    dto: proformaInvoiceDto,
+    Duplicate: ProformaInvoiceDuplicate,
+    NotFound: ProformaInvoiceNotFound,
+    requestBody,
+    prefixType: "proformaInvoice",
   });
-  if (!party) throw new PartyNotFound();
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  });
-  if (!setting) throw new OrgNotFound();
-  const existingInvoice = await ProformaInvoice.findOne({
-    org: req.params.orgId,
-    sequence: body.sequence,
-    financialYear: setting.financialYear,
-  });
-  if (existingInvoice) throw new ProformaInvoiceDuplicate(body.sequence);
-  const prefix = setting.transactionPrefix.proformaInvoice || "";
-  const newProformaInvoice = new ProformaInvoice({
-    org: req.params.orgId,
-    ...body,
-    total,
-    num: prefix + body.sequence,
-    prefix,
-    totalTax,
-    igst,
-    sgst,
-    cgst,
-    financialYear: setting.financialYear,
-  });
-  await newProformaInvoice.save();
-  const transaction = new Transaction({
-    org: req.params.orgId,
-    createdBy: req.body.createdBy,
-    docModel: "proforma_invoice",
-    financialYear: setting.financialYear,
-    doc: newProformaInvoice._id,
-    total,
-    totalTax,
-    party: body.party,
-    date: newProformaInvoice.date,
-  });
-  await transaction.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": 1 } }
@@ -99,84 +73,45 @@ exports.getProformaInvoices = requestAsyncHandler(async (req, res) => {
   });
 });
 exports.getNextProformaInvoiceNo = requestAsyncHandler(async (req, res) => {
-  const setting = await Setting.findOne({ org: req.params.orgId });
-  const invoice = await ProformaInvoice.findOne(
-    {
-      org: req.params.orgId,
-      financialYear: setting.financialYear,
-    },
-    { sequence: 1 },
-    { sort: { sequence: -1 } }
-  ).select("sequence");
-  return res.status(200).json({ data: invoice ? invoice.sequence + 1 : 1 });
+  const nextSequence = await getNextSequence({
+    Bill: ProformaInvoice,
+    org: req.params.orgId,
+  });
+  return res.status(200).json({ data: nextSequence });
 });
 
 exports.deleteProformaInvoice = requestAsyncHandler(async (req, res) => {
-  const proformaInvoice = await ProformaInvoice.findOneAndDelete({
+  const filter = {
     _id: req.params.id,
     org: req.params.orgId,
+  };
+  await deleteBill({
+    Bill: ProformaInvoice,
+    NotFound: ProformaInvoiceNotFound,
+    filter,
   });
-  if (!proformaInvoice) throw new ProformaInvoiceNotFound();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.proformaInvoices": -1 } }
   );
-  await Transaction.findOneAndDelete({
-    org: req.params.orgId,
-    docModel: "proforma_invoice",
-    doc: proformaInvoice.id,
-  });
   return res.status(200).json({ message: "Proforma invoice deleted." });
 });
 
 exports.updateProformaInvoice = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax, cgst, sgst, igst } = getTotalAndTax(req.body.items);
-  const body = await proformaInvoiceDto.validateAsync(req.body);
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  }).select("transactionPrefix financialYear");
-  if (!setting) throw new OrgNotFound();
-  if (!setting) throw new OrgNotFound();
-  const existingInvoiceFilter = {
-    org: req.params.orgId,
-    _id: { $ne: req.params.id },
-    sequence: body.sequence,
-    financialYear: setting.financialYear,
-  };
-  const existingInvoice = await ProformaInvoice.findOne(existingInvoiceFilter);
-  if (existingInvoice) throw new ProformaInvoiceDuplicate(existingInvoice.num);
-  const updatedInvoice = await ProformaInvoice.findOneAndUpdate(
-    { _id: req.params.id, org: req.params.orgId },
-    {
-      ...body,
-      total,
-      num: body.prefix + body.sequence,
-      prefix: body.prefix,
-      totalTax,
-      sgst,
-      cgst,
-      igst,
-    },
-    {
-      new: true,
-    }
-  );
-  if (!updatedInvoice) throw new ProformaInvoiceNotFound();
-  await Transaction.findOneAndUpdate(
-    {
-      org: req.params.orgId,
-      docModel: "proforma_invoice",
-      doc: updatedInvoice.id,
-    },
-    {
-      updatedBy: req.body.updatedBy,
-      total,
-      totalTax,
-      party: body.party,
-      num: body.prefix + body.sequence,
-      date: updatedInvoice.date,
-    }
-  );
+  const id = req.params.id;
+  if (!isValidObjectId(id)) throw new ProformaInvoiceNotFound();
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const updatedInvoice = await saveBill({
+    Bill: ProformaInvoice,
+    dto: proformaInvoiceDto,
+    Duplicate: ProformaInvoiceDuplicate,
+    NotFound: ProformaInvoiceNotFound,
+    requestBody,
+    prefixType: "proformaInvoice",
+    billId: id,
+  });
+  logger.info(`Proforma updated ${updatedInvoice.id}`);
   return res
     .status(200)
     .json({ message: "Invoice updated !", data: updatedInvoice });
@@ -197,143 +132,42 @@ exports.getProformaInvoiceById = requestAsyncHandler(async (req, res) => {
 
 exports.viewProformaInvoicce = requestAsyncHandler(async (req, res) => {
   const id = req.params.id;
-  if (!isValidObjectId(id)) throw new InvoiceNotFound();
-  const templateName = req.query.template || "simple";
-  const locationTemplate = `templates/${templateName}`;
-  const invoice = await ProformaInvoice.findOne({
+  if (!isValidObjectId(id)) throw new ProformaInvoiceNotFound();
+  const filter = {
     _id: id,
     org: req.params.orgId,
-  })
-    .populate("party", "name gstNo panNo")
-    .populate("createdBy", "name email")
-    .populate("org", "name address gstNo panNo bank");
-  if (!invoice) throw new ProformaInvoiceNotFound();
-  const grandTotal = (invoice.items || []).reduce(
-    (total, invoiceItem) =>
-      total +
-      (invoiceItem.price *
-        invoiceItem.quantity *
-        (100 +
-          (invoiceItem.gst === "none"
-            ? 0
-            : parseFloat(invoiceItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  };
+  const template = req.query.template || "simple";
+  const locationTemplate = `templates/${template}`;
+  const data = await getBillDetail({
+    Bill: ProformaInvoice,
+    filter,
+    NotFound: ProformaInvoiceNotFound,
   });
-  const currencySymbol = currencies[setting.currency].symbol;
-  const bank = setting.printSettings.bank && invoice.org.bank;
-  const items = invoice.items.map(
-    ({ name, price, quantity, gst, um, code }) => ({
-      name,
-      quantity,
-      code,
-      gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-      um: ums.find((unit) => unit.value === um).label,
-      price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${(
-        price *
-        quantity *
-        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-      ).toFixed(2)}`,
-    })
-  );
-  return res.render(locationTemplate, {
-    entity: invoice,
-    num: invoice.num,
-    items,
-    bank,
-    upiQr: null,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
-    sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${invoice.igst.toFixed(2)}`,
-    title: "Proforma Invoice",
-    billMetaHeading: "Proforma Invoice information",
-    partyMetaHeading: "Bill To",
-  });
+  return res.render(locationTemplate, data);
 });
 
 exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
+  const template = req.query.template || "simple";
   const id = req.params.id;
-  if (!isValidObjectId(id)) throw new ProformaInvoiceNotFound();
-  const templateName = req.query.template || "simple";
-  const locationTemplate = path.join(
-    __dirname,
-    `../views/templates/${templateName}/index.ejs`
-  );
-  const invoice = await ProformaInvoice.findOne({
-    _id: id,
-    org: req.params.orgId,
-  })
-    .populate("party", "name gstNo panNo")
-    .populate("createdBy", "name email")
-    .populate("org", "name address gstNo panNo bank");
-  const grandTotal = invoice.items.reduce(
-    (total, invoiceItem) =>
-      total +
-      (invoiceItem.price *
-        invoiceItem.quantity *
-        (100 +
-          (invoiceItem.gst === "none"
-            ? 0
-            : parseFloat(invoiceItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  });
-  const currencySymbol = currencies[setting.currency].symbol;
-
-  const items = invoice.items.map(
-    ({ name, price, quantity, gst, um, code }) => ({
-      name,
-      quantity,
-      code,
-      gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-      um: ums.find((unit) => unit.value === um).label,
-      price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${(
-        price *
-        quantity *
-        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-      ).toFixed(2)}`,
-    })
-  );
-  const bank = setting.printSettings.bank && invoice.org.bank;
-  ejs.renderFile(
-    locationTemplate,
-    {
-      entity: invoice,
-      num: invoice.num,
-      items,
-      upiQr: null,
-      bank,
-      grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-      total: `${currencySymbol} ${invoice.total.toFixed(2)}`,
-      sgst: `${currencySymbol} ${invoice.sgst.toFixed(2)}`,
-      cgst: `${currencySymbol} ${invoice.cgst.toFixed(2)}`,
-      igst: `${currencySymbol} ${invoice.igst.toFixed(2)}`,
-      title: "Invoice",
-      billMetaHeading: "Invoice information",
-      partyMetaHeading: "Bill To",
+  const data = await getBillDetail({
+    Bill: ProformaInvoice,
+    filter: {
+      _id: id,
+      org: req.params.orgId,
     },
-    (err, html) => {
-      if (err) throw err;
-      res.writeHead(200, {
-        "Content-Type": "application/pdf",
-        "Content-disposition": `attachment;filename=invoice - ${invoice.date}.pdf`,
-      });
-      wkhtmltopdf(html, {
-        enableLocalFileAccess: true,
-        pageSize: "A4",
-      }).pipe(res);
-    }
+    NotFound: ProformaInvoiceNotFound,
+  });
+  const pdfTemplateLocation = path.join(
+    __dirname,
+    `../views/templates/${template}/index.ejs`
   );
+  const html = await renderHtml(pdfTemplateLocation, data);
+  sendHtmlToPdfResponse({
+    html,
+    res,
+    pdfName: `Proforma Invoice-${data.num}-${data.date}.pdf`,
+  });
 });
 
 exports.convertProformaToInvoice = requestAsyncHandler(async (req, res) => {

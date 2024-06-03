@@ -54,6 +54,7 @@ exports.saveBill = async ({
   const billBody = {
     ...body,
     ...totalWithTaxes,
+    financialYear: setting.financialYear,
   };
   const transaction = {
     org: body.org,
@@ -64,9 +65,13 @@ exports.saveBill = async ({
     total: totalWithTaxes.total,
     totalTax: totalWithTaxes.totalTax,
     party: body.party,
+    docModel: Bill.modelName,
   };
   switch (Bill.modelName) {
+    case "purchase":
+      break;
     case "invoice":
+    case "proforma_invoice":
     case "quotes":
       const prefix = setting.transactionPrefix[prefixType];
       const existingBill = await Bill.findOne({
@@ -78,8 +83,6 @@ exports.saveBill = async ({
       if (existingBill) throw new Duplicate(existingBill.num);
       billBody.num = prefix + body.sequence;
       billBody.prefix = prefix;
-      billBody.financialYear = setting.financialYear;
-      transaction.docModel = Bill.modelName;
       break;
     default:
       break;
@@ -171,6 +174,22 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
         partyMetaHeading: "Estimate to",
       };
       return quote;
+    case "purchase":
+      const purchase = {
+        ...data,
+        title: "Purchase",
+        billMetaHeading: "Purchase Information",
+        partyMetaHeading: "Bill From",
+      };
+      return purchase;
+    case "proforma_invoice":
+      const proformaInvoice = {
+        ...data,
+        title: "Proforma Invoice",
+        billMetaHeading: "Proforma Invoice information",
+        partyMetaHeading: "Bill To",
+      };
+      return proformaInvoice;
     case "invoice":
       const upiUrl = `upi://pay?pa=${bill.org?.bank?.upi}&am=${grandTotal}`;
       const upiQr =

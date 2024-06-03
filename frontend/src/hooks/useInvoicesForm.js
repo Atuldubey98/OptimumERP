@@ -132,6 +132,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             poDate: poDate ? poDate.split("T")[0] : "",
             poNo,
             billingAddress,
+            createdBy: data.data.createdBy._id,
           });
           setStatus("success");
         })();

@@ -77,8 +77,8 @@ export default function usePurchaseForm({ saveAndNew }) {
           description: "",
           poNo: "",
           poDate: "",
-          party : undefined,
-          partyDetails : undefined
+          party: undefined,
+          partyDetails: undefined,
         });
       else navigate(`/${orgId}/purchases`);
     }),
@@ -114,6 +114,7 @@ export default function usePurchaseForm({ saveAndNew }) {
             description,
             poDate: poDate ? poDate.split("T")[0] : "",
             poNo,
+            createdBy: data.data.createdBy._id,
           });
           setStatus("success");
         })();

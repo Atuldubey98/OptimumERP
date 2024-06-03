@@ -10,10 +10,11 @@ const itemSchema = Joi.object({
 const proformaInvoiceDto = Joi.object({
   party: Joi.string().required().label("Party"),
   billingAddress: Joi.string().required().label("Billing Address"),
-  sequence : Joi.number().required().label("Proforma Invoice No"),
+  sequence: Joi.number().required().label("Proforma Invoice No"),
   description: Joi.string().optional().allow("").label("Description"),
-  prefix : Joi.string().required().allow("").label("Prefix"),
+  prefix: Joi.string().required().allow("").label("Prefix"),
   terms: Joi.string().optional().allow("").label("Terms and Conditions"),
+  org: Joi.string().optional(),
   items: Joi.array().items(itemSchema).required().label("Invoice Items"),
   date: Joi.date().required().label("Invoice date"),
   poNo: Joi.string().label("PO Number").allow("").optional(),

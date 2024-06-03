@@ -59,6 +59,7 @@ export default function useProformaInvoicesForm() {
     poNo: "",
     billingAddress: "",
     poDate: "",
+    prefix: "",
   };
   const formik = useFormik({
     initialValues: defaultInvoice,
@@ -130,6 +131,7 @@ export default function useProformaInvoicesForm() {
             poDate: poDate ? poDate.split("T")[0] : "",
             poNo,
             billingAddress,
+            createdBy: data.data?.createdBy._id,
           });
           setStatus("success");
         })();
