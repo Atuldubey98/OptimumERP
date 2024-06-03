@@ -18,7 +18,17 @@ const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
-const { createBill } = require("../helpers/bill.helper");
+const {
+  saveBill,
+  deleteBill,
+  getNextSequence,
+  getBillDetail,
+} = require("../helpers/bill.helper");
+const {
+  renderHtml,
+  convertHtmlToPdf,
+  sendHtmlToPdfResponse,
+} = require("../helpers/render_engine.helper");
 
 exports.getTotalAndTax = (items = []) => {
   const total = items.reduce(
@@ -49,7 +59,7 @@ exports.getTotalAndTax = (items = []) => {
 exports.createQuote = requestAsyncHandler(async (req, res) => {
   const requestBody = req.body;
   requestBody.org = req.params.orgId;
-  const bill = await createBill({
+  const bill = await saveBill({
     dto: quoteDto,
     requestBody,
     billType: "quotes",
@@ -64,66 +74,32 @@ exports.createQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.updateQuote = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax, sgst, igst, cgst } = this.getTotalAndTax(
-    req.body.items
-  );
-  const body = await quoteDto.validateAsync(req.body);
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const billId = req.params.quoteId;
+  if (!isValidObjectId(billId)) throw new QuoteNotFound();
+
+  const bill = await saveBill({
+    dto: quoteDto,
+    requestBody,
+    billType: "quotes",
+    Duplicate: QuotationDuplicate,
+    NotFound: QuoteNotFound,
+    Bill: Quote,
+    billId,
   });
-  if (!setting) throw new OrgNotFound();
-  const existingQuotation = await Quote.findOne({
-    org: req.params.orgId,
-    sequence: body.sequence,
-    _id: { $ne: req.params.quoteId },
-    financialYear: setting.financialYear,
-  });
-  if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
-  const updatedQuote = await Quote.findOneAndUpdate(
-    { _id: req.params.quoteId, org: req.params.orgId },
-    {
-      ...body,
-      total,
-      num: body.prefix + body.sequence,
-      prefix: body.prefix,
-      totalTax,
-      cgst,
-      igst,
-      sgst,
-    }
-  );
-  await Transaction.findOneAndUpdate(
-    {
-      org: req.params.orgId,
-      docModel: "quotes",
-      doc: updatedQuote.id,
-    },
-    {
-      updatedBy: req.body.updatedBy,
-      total,
-      totalTax,
-      party: body.party,
-      date: updatedQuote.date,
-    }
-  );
-  if (!updatedQuote) throw new QuoteNotFound();
-  return res.status(200).json({ message: "Quote updated !" });
+  return res.status(200).json({ message: "Quote updated !", data: bill });
 });
 
 exports.deleteQuote = requestAsyncHandler(async (req, res) => {
   const quoteId = req.params.quoteId;
   if (!isValidObjectId(quoteId)) throw new QuoteNotFound();
-  const quote = await Quote.findOneAndDelete({
-    _id: quoteId,
-    org: req.params.orgId,
+  await deleteBill({
+    Bill: Quote,
+    NotFound: QuoteNotFound,
+    billType: "quotes",
+    filter: { _id: quoteId, org: req.params.orgId },
   });
-  if (!quote) throw new QuoteNotFound();
-  const transaction = await Transaction.findOneAndDelete({
-    org: req.params.orgId,
-    docModel: "quotes",
-    doc: quoteId,
-  });
-  if (!transaction) throw new QuoteNotFound();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.quotes": -1 } }
@@ -168,147 +144,45 @@ exports.getQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
-  const setting = await Setting.findOne({ org: req.params.orgId });
-  const quote = await Quote.findOne(
-    {
-      org: req.params.orgId,
-      financialYear: setting.financialYear,
-    },
-    { sequence: 1 },
-    { sort: { sequence: -1 } }
-  ).select("sequence");
-  return res.status(200).json({ data: quote ? quote.sequence + 1 : 1 });
+  const nextSequence = await getNextSequence({
+    org: req.params.orgId,
+    Bill: Quote,
+  });
+  return res.status(200).json({ data: nextSequence });
 });
 
 exports.viewQuote = requestAsyncHandler(async (req, res) => {
-  const quote = await Quote.findOne({
+  const filter = {
     _id: req.params.quoteId,
     org: req.params.orgId,
-  })
-    .populate("party")
-    .populate("createdBy", "name email _id")
-    .populate("org");
-  const grandTotal = quote.items.reduce(
-    (total, quoteItem) =>
-      total +
-      (quoteItem.price *
-        quoteItem.quantity *
-        (100 +
-          (quoteItem.gst === "none"
-            ? 0
-            : parseFloat(quoteItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const templateName = req.query.template || "simple";
-  const locationTemplate = `templates/${templateName}`;
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  });
-  const currencySymbol = currencies[setting.currency].symbol;
-
-  const items = quote.items.map(({ name, price, quantity, gst, um }) => ({
-    name,
-    quantity,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(
-      price *
-      quantity *
-      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-    ).toFixed(2)}`,
-  }));
-
-  const data = {
-    entity: quote,
-    num: quote.num,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    items,
-    bank: null,
-    upiQr: null,
-    currencySymbol,
-    total: `${currencySymbol} ${quote.total.toFixed(2)}`,
-    sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,
-    title: "Quotation",
-    billMetaHeading: "Estimate Information",
-    partyMetaHeading: "Estimate to",
   };
+  const template = req.query.template || "simple";
+  const locationTemplate = `templates/${template}`;
+  const data = await getBillDetail({
+    Bill: Quote,
+    filter,
+  });
   return res.render(locationTemplate, data);
 });
 
 exports.downloadQuote = requestAsyncHandler(async (req, res) => {
-  const quote = await Quote.findOne({
-    _id: req.params.quoteId,
-    org: req.params.orgId,
-  })
-    .populate("party")
-    .populate("createdBy", "name email _id")
-    .populate("org");
-  const grandTotal = quote.items.reduce(
-    (total, quoteItem) =>
-      total +
-      (quoteItem.price *
-        quoteItem.quantity *
-        (100 +
-          (quoteItem.gst === "none"
-            ? 0
-            : parseFloat(quoteItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const template = req.query.template || "simple";
+  const data = await getBillDetail({
+    Bill: Quote,
+    filter: {
+      _id: req.params.quoteId,
+      org: req.params.orgId,
+    },
   });
-  const currencySymbol = currencies[setting.currency].symbol;
-
-  const items = quote.items.map(({ name, price, quantity, gst, um, code }) => ({
-    name,
-    quantity,
-    code,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(
-      price *
-      quantity *
-      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-    ).toFixed(2)}`,
-  }));
-
-  const data = {
-    entity: quote,
-    num: quote.num,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    items,
-    bank: null,
-    upiQr: null,
-    currencySymbol,
-    total: `${currencySymbol} ${quote.total.toFixed(2)}`,
-    sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,
-    title: "Quotation",
-    billMetaHeading: "Estimate Information",
-    partyMetaHeading: "Estimate to",
-  };
-  const templateName = req.query.template || "simple";
-  const locationTemplate = path.join(
+  const pdfTemplateLocation = path.join(
     __dirname,
-    `../views/templates/${templateName}/index.ejs`
+    `../views/templates/${template}/index.ejs`
   );
-  ejs.renderFile(locationTemplate, data, (err, html) => {
-    if (err) throw err;
-    res.writeHead(200, {
-      "Content-Type": "application/pdf",
-      "Content-disposition": `attachment;filename=quote - ${quote.date}.pdf`,
-    });
-    wkhtmltopdf(html, {
-      enableLocalFileAccess: true,
-      pageSize: "A4",
-    }).pipe(res);
+  const html = await renderHtml(pdfTemplateLocation, data);
+  sendHtmlToPdfResponse({
+    html,
+    res,
+    pdfName: `Quotation-${data.num}-${data.date}.pdf`,
   });
 });
 
