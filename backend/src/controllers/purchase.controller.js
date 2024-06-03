@@ -1,22 +1,8 @@
 const { isValidObjectId } = require("mongoose");
 const { purchaseDto } = require("../dto/purchase.dto");
-const { PartyNotFound } = require("../errors/party.error");
-const {
-  PurchaseNotFound,
-  PurchaseDuplicate,
-} = require("../errors/purchase.error");
+const { PurchaseNotFound } = require("../errors/purchase.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const Party = require("../models/party.model");
 const Purchase = require("../models/purchase.model");
-const { getTotalAndTax } = require("./quotes.controller");
-const { OrgNotFound } = require("../errors/org.error");
-const Setting = require("../models/settings.model");
-const Transaction = require("../models/transaction.model");
-const ejs = require("ejs");
-const wkhtmltopdf = require("wkhtmltopdf");
-const taxRates = require("../constants/gst");
-const ums = require("../constants/um");
-const currencies = require("../constants/currencies");
 const path = require("path");
 const Joi = require("joi");
 const OrgModel = require("../models/org.model");
@@ -28,7 +14,11 @@ const {
   deleteBill,
   getBillDetail,
 } = require("../helpers/bill.helper");
-const { renderHtml, sendHtmlToPdfResponse } = require("../helpers/render_engine.helper");
+const {
+  renderHtml,
+  sendHtmlToPdfResponse,
+} = require("../helpers/render_engine.helper");
+
 exports.createPurchase = requestAsyncHandler(async (req, res) => {
   const requestBody = req.body;
   requestBody.org = req.params.orgId;

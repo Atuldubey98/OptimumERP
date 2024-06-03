@@ -1,18 +1,11 @@
-const { isValidObjectId, default: mongoose } = require("mongoose");
+const { isValidObjectId } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Quote = require("../models/quotes.model");
 const { QuoteNotFound, QuotationDuplicate } = require("../errors/quote.error");
-const { PartyNotFound } = require("../errors/party.error");
 const { quoteDto } = require("../dto/quotes.dto");
-const Party = require("../models/party.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
-const ejs = require("ejs");
-const wkhtmltopdf = require("wkhtmltopdf");
-const taxRates = require("../constants/gst");
-const ums = require("../constants/um");
-const currencies = require("../constants/currencies");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
@@ -26,36 +19,9 @@ const {
 } = require("../helpers/bill.helper");
 const {
   renderHtml,
-  convertHtmlToPdf,
   sendHtmlToPdfResponse,
 } = require("../helpers/render_engine.helper");
 
-exports.getTotalAndTax = (items = []) => {
-  const total = items.reduce(
-    (prev, item) => prev + item.price * item.quantity,
-    0
-  );
-  let cgst = 0,
-    sgst = 0,
-    igst = 0;
-
-  const totalTax = items.reduce((prev, item) => {
-    const [typeOfGST, gstPercentage] = item.gst.split(":");
-    const taxPercentage = item.gst === "none" ? 0 : parseInt(gstPercentage);
-    const tax = prev + (item.price * item.quantity * taxPercentage) / 100;
-    cgst += typeOfGST === "GST" ? tax / 2 : 0;
-    sgst += typeOfGST === "GST" ? tax / 2 : 0;
-    igst += typeOfGST === "IGST" ? tax : 0;
-    return tax;
-  }, 0);
-  return {
-    total: parseFloat(total.toFixed(2)),
-    totalTax: parseFloat(totalTax.toFixed(2)),
-    cgst,
-    sgst,
-    igst,
-  };
-};
 exports.createQuote = requestAsyncHandler(async (req, res) => {
   const requestBody = req.body;
   requestBody.org = req.params.orgId;
