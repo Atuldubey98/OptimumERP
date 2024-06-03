@@ -10,20 +10,21 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
   };
   if (req.query.search) filter.$text = { $search: req.query.search };
   switch (modelName) {
-    
     case entitiesConfig.CONTACTS:
       if (req.query.type) filter.type = req.query.type;
       if (isValidObjectId(req.query.party)) filter.party = party;
       break;
 
-    case entitiesConfig.EXPENSES || entitiesConfig.PRODUCTS:
+    case entitiesConfig.EXPENSES:
+    case entitiesConfig.PRODUCTS:
       if (req.query.category) filter.category = category;
       break;
 
-    case entitiesConfig.INVOICES ||
-      entitiesConfig.PROFORMA_INVOICES ||
-      entitiesConfig.QUOTATION ||
-      entitiesConfig.PURCHASE_INVOICES:
+    case entitiesConfig.INVOICES:
+    case entitiesConfig.PROFORMA_INVOICES:
+    case entitiesConfig.QUOTATION:
+    case entitiesConfig.PURCHASE_INVOICES:
+    case entitiesConfig.PURCHASE_ORDERS:
       if (req.query.startDate && req.query.endDate) {
         filter.date = {
           $gte: new Date(req.query.startDate),
@@ -31,7 +32,7 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
         };
       }
       break;
-    
+
     default:
       break;
   }

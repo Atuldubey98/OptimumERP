@@ -8,4 +8,5 @@ module.exports = {
   PROFORMA_INVOICES: "proformaInvoice",
   PURCHASE_INVOICES: "purchase",
   QUOTATION: "quotation",
+  PURCHASE_ORDERS: "purchaseOrder",
 };

@@ -15,6 +15,8 @@ const {
   renderHtml,
   sendHtmlToPdfResponse,
 } = require("../helpers/render_engine.helper");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const entities = require("../constants/entities");
 
 exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
   const requestBody = req.body;
@@ -33,7 +35,28 @@ exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
   return res.status(201).json({ data: purchase, message: "Purchase created" });
 });
 
-exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {});
+exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {
+  const { filter, limit, page, skip, total, totalPages } =
+    await getPaginationParams({
+      model: PurchaseOrder,
+      modelName: entities.PURCHASE_ORDERS,
+      req,
+    });
+  const purchaseOrders = await PurchaseOrder.find(filter)
+    .sort({ createdAt: -1 })
+    .populate("party")
+    .populate("org")
+    .skip(skip)
+    .limit(limit)
+    .exec();
+  return res.status(200).json({
+    data: purchaseOrders,
+    page,
+    limit,
+    totalPages,
+    total,
+  });
+});
 
 exports.deletePurchaseOrder = requestAsyncHandler(async (req, res) => {
   const id = req.params.id;
