@@ -1,5 +1,9 @@
 const { Router } = require("express");
-const { authenticate, checkPlan, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  checkPlan,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const {
   checkOrgAuthorization,
@@ -23,63 +27,27 @@ const invoiceRouter = Router({
 
 invoiceRouter.post(
   "/",
-  authenticate,
   createModel,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("invoices"),
   createInvoice
 );
 
-invoiceRouter.get(
-  "/next-invoice-no",
-  authenticate,
-  checkOrgAuthorization,
-  getNextInvoiceNumber
-);
-invoiceRouter.get(
-  "/:invoiceId",
-  authenticate,
-  checkOrgAuthorization,
-  getInvoice
-);
+invoiceRouter.get("/next-invoice-no", getNextInvoiceNumber);
+invoiceRouter.get("/:invoiceId", getInvoice);
 invoiceRouter.delete(
   "/:invoiceId",
-  authenticate,
-  checkOrgAuthorization,
+
   deleteInvoice
 );
-invoiceRouter.get("/", authenticate, checkOrgAuthorization, getInvoices);
+invoiceRouter.get("/", getInvoices);
 
-invoiceRouter.patch(
-  "/:invoiceId",
-  authenticate,
-  updateModel,
-  checkOrgAuthorization,
-  updateInvoice
-);
-invoiceRouter.get(
-  "/:invoiceId/view",
-  authenticate,
-  checkOrgAuthorization,
-  viewInvoice
-);
-invoiceRouter.get(
-  "/:invoiceId/download",
-  authenticate,
-  checkOrgAuthorization,
-  downloadInvoice
-);
-invoiceRouter.post(
-  "/:invoiceId/payment",
-  authenticate,
-  checkOrgAuthorization,
-  recordPayment
-);
+invoiceRouter.patch("/:invoiceId", updateModel, updateInvoice);
+invoiceRouter.get("/:invoiceId/view", viewInvoice);
+invoiceRouter.get("/:invoiceId/download", downloadInvoice);
+invoiceRouter.post("/:invoiceId/payment", recordPayment);
 invoiceRouter.post(
   "/:invoiceId/send",
-  authenticate,
   checkPlan(["gold", "platinum"]),
-  checkOrgAuthorization,
   sendInvoice
 );
 module.exports = invoiceRouter;

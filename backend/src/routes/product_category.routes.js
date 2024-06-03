@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
 const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
+
 const {
   createProductCategory,
   getAllProductCategories,
@@ -17,41 +17,14 @@ const productCategoryRouter = Router({
 
 productCategoryRouter.post(
   "/",
-  authenticate,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("productCategories"),
   createProductCategory
 );
-productCategoryRouter.get(
-  "/search",
-  authenticate,
-  checkOrgAuthorization,
-  searchProductCategory
-);
-productCategoryRouter.get(
-  "/",
-  authenticate,
-  checkOrgAuthorization,
-  getAllProductCategories
-);
+productCategoryRouter.get("/search", searchProductCategory);
+productCategoryRouter.get("/", getAllProductCategories);
 
-productCategoryRouter.get(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  getProductCategoryById
-);
-productCategoryRouter.patch(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  updateProductCategory
-);
-productCategoryRouter.delete(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  deleteProductCategory
-);
+productCategoryRouter.get("/:id", getProductCategoryById);
+productCategoryRouter.patch("/:id", updateProductCategory);
+productCategoryRouter.delete("/:id", deleteProductCategory);
 
 module.exports = productCategoryRouter;

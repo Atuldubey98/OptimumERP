@@ -1,12 +1,12 @@
 const { Router } = require("express");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   createModel,
   paginateModel,
 } = require("../middlewares/crud.middleware");
-const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
+
 const {
   createPurchaseOrder,
   getPurchaseOrders,
@@ -15,17 +15,9 @@ const purchaseOrderRouter = Router({ mergeParams: true });
 
 purchaseOrderRouter.post(
   "/",
-  authenticate,
-  checkOrgAuthorization,
   createModel,
   limitFreePlanOnCreateEntityForOrganization("purchaseOrders"),
   createPurchaseOrder
 );
-purchaseOrderRouter.get(
-  "/",
-  authenticate,
-  checkOrgAuthorization,
-  paginateModel,
-  getPurchaseOrders
-);
+purchaseOrderRouter.get("/", paginateModel, getPurchaseOrders);
 module.exports = purchaseOrderRouter;

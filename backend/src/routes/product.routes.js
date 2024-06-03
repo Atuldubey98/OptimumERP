@@ -2,7 +2,10 @@ const { Router } = require("express");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
-const {authenticate, limitFreePlanOnCreateEntityForOrganization} = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   getAllProducts,
   createProduct,
@@ -17,32 +20,14 @@ const productRouter = Router({
 });
 
 productRouter.get("/", authenticate, checkOrgAuthorization, getAllProducts);
-productRouter.post("/bulk", authenticate, checkOrgAuthorization, addManyProducts);
+productRouter.post("/bulk", addManyProducts);
 productRouter.post(
   "/",
-  authenticate,
   createModel,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("products"),
   createProduct
 );
-productRouter.patch(
-  "/:productId",
-  authenticate,
-  updateModel,
-  checkOrgAuthorization,
-  updateProduct
-);
-productRouter.get(
-  "/:productId",
-  authenticate,
-  checkOrgAuthorization,
-  getProduct
-);
-productRouter.delete(
-  "/:productId",
-  authenticate,
-  checkOrgAuthorization,
-  deleteProduct
-);
+productRouter.patch("/:productId", updateModel, updateProduct);
+productRouter.get("/:productId", getProduct);
+productRouter.delete("/:productId", deleteProduct);
 module.exports = productRouter;

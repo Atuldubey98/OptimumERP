@@ -82,7 +82,7 @@ export default function OrgPage() {
     },
     platinum: {
       description: "This is platinum plan",
-      name: "PlatinumPlan",
+      name: "Gold Plan",
     },
   };
   const popup = plansPopup[currentPlan];
