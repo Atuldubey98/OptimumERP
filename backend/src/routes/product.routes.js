@@ -1,9 +1,5 @@
 const { Router } = require("express");
 const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
-const {
-  authenticate,
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const {
@@ -19,8 +15,8 @@ const productRouter = Router({
   mergeParams: true,
 });
 
-productRouter.get("/", authenticate, checkOrgAuthorization, getAllProducts);
-productRouter.post("/bulk", addManyProducts);
+productRouter.get("/", getAllProducts);
+productRouter.post("/bulk", createModel, addManyProducts);
 productRouter.post(
   "/",
   createModel,
