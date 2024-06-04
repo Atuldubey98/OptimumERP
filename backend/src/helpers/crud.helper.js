@@ -12,7 +12,7 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
   switch (modelName) {
     case entitiesConfig.CONTACTS:
       if (req.query.type) filter.type = req.query.type;
-      if (isValidObjectId(req.query.party)) filter.party = party;
+      if (isValidObjectId(req.query.party)) filter.party = req.query.party;
       break;
 
     case entitiesConfig.EXPENSES:
