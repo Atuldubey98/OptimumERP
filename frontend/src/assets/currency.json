@@ -8,7 +8,7 @@
     "code": "EUR",
     "name_plural": "euros",
     "locale": "French",
-    "localCode": "fr-FR"
+    "localeCode": "fr-FR"
   },
   "INR": {
     "symbol": "₹",
@@ -19,7 +19,7 @@
     "code": "INR",
     "name_plural": "Indian rupees",
     "locale": "English",
-    "localCode": "en-IN"
+    "localeCode": "en-IN"
   },
   "BRL": {
     "symbol": "R$",
@@ -30,7 +30,7 @@
     "code": "BRL",
     "name_plural": "Brazilian reals",
     "locale": "Portuguese",
-    "localCode": "pt-BR"
+    "localeCode": "pt-BR"
   },
   "BDT": {
     "symbol": "৳",
@@ -41,7 +41,7 @@
     "code": "BDT",
     "name_plural": "Bangladeshi takas",
     "locale": "English",
-    "localCode": "en-BD"
+    "localeCode": "en-BD"
   },
   "AUD": {
     "symbol": "$",
@@ -52,6 +52,6 @@
     "code": "AUD",
     "name_plural": "Australian dollars",
     "locale": "English",
-    "localCode": "en-US"
+    "localeCode": "en-US"
   }
 }

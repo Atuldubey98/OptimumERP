@@ -82,6 +82,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           .toISOString()
           .split("T")[0],
         prefixes: data.data.prefixes,
+        localeCode: data.data.localeCode,
       });
       printFormik.setValues(data.data.printSettings);
     })();
@@ -89,7 +90,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   const currencyCodes = Object.keys(currencies);
 
   const currencyOptions = currencyCodes.map((currency) => ({
-    label: `${currency} - ${currencies[currency].symbol}`,
+    label: `${currencies[currency].name} (${currency})-${currencies[currency].symbol}`,
     value: currency,
   }));
   const getPrefixOptions = (prefixType) =>
@@ -126,10 +127,8 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 options={currencyOptions}
                 onChange={({ value }) => {
                   formik.setFieldValue("currency", value);
-                  formik.setFieldValue(
-                    "localeCode",
-                    currencies[value].localeCode
-                  );
+                  const localeCode = currencies[value].localeCode;
+                  formik.setFieldValue("localeCode", localeCode);
                 }}
               />
             </FormControl>

@@ -4,6 +4,7 @@ const ums = require("../constants/um");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
+const { currencyToWordConverter } = require("./currency_to_word_converter");
 const { promiseQrCode } = require("./render_engine.helper");
 
 const calculateTaxes = (items = []) => {
@@ -152,6 +153,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
       ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
     ).toFixed(2)}`,
   }));
+  const localeCode = setting.localeCode;
   const data = {
     entity: bill,
     num: bill.num,
@@ -159,6 +161,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     bank: null,
     upiQr: null,
     currencySymbol,
+    amountToWords: currencyToWordConverter(localeCode, grandTotal),
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
     sgst: `${currencySymbol} ${bill.sgst.toFixed(2)}`,
