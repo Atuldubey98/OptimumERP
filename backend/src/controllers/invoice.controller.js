@@ -143,45 +143,33 @@ exports.getNextInvoiceNumber = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: nextSequence });
 });
 
-exports.viewInvoice = requestAsyncHandler(async (req, res) => {
-  const invoiceId = req.params.invoiceId;
-  if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
-  const filter = {
-    _id: invoiceId,
-    org: req.params.orgId,
-  };
-  const template = req.query.template || "simple";
-  const locationTemplate = `templates/${template}`;
-  const data = await getBillDetail({
-    Bill: Invoice,
-    filter,
-    NotFound: InvoiceNotFound,
-  });
-  return res.render(locationTemplate, data);
-});
-
-exports.downloadInvoice = requestAsyncHandler(async (req, res) => {
-  const template = req.query.template || "simple";
-  const invoiceId = req.params.invoiceId;
-  const data = await getBillDetail({
-    Bill: Invoice,
-    filter: {
+exports.downloadOrViewInvoice = (download = false) =>
+  requestAsyncHandler(async (req, res) => {
+    const invoiceId = req.params.invoiceId;
+    if (!isValidObjectId(invoiceId)) throw new InvoiceNotFound();
+    const filter = {
       _id: invoiceId,
       org: req.params.orgId,
-    },
-    NotFound: InvoiceNotFound,
+    };
+    const template = req.query.template || "simple";
+    const locationTemplate = `templates/${template}`;
+    const data = await getBillDetail({
+      Bill: Invoice,
+      filter,
+      NotFound: InvoiceNotFound,
+    });
+    if (!download) return res.render(locationTemplate, data);
+    const pdfTemplateLocation = path.join(
+      __dirname,
+      `../views/templates/${template}/index.ejs`
+    );
+    const html = await renderHtml(pdfTemplateLocation, data);
+    sendHtmlToPdfResponse({
+      html,
+      res,
+      pdfName: `Invoice-${data.num}-${data.date}.pdf`,
+    });
   });
-  const pdfTemplateLocation = path.join(
-    __dirname,
-    `../views/templates/${template}/index.ejs`
-  );
-  const html = await renderHtml(pdfTemplateLocation, data);
-  sendHtmlToPdfResponse({
-    html,
-    res,
-    pdfName: `Invoice-${data.num}-${data.date}.pdf`,
-  });
-});
 
 const paymentDto = Joi.object({
   description: Joi.string().allow("").required().label("Description"),

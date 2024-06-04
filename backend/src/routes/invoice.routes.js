@@ -1,13 +1,9 @@
 const { Router } = require("express");
 const {
-  authenticate,
   checkPlan,
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
-const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
 const {
   createInvoice,
   getNextInvoiceNumber,
@@ -15,10 +11,9 @@ const {
   deleteInvoice,
   getInvoices,
   updateInvoice,
-  downloadInvoice,
-  viewInvoice,
   recordPayment,
   sendInvoice,
+  downloadOrViewInvoice,
 } = require("../controllers/invoice.controller");
 
 const invoiceRouter = Router({
@@ -34,16 +29,12 @@ invoiceRouter.post(
 
 invoiceRouter.get("/next-invoice-no", getNextInvoiceNumber);
 invoiceRouter.get("/:invoiceId", getInvoice);
-invoiceRouter.delete(
-  "/:invoiceId",
-
-  deleteInvoice
-);
+invoiceRouter.delete("/:invoiceId", deleteInvoice);
 invoiceRouter.get("/", getInvoices);
 
 invoiceRouter.patch("/:invoiceId", updateModel, updateInvoice);
-invoiceRouter.get("/:invoiceId/view", viewInvoice);
-invoiceRouter.get("/:invoiceId/download", downloadInvoice);
+invoiceRouter.get("/:invoiceId/view", downloadOrViewInvoice(false));
+invoiceRouter.get("/:invoiceId/download", downloadOrViewInvoice(true));
 invoiceRouter.post("/:invoiceId/payment", recordPayment);
 invoiceRouter.post(
   "/:invoiceId/send",
