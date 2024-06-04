@@ -1,7 +1,12 @@
 const entitiesConfig = require("../constants/entities");
 const { isValidObjectId } = require("mongoose");
 
-exports.getPaginationParams = async ({ req, modelName, model }) => {
+exports.getPaginationParams = async ({
+  req,
+  modelName,
+  model,
+  shouldPaginate = true,
+}) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
@@ -36,7 +41,7 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
     default:
       break;
   }
-  const total = await model.countDocuments(filter);
+  const total = shouldPaginate ? await model.countDocuments(filter) : 0;
   const totalPages = Math.ceil(total / limit);
   return { filter, page, limit, skip, total, totalPages };
 };
