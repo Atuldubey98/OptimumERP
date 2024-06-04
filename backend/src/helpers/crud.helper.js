@@ -17,7 +17,7 @@ exports.getPaginationParams = async ({ req, modelName, model }) => {
 
     case entitiesConfig.EXPENSES:
     case entitiesConfig.PRODUCTS:
-      if (req.query.category) filter.category = category;
+      if (req.query.category) filter.category = req.query.category;
       break;
 
     case entitiesConfig.INVOICES:
