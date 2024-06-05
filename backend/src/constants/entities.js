@@ -9,4 +9,5 @@ module.exports = {
   PURCHASE_INVOICES: "purchase",
   QUOTATION: "quotation",
   PURCHASE_ORDERS: "purchaseOrder",
+  TRANSACTIONS: "transaction",
 };
