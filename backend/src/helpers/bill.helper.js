@@ -7,6 +7,17 @@ const Transaction = require("../models/transaction.model");
 const { currencyToWordConverter } = require("./currency_to_word_converter");
 const { promiseQrCode } = require("./render_engine.helper");
 
+const getUpiQrCodeByPrintSettings = async ({
+  upi,
+  grandTotal = 0,
+  shouldPrintQr = false,
+}) => {
+  const upiUrl = `upi://pay?pa=${upi}&am=${grandTotal}`;
+  const upiQr =
+    shouldPrintQr && bill.org.bank.upi ? await promiseQrCode(upiUrl) : null;
+  return upiQr;
+};
+
 const calculateTaxes = (items = []) => {
   const total = items.reduce(
     (prev, item) => prev + item.price * item.quantity,
@@ -32,6 +43,20 @@ const calculateTaxes = (items = []) => {
     sgst,
     igst,
   };
+};
+const calculateTaxesForBillItemsWithCurrency = (items = [], currencySymbol) => {
+  return items.map(({ name, price, quantity, gst, um }) => ({
+    name,
+    quantity,
+    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
+    um: ums.find((unit) => unit.value === um).label,
+    price: `${currencySymbol} ${price.toFixed(2)}`,
+    total: `${currencySymbol} ${(
+      price *
+      quantity *
+      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
+    ).toFixed(2)}`,
+  }));
 };
 const getSettingForOrg = async (org) => {
   const setting = await Setting.findOne({
@@ -141,18 +166,10 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const setting = await getSettingForOrg(filter.org);
   const currencySymbol = currencies[setting.currency].symbol;
   const grandTotal = bill.total + bill.totalTax;
-  const items = bill.items.map(({ name, price, quantity, gst, um }) => ({
-    name,
-    quantity,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(
-      price *
-      quantity *
-      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-    ).toFixed(2)}`,
-  }));
+  const items = calculateTaxesForBillItemsWithCurrency(
+    bill.items,
+    currencySymbol
+  );
   const localeCode = setting.localeCode;
   const data = {
     entity: bill,
@@ -194,11 +211,11 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
       };
       return proformaInvoice;
     case "invoice":
-      const upiUrl = `upi://pay?pa=${bill.org?.bank?.upi}&am=${grandTotal}`;
-      const upiQr =
-        setting.printSettings.upiQr && bill.org.bank.upi
-          ? await promiseQrCode(upiUrl)
-          : null;
+      const upiQr = await getUpiQrCodeByPrintSettings({
+        upi: bill.org?.bank?.upi,
+        grandTotal,
+        shouldPrintQr: setting.printSettings.upiQr,
+      });
       const bank = setting.printSettings.bank && bill.org.bank;
       const invoice = {
         ...data,
