@@ -1,114 +1,15 @@
 const xl = require("excel4node");
-const reportDataByType = {
-  sale: {
-    header: {
-      num: "Invoice Number",
-      partyName: "Party Name",
-      address: "Party Address",
-      date: "Date",
-      totalTax: "Total Tax",
-      poNo: "Purchase Order Number",
-      poDate: "Purchase Order Date",
-      grandTotal: "Grand Total",
-      status: "Status",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      address: item.party?.billingAddress,
-      poNo: item.poNo,
-      poDate: item.poDate ? new Date(item.poDate).toLocaleDateString() : "",
-      num: item.num,
-      date: new Date(item.date).toLocaleDateString(),
-      totalTax: item.totalTax.toFixed(2),
-      grandTotal: (item.totalTax + item.total).toFixed(2),
-      status: (item?.status || "").toLocaleUpperCase(),
-    }),
-  },
-  purchase: {
-    header: {
-      num: "Purchase Number",
-      partyName: "Party Name",
-      date: "Date",
-      totalTax: "Total Tax",
-      grandTotal: "Grand Total",
-      status: "Status",
-    },
+const reportDataByType = require("../constants/reportDataByType");
+const Invoice = require("../models/invoice.model");
+const {
+  INVOICES,
+  PURCHASE_INVOICES,
+  TRANSACTIONS,
+} = require("../constants/entities");
+const Purchase = require("../models/purchase.model");
+const Transaction = require("../models/transaction.model");
+const { getPaginationParams } = require("./crud.helper");
 
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      num: item.num,
-      date: new Date(item.date).toLocaleDateString(),
-      totalTax: item.totalTax.toFixed(2),
-      grandTotal: (item.totalTax + item.total).toFixed(2),
-      status: (item?.status || "").toLocaleUpperCase(),
-    }),
-  },
-  transactions: {
-    header: {
-      type: "Type",
-      amount: "Amount",
-      relatedTo: "Related To",
-      createdAt: "Done at",
-      num: "Num",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      num: item.doc?.num,
-      type: item?.docModel,
-      relatedTo: item?.party?.name || item.doc?.description || "",
-      amount: (item.total + item.totalTax).toFixed(2),
-      createdAt: new Date(item.createdAt).toISOString().split("T")[0],
-    }),
-  },
-  gstr1: {
-    header: {
-      gstNo: "Party GST No",
-      partyName: "Party Name",
-      date: "Invoice Date",
-      num: "Invoice No.",
-      cgst: "CGST",
-      sgst: "SGST",
-      igst: "IGST",
-      grandTotal: "Grand Total",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      num: item.num,
-      date: new Date(item.date).toLocaleDateString(),
-      gstNo: item.party?.gstNo,
-      cgst: item.cgst.toFixed(2),
-      sgst: item.sgst.toFixed(2),
-      igst: item.igst.toFixed(2),
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
-    }),
-  },
-  gstr2: {
-    header: {
-      gstNo: "Party GST No",
-      partyName: "Party Name",
-      num: "Invoice no",
-      date: "Purchase Date",
-      cgst: "IGST",
-      sgst: "IGST",
-      igst: "IGST",
-      grandTotal: "Grand Total",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      num: item.num,
-      gstNo: item.party?.gstNo,
-      date: new Date(item.date).toLocaleDateString(),
-      cgst: item.cgst.toFixed(2),
-      sgst: item.sgst.toFixed(2),
-      igst: item.igst.toFixed(2),
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
-    }),
-  },
-};
 exports.makeReportExcelBuffer = async ({ reportData, reportType }) => {
   const { bodyMapper, header } = reportDataByType[reportType];
   const reportItems = reportData.map(bodyMapper);
@@ -135,4 +36,44 @@ exports.makeReportExcelBuffer = async ({ reportData, reportType }) => {
   });
   const excelBuffer = await wb.writeToBuffer();
   return excelBuffer;
+};
+
+exports.getReportForBill = async ({ req, reportType }) => {
+  const saleFilterProps = {
+    model: Invoice,
+    modelName: INVOICES,
+  };
+  const purchaseFilterProps = {
+    model: Purchase,
+    modelName: PURCHASE_INVOICES,
+  };
+  const transactionFilterProps = {
+    model: Transaction,
+    modelName: TRANSACTIONS,
+  };
+  const reportTypes = {
+    sale: saleFilterProps,
+    purchase: purchaseFilterProps,
+    gstr1: saleFilterProps,
+    gstr2: purchaseFilterProps,
+    transactions: transactionFilterProps,
+  };
+  const paginationProps = reportTypes[reportType];
+  if (!paginationProps) throw new Error("Report type not found");
+
+  const Model = paginationProps.model;
+  const filter = await getPaginationParams({
+    req,
+    shouldPaginate: false,
+    ...paginationProps,
+  });
+  let query = Model.find(filter).sort({ createdAt: -1 }).populate("party");
+  switch (reportType) {
+    case "transactions":
+      query = query.populate("doc");
+      break;
+    default:
+      break;
+  }
+  return query;
 };
