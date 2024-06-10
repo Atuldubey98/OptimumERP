@@ -27,6 +27,7 @@ import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
 import PeriodSelect from "./PeriodSelect";
+import moment from "moment";
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
@@ -161,7 +162,7 @@ export default function DashboardPage() {
                       statusList={invoiceStatusList}
                     />
                   ),
-                  date: new Date(invoice.date).toLocaleDateString(),
+                  date: moment(invoice.date).format("DD-MM-YYYY"),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/invoices`)}
@@ -183,7 +184,7 @@ export default function DashboardPage() {
                       statusList={purchaseStatusList}
                     />
                   ),
-                  date: new Date(purchase.date).toLocaleDateString(),
+                  date: moment(purchase.date).format("DD-MM-YYYY"),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/purchases`)}
@@ -201,7 +202,7 @@ export default function DashboardPage() {
                   status: (
                     <Status status={quote.status} statusList={statusList} />
                   ),
-                  date: new Date(quote.date).toLocaleDateString(),
+                  date: moment(quote.date).format("DD-MM-YYYY"),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/estimates`)}

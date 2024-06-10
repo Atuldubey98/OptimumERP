@@ -5,17 +5,17 @@ import {
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Link as ReactRouterLink,
   useNavigate,
   useParams,
 } from "react-router-dom";
 import { purchaseStatusList } from "../../../constants/purchase";
-import SettingContext from "../../../contexts/SettingContext";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import instance from "../../../instance";
 import AlertModal from "../../common/AlertModal";
 import MainLayout from "../../common/main-layout";
@@ -26,7 +26,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import PayoutModal from "./PayoutModal";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 export default function PurchasePage() {
   const {
     items: purchases,
@@ -41,9 +41,7 @@ export default function PurchasePage() {
     entity: "purchases",
   });
   const loading = status === "loading";
-  const settingContext = useContext(SettingContext);
-  const transactionPrefixInvoice =
-    settingContext?.setting?.transactionPrefix.purchase || "";
+
   const { symbol } = useCurrentOrgCurrency();
 
   const navigate = useNavigate();
@@ -58,7 +56,7 @@ export default function PurchasePage() {
     ),
     ...purchase,
     num: purchase.num,
-    date: new Date(purchase.date).toISOString().split("T")[0],
+    date: moment(purchase.date).format("DD-MM-YYYY"),
     grandTotal: `${symbol} ${(purchase.total + purchase.totalTax).toFixed(2)}`,
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
   });

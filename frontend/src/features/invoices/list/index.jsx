@@ -24,6 +24,7 @@ import TableDateFilter from "./TableDateFilter";
 import { isAxiosError } from "axios";
 import PrintOptionsModal from "../../common/PrintOptionsModal";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import moment from "moment";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -51,7 +52,7 @@ export default function InvoicesPage() {
       </ChakraLink>
     ),
     ...invoice,
-    date: new Date(invoice.date).toLocaleDateString(),
+    date: moment(invoice.date).format("DD-MM-YYYY"),
     grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });

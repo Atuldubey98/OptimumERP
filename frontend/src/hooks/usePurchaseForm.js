@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
+import moment from "moment";
 
 export default function usePurchaseForm({ saveAndNew }) {
   const [status, setStatus] = useState("idle");
@@ -40,7 +41,7 @@ export default function usePurchaseForm({ saveAndNew }) {
     initialValues: {
       num: "",
       billingAddress: "",
-      date: new Date(Date.now()).toISOString().split("T")[0],
+      date: moment().format("YYYY-MM-DD"),
       status: "unpaid",
       items: [defaultInvoiceItem],
       description: "",

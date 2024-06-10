@@ -3,7 +3,7 @@ import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
 import useQuery from "./useQuery";
-
+import moment from 'moment';
 export default function useDateFilterFetch({ entity }) {
   const [billItems, setBillItems] = useState({
     totalPages: 0,
@@ -20,12 +20,11 @@ export default function useDateFilterFetch({ entity }) {
     ? 1
     : parseInt(query.get("page"));
   const searchQuery = query.get("query");
-  const today = new Date();
-  const monthAgo = new Date(today);
-  monthAgo.setDate(today.getDate() - 30);
+  const today = moment();
+  const monthAgo = moment().subtract(30, "days");
   const [dateFilter, setDateFilter] = useState({
-    startDate: monthAgo.toISOString().split("T")[0],
-    endDate: today.toISOString().split("T")[0],
+    startDate: monthAgo.format("YYYY-MM-DD"),
+    endDate: today.format("YYYY-MM-DD"),
   });
   const fetchItems = requestAsyncHandler(async () => {
     setStatus("loading");

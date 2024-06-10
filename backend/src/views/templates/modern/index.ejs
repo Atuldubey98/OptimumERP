@@ -107,6 +107,7 @@
       <thead>
         <tr>
           <th>Item</th>
+          <th>UM</th>
           <th>GST</th>
           <th>HSN/SAC Code</th>
           <th>Quantity</th>
@@ -118,6 +119,7 @@
         <% items.forEach(item => { %>
         <tr>
           <td><%= item.name %></td>
+          <td><%= item.um %></td>
           <td><%= item.gst %></td>
           <td><%= item.code %></td>
           <td><%= item.quantity %></td>

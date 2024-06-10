@@ -25,6 +25,7 @@ import instance from "../../../instance";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import PrefixForm from "./PrefixForm";
 import { IoAdd } from "react-icons/io5";
+import moment from 'moment';
 function TransactionPopoverInstructions() {
   return (
     <Popover>
@@ -75,12 +76,8 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         quotation: data.data.transactionPrefix.quotation,
         proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
-        endDate: new Date(data.data.financialYear.end)
-          .toISOString()
-          .split("T")[0],
-        startDate: new Date(data.data.financialYear.start)
-          .toISOString()
-          .split("T")[0],
+        endDate: moment(data.data.financialYear.end).format('YYYY-MM-DD'),
+        startDate: moment(data.data.financialYear.start).format('YYYY-MM-DD'),
         prefixes: data.data.prefixes,
         localeCode: data.data.localeCode,
       });
