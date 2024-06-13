@@ -4,13 +4,10 @@ const errorHandler = require("./handlers/error.handler");
 const path = require("path");
 const morgan = require("morgan");
 const organizationRouter = require("./routes/org.routes");
-const { NODE_ENV, MONGO_URI } = require("./config");
-const { connectDatabase } = require("./helpers/db_helper");
+const { NODE_ENV } = require("./config");
 const sessionHandler = require("./handlers/session.handler");
 const corsHandler = require("./handlers/cors.handler");
 const app = express();
-
-connectDatabase(MONGO_URI);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));

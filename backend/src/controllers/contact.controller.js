@@ -6,6 +6,7 @@ const logger = require("../logger");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
+
 exports.createContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   body.org = req.params.orgId;
@@ -39,7 +40,6 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
     data: contacts,
   });
 });
-
 exports.updateContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   const updatedContact = await Contact.findOneAndUpdate(
