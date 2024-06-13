@@ -1,6 +1,9 @@
 const { isValidObjectId } = require("mongoose");
 const { purchaseOrderDto } = require("../dto/purchase_order.dto");
-const { PurchaseOrderNotFound } = require("../errors/purchase_order.error");
+const {
+  PurchaseOrderNotFound,
+  PurchaseOrderDuplicate,
+} = require("../errors/purchase_order.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const {
   saveBill,
@@ -25,6 +28,7 @@ exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
     Bill: PurchaseOrder,
     dto: purchaseOrderDto,
     NotFound: PurchaseOrderNotFound,
+    Duplicate: PurchaseOrderDuplicate,
     requestBody,
   });
   await OrgModel.updateOne(

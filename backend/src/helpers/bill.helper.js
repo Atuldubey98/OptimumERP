@@ -98,6 +98,7 @@ exports.saveBill = async ({
       break;
     case "invoice":
     case "proforma_invoice":
+    case "purchase_order":
     case "quotes":
       const prefix = setting.transactionPrefix[prefixType];
       const existingBill = await Bill.findOne({
