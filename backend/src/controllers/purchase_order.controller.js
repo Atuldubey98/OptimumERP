@@ -39,6 +39,19 @@ exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
   return res.status(201).json({ data: purchase, message: "Purchase created" });
 });
 
+exports.getPurchaseOrder = requestAsyncHandler(async (req, res) => {
+  if (!isValidObjectId(req.params.id)) throw new PurchaseOrderNotFound();
+  const purchaseOrder = await PurchaseOrder.findOne({
+    _id: req.params.id,
+    org: req.params.orgId,
+  })
+    .populate("party")
+    .populate("createdBy", "name email ")
+    .populate("updatedBy", "name email")
+    .populate("org", "name address ");
+  if (!purchaseOrder) throw new PurchaseOrderNotFound();
+  return res.status(200).json({ data: purchaseOrder });
+});
 exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {
   const { filter, limit, page, skip, total, totalPages } =
     await getPaginationParams({
