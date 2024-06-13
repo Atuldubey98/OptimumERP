@@ -6,3 +6,4 @@ module.exports = {
   NODE_MAILER_APP_PASSWORD: process.env.NODE_MAILER_APP_PASSWORD,
   NODE_MAILER_HOST: process.env.NODE_MAILER_HOST,
 };
+

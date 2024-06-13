@@ -14,7 +14,7 @@ const getUpiQrCodeByPrintSettings = async ({
 }) => {
   const upiUrl = `upi://pay?pa=${upi}&am=${grandTotal}`;
   const upiQr =
-    shouldPrintQr && bill.org.bank.upi ? await promiseQrCode(upiUrl) : null;
+    shouldPrintQr && upi ? await promiseQrCode(upiUrl) : null;
   return upiQr;
 };
 
@@ -154,8 +154,9 @@ exports.getNextSequence = async ({ Bill, org }) => {
     },
     { sequence: 1 },
     { sort: { sequence: -1 } }
-  ).select("sequence");
-  return bill ? bill.sequence + 1 : 1;
+  );
+  console.log({ bill });
+  return bill ? (bill?.sequence || 0) + 1 : 1;
 };
 
 exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
