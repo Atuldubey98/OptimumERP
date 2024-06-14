@@ -7,37 +7,20 @@ const {
   deleteContact,
 } = require("../controllers/contact.controller");
 const {
-  authenticate,
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
-const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 
 const contactRouter = Router({ mergeParams: true });
 contactRouter.post(
   "/",
-  authenticate,
-  checkOrgAuthorization,
   createModel,
   limitFreePlanOnCreateEntityForOrganization("contacts"),
   createContact
 );
-contactRouter.get("/:id", authenticate, checkOrgAuthorization, getContact);
-contactRouter.get("/", authenticate, checkOrgAuthorization, getContacts);
-contactRouter.patch(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  updateModel,
-  updateContact
-);
-contactRouter.delete(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  deleteContact
-);
+contactRouter.get("/:id", getContact);
+contactRouter.get("/", getContacts);
+contactRouter.patch("/:id", updateModel, updateContact);
+contactRouter.delete("/:id", deleteContact);
 
 module.exports = contactRouter;

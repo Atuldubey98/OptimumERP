@@ -81,8 +81,8 @@ export default function OrgPage() {
       name: "Gold Plan",
     },
     platinum: {
-      description: "This has numerous benefits",
-      name: "Platinum Plan",
+      description: "This is platinum plan",
+      name: "Gold Plan",
     },
   };
   const popup = plansPopup[currentPlan];

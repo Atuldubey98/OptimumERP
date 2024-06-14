@@ -16,13 +16,16 @@ import {
   PopoverTrigger,
   Skeleton,
   Stack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import currencies from "../../../assets/currency.json";
 import instance from "../../../instance";
 import { IoIosHelpCircleOutline } from "react-icons/io";
-import localeCodes from "../../../constants/localeCodes";
+import PrefixForm from "./PrefixForm";
+import { IoAdd } from "react-icons/io5";
+import moment from 'moment';
 function TransactionPopoverInstructions() {
   return (
     <Popover>
@@ -53,8 +56,15 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           quotation: "",
           localeCode: "en-IN",
           proformaInvoice: "",
+          localeCode: "en-IN",
           startDate: "",
           endDate: "",
+          prefixes: {
+            invoice: [""],
+            quotation: [""],
+            purchaseOrder: [""],
+            proformaInvoice: [""],
+          },
         });
         printFormik.setValues({ bank: false, upiQr: false });
         return;
@@ -70,12 +80,10 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         localeCode: data.data.localeCode || "en-IN",
         proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
-        endDate: new Date(data.data.financialYear.end)
-          .toISOString()
-          .split("T")[0],
-        startDate: new Date(data.data.financialYear.start)
-          .toISOString()
-          .split("T")[0],
+        endDate: moment(data.data.financialYear.end).format('YYYY-MM-DD'),
+        startDate: moment(data.data.financialYear.start).format('YYYY-MM-DD'),
+        prefixes: data.data.prefixes,
+        localeCode: data.data.localeCode,
       });
       printFormik.setValues(data.data.printSettings);
     })();
@@ -83,13 +91,23 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   const currencyCodes = Object.keys(currencies);
 
   const currencyOptions = currencyCodes.map((currency) => ({
-    label: `${currency} - ${currencies[currency].symbol}`,
+    label: `${currencies[currency].name} (${currency})-${currencies[currency].symbol}`,
     value: currency,
   }));
-  const localeCodeOptions = localeCodes.map((localeCode) => ({
-    label: `${localeCode.country} [${localeCode.locale}]`,
-    value: localeCode.locale,
-  }));
+  const getPrefixOptions = (prefixType) =>
+    formik.values.prefixes[prefixType].map((prefix) => ({
+      value: prefix,
+      label: prefix || "NONE",
+    }));
+  const invoicePrefixOptions = getPrefixOptions("invoice");
+  const quotationPrefixOptions = getPrefixOptions("quotation");
+  const proformaInvoicePrefixOptions = getPrefixOptions("proformaInvoice");
+  const [currentSelectedPrefix, setCurrentSelectedPrefix] = useState("invoice");
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const onOpenPrefixForm = (prefixType) => {
+    setCurrentSelectedPrefix(prefixType);
+    onOpen();
+  };
   return (
     <Stack spacing={6}>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -99,70 +117,84 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={3}>
-            <Flex gap={2}>
-              <FormControl isDisabled={!formik.values.organization}>
-                <FormLabel>Currency</FormLabel>
-                <Select
-                  name="currency"
-                  value={currencyOptions.find(
-                    (currencyOption) =>
-                      currencyOption.value === formik.values.currency
-                  )}
-                  options={currencyOptions}
-                  onChange={({ value }) => {
-                    formik.setFieldValue("currency", value);
-                  }}
-                />
-              </FormControl>
-              <FormControl isDisabled={!formik.values.organization}>
-                <FormLabel>Locale Code</FormLabel>
-                <Select
-                  name="localeCode"
-                  value={localeCodeOptions.find(
-                    (localeCode) =>
-                      localeCode.value === formik.values.localeCode
-                  )}
-                  onChange={({ value }) => {
-                    formik.setFieldValue("localeCode", value);
-                  }}
-                  options={localeCodeOptions}
-                />
-              </FormControl>
-            </Flex>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Invoice Prefix</FormLabel>
-              <Input
-                name="invoice"
-                value={formik.values.invoice}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
+              <FormLabel>Currency</FormLabel>
+              <Select
+                name="currency"
+                value={currencyOptions.find(
+                  (currencyOption) =>
+                    currencyOption.value === formik.values.currency
+                )}
+                options={currencyOptions}
+                onChange={({ value }) => {
+                  formik.setFieldValue("currency", value);
+                  const localeCode = currencies[value].localeCode;
+                  formik.setFieldValue("localeCode", localeCode);
+                }}
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Quotation Prefix</FormLabel>
-              <Input
-                name="quotation"
-                value={formik.values.quotation}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
+              <FormLabel>
+                Invoice Prefix{" "}
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("invoice")}
+                />
+              </FormLabel>
+              <Select
+                onChange={({ value }) => {
+                  formik.setFieldValue("invoice", value);
+                }}
+                options={invoicePrefixOptions}
+                value={invoicePrefixOptions.find(
+                  (prefixOption) => prefixOption.value === formik.values.invoice
+                )}
               />
             </FormControl>
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Proforma Invoice Prefix</FormLabel>
-              <Input
+              <FormLabel>
+                Quotation Prefix{" "}
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("quotation")}
+                />
+              </FormLabel>
+
+              <Select
+                onChange={({ value }) => {
+                  formik.setFieldValue("quotation", value);
+                }}
+                options={quotationPrefixOptions}
+                value={quotationPrefixOptions.find(
+                  (prefixOption) =>
+                    prefixOption.value === formik.values.quotation
+                )}
+              />
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>
+                Proforma Invoice Prefix{" "}
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("proformaInvoice")}
+                />
+              </FormLabel>
+              <Select
+                onChange={({ value }) =>
+                  formik.setFieldValue("proformaInvoice", value)
+                }
                 name="proformaInvoice"
-                value={formik.values.proformaInvoice}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
-              />
-            </FormControl>
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Purchase Order Prefix</FormLabel>
-              <Input
-                name="purchaseOrder"
-                value={formik.values.purchaseOrder}
-                onChange={formik.handleChange}
-                placeholder="ABC-ORG/23-24/XXXX"
+                options={proformaInvoicePrefixOptions}
+                value={proformaInvoicePrefixOptions.find(
+                  (prefixOption) =>
+                    prefixOption.value === formik.values.proformaInvoice
+                )}
               />
             </FormControl>
             <Box>
@@ -210,6 +242,12 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           </Flex>
         </form>
       </Skeleton>
+      <PrefixForm
+        isOpen={isOpen}
+        onClose={onClose}
+        formik={formik}
+        currentSelectedPrefix={currentSelectedPrefix}
+      />
     </Stack>
   );
 }

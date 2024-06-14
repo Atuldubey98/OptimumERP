@@ -10,6 +10,8 @@ const itemSchema = Joi.object({
   
 const purchaseOrderDto = Joi.object({
   party: Joi.string().required().label("Party"),
+  org: Joi.string().required().label("Party"),
+  sequence : Joi.number().required(),
   discount: Joi.number()
     .default(0)
     .label("Discount")

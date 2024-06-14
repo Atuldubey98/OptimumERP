@@ -1,190 +1,163 @@
 const { isValidObjectId } = require("mongoose");
 const { purchaseOrderDto } = require("../dto/purchase_order.dto");
-const { OrgNotFound } = require("../errors/org.error");
-const { PartyNotFound } = require("../errors/party.error");
-const { PurchaseNotFound } = require("../errors/purchase.error");
 const {
-  PurchaseOrderDuplicate,
   PurchaseOrderNotFound,
+  PurchaseOrderDuplicate,
 } = require("../errors/purchase_order.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
+const {
+  saveBill,
+  deleteBill,
+  getNextSequence,
+  getBillDetail,
+} = require("../helpers/bill.helper");
+const logger = require("../logger");
 const OrgModel = require("../models/org.model");
-const Party = require("../models/party.model");
 const PurchaseOrder = require("../models/purchase_order.model");
-const Setting = require("../models/settings.model");
-const Transaction = require("../models/transaction.model");
-const { getTotalAndTax } = require("./quotes.controller");
-const { ToWords } = require("to-words");
-const currencies = require("../constants/currencies");
-const taxRates = require("../constants/gst");
-const ums = require("../constants/um");
-const wkhtmltopdf = require("wkhtmltopdf");
-const ejs = require("ejs");
-const path = require("path");
+const {
+  renderHtml,
+  sendHtmlToPdfResponse,
+} = require("../helpers/render_engine.helper");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const entities = require("../constants/entities");
 
 exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
-  const body = await purchaseOrderDto.validateAsync(req.body);
-  const { total, totalTax, cgst, sgst, igst } = getTotalAndTax(body.items);
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const purchase = await saveBill({
+    Bill: PurchaseOrder,
+    dto: purchaseOrderDto,
+    NotFound: PurchaseOrderNotFound,
+    Duplicate: PurchaseOrderDuplicate,
+    requestBody,
   });
-  if (!setting) throw new OrgNotFound();
-  const party = await Party.findOne({
-    _id: body.party,
-    org: req.params.orgId,
-  });
-  if (!party) throw new PartyNotFound();
-  const existingPo = await PurchaseOrder.findOne({
-    org: req.params.orgId,
-    poNo: body.poNo,
-    financialYear: setting.financialYear,
-  });
-  if (existingPo) throw new PurchaseOrderDuplicate(body.poNo);
-  const transactionPrefix = setting.transactionPrefix.purchaseOrder || "";
-  const purchaseOrder = new PurchaseOrder({
-    org: req.params.orgId,
-    ...body,
-    total,
-    totalTax,
-    num: transactionPrefix + body.poNo,
-    financialYear: setting.financialYear,
-    sgst,
-    cgst,
-    igst,
-  });
-  await purchaseOrder.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.purchaseOrders": 1 } }
   );
-  const transaction = new Transaction({
-    org: req.params.orgId,
-    createdBy: req.body.createdBy,
-    docModel: "purchase_order",
-    financialYear: setting.financialYear,
-    doc: purchaseOrder._id,
-    total,
-    totalTax,
-    party: body.party,
-    date: purchaseOrder.date,
-  });
-  await transaction.save();
-  return res
-    .status(201)
-    .json({ message: "Purchase order created !", data: purchaseOrder });
+  logger.info(`Purchase Invoice created ${purchase.id}`);
+  return res.status(201).json({ data: purchase, message: "Purchase created" });
 });
 
-exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {
-  const filter = {
+exports.getPurchaseOrder = requestAsyncHandler(async (req, res) => {
+  if (!isValidObjectId(req.params.id)) throw new PurchaseOrderNotFound();
+  const purchaseOrder = await PurchaseOrder.findOne({
+    _id: req.params.id,
     org: req.params.orgId,
-  };
-  const search = req.query.search;
-  if (search) {
-    filter.$text = { $search: search };
-  }
-
-  if (req.query.startDate && req.query.endDate) {
-    filter.date = {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    };
-  }
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  const pos = await PurchaseOrder.find(filter)
+  })
+    .populate("party")
+    .populate("createdBy", "name email ")
+    .populate("updatedBy", "name email")
+    .populate("org", "name address ");
+  if (!purchaseOrder) throw new PurchaseOrderNotFound();
+  return res.status(200).json({ data: purchaseOrder });
+});
+exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {
+  const { filter, limit, page, skip, total, totalPages } =
+    await getPaginationParams({
+      model: PurchaseOrder,
+      modelName: entities.PURCHASE_ORDERS,
+      req,
+    });
+  const purchaseOrders = await PurchaseOrder.find(filter)
     .sort({ createdAt: -1 })
     .populate("party")
     .populate("org")
     .skip(skip)
     .limit(limit)
     .exec();
-
-  const total = await PurchaseOrder.countDocuments(filter).exec();
-
-  const totalPages = Math.ceil(total / limit);
   return res.status(200).json({
-    data: pos,
+    data: purchaseOrders,
     page,
     limit,
     totalPages,
     total,
-    message: "POS retrieved successfully",
   });
 });
 
 exports.deletePurchaseOrder = requestAsyncHandler(async (req, res) => {
-  const po = await PurchaseOrder.findOneAndDelete({
-    org: req.params.orgId,
-    _id: req.params.id,
-  }).exec();
-  if (!po) throw new PurchaseNotFound();
+  const id = req.params.id;
+  if (!isValidObjectId(id)) throw new PurchaseOrderNotFound();
+  await deleteBill({
+    Bill: PurchaseOrder,
+    filter: {
+      _id: id,
+      org: req.params.orgId,
+    },
+    NotFound: PurchaseOrderNotFound,
+  });
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.purchaseOrders": -1 } }
-  ).exec();
-  await Transaction.findOneAndDelete({
-    docModel: "purchase_order",
-    org: req.params.orgId,
-    doc: req.params.id,
-  }).exec();
-  return res.status(200).json({ message: "Purchase order deleted" });
+  );
+  return res
+    .status(201)
+    .json({ data: purchase, message: "Purchase order deleted" });
 });
 
 exports.updatePurchaseOrder = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax, cgst, sgst, igst } = getTotalAndTax(req.body.items);
-  const body = await purchaseOrderDto.validateAsync(req.body);
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  }).select("transactionPrefix");
-  if (!setting) throw new OrgNotFound();
-  const updatedPo = await PurchaseOrder.findOneAndUpdate(
-    { _id: req.params.id, org: req.params.orgId },
-    {
-      ...body,
-      total,
-      num: setting.transactionPrefix.purchaseOrder + body.poNo,
-      totalTax,
-      sgst,
-      cgst,
-      igst,
-    }
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  await saveBill({
+    Bill: PurchaseOrder,
+    dto: purchaseOrderDto,
+    NotFound: PurchaseOrderNotFound,
+    requestBody,
+    billId: req.params.id,
+  });
+  await OrgModel.updateOne(
+    { _id: req.params.orgId },
+    { $inc: { "relatedDocsCount.purchaseOrders": 1 } }
   );
-  if (!updatedPo) throw new PurchaseOrderNotFound();
-  const updateTransaction = await Transaction.findOneAndUpdate(
-    {
-      org: req.params.orgId,
-      docModel: "purchase_order",
-      doc: updatedPo.id,
-    },
-    {
-      updatedBy: req.body.updatedBy,
-      total,
-      totalTax,
-      party: body.party,
-      num: setting.transactionPrefix.purchaseOrder + body.poNo,
-      date: updatedPo.date,
-    }
-  );
-  if (!updateTransaction) throw new PurchaseOrderNotFound();
-
-  return res.status(200).json({ message: "Purchase order updated" });
 });
 
 exports.getNextPurchaseOrderNumber = requestAsyncHandler(async (req, res) => {
-  const setting = await Setting.findOne({ org: req.params.orgId }).exec();
-  const po = await PurchaseOrder.findOne(
-    {
+  const nextSequence = await getNextSequence({
+    org: req.params.orgId,
+    Bill: PurchaseOrder,
+  });
+  return res.status(200).json({ data: nextSequence });
+});
+
+exports.viewPurchaseOrder = requestAsyncHandler(async (req, res) => {
+  const id = req.params.id;
+  if (!isValidObjectId(id)) throw new PurchaseOrderNotFound();
+  const filter = {
+    _id: id,
+    org: req.params.orgId,
+  };
+  const template = req.query.template || "simple";
+  const locationTemplate = `templates/${template}`;
+  const data = await getBillDetail({
+    Bill: PurchaseOrder,
+    filter,
+    NotFound: PurchaseOrderNotFound,
+  });
+  return res.render(locationTemplate, data);
+});
+
+exports.downloadPurchaseOrder = requestAsyncHandler(async (req, res) => {
+  const id = req.params.id;
+  if (!isValidObjectId(id)) throw new PurchaseNotFound();
+  const template = req.query.template || "simple";
+  const data = await getBillDetail({
+    Bill: PurchaseOrder,
+    filter: {
+      _id: id,
       org: req.params.orgId,
-      financialYear: setting.financialYear,
     },
-    { poNo: 1 },
-    { sort: { poNo: -1 } }
-  )
-    .select("poNo")
-    .exec();
-  return res.status(200).json({ data: po ? po.poNo + 1 : 1 });
+    NotFound: PurchaseOrderNotFound,
+  });
+  const pdfTemplateLocation = path.join(
+    __dirname,
+    `../views/templates/${template}/index.ejs`
+  );
+  const html = await renderHtml(pdfTemplateLocation, data);
+  sendHtmlToPdfResponse({
+    html,
+    res,
+    pdfName: `PurchaseOrder-${data.num}-${data.date}.pdf`,
+  });
 });
 
 exports.getPurchaseOrder = requestAsyncHandler(async (req, res) => {

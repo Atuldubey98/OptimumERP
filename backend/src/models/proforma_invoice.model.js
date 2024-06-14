@@ -102,7 +102,7 @@ const proformaInvoiceSchema = new Schema({
     default: "sent",
     enum: ["draft", "sent", "pending"],
   },
-  proformaInvoiceNo: {
+  sequence: {
     type: Number,
     required: true,
     min: 1,
@@ -110,6 +110,10 @@ const proformaInvoiceSchema = new Schema({
   num: {
     type: String,
     required: true,
+  },
+  prefix: {
+    type: String,
+    default: "",
   },
   financialYear: {
     type: {

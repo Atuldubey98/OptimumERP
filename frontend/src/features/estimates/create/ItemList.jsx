@@ -33,7 +33,7 @@ export default function ItemsList({ formik, defaultItem }) {
             colorScheme="blue"
             variant="outline"
           >
-            Add Field
+            Add Item
           </Button>
         </Box>
       )}

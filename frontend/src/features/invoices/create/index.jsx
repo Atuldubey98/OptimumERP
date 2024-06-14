@@ -32,6 +32,7 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import PrefixFormField from "../../common/PrefixFormField";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
@@ -117,26 +118,22 @@ export default function CreateInvoicePage() {
                   <FormControl
                     isRequired
                     isInvalid={
-                      formik.errors.invoiceNo && formik.touched.invoiceNo
+                      formik.errors.sequence && formik.touched.sequence
                     }
                   >
                     <FormLabel>Invoice No.</FormLabel>
                     <InputGroup>
-                      {transactionPrefix.invoice ? (
-                        <InputLeftAddon>
-                          {transactionPrefix.invoice}
-                        </InputLeftAddon>
-                      ) : null}
+                      <PrefixFormField formik={formik} prefixType={"invoice"} />
                       <NumberInputInteger
                         min={1}
                         formik={formik}
-                        name={"invoiceNo"}
+                        name={"sequence"}
                         onlyInt={true}
                       />
                     </InputGroup>
 
                     <FormErrorMessage>
-                      {formik.errors.invoiceNo}
+                      {formik.errors.sequence}
                     </FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />

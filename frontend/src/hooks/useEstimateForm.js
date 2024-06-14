@@ -9,7 +9,7 @@ import useAsyncCall from "./useAsyncCall";
 export default function useEstimateForm() {
   const [status, setStatus] = useState("idle");
   const quoteSchema = Yup.object().shape({
-    quoteNo: Yup.number().required("Quote number is required"),
+    sequence: Yup.number().required("Quote number is required"),
     party: Yup.string().required("Party is required"),
     billingAddress: Yup.string().required("Billing Address is required"),
     date: Yup.date().required("Date is required"),
@@ -22,7 +22,7 @@ export default function useEstimateForm() {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
-          code : Yup.string().optional(),
+          code: Yup.string().optional(),
           gst: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")
@@ -39,11 +39,12 @@ export default function useEstimateForm() {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      quoteNo: 1,
+      sequence: 1,
       date: new Date(Date.now()).toISOString().split("T")[0],
       billingAddress: "",
       status: "draft",
       items: [defaultQuoteItem],
+      prefix: "",
       terms: "Thanks for business !",
       description: "",
     },
@@ -81,9 +82,10 @@ export default function useEstimateForm() {
           party,
           billingAddress = "",
           terms,
-          quoteNo,
+          sequence,
           date,
           status,
+          prefix,
           items,
           description,
         } = data.data;
@@ -91,13 +93,15 @@ export default function useEstimateForm() {
           _id: data.data._id,
           party: party._id,
           terms,
+          prefix,
           billingAddress,
-          quoteNo,
+          sequence,
           date: new Date(date).toISOString().split("T")[0],
           status,
           items,
           description,
           partyDetails: party,
+          createdBy : data.data.createdBy._id
         });
         setStatus("success");
       } else {
@@ -105,7 +109,7 @@ export default function useEstimateForm() {
         const { data } = await instance.get(
           `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`
         );
-        formik.setFieldValue("quoteNo", data.data);
+        formik.setFieldValue("sequence", data.data);
         setStatus("success");
       }
     })();

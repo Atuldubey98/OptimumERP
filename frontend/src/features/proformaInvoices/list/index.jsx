@@ -184,7 +184,9 @@ export default function ProformaInvoicesPage() {
             }}
           />
         )}
-        <Pagination currentPage={currentPage} total={totalPages} />
+        {loading ? null : (
+          <Pagination currentPage={currentPage} total={totalPages} />
+        )}
       </Box>
       <AlertModal
         confirmDisable={proformaInvoiceStatus === "deleting"}

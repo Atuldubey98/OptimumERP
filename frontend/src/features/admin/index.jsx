@@ -332,7 +332,10 @@ export default function AdminPage() {
               <Flex justifyContent={"flex-end"} alignItems={"center"}>
                 {organization ? (
                   <Button
-                    isDisabled={currentPlan === "free" && orgUsers.length >= 5}
+                    isDisabled={
+                      currentPlan === "free" ||
+                      (currentPlan === "gold" && orgUsers.length >= 5)
+                    }
                     leftIcon={<IoAdd />}
                     colorScheme="blue"
                     onClick={() => {

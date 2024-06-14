@@ -1,163 +1,71 @@
-const { isValidObjectId, default: mongoose } = require("mongoose");
+const { isValidObjectId } = require("mongoose");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Quote = require("../models/quotes.model");
 const { QuoteNotFound, QuotationDuplicate } = require("../errors/quote.error");
-const { PartyNotFound } = require("../errors/party.error");
 const { quoteDto } = require("../dto/quotes.dto");
-const Party = require("../models/party.model");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
-const ejs = require("ejs");
-const wkhtmltopdf = require("wkhtmltopdf");
-const taxRates = require("../constants/gst");
-const ums = require("../constants/um");
-const currencies = require("../constants/currencies");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
-const { date } = require("joi");
 const OrgModel = require("../models/org.model");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const entitiesConfig = require("../constants/entities");
+const {
+  saveBill,
+  deleteBill,
+  getNextSequence,
+  getBillDetail,
+} = require("../helpers/bill.helper");
+const {
+  renderHtml,
+  sendHtmlToPdfResponse,
+} = require("../helpers/render_engine.helper");
 
-exports.getTotalAndTax = (items = []) => {
-  const total = items.reduce(
-    (prev, item) => prev + item.price * item.quantity,
-    0
-  );
-  let cgst = 0,
-    sgst = 0,
-    igst = 0;
-
-  const totalTax = items.reduce((prev, item) => {
-    const [typeOfGST, gstPercentage] = item.gst.split(":");
-    const taxPercentage = item.gst === "none" ? 0 : parseInt(gstPercentage);
-    const tax = prev + (item.price * item.quantity * taxPercentage) / 100;
-    cgst += typeOfGST === "GST" ? tax / 2 : 0;
-    sgst += typeOfGST === "GST" ? tax / 2 : 0;
-    igst += typeOfGST === "IGST" ? tax : 0;
-    return tax;
-  }, 0);
-  return {
-    total: parseFloat(total.toFixed(2)),
-    totalTax: parseFloat(totalTax.toFixed(2)),
-    cgst,
-    sgst,
-    igst,
-  };
-};
 exports.createQuote = requestAsyncHandler(async (req, res) => {
-  const body = await quoteDto.validateAsync(req.body);
-  const { total, totalTax, sgst, cgst, igst } = this.getTotalAndTax(
-    req.body.items
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const bill = await saveBill({
+    dto: quoteDto,
+    requestBody,
+    billType: "quotes",
+    Duplicate: QuotationDuplicate,
+    Bill: Quote,
   });
-  if (!setting) throw new OrgNotFound();
-  const party = await Party.findOne({
-    _id: body.party,
-    org: req.params.orgId,
-  });
-  if (!party) throw new PartyNotFound();
-  const existingQuotation = await Quote.findOne({
-    org: req.params.orgId,
-    quoteNo: body.quoteNo,
-    financialYear: setting.financialYear,
-  });
-  if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
-  const transactionPrefix = setting.transactionPrefix.quotation;
-
-  const newQuote = new Quote({
-    org: req.params.orgId,
-    ...body,
-    total,
-    totalTax,
-    num: transactionPrefix + body.quoteNo,
-    financialYear: setting.financialYear,
-    sgst,
-    cgst,
-    igst,
-  });
-  await newQuote.save();
-  const transaction = new Transaction({
-    org: req.params.orgId,
-    createdBy: req.body.createdBy,
-    docModel: "quotes",
-    financialYear: setting.financialYear,
-    doc: newQuote._id,
-    date: newQuote.date,
-    total,
-    totalTax,
-    party: body.party,
-  });
-  await transaction.save();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.quotes": 1 } }
   );
-  return res.status(201).json({ message: "Quote created !", data: newQuote });
+  return res.status(201).json({ message: "Quote created !", data: bill });
 });
 
 exports.updateQuote = requestAsyncHandler(async (req, res) => {
-  const { total, totalTax, sgst, igst, cgst } = this.getTotalAndTax(
-    req.body.items
-  );
-  const body = await quoteDto.validateAsync(req.body);
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const requestBody = req.body;
+  requestBody.org = req.params.orgId;
+  const billId = req.params.quoteId;
+  if (!isValidObjectId(billId)) throw new QuoteNotFound();
+
+  const bill = await saveBill({
+    dto: quoteDto,
+    requestBody,
+    billType: "quotes",
+    Duplicate: QuotationDuplicate,
+    NotFound: QuoteNotFound,
+    Bill: Quote,
+    billId,
   });
-  if (!setting) throw new OrgNotFound();
-  const transactionPrefix = setting.transactionPrefix.quotation;
-  const existingQuotation = await Quote.findOne({
-    org: req.params.orgId,
-    quoteNo: body.quoteNo,
-    _id: { $ne: req.params.quoteId },
-    financialYear: setting.financialYear,
-  });
-  if (existingQuotation) throw new QuotationDuplicate(existingQuotation.num);
-  const updatedQuote = await Quote.findOneAndUpdate(
-    { _id: req.params.quoteId, org: req.params.orgId },
-    {
-      ...body,
-      total,
-      num: transactionPrefix + body.quoteNo,
-      totalTax,
-      cgst,
-      igst,
-      sgst,
-    }
-  );
-  await Transaction.findOneAndUpdate(
-    {
-      org: req.params.orgId,
-      docModel: "quotes",
-      doc: updatedQuote.id,
-    },
-    {
-      updatedBy: req.body.updatedBy,
-      total,
-      totalTax,
-      party: body.party,
-      date: updatedQuote.date,
-    }
-  );
-  if (!updatedQuote) throw new QuoteNotFound();
-  return res.status(200).json({ message: "Quote updated !" });
+  return res.status(200).json({ message: "Quote updated !", data: bill });
 });
 
 exports.deleteQuote = requestAsyncHandler(async (req, res) => {
   const quoteId = req.params.quoteId;
   if (!isValidObjectId(quoteId)) throw new QuoteNotFound();
-  const quote = await Quote.findOneAndDelete({
-    _id: quoteId,
-    org: req.params.orgId,
+  await deleteBill({
+    Bill: Quote,
+    NotFound: QuoteNotFound,
+    billType: "quotes",
+    filter: { _id: quoteId, org: req.params.orgId },
   });
-  if (!quote) throw new QuoteNotFound();
-  const transaction = await Transaction.findOneAndDelete({
-    org: req.params.orgId,
-    docModel: "quotes",
-    doc: quoteId,
-  });
-  if (!transaction) throw new QuoteNotFound();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.quotes": -1 } }
@@ -166,40 +74,25 @@ exports.deleteQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getQuotes = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search;
-  if (search) {
-    filter.$text = { $search: search };
-  }
-
-  if (req.query.startDate && req.query.endDate) {
-    filter.date = {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    };
-  }
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  const quotesQuery = Quote.find(filter).populate("party").populate("org");
-
-  const totalCount = await Quote.countDocuments(filter);
-
-  const quotes = await quotesQuery
+  const { filter, limit, skip, page, total, totalPages } =
+    await getPaginationParams({
+      req,
+      model: Quote,
+      modelName: entitiesConfig.QUOTATION,
+    });
+  const quotes = await Quote.find(filter)
+    .populate("party")
+    .populate("org")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
     .exec();
-
   return res.status(200).json({
     data: quotes,
     page: page,
     limit: limit,
-    total: totalCount,
-    totalPages: Math.ceil(totalCount / limit),
+    total,
+    totalPages,
     message: "Quotes retrieved successfully",
   });
 });
@@ -217,148 +110,46 @@ exports.getQuote = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
-  const setting = await Setting.findOne({ org: req.params.orgId });
-  const quote = await Quote.findOne(
-    {
-      org: req.params.orgId,
-      financialYear: setting.financialYear,
-    },
-    { quoteNo: 1 },
-    { sort: { quoteNo: -1 } }
-  ).select("quoteNo");
-  return res.status(200).json({ data: quote ? quote.quoteNo + 1 : 1 });
+  const nextSequence = await getNextSequence({
+    org: req.params.orgId,
+    Bill: Quote,
+  });
+  return res.status(200).json({ data: nextSequence });
 });
 
 exports.viewQuote = requestAsyncHandler(async (req, res) => {
-  const quote = await Quote.findOne({
+  const filter = {
     _id: req.params.quoteId,
     org: req.params.orgId,
-  })
-    .populate("party")
-    .populate("createdBy", "name email _id")
-    .populate("org");
-  const grandTotal = quote.items.reduce(
-    (total, quoteItem) =>
-      total +
-      (quoteItem.price *
-        quoteItem.quantity *
-        (100 +
-          (quoteItem.gst === "none"
-            ? 0
-            : parseFloat(quoteItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const templateName = req.query.template || "simple";
-  const locationTemplate = `templates/${templateName}`;
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
-  });
-  const currencySymbol = currencies[setting.currency].symbol;
-  const items = quote.items.map(({ name, price, quantity, gst, um }) => ({
-    name,
-    quantity,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(
-      price *
-      quantity *
-      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-    ).toFixed(2)}`,
-  }));
-
-  const data = {
-    entity: quote,
-    num: quote.num,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    items,
-    bank: null,
-    grandTotalInWords: null,
-    upiQr: null,
-    currencySymbol,
-    total: `${currencySymbol} ${quote.total.toFixed(2)}`,
-    sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,
-    title: "Quotation",
-    billMetaHeading: "Estimate Information",
-    partyMetaHeading: "Estimate to",
   };
+  const template = req.query.template || "simple";
+  const locationTemplate = `templates/${template}`;
+  const data = await getBillDetail({
+    Bill: Quote,
+    filter,
+    NotFound: QuoteNotFound,
+  });
   return res.render(locationTemplate, data);
 });
 
 exports.downloadQuote = requestAsyncHandler(async (req, res) => {
-  const quote = await Quote.findOne({
-    _id: req.params.quoteId,
-    org: req.params.orgId,
-  })
-    .populate("party")
-    .populate("createdBy", "name email _id")
-    .populate("org");
-  const grandTotal = quote.items.reduce(
-    (total, quoteItem) =>
-      total +
-      (quoteItem.price *
-        quoteItem.quantity *
-        (100 +
-          (quoteItem.gst === "none"
-            ? 0
-            : parseFloat(quoteItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  const template = req.query.template || "simple";
+  const data = await getBillDetail({
+    Bill: Quote,
+    filter: {
+      _id: req.params.quoteId,
+      org: req.params.orgId,
+    },
   });
-  const currencySymbol = currencies[setting.currency].symbol;
-
-  const items = quote.items.map(({ name, price, quantity, gst, um, code }) => ({
-    name,
-    quantity,
-    code,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(
-      price *
-      quantity *
-      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-    ).toFixed(2)}`,
-  }));
-
-  const data = {
-    entity: quote,
-    num: quote.num,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    items,
-    bank: null,
-    upiQr: null,
-    currencySymbol,
-    total: `${currencySymbol} ${quote.total.toFixed(2)}`,
-    grandTotalInWords: null,
-    sgst: `${currencySymbol} ${quote.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${quote.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${quote.igst.toFixed(2)}`,
-    title: "Quotation",
-    billMetaHeading: "Estimate Information",
-    partyMetaHeading: "Estimate to",
-  };
-  const templateName = req.query.template || "simple";
-  const locationTemplate = path.join(
+  const pdfTemplateLocation = path.join(
     __dirname,
-    `../views/templates/${templateName}/index.ejs`
+    `../views/templates/${template}/index.ejs`
   );
-  ejs.renderFile(locationTemplate, data, (err, html) => {
-    if (err) throw err;
-    res.writeHead(200, {
-      "Content-Type": "application/pdf",
-      "Content-disposition": `attachment;filename=quote - ${quote.date}.pdf`,
-    });
-    wkhtmltopdf(html, {
-      enableLocalFileAccess: true,
-      pageSize: "A4",
-    }).pipe(res);
+  const html = await renderHtml(pdfTemplateLocation, data);
+  sendHtmlToPdfResponse({
+    html,
+    res,
+    pdfName: `Quotation-${data.num}-${data.date}.pdf`,
   });
 });
 
@@ -377,17 +168,18 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
       org: req.params.orgId,
       financialYear: setting.financialYear,
     },
-    { invoiceNo: 1 },
-    { sort: { invoiceNo: -1 } }
-  ).select("invoiceNo");
-  const invoiceNo = (invoice?.invoiceNo || 0) + 1;
-  const num = invoicePrefix + invoiceNo;
+    { sequence: 1 },
+    { sort: { sequence: -1 } }
+  ).select("sequence");
+  const sequence = (invoice?.sequence || 0) + 1;
+  const num = invoicePrefix + sequence;
   const date = new Date();
   const newInvoice = new Invoice({
     org: req.params.orgId,
     total: quote.total,
     num,
-    invoiceNo,
+    sequence,
+    prefix: invoicePrefix,
     totalTax: quote.totalTax,
     igst: quote.igst,
     sgst: quote.sgst,
@@ -412,6 +204,7 @@ exports.convertQuoteToInvoice = requestAsyncHandler(async (req, res) => {
     financialYear: setting.financialYear,
     doc: newInvoice._id,
     total: quote.total,
+    num: newInvoice.num,
     totalTax: quote.totalTax,
     party: quote.party._id,
     date: newInvoice.date,

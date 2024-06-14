@@ -4,7 +4,8 @@ const Product = require("../models/product.model");
 const { OrgNotFound } = require("../errors/org.error");
 const { ProductNotFound } = require("../errors/product.error");
 const OrgModel = require("../models/org.model");
-const Joi = require("joi");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const entitiesConfig = require("../constants/entities");
 exports.createProduct = requestAsyncHandler(async (req, res) => {
   const body = await createProductDto.validateAsync(req.body);
   const orgId = req.params.orgId;
@@ -40,31 +41,23 @@ exports.createManyProducts = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getAllProducts = requestAsyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search;
-  const category = req.query.category;
-  if (search) filter.$text = { $search: search };
-  if (category) filter.category = category;
+  const { filter, limit, page, skip, total, totalPages } =
+    await getPaginationParams({
+      req,
+      model: Product,
+      modelName: entitiesConfig.PRODUCTS,
+    });
   const products = await Product.find(filter)
     .skip(skip)
     .limit(limit)
     .sort({ createdAt: -1 })
     .populate("category")
     .exec();
-
-  const totalCount = await Product.countDocuments(filter).exec();
-  const totalPages = Math.ceil(totalCount / limit);
-
   return res.status(200).json({
     data: products,
     page,
     limit,
-    totalCount,
+    totalCount: total,
     totalPages,
     message: "Products retrieved successfully!",
   });

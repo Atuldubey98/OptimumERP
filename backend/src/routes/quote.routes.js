@@ -1,13 +1,12 @@
 const { Router } = require("express");
 const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
-const {
   createModel,
   updateModel,
   paginateModel,
 } = require("../middlewares/crud.middleware");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   createQuote,
   updateQuote,
@@ -25,60 +24,29 @@ const quoteRouter = Router({
 
 quoteRouter.post(
   "/",
-  authenticate,
   createModel,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("quotes"),
   createQuote
 );
 
-quoteRouter.get(
-  "/nextQuoteNo",
-  authenticate,
-  checkOrgAuthorization,
-  getNextQuotationNumber
-);
-quoteRouter.get("/:quoteId", authenticate, checkOrgAuthorization, getQuote);
+quoteRouter.get("/nextQuoteNo", getNextQuotationNumber);
+quoteRouter.get("/:quoteId", getQuote);
 
 quoteRouter.post(
   "/:quoteId/convertToInvoice",
-  authenticate,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("invoices"),
   convertQuoteToInvoice
 );
-quoteRouter.delete(
-  "/:quoteId",
-  authenticate,
-  checkOrgAuthorization,
-  deleteQuote
-);
-quoteRouter.get(
-  "/",
-  authenticate,
-  checkOrgAuthorization,
-  paginateModel,
-  getQuotes
-);
+quoteRouter.delete("/:quoteId", deleteQuote);
+quoteRouter.get("/", paginateModel, getQuotes);
 
 quoteRouter.patch(
   "/:quoteId",
-  authenticate,
   updateModel,
-  checkOrgAuthorization,
+
   updateQuote
 );
-quoteRouter.get(
-  "/:quoteId/view",
-  authenticate,
-  checkOrgAuthorization,
-  viewQuote
-);
-quoteRouter.get(
-  "/:quoteId/download",
-  authenticate,
-  checkOrgAuthorization,
-  downloadQuote
-);
+quoteRouter.get("/:quoteId/view", viewQuote);
+quoteRouter.get("/:quoteId/download", downloadQuote);
 
 module.exports = quoteRouter;

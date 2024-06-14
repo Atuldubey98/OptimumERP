@@ -1,9 +1,5 @@
 const { Router } = require("express");
 const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
-const {
-  authenticate,
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const {
@@ -20,45 +16,15 @@ const productRouter = Router({
   mergeParams: true,
 });
 
-productRouter.get("/", authenticate, checkOrgAuthorization, getAllProducts);
-productRouter.post(
-  "/bulk",
-  authenticate,
-  checkOrgAuthorization,
-  addManyProducts
-);
+productRouter.get("/", getAllProducts);
+productRouter.post("/bulk", createModel, addManyProducts);
 productRouter.post(
   "/",
-  authenticate,
   createModel,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("products"),
   createProduct
 );
-productRouter.post(
-  "/many",
-  authenticate,
-  createModel,
-  checkOrgAuthorization,
-  createManyProducts
-);
-productRouter.patch(
-  "/:productId",
-  authenticate,
-  updateModel,
-  checkOrgAuthorization,
-  updateProduct
-);
-productRouter.get(
-  "/:productId",
-  authenticate,
-  checkOrgAuthorization,
-  getProduct
-);
-productRouter.delete(
-  "/:productId",
-  authenticate,
-  checkOrgAuthorization,
-  deleteProduct
-);
+productRouter.patch("/:productId", updateModel, updateProduct);
+productRouter.get("/:productId", getProduct);
+productRouter.delete("/:productId", deleteProduct);
 module.exports = productRouter;

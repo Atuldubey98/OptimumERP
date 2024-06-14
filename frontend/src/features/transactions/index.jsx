@@ -52,27 +52,22 @@ export default function TransactionsPage() {
     {
       value: "invoice",
       label: "Invoice",
-      color: "green",
+      colorScheme: "green",
     },
     {
       value: "purchase",
       label: "Purchase",
-      color: "cyan",
+      colorScheme: "red",
     },
     {
       value: "quotes",
       label: "Quotation",
-      color: "yellow",
+      colorScheme: "yellow",
     },
     {
       value: "proforma_invoice",
       label: "Proforma Invoice",
-      color: "blue",
-    },
-    {
-      value: "purchase_order",
-      label: "Purchase Orders",
-      color: "red",
+      colorScheme: "purple",
     },
   ];
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
@@ -210,11 +205,11 @@ export default function TransactionsPage() {
             heading={`${partyName} - Transactions`}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
-              date: new Date(item.doc?.date).toLocaleDateString(),
-              totalItems: item.doc?.items.length,
-              status: item.doc?.status,
-              num: item.doc?.num || item.doc?.purchaseNo,
-              grandTotal: (item.total + item?.totalTax).toFixed(2),
+              date: new Date(item.doc.date).toLocaleDateString(),
+              totalItems: item.doc.items.length,
+              status: item.doc.status,
+              num: item.doc.num,
+              grandTotal: (item.total + item.totalTax).toFixed(2),
               type: (
                 <Tag
                   size={"md"}
@@ -222,14 +217,10 @@ export default function TransactionsPage() {
                   colorScheme={
                     typeOfTransactions.find(
                       (tranType) => tranType.value === item.docModel
-                    )?.color || "cyan"
+                    ).colorScheme || "cyan"
                   }
                 >
-                  <TagLabel>
-                    {typeOfTransactions.find(
-                      (tranType) => tranType.value === item.docModel
-                    )?.label || "TRANSACTION"}
-                  </TagLabel>
+                  <TagLabel>{item.docModel.toUpperCase()}</TagLabel>
                 </Tag>
               ),
             }))}

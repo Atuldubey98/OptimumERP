@@ -89,7 +89,7 @@ export default function ExpensesPage() {
     formik.setValues({
       amount: 0,
       category: "",
-      date: new Date().toISOString().split("T")[0],
+      date: moment().format("YYYY-MM-DD"),
       description: "",
     });
     formik.setTouched({
@@ -138,7 +138,7 @@ export default function ExpensesPage() {
               category: expense.category
                 ? expense.category.name
                 : "Miscellenous",
-              date: moment(expense.date).format("LL"),
+              date: moment(expense.date).format("DD-MM-YYYY"),
             }))}
             caption={`Total expenses found : ${totalCount}`}
             operations={expenses.map((expense) => (
@@ -185,7 +185,7 @@ export default function ExpensesPage() {
             disable={disable}
             item={{
               ...expenseSelected,
-              date: moment(expenseSelected.date).format("LL"),
+              date: moment(expenseSelected.date).format("DD-MM-YYYY"),
               amount: `${symbol} ${expenseSelected.amount}`,
               category: expenseSelected.category
                 ? expenseSelected.category.name

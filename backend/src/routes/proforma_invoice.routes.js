@@ -1,5 +1,8 @@
 const { Router } = require("express");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
@@ -19,65 +22,25 @@ const { updateModel, createModel } = require("../middlewares/crud.middleware");
 const proformaInvoiceRouter = Router({
   mergeParams: true,
 });
-proformaInvoiceRouter.get(
-  "/",
-  authenticate,
-  checkOrgAuthorization,
-  getProformaInvoices
-);
-proformaInvoiceRouter.get(
-  "/nextProformaInvoiceNo",
-  authenticate,
-  checkOrgAuthorization,
-  getNextProformaInvoiceNo
-);
-proformaInvoiceRouter.patch(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  updateModel,
-  updateProformaInvoice
-);
-proformaInvoiceRouter.get(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  getProformaInvoiceById
-);
+proformaInvoiceRouter.get("/", getProformaInvoices);
+proformaInvoiceRouter.get("/nextProformaInvoiceNo", getNextProformaInvoiceNo);
+proformaInvoiceRouter.patch("/:id", updateModel, updateProformaInvoice);
+proformaInvoiceRouter.get("/:id", getProformaInvoiceById);
 
 proformaInvoiceRouter.post(
   "/:id/convertToInvoice",
-  authenticate,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("invoices"),
   convertProformaToInvoice
 );
 proformaInvoiceRouter.post(
   "/",
-  authenticate,
-  checkOrgAuthorization,
   createModel,
   limitFreePlanOnCreateEntityForOrganization("proformaInvoices"),
   createProformaInvoice
 );
-proformaInvoiceRouter.delete(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  deleteProformaInvoice
-);
+proformaInvoiceRouter.delete("/:id", deleteProformaInvoice);
 
-proformaInvoiceRouter.get(
-  "/:id/view",
-  authenticate,
-  checkOrgAuthorization,
-  viewProformaInvoicce
-);
+proformaInvoiceRouter.get("/:id/view", viewProformaInvoicce);
 
-proformaInvoiceRouter.get(
-  "/:id/download",
-  authenticate,
-  checkOrgAuthorization,
-  downloadProformaInvoice
-);
+proformaInvoiceRouter.get("/:id/download", downloadProformaInvoice);
 module.exports = proformaInvoiceRouter;

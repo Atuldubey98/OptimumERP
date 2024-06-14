@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const {
-  authenticate,
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const {
@@ -9,71 +8,25 @@ const {
   updateModel,
 } = require("../middlewares/crud.middleware");
 const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
-const {
   createPurchaseOrder,
   getPurchaseOrders,
   getNextPurchaseOrderNumber,
-  getPurchaseOrder,
-  updatePurchaseOrder,
+  deletePurchaseOrder,
   viewPurchaseOrder,
   downloadPurchaseOrder,
-  deletePurchaseOrder,
 } = require("../controllers/purchase_order.controller");
+
 const purchaseOrderRouter = Router({ mergeParams: true });
 
 purchaseOrderRouter.post(
   "/",
-  authenticate,
-  checkOrgAuthorization,
   createModel,
   limitFreePlanOnCreateEntityForOrganization("purchaseOrders"),
   createPurchaseOrder
 );
-purchaseOrderRouter.get(
-  "/",
-  authenticate,
-  checkOrgAuthorization,
-  paginateModel,
-  getPurchaseOrders
-);
-purchaseOrderRouter.get(
-  "/nextPoNo",
-  authenticate,
-  checkOrgAuthorization,
-  getNextPurchaseOrderNumber
-);
-purchaseOrderRouter.get(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  getPurchaseOrder
-);
-purchaseOrderRouter.delete(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  deletePurchaseOrder
-);
-purchaseOrderRouter.patch(
-  "/:id",
-  authenticate,
-  checkOrgAuthorization,
-  updateModel,
-  updatePurchaseOrder
-);
-purchaseOrderRouter.get(
-  "/:id/view",
-  authenticate,
-  checkOrgAuthorization,
-  viewPurchaseOrder
-);
-purchaseOrderRouter.get(
-  "/:id/download",
-  authenticate,
-  checkOrgAuthorization,
-  downloadPurchaseOrder
-);
-
+purchaseOrderRouter.get("/nextPurchaseOrderNo", getNextPurchaseOrderNumber);
+purchaseOrderRouter.delete("/:id", deletePurchaseOrder);
+purchaseOrderRouter.get("/", paginateModel, getPurchaseOrders);
+purchaseOrderRouter.get("/:id/view", viewPurchaseOrder);
+purchaseOrderRouter.get("/:id/download", downloadPurchaseOrder);
 module.exports = purchaseOrderRouter;

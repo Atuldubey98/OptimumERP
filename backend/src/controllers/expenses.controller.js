@@ -1,10 +1,10 @@
 const {
   ExpenseCategoryNotDeleted,
+  ExpenseCategoryNotFound,
 } = require("../errors/expense_category.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const Expense = require("../models/expense.model");
 const ExpenseCategory = require("../models/expense_category");
-const mongoose = require("mongoose");
 const Transaction = require("../models/transaction.model");
 const Setting = require("../models/settings.model");
 const { OrgNotFound } = require("../errors/org.error");
@@ -12,14 +12,16 @@ const { ExpenseNotFound } = require("../errors/expense.error");
 const logger = require("../logger");
 const { expenseCategoryDto } = require("../dto/expense_category.dto");
 const OrgModel = require("../models/org.model");
-const { Types } = mongoose;
+const { expenseDto } = require("../dto/expense.dto");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const entitiesConfig = require("../constants/entities");
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
   const expense = await Expense.findOne({
     org: req.params.orgId,
     _id: req.params.expenseId,
   });
-  if (!expense) return res.status(404).json({ message: "Expense not found" });
+  if (!expense) throw new ExpenseNotFound();
   return res.status(200).json({ data: expense });
 });
 exports.getExpenseCategory = requestAsyncHandler(async (req, res) => {
@@ -27,16 +29,12 @@ exports.getExpenseCategory = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
     _id: req.params.categoryId,
   });
-  if (!expenseCategory)
-    return res.status(404).json({ message: "Expense not found" });
+  if (!expenseCategory) throw new ExpenseCategoryNotFound();
   return res.status(200).json({ data: expenseCategory });
 });
 exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
   const body = await expenseCategoryDto.validateAsync(req.body);
-  const category = await ExpenseCategory.create({
-    ...body,
-    org: req.params.orgId,
-  });
+  body.org = req.params.orgId;
   logger.info(`created expense category ${category.id}`);
   await OrgModel.updateOne(
     { _id: req.params.orgId },
@@ -45,6 +43,7 @@ exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
   return res.status(201).json(category);
 });
 exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {
+  if (!req.params.categoryId) throw new ExpenseCategoryNotFound();
   const category = await ExpenseCategory.findOneAndUpdate(
     {
       org: req.params.orgId,
@@ -56,7 +55,7 @@ exports.updateExpenseCategory = requestAsyncHandler(async (req, res) => {
     }
   );
   logger.info(`updated expense category ${category.id}`);
-
+  if (!category) throw new ExpenseCategoryNotFound();
   return res.status(200).json({ data: category });
 });
 exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
@@ -74,7 +73,7 @@ exports.deleteExpenseCategory = requestAsyncHandler(async (req, res) => {
     org: req.params.orgId,
     _id: req.params.categoryId,
   });
-  if (!category) throw new Error("Expense category not found");
+  if (!category) throw new ExpenseCategoryNotFound();
   logger.info(`deleted expense category ${category.id}`);
   await OrgModel.updateOne(
     { _id: req.params.orgId },
@@ -94,7 +93,9 @@ exports.getAllExpenseCategories = requestAsyncHandler(async (req, res) => {
 });
 
 exports.createExpense = requestAsyncHandler(async (req, res) => {
-  const expense = await Expense.create({ org: req.params.orgId, ...req.body });
+  const body = await expenseDto.validateAsync(req.body);
+  body.org = req.params.orgId;
+  const expense = await Expense.create(body);
   const setting = await Setting.findOne({
     org: req.params.orgId,
   });
@@ -117,43 +118,28 @@ exports.createExpense = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
-  const options = {
-    page: parseInt(page),
-    limit: parseInt(limit),
-    populate: "category",
-  };
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search || "";
-  const category = req.query.category || "";
-
-  if (search) filter.$text = { $search: search };
-  if (category) filter.category = category;
-  const totalCount = await Expense.countDocuments(filter);
-  const totalPages = Math.ceil(totalCount / limit);
-
+  const { skip, limit, filter, page, total, totalPages } =
+    await getPaginationParams({
+      req,
+      modelName: entitiesConfig.EXPENSES,
+      model: Expense,
+    });
   const expenses = await Expense.find(filter)
-    .skip((options.page - 1) * options.limit)
-    .limit(options.limit)
+    .skip(skip)
+    .limit(limit)
     .populate("category")
-
     .exec();
-
-  res.status(200).json({
+  return res.status(200).json({
     data: expenses,
-    currentPage: options.page,
-    totalCount,
+    currentPage: page,
+    totalCount: total,
     totalPages,
   });
 });
 
 exports.updateExpense = requestAsyncHandler(async (req, res) => {
   const { expenseId } = req.params;
-  if (!mongoose.isValidObjectId(expenseId)) {
-    return res.status(404).json({ message: "Invalid expense ID" });
-  }
+  if (!expenseId) throw new ExpenseNotFound();
   const updatedExpense = await Expense.findOneAndUpdate(
     { _id: expenseId, org: req.params.orgId },
     req.body,
@@ -172,15 +158,12 @@ exports.updateExpense = requestAsyncHandler(async (req, res) => {
   );
   if (!updatedExpense || !updateTransaction) throw new ExpenseNotFound();
   logger.info(`expense category updated ${updatedExpense.id}`);
-
   res.status(200).json(updatedExpense);
 });
 
 exports.deleteExpense = requestAsyncHandler(async (req, res) => {
   const { expenseId } = req.params;
-  if (!Types.ObjectId.isValid(expenseId)) {
-    return res.status(404).json({ message: "Invalid expense ID" });
-  }
+  if (!expenseId) throw new ExpenseNotFound();
   const deletedExpense = await Expense.findOneAndDelete({
     _id: expenseId,
     org: req.params.orgId,

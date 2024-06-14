@@ -27,7 +27,8 @@ import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
 import PeriodSelect from "./PeriodSelect";
-import moment from 'moment';
+import moment from "moment";
+
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState({
     invoiceThisMonth: 0,
@@ -161,7 +162,7 @@ export default function DashboardPage() {
                       statusList={invoiceStatusList}
                     />
                   ),
-                  date: moment(invoice.date).format("LL"),
+                  date: moment(invoice.date).format("DD-MM-YYYY"),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/invoices`)}
@@ -173,7 +174,7 @@ export default function DashboardPage() {
                 heading={"Recent Purchases"}
                 tableRows={dashboard.recentPurchases.map((purchase) => ({
                   _id: purchase._id,
-                  num: purchase.purchaseNo,
+                  num: purchase.num,
                   partyName: purchase.party.name,
                   total: purchase.total,
                   totalTax: purchase.totalTax,
@@ -183,7 +184,7 @@ export default function DashboardPage() {
                       statusList={purchaseStatusList}
                     />
                   ),
-                  date: moment(purchase.date).format("LL"),
+                  date: moment(purchase.date).format("DD-MM-YYYY"),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/purchases`)}
@@ -201,7 +202,7 @@ export default function DashboardPage() {
                   status: (
                     <Status status={quote.status} statusList={statusList} />
                   ),
-                  date: moment(quote.date).format("LL"),
+                  date: moment(quote.date).format("DD-MM-YYYY"),
                 }))}
                 tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
                 onViewMore={() => navigate(`/${orgId}/estimates`)}

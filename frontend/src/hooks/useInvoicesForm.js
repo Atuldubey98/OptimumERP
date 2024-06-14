@@ -10,7 +10,7 @@ import moment from 'moment';
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("idle");
   const invoiceSchema = Yup.object().shape({
-    invoiceNo: Yup.number()
+    sequence: Yup.number()
       .required("Invoice number is required")
       .label("Invoice Number"),
     party: Yup.string().required("Party is required").label("Party"),
@@ -49,11 +49,12 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const toast = useToast();
   const navigate = useNavigate();
   const defaultInvoice = {
-    invoiceNo: 1,
-    date: moment(new Date()).format("YYYY-MM-DD"),
+    sequence: 1,
+    date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultInvoiceItem],
     terms: "Thanks for business !",
+    prefix: "",
     description: "",
     poNo: "",
     billingAddress: "",
@@ -93,7 +94,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     const { data } = await instance.get(
       `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
     );
-    formik.setFieldValue("invoiceNo", data.data);
+    formik.setFieldValue("sequence", data.data);
     setStatus("success");
   });
   useEffect(() => {
@@ -107,7 +108,8 @@ export default function useInvoicesForm({ saveAndNew = false }) {
           const {
             party,
             terms,
-            invoiceNo,
+            sequence,
+            prefix,
             date,
             status,
             items,
@@ -120,8 +122,9 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             _id: data.data._id,
             party: party._id,
             terms,
-            invoiceNo,
-            date: moment(date).format("YYYY-MM-DD"),
+            sequence,
+            prefix,
+            date: new Date(date).toISOString().split("T")[0],
             status,
             partyDetails: party,
             items,
@@ -129,6 +132,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             poDate: poDate ? poDate.split("T")[0] : "",
             poNo,
             billingAddress,
+            createdBy: data.data.createdBy._id,
           });
           setStatus("success");
         })();

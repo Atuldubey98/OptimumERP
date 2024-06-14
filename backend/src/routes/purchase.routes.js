@@ -1,9 +1,9 @@
 const { Router } = require("express");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
-const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const {
-  checkOrgAuthorization,
-} = require("../middlewares/organization.middleware");
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
+const { createModel, updateModel } = require("../middlewares/crud.middleware");
+
 const {
   createPurchase,
   getPurchase,
@@ -21,49 +21,16 @@ const purchaseRouter = Router({
 
 purchaseRouter.post(
   "/",
-  authenticate,
   createModel,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("purchases"),
   createPurchase
 );
-purchaseRouter.get(
-  "/:purchaseId",
-  authenticate,
-  checkOrgAuthorization,
-  getPurchase
-);
-purchaseRouter.delete(
-  "/:purchaseId",
-  authenticate,
-  checkOrgAuthorization,
-  deletePurchase
-);
-purchaseRouter.get("/", authenticate, checkOrgAuthorization, getPurchases);
+purchaseRouter.get("/:purchaseId", getPurchase);
+purchaseRouter.delete("/:purchaseId", deletePurchase);
+purchaseRouter.get("/", getPurchases);
 
-purchaseRouter.patch(
-  "/:purchaseId",
-  authenticate,
-  updateModel,
-  checkOrgAuthorization,
-  updatePurchase
-);
-purchaseRouter.get(
-  "/:purchaseId/view",
-  authenticate,
-  checkOrgAuthorization,
-  viewPurchaseBill
-);
-purchaseRouter.get(
-  "/:purchaseId/download",
-  authenticate,
-  checkOrgAuthorization,
-  downloadPurchaseInvoice
-);
-purchaseRouter.post(
-  "/:purchaseId/payment",
-  authenticate,
-  checkOrgAuthorization,
-  payoutPurchase
-);
+purchaseRouter.patch("/:purchaseId", updateModel, updatePurchase);
+purchaseRouter.get("/:purchaseId/view", viewPurchaseBill);
+purchaseRouter.get("/:purchaseId/download", downloadPurchaseInvoice);
+purchaseRouter.post("/:purchaseId/payment", payoutPurchase);
 module.exports = purchaseRouter;

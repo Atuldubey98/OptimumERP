@@ -1,5 +1,8 @@
 const { Router } = require("express");
-const { authenticate, limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  authenticate,
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
@@ -23,34 +26,23 @@ const {
 
 const expenseRouter = Router({ mergeParams: true });
 
-expenseRouter.get(
-  "/",
-  authenticate,
-  checkOrgAuthorization,
-  paginateModel,
-  getAllExpenses
-);
+expenseRouter.get("/", paginateModel, getAllExpenses);
 
 expenseRouter.post(
   "/",
-  authenticate,
   createModel,
-  checkOrgAuthorization,
   limitFreePlanOnCreateEntityForOrganization("expenses"),
   createExpense
 );
 
 expenseRouter.get(
   "/categories",
-  authenticate,
-  checkOrgAuthorization,
+
   getAllExpenseCategories
 );
 
 expenseRouter.post(
   "/categories",
-  authenticate,
-  checkOrgAuthorization,
   createModel,
   limitFreePlanOnCreateEntityForOrganization("expenseCategories"),
   createExpenseCategory
@@ -58,41 +50,14 @@ expenseRouter.post(
 
 expenseRouter.patch(
   "/categories/:categoryId",
-  authenticate,
-  checkOrgAuthorization,
   updateModel,
   updateExpenseCategory
 );
 
-expenseRouter.get(
-  "/categories/:categoryId",
-  authenticate,
-  checkOrgAuthorization,
-  getExpenseCategory
-);
-expenseRouter.delete(
-  "/categories/:categoryId",
-  authenticate,
-  checkOrgAuthorization,
-  deleteExpenseCategory
-);
-expenseRouter.get(
-  "/:expenseId",
-  authenticate,
-  checkOrgAuthorization,
-  getExpense
-);
-expenseRouter.delete(
-  "/:expenseId",
-  authenticate,
-  checkOrgAuthorization,
-  deleteExpense
-);
-expenseRouter.patch(
-  "/:expenseId",
-  authenticate,
-  checkOrgAuthorization,
-  updateExpense
-);
+expenseRouter.get("/categories/:categoryId", getExpenseCategory);
+expenseRouter.delete("/categories/:categoryId", deleteExpenseCategory);
+expenseRouter.get("/:expenseId", getExpense);
+expenseRouter.delete("/:expenseId", deleteExpense);
+expenseRouter.patch("/:expenseId", updateExpense);
 
 module.exports = expenseRouter;

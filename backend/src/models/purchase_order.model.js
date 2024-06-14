@@ -22,9 +22,17 @@ const purchaseOrderSchema = new Schema(
       default: 0,
       required: true,
     },
-    poNo: {
+    sequence: {
       type: Number,
       required: true,
+    },
+    num: {
+      type: String,
+      required: true,
+    },
+    prefix: {
+      type: String,
+      default: "",
     },
     date: {
       type: Date,

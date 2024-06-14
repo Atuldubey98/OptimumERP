@@ -23,6 +23,9 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
+import { isAxiosError } from "axios";
+import PrintOptionsModal from "../../common/PrintOptionsModal";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import moment from "moment";
 export default function InvoicesPage() {
   const {
@@ -51,8 +54,7 @@ export default function InvoicesPage() {
       </ChakraLink>
     ),
     ...invoice,
-    invoiceNo: invoice.num,
-    date: moment(invoice.date).format("LL"),
+    date: moment(invoice.date).format("DD-MM-YYYY"),
     grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
@@ -164,7 +166,7 @@ export default function InvoicesPage() {
               />
             ))}
             selectedKeys={{
-              invoiceNo: "Invoice No.",
+              num: "Invoice No.",
               date: "Invoice Date",
               partyName: "Recipient",
               status: "Status",

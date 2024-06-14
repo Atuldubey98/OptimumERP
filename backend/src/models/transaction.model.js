@@ -21,7 +21,14 @@ const transactionSchema = new Schema(
     },
     docModel: {
       type: String,
-      enum: ["invoice", "purchase", "expense", "quotes", "proforma_invoice", "sale_order", "purchase_order"],
+      enum: [
+        "invoice",
+        "purchase",
+        "expense",
+        "quotes",
+        "proforma_invoice",
+        "purchase_order",
+      ],
       required: true,
     },
     total: {

@@ -1,19 +1,17 @@
 const { contactDto } = require("../dto/contact.dto");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const Party = require("../models/party.model");
-const { PartyNotFound } = require("../errors/party.error");
 const Contact = require("../models/contacts.model");
 const { ContactNotFound } = require("../errors/contact.error");
-const { isValidObjectId } = require("mongoose");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
+const { getPaginationParams } = require("../helpers/crud.helper");
+const entitiesConfig = require("../constants/entities");
+
 exports.createContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
-  if (body.party) {
-    const party = await Party.findById(body.party);
-    if (!party) throw new PartyNotFound();
-  }
-  const contact = await Contact.create({ ...body, org: req.params.orgId });
+  body.org = req.params.orgId;
+  const contact = new Contact(body);
+  await contact.save();
   logger.log("info", `Contact created with id ${contact.id}`);
   await OrgModel.updateOne(
     { _id: req.params.orgId },
@@ -23,21 +21,12 @@ exports.createContact = requestAsyncHandler(async (req, res) => {
 });
 
 exports.getContacts = requestAsyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const filter = {
-    org: req.params.orgId,
-  };
-  const search = req.query.search || "";
-  const type = req.query.type;
-  const party = req.query.party;
-  if (search) filter.$text = { $search: search };
-  if (type) filter.type = type;
-  if (isValidObjectId(party)) filter.party = party;
-  const totalContacts = await Contact.countDocuments(filter);
-  const totalPages = Math.ceil(totalContacts / limit);
-
-  const skip = (page - 1) * limit;
+  const { filter, page, limit, skip, total, totalPages } =
+    await getPaginationParams({
+      req,
+      model: Contact,
+      modelName: entitiesConfig.CONTACTS,
+    });
   const contacts = await Contact.find(filter)
     .populate("party")
     .sort({ createdAt: -1 })
@@ -47,11 +36,10 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
     currentPage: page,
     limit,
     totalPages,
-    total: totalContacts,
+    total,
     data: contacts,
   });
 });
-
 exports.updateContact = requestAsyncHandler(async (req, res) => {
   const body = await contactDto.validateAsync(req.body);
   const updatedContact = await Contact.findOneAndUpdate(
@@ -63,7 +51,6 @@ exports.updateContact = requestAsyncHandler(async (req, res) => {
   );
   if (!updatedContact) throw new ContactNotFound();
   logger.log("info", `Contact updated with id ${updatedContact.id}`);
-
   return res
     .status(200)
     .json({ data: updatedContact, message: "Contact updated" });
