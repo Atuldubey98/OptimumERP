@@ -82,7 +82,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         endDate: moment(data.data.financialYear.end).format('YYYY-MM-DD'),
         startDate: moment(data.data.financialYear.start).format('YYYY-MM-DD'),
         prefixes: data.data.prefixes,
-        localeCode: data.data.localeCode,
       });
       printFormik.setValues(data.data.printSettings);
     })();
