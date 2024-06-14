@@ -24,10 +24,10 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
         <Flex justifyContent={"flex-start"} gap={3} alignItems={"center"}>
           <Avatar size={"sm"} name={item.name} />
           <Box>
-            <Text fontSize={"md"} fontWeight={"bold"}>
+            <Text noOfLines={1} fontSize={"md"} fontWeight={"bold"}>
               {item.name}
             </Text>
-            <Link href={`tel:${item.telephone}`}>{item.telephone}</Link>
+            <Link noOfLines={1} href={`tel:${item.telephone}`}>{item.telephone}</Link>
           </Box>
         </Flex>
       </CardHeader>
@@ -41,7 +41,7 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
             "-Not-set-"
           )}
         </Text>
-        <Text>
+        <Text noOfLines={1}>
           <strong>Company Name :</strong>{" "}
           {item.party ? (
             <Link
@@ -54,16 +54,17 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
             "-Not-set-"
           )}
         </Text>
-        <Text>
+        <Text noOfLines={1}>
           {contactTypes.find((contactType) => contactType.value === item.type)
             .label || "Unknown Type"}
         </Text>
       </CardBody>
       <CardFooter>
         <ButtonGroup justifyContent={"flex-end"} alignItems={"center"}>
-          <IconButton size={"sm"} icon={<CiEdit />} onClick={onEditContact} />
+          <IconButton isRound size={"sm"} icon={<CiEdit />} onClick={onEditContact} />
           <IconButton
             size={"sm"}
+            isRound
             icon={<RiDeleteBin2Line color="red" />}
             onClick={onDeleteContact}
           />

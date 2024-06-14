@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import MainLayout from "../common/main-layout";
 import ReportItem from "./ReportItem";
 import SideReportDrawer from "./SideReportDrawer";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 export default function Reportspage() {
   const {
     isOpen: isMenuOpen,
@@ -32,7 +33,19 @@ export default function Reportspage() {
             </Heading>
           </Flex>
         </Box>
-        {reportName ? <ReportItem /> : null}
+        {reportName ? (
+          <ReportItem />
+        ) : (
+          <Flex
+            h={"50svh"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDir={"column"}
+          >
+            <HiOutlineDocumentReport size={65} />
+            <Heading fontSize={"xl"}>Report not found</Heading>
+          </Flex>
+        )}
       </Box>
       <SideReportDrawer isOpen={isMenuOpen} onClose={closeMenu} />
     </MainLayout>

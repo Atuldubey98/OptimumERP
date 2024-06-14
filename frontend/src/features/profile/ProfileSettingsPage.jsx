@@ -55,7 +55,7 @@ export default function ProfileSettingsPage() {
                 alignItems={"center"}
                 justifyContent={"flex-end"}
               >
-                <IconButton icon={<AiFillEdit />} onClick={onOpen} />
+                <IconButton isRound icon={<AiFillEdit />} onClick={onOpen} />
               </Flex>
             }
           >

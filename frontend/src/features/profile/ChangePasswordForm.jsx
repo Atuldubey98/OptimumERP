@@ -97,7 +97,7 @@ export default function ChangePasswordForm() {
         </FormControl>
       </Stack>
       <Flex justifyContent={"center"} alignItems={"center"}>
-        <Button type="submit" colorScheme="blue" isLoading={isSubmitting}>
+        <Button size={"sm"} type="submit" colorScheme="blue" isLoading={isSubmitting}>
           Update password
         </Button>
       </Flex>

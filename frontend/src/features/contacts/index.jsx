@@ -8,6 +8,7 @@ import {
   Grid,
   useDisclosure,
   useToast,
+  Button,
 } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
@@ -122,8 +123,7 @@ export default function ContactsPage() {
       setDeleting(false);
     }
   };
-  const { disable, currentEntityLimit, currentUserEntityLimit } =
-    useLimitsInFreePlan({ key: "contacts" });
+  const { disable } = useLimitsInFreePlan({ key: "contacts" });
   return (
     <MainLayout>
       <Box p={4}>
