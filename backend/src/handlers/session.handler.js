@@ -9,7 +9,6 @@ const sessionOptions = {
   saveUninitialized: true,
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
-    ttl: 14 * 24 * 60 * 60,
   }),
 };
 

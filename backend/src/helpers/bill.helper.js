@@ -155,7 +155,6 @@ exports.getNextSequence = async ({ Bill, org }) => {
     { sequence: 1 },
     { sort: { sequence: -1 } }
   );
-  console.log({ bill });
   return bill ? (bill?.sequence || 0) + 1 : 1;
 };
 

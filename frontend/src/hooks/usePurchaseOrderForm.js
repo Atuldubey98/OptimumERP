@@ -86,7 +86,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/purchaseOrders/nextPoNo`
+      `/api/v1/organizations/${orgId}/purchaseOrders/nextPurchaseOrderNo`
     );
     formik.setFieldValue("poNo", data.data);
     setStatus("success");

@@ -54,7 +54,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           invoice: "",
           currency: "INR",
           quotation: "",
-          localeCode: "en-IN",
           proformaInvoice: "",
           localeCode: "en-IN",
           startDate: "",

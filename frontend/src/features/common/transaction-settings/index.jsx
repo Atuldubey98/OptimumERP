@@ -57,7 +57,6 @@ export default function TransactionSettingsPage() {
       proformaInvoice: "",
       localeCode: "en-IN",
       currency: "INR",
-      localeCode: "en-IN",
       startDate: "",
       endDate: "",
       prefixes: {
