@@ -13,6 +13,8 @@ const ProformaInvoice = require("../models/proforma_invoice.model");
 const OrgModel = require("../models/org.model");
 const { getPaginationParams } = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
+const xl = require("excel4node");
+
 exports.createParty = requestAsyncHandler(async (req, res) => {
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
@@ -326,7 +328,7 @@ exports.downloadPartyTransactions = requestAsyncHandler(async (req, res) => {
       _id: item._id,
       num: item.doc?.num || item.doc?.purchaseNo || "",
       type: item?.docModel,
-      relatedTo: item?.party?.name || item.doc?.description || "",
+      relatedTo: item?.doc?.party?.name || item.doc?.description || "",
       totalTax: (item.totalTax || 0).toFixed(2),
       amount: (item.total + item.totalTax).toFixed(2),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],

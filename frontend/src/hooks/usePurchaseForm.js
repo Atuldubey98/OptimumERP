@@ -55,11 +55,11 @@ export default function usePurchaseForm({ saveAndNew }) {
       const { _id, autoItems, ...purchase } = values;
       const items = values.items.map(({ _id, ...item }) => item);
       if (!_id && values.autoItems) {
-        await instance.post(`/api/v1/organizations/${orgId}/products/many`, {
+        await instance.post(`/api/v1/organizations/${orgId}/products/bulk`, {
           items: items.map((item) => ({
             name: item.name,
             costPrice: item.price,
-            sellingPrice: item.sellingPrice,
+            sellingPrice: item.price,
             description: "",
             um: item.um,
             type: "goods",

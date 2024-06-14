@@ -5,7 +5,6 @@ const {
 const {
   createModel,
   paginateModel,
-  updateModel,
 } = require("../middlewares/crud.middleware");
 const {
   createPurchaseOrder,
@@ -14,6 +13,8 @@ const {
   deletePurchaseOrder,
   viewPurchaseOrder,
   downloadPurchaseOrder,
+  getPurchaseOrder,
+  updatePurchaseOrder,
 } = require("../controllers/purchase_order.controller");
 
 const purchaseOrderRouter = Router({ mergeParams: true });
@@ -24,8 +25,11 @@ purchaseOrderRouter.post(
   limitFreePlanOnCreateEntityForOrganization("purchaseOrders"),
   createPurchaseOrder
 );
+
 purchaseOrderRouter.get("/nextPurchaseOrderNo", getNextPurchaseOrderNumber);
 purchaseOrderRouter.delete("/:id", deletePurchaseOrder);
+purchaseOrderRouter.get("/:id", getPurchaseOrder);
+purchaseOrderRouter.patch("/:id", updatePurchaseOrder);
 purchaseOrderRouter.get("/", paginateModel, getPurchaseOrders);
 purchaseOrderRouter.get("/:id/view", viewPurchaseOrder);
 purchaseOrderRouter.get("/:id/download", downloadPurchaseOrder);

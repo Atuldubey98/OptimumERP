@@ -8,6 +8,7 @@ const {
   searchParty,
   getInvoicesForParty,
   getPartyTransactions,
+  downloadPartyTransactions,
 } = require("../controllers/party.controller");
 const {
   limitFreePlanOnCreateEntityForOrganization,
@@ -31,5 +32,6 @@ partyRouter.patch("/:partyId", updateModel, updateParty);
 partyRouter.get("/:partyId", getParty);
 partyRouter.get("/:partyId/invoices", getInvoicesForParty);
 partyRouter.get("/:partyId/transactions", getPartyTransactions);
+partyRouter.get("/:partyId/transactions/download", downloadPartyTransactions);
 partyRouter.delete("/:partyId", deleteParty);
 module.exports = partyRouter;

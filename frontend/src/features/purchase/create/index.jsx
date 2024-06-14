@@ -108,7 +108,7 @@ export default function CreatePurchasePage() {
                       value={formik.values.num}
                     />
                     <FormErrorMessage>
-                      {formik.errors.invoiceNo}
+                      {formik.errors.num}
                     </FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />

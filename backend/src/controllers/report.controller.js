@@ -2,7 +2,6 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const { getInvoices } = require("../controllers/invoice.controller");
 const { getPurchases } = require("../controllers/purchase.controller");
 const { getTransactions } = require("./transactions.controller");
-const { sendExcelBufferResponse } = require("../helpers/render_engine.helper");
 const {
   makeReportExcelBuffer,
   getReportForBill,
@@ -32,9 +31,14 @@ exports.downloadReportByType = requestAsyncHandler(async (req, res) => {
     reportData,
     reportType,
   });
-  sendExcelBufferResponse({
-    excelBuffer,
-    fileName: `${reportType}-${new Date().toUTCString()}.xlsx`,
-    res,
-  });
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=report-${reportType}.xlsx `
+  );
+  res.setHeader("Content-Length", excelBuffer.length);
+  return res.send(excelBuffer);
 });

@@ -31,6 +31,7 @@ import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
 import usePurchaseOrderForm from "../../../hooks/usePurchaseOrderForm";
 import { FormikProvider } from "formik";
+import PrefixFormField from "../../common/PrefixFormField";
 export default function PurchaseOrderEditPage() {
   const { saveAndNew, onToggleSaveAndNew } = useSaveAndNewForm(
     "save-new:purchaseOrders"
@@ -39,7 +40,6 @@ export default function PurchaseOrderEditPage() {
     saveAndNew,
   });
   const loading = status === "loading";
-  const { transactionPrefix } = useCurrentOrgCurrency();
   const { disable } = useLimitsInFreePlan({
     key: "purchaseOrders",
   });
@@ -116,27 +116,22 @@ export default function PurchaseOrderEditPage() {
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isRequired
-                    isInvalid={
-                      formik.errors.poNo && formik.touched.poNo
-                    }
+                    isInvalid={formik.errors.poNo && formik.touched.poNo}
                   >
                     <FormLabel>PO No.</FormLabel>
                     <InputGroup>
-                      {transactionPrefix.purchaseOrder ? (
-                        <InputLeftAddon>
-                          {transactionPrefix.purchaseOrder}
-                        </InputLeftAddon>
-                      ) : null}
+                      <PrefixFormField
+                        formik={formik}
+                        prefixType={"purchaseOrder"}
+                      />
                       <NumberInputInteger
                         min={1}
                         formik={formik}
-                        name={"poNo"}
+                        name={"sequence"}
                         onlyInt={true}
                       />
                     </InputGroup>
-                    <FormErrorMessage>
-                      {formik.errors.poNo}
-                    </FormErrorMessage>
+                    <FormErrorMessage>{formik.errors.sequence}</FormErrorMessage>
                   </FormControl>
                   <SelectStatus
                     formik={formik}

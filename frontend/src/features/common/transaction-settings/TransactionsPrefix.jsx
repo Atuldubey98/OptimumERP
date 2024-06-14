@@ -25,7 +25,7 @@ import instance from "../../../instance";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import PrefixForm from "./PrefixForm";
 import { IoAdd } from "react-icons/io5";
-import moment from 'moment';
+import moment from "moment";
 function TransactionPopoverInstructions() {
   return (
     <Popover>
@@ -79,8 +79,8 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         localeCode: data.data.localeCode || "en-IN",
         proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
-        endDate: moment(data.data.financialYear.end).format('YYYY-MM-DD'),
-        startDate: moment(data.data.financialYear.start).format('YYYY-MM-DD'),
+        endDate: moment(data.data.financialYear.end).format("YYYY-MM-DD"),
+        startDate: moment(data.data.financialYear.start).format("YYYY-MM-DD"),
         prefixes: data.data.prefixes,
       });
       printFormik.setValues(data.data.printSettings);
@@ -100,6 +100,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   const invoicePrefixOptions = getPrefixOptions("invoice");
   const quotationPrefixOptions = getPrefixOptions("quotation");
   const proformaInvoicePrefixOptions = getPrefixOptions("proformaInvoice");
+  const purchaseOrderPrefixOptions = getPrefixOptions("purchaseOrder");
   const [currentSelectedPrefix, setCurrentSelectedPrefix] = useState("invoice");
   const { isOpen, onClose, onOpen } = useDisclosure();
   const onOpenPrefixForm = (prefixType) => {
@@ -192,6 +193,28 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 value={proformaInvoicePrefixOptions.find(
                   (prefixOption) =>
                     prefixOption.value === formik.values.proformaInvoice
+                )}
+              />
+            </FormControl>
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>
+                Purchase Order{" "}
+                <IconButton
+                  icon={<IoAdd />}
+                  size={"xs"}
+                  isRound
+                  onClick={() => onOpenPrefixForm("purchaseOrder")}
+                />
+              </FormLabel>
+              <Select
+                onChange={({ value }) =>
+                  formik.setFieldValue("purchaseOrder", value)
+                }
+                name="purchaseOrder"
+                options={purchaseOrderPrefixOptions}
+                value={purchaseOrderPrefixOptions.find(
+                  (prefixOption) =>
+                    prefixOption.value === formik.values.purchaseOrder
                 )}
               />
             </FormControl>

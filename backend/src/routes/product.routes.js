@@ -17,7 +17,7 @@ const productRouter = Router({
 });
 
 productRouter.get("/", getAllProducts);
-productRouter.post("/bulk", createModel, addManyProducts);
+productRouter.post("/bulk", createModel, createManyProducts);
 productRouter.post(
   "/",
   createModel,

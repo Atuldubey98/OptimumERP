@@ -109,6 +109,7 @@ exports.updatePurchaseOrder = requestAsyncHandler(async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.purchaseOrders": 1 } }
   );
+  return res.status(201).json({ message: "Purchase order updated" });
 });
 
 exports.getNextPurchaseOrderNumber = requestAsyncHandler(async (req, res) => {

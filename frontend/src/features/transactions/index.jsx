@@ -69,6 +69,11 @@ export default function TransactionsPage() {
       label: "Proforma Invoice",
       colorScheme: "purple",
     },
+    {
+      value: "purchase_order",
+      label: "Purchase order",
+      colorScheme: "cyan",
+    },
   ];
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
     typeOfTransactions.slice(0, 2)

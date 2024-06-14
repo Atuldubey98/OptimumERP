@@ -17,7 +17,8 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
       .label("Billing address"),
     date: Yup.date().required("Date is required").label("Date"),
     status: Yup.string().required("Status is required"),
-    poNo: Yup.number(),
+    sequence: Yup.number(),
+    prefix: Yup.string().optional(),
     date: Yup.string().optional(),
     items: Yup.array()
       .of(
@@ -70,7 +71,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
       );
       toast({
         title: "Success",
-        description: _id ? "Invoice updated" : "Invoice created",
+        description: _id ? "Purchase order updated" : "Purchase order created",
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,
@@ -88,7 +89,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
     const { data } = await instance.get(
       `/api/v1/organizations/${orgId}/purchaseOrders/nextPurchaseOrderNo`
     );
-    formik.setFieldValue("poNo", data.data);
+    formik.setFieldValue("sequence", data.data);
     setStatus("success");
   });
   useEffect(() => {
@@ -102,28 +103,30 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
           const {
             party,
             terms,
-            invoiceNo,
             date,
             status,
             items,
+            prefix,
             description,
             billingAddress = "",
             poDate = "",
-            poNo = "",
+            sequence,
           } = data.data;
           formik.setValues({
             _id: data.data._id,
             party: party._id,
             terms,
-            invoiceNo,
+            prefix,
+            sequence,
             date: new Date(date).toISOString().split("T")[0],
             status,
             partyDetails: party,
             items,
             description,
             poDate: poDate ? poDate.split("T")[0] : "",
-            poNo,
+            sequence,
             billingAddress,
+            createdBy: data.data.createdBy._id,
           });
           setStatus("success");
         })();
