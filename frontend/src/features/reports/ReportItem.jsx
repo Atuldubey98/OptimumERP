@@ -22,6 +22,7 @@ import DateFilter from "../../features/estimates/list/DateFilter";
 import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
+import moment from "moment";
 const reportDataByType = {
   sale: {
     header: {
@@ -36,7 +37,7 @@ const reportDataByType = {
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
-      date: item.date ? new Date(item.date)?.toISOString().split("T")[0] : "",
+      date: item.date ? moment(item.date).format("LL") : "",
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
       status: (item?.status || "").toLocaleUpperCase(),
@@ -56,7 +57,7 @@ const reportDataByType = {
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
-      date: item.date ? new Date(item.date).toISOString().split("T")[0] : "",
+      date: item.date ? moment(item.date).format("LL")  : "",
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
       status: (item?.status || "").toLocaleUpperCase(),

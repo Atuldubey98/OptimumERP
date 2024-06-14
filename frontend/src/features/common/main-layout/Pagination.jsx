@@ -14,7 +14,7 @@ export default function Pagination({ total, currentPage }) {
       }).toString(),
     });
   };
-  return (
+  return total === 0 ? null : (
     <Flex
       alignItems={"center"}
       gap={5}

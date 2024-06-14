@@ -138,7 +138,7 @@ export default function ExpensesPage() {
               category: expense.category
                 ? expense.category.name
                 : "Miscellenous",
-              date: moment(expense.date).format("DD-MM-YYYY"),
+              date: moment(expense.date).format("LL"),
             }))}
             caption={`Total expenses found : ${totalCount}`}
             operations={expenses.map((expense) => (

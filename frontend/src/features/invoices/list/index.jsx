@@ -51,7 +51,7 @@ export default function InvoicesPage() {
       </ChakraLink>
     ),
     ...invoice,
-    date: moment(invoice.date).format("DD-MM-YYYY"),
+    date: moment(invoice.date).format("LL"),
     grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });

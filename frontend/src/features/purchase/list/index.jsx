@@ -56,7 +56,7 @@ export default function PurchasePage() {
     ),
     ...purchase,
     num: purchase.num,
-    date: moment(purchase.date).format("DD-MM-YYYY"),
+    date: moment(purchase.date).format("LL"),
     grandTotal: `${symbol} ${(purchase.total + purchase.totalTax).toFixed(2)}`,
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
   });
