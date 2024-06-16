@@ -16,7 +16,7 @@ export default function PaginateButtons({
           onClick={previousPage}
         />
       )}
-      <Text>{`${page}/${totalPages}`}</Text>
+      <Text>{`Page ${page} of ${totalPages}`}</Text>
       {page < totalPages ? (
         <IoIosArrowDropright size={30} cursor={"pointer"} onClick={nextPage} />
       ) : null}

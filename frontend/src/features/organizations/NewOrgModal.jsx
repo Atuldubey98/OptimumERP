@@ -64,6 +64,7 @@ export default function NewOrgModal({
               >
                 <FormLabel>Name</FormLabel>
                 <Input
+                  autoFocus
                   onChange={formik.handleChange}
                   name="name"
                   type="text"

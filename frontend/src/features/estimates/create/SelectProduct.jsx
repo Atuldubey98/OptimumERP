@@ -1,8 +1,10 @@
 import {
+  Box,
   Button,
   ButtonGroup,
   Checkbox,
   Flex,
+  Heading,
   Input,
   InputGroup,
   InputLeftElement,
@@ -19,8 +21,10 @@ import {
   Tbody,
   Td,
   Th,
+  Tfoot,
   Thead,
   Tr,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
@@ -31,8 +35,10 @@ import ProductFormDrawer from "../../products/ProductFormDrawer";
 import instance from "../../../instance";
 import { useParams } from "react-router-dom";
 import PaginateButtons from "../../common/PaginateButtons";
+import { MdOutlineInventory2 } from "react-icons/md";
 export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const bg = useColorModeValue("gray.100", "gray.800");
 
   const [response, setResponse] = useState({
     items: [],
@@ -82,7 +88,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
   useEffect(() => {
     fetchProducts();
   }, [deboucedSearch, currentPage]);
-  const { items: products, page, totalPages, total } = response;
+  const { items: products, page, totalPages } = response;
   return (
     <Modal size={"2xl"} isCentered isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -90,13 +96,15 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
         <ModalHeader>Select a product</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex justifyContent={"space-around"} alignItems={"center"}>
-            <PaginateButtons
-              nextPage={() => setCurrentPage((curr) => curr + 1)}
-              previousPage={() => setCurrentPage((curr) => curr - 1)}
-              page={page}
-              totalPages={totalPages}
-            />
+          <Flex justifyContent={"space-between"} alignItems={"center"}>
+            {totalPages ? (
+              <PaginateButtons
+                nextPage={() => setCurrentPage((curr) => curr + 1)}
+                previousPage={() => setCurrentPage((curr) => curr - 1)}
+                page={page}
+                totalPages={totalPages}
+              />
+            ) : null}
             <ButtonGroup>
               <Button
                 onClick={() => {
@@ -122,55 +130,69 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
               </Button>
             </ButtonGroup>
           </Flex>
-          <TableContainer>
-            <Table variant="simple">
-              <TableCaption>
-                <InputGroup margin={"auto"}>
-                  <InputLeftElement pointerEvents="none">
-                    <IoSearchOutline />
-                  </InputLeftElement>
-                  <Input
-                    type="search"
-                    onChange={onChangeInput}
-                    value={search}
-                  />
-                </InputGroup>
-              </TableCaption>
-              <Thead>
-                <Tr>
-                  <Th>#</Th>
-                  <Th>Name</Th>
-                  <Th>Price</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {products.map((product) => (
-                  <Tr key={product.name}>
-                    <Td>
-                      <Checkbox
-                        isChecked={
-                          product.name === formik.values.items[index].name
-                        }
-                        onChange={() => {
-                          formik.setFieldValue(`items[${index}]`, {
-                            name: product.name,
-                            quantity: 1,
-                            um: product.um || "none",
-                            code: product.code || "",
-                            gst: "none",
-                            price: product.sellingPrice || 0,
-                          });
-                          onClose();
-                        }}
-                      />
-                    </Td>
-                    <Td>{product.name}</Td>
-                    <Td>{product.sellingPrice}</Td>
+          {products.length ? (
+            <TableContainer>
+              <Table variant="simple">
+                <TableCaption>
+                  <InputGroup margin={"auto"}>
+                    <InputLeftElement pointerEvents="none">
+                      <IoSearchOutline />
+                    </InputLeftElement>
+                    <Input
+                      type="search"
+                      onChange={onChangeInput}
+                      value={search}
+                    />
+                  </InputGroup>
+                </TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th>#</Th>
+                    <Th>Name</Th>
+                    <Th>Price</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {products.map((product) => (
+                    <Tr key={product.name}>
+                      <Td>
+                        <Checkbox
+                          isChecked={
+                            product.name === formik.values.items[index].name
+                          }
+                          onChange={() => {
+                            formik.setFieldValue(`items[${index}]`, {
+                              name: product.name,
+                              quantity: 1,
+                              um: product.um || "none",
+                              code: product.code || "",
+                              gst: "none",
+                              price: product.sellingPrice || 0,
+                            });
+                            onClose();
+                          }}
+                        />
+                      </Td>
+                      <Td>{product.name}</Td>
+                      <Td>{product.sellingPrice}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Flex
+              gap={3}
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexDir={"column"}
+            >
+              <Box p={5} borderRadius={"full"} bg={bg}>
+                <MdOutlineInventory2 size={70} />
+              </Box>
+              <Heading fontSize={"xl"}>No products found !</Heading>
+            </Flex>
+          )}
         </ModalBody>
 
         <ModalFooter>
