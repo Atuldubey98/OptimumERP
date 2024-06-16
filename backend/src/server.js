@@ -25,5 +25,3 @@ const onHandleExitServer = async () => {
   });
 };
 process.on("SIGTERM", onHandleExitServer);
-process.on("SIGTERM", onHandleExitServer);
-process.on("uncaughtException", onHandleExitServer);
