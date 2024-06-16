@@ -1,4 +1,4 @@
-import { Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Heading, Link, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import MainLayout from "../common/main-layout";
 import PricingCard from "./PricingCard";
@@ -74,6 +74,12 @@ export default function PricingPage() {
         <Text>
           Our pricing structure is build to be affordable for everyone from
           indivisuals to organizations
+        </Text>
+        <Text>
+          To upgrade to any of the below given plans you can contact at{" "}
+          <Link href="mailto:optimumerp2024@gmail.com">
+            optimumerp2024@gmail.com
+          </Link>
         </Text>
         <SimpleGrid gap={8} minChildWidth={350}>
           {plans.map((plan, index) => (

@@ -22,7 +22,7 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
-import moment from 'moment';
+import moment from "moment";
 export default function ProformaInvoicesPage() {
   const {
     items,
@@ -95,10 +95,24 @@ export default function ProformaInvoicesPage() {
     link.click();
     URL.revokeObjectURL(href);
   };
-  const convertToInvoice = async (proformaInvoice) => {
+  const {
+    isOpen: isConvertToInvoiceModalOpen,
+    onOpen: openConvertToInvoiceConfirmationModal,
+    onClose: closeConvertToInvoiceConfirmationModal,
+  } = useDisclosure();
+  const onOpenConvertToInvoiceConfirmationModal = (item) => {
+    setProformaInvoiceSelected(item);
+    openConvertToInvoiceConfirmationModal();
+  };
+  const onCloseConvertToInvoiceConfirmationModal = () => {
+    setProformaInvoiceSelected(null);
+    closeConvertToInvoiceConfirmationModal();
+  };
+  const convertToInvoice = async () => {
     try {
+      setProformaInvoiceStatus("converting");
       const { data } = await instance.post(
-        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoice._id}/convertToInvoice`
+        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceSelected._id}/convertToInvoice`
       );
       toast({
         title: "Success",
@@ -107,7 +121,9 @@ export default function ProformaInvoicesPage() {
         duration: 3000,
         isClosable: true,
       });
+      onCloseConvertToInvoiceConfirmationModal();
     } catch (error) {
+      console.log(error);
       toast({
         title: isAxiosError(error) ? error.response.data.name : "Error",
         description: isAxiosError(error)
@@ -117,6 +133,8 @@ export default function ProformaInvoicesPage() {
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setProformaInvoiceStatus("idle");
     }
   };
   const { disable } = useLimitsInFreePlan({ key: "proformaInvoices" });
@@ -137,7 +155,10 @@ export default function ProformaInvoicesPage() {
             operations={items.map((item) => (
               <VertIconMenu
                 key={item._id}
-                convertToInvoice={() => convertToInvoice(item)}
+                convertToInvoice={() => {
+                  console.log(item);
+                  onOpenConvertToInvoiceConfirmationModal(item);
+                }}
                 onDownloadItem={() => onSaveBill(item)}
                 showItem={() => {
                   setProformaInvoiceSelected(item);
@@ -195,6 +216,15 @@ export default function ProformaInvoicesPage() {
         isOpen={isAlertModalOpen}
         onClose={closeAlertModal}
         onConfirm={deleteProformaInvoice}
+      />
+      <AlertModal
+        buttonLabel="Convert"
+        confirmDisable={proformaInvoiceStatus === "converting"}
+        body={"Do you want to convert the proforma to invoice?"}
+        header={"Convert to Invoice"}
+        isOpen={isConvertToInvoiceModalOpen}
+        onClose={closeConvertToInvoiceConfirmationModal}
+        onConfirm={convertToInvoice}
       />
       {proformaInvoiceSelected ? (
         <BillModal

@@ -74,7 +74,7 @@ export default function VertIconMenu({
           <MenuItem
             icon={<FaFileInvoiceDollar size={20} />}
             onClick={convertToInvoice}
-            command="⌘S"
+            command="⌘I"
           >
             Convert to Invoice
           </MenuItem>

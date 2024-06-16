@@ -31,7 +31,7 @@ export default function AlertModal({
             <Button onClick={onClose}>Cancel</Button>
             <Button
               isLoading={confirmDisable}
-              colorScheme="red"
+              colorScheme={buttonLabel === "Delete" ? "red" : "blue"}
               onClick={onConfirm}
               ml={3}
             >

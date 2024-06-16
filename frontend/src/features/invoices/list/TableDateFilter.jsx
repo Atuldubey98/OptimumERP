@@ -1,21 +1,52 @@
-import { Box, Divider, Grid } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Flex,
+  FocusLock,
+  Grid,
+  IconButton,
+  Popover,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
+  useDisclosure,
+  useOutsideClick,
+} from "@chakra-ui/react";
 import SearchItem from "../../common/table-layout/SearchItem";
 import DateFilter from "../../estimates/list/DateFilter";
+import { CiFilter } from "react-icons/ci";
+import { useRef } from "react";
 
 export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
+  const { isOpen, onToggle, onClose } = useDisclosure();
+  const filterRef = useRef(null);
+  useOutsideClick({
+    ref: filterRef,
+    handler: onClose,
+  });
   return (
-    <Grid gap={2}>
-      <Divider />
-      <Box>
+    <Flex justifyContent={"flex-start"} alignItems={"center"} gap={2}>
+      <Box flex={1}>
         <SearchItem placeholder="Search" />
       </Box>
-      <Grid gap={5} gridTemplateColumns={"1fr 1fr"}>
-        <DateFilter
-          dateFilter={dateFilter}
-          onChangeDateFilter={onChangeDateFilter}
-        />
-      </Grid>
-      <Divider />
-    </Grid>
+      <Box ref={filterRef}>
+        <Popover isOpen={isOpen} placement="bottom" closeOnBlur={false}>
+          <PopoverTrigger>
+            <IconButton size="sm" icon={<CiFilter />} onClick={onToggle} />
+          </PopoverTrigger>
+          <PopoverContent p={5}>
+            <FocusLock returnFocus persistentFocus={false}>
+              <PopoverArrow />
+              <PopoverCloseButton onClick={onToggle} />
+              <DateFilter
+                dateFilter={dateFilter}
+                onChangeDateFilter={onChangeDateFilter}
+              />
+            </FocusLock>
+          </PopoverContent>
+        </Popover>
+      </Box>
+    </Flex>
   );
 }
