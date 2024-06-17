@@ -19,6 +19,7 @@ const {
   getAllUsersOfOrganization,
   updateOrganizationUser,
   updateOrganization,
+  closeFinancialYear,
 } = require("../controllers/org.controller");
 const { authorize } = require("../middlewares/auth.middleware");
 
@@ -30,6 +31,7 @@ orgUserRouter.get("/", getOrg);
 orgUserRouter.patch("/", updateOrganization);
 orgUserRouter.get("/users", authorize, getAllUsersOfOrganization);
 orgUserRouter.post("/users", authorize, createNewUserForOrg);
+orgUserRouter.post("/closeFinancialYear", authorize, closeFinancialYear);
 orgUserRouter.patch("/users/:userId", authorize, updateOrganizationUser);
 
 orgUserRouter.use("/parties", partyRouter);

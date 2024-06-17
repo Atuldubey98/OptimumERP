@@ -6,9 +6,6 @@ const orgUserRouter = require("./org_user.routes");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
-const saleOrderRouter = require("./sale_order.routes");
-const recurringInvoiceRouter = require("./recurring_invoices.routes");
-
 const organizationRouter = Router();
 organizationRouter.post("/", authenticate, createModel, createOrg);
 organizationRouter.get("/", authenticate, getOrgsOfUser);
