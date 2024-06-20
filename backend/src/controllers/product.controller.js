@@ -91,7 +91,7 @@ exports.updateProduct = requestAsyncHandler(async (req, res) => {
     {
       new: true,
     }
-  ).exec();
+  ).lean();
   if (!updatedProduct) throw new ProductNotFound();
   return res
     .status(200)
@@ -106,7 +106,7 @@ exports.deleteProduct = requestAsyncHandler(async (req, res) => {
   const deletedProduct = await Product.findOneAndDelete({
     _id: productId,
     org: req.params.orgId,
-  }).exec();
+  }).lean();
 
   if (!deletedProduct) throw new ProductNotFound();
   await OrgModel.updateOne(

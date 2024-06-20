@@ -17,6 +17,7 @@ import { LiaEyeSolid } from "react-icons/lia";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
 import { TiContacts } from "react-icons/ti";
+import { GrOverview } from "react-icons/gr";
 
 export default function VertIconMenu({
   showItem,
@@ -31,6 +32,7 @@ export default function VertIconMenu({
   downloading = false,
   convertToInvoice,
   payoutPurchase,
+  onOverviewItem,
 }) {
   return (
     <Menu>
@@ -51,7 +53,13 @@ export default function VertIconMenu({
             Expenses
           </MenuItem>
         ) : null}
-       
+        {onOverviewItem ? (
+          <MenuItem
+            icon={<GrOverview />}
+            onClick={onOverviewItem}
+            command="⌘O"
+          />
+        ) : null}
         {showItem ? (
           <MenuItem
             icon={<LiaEyeSolid size={20} />}
@@ -61,7 +69,7 @@ export default function VertIconMenu({
             Show
           </MenuItem>
         ) : null}
-         {payoutPurchase ? (
+        {payoutPurchase ? (
           <MenuItem
             icon={<GiExpense size={20} />}
             onClick={payoutPurchase}

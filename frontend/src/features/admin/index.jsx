@@ -10,9 +10,14 @@ import {
   SimpleGrid,
   Spinner,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
   Table,
   TableCaption,
   TableContainer,
+  Tabs,
   Tbody,
   Th,
   Thead,
@@ -214,118 +219,111 @@ export default function AdminPage() {
         ) : (
           <Fade in={!loading && organization}>
             <Stack marginBlock={3} spacing={1}>
-              <SimpleGrid gap={8} minChildWidth={300}>
-                <Box>
-                  <form onSubmit={handleSubmit}>
-                    <Stack
-                      marginBlock={3}
-                      border={"1px"}
-                      borderColor={"gray.200"}
-                      boxShadow={"md"}
-                      borderRadius={"md"}
-                      p={4}
-                      spacing={4}
-                    >
-                      <Flex
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Heading fontSize={"lg"}>
-                          Current Organization Details
-                        </Heading>
-                        <HelpPopover
-                          title={"Organization Details"}
-                          description={
-                            "Here you can update your organization details"
-                          }
-                        />
-                      </Flex>
-                      <FormControl isRequired>
-                        <FormLabel>Name</FormLabel>
-                        <Input
-                          onChange={handleChange}
-                          name="name"
-                          value={currentSelectedOrganization.name}
-                        />
-                      </FormControl>
-                      <FormControl isRequired>
-                        <FormLabel>Address</FormLabel>
-                        <Input
-                          onChange={handleChange}
-                          name="address"
-                          value={currentSelectedOrganization.address}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <FormLabel>GST No</FormLabel>
-                        <Input
-                          onChange={handleChange}
-                          name="gstNo"
-                          value={currentSelectedOrganization.gstNo}
-                        />
-                      </FormControl>
-                      <FormControl isRequired>
-                        <FormLabel>PAN No</FormLabel>
-                        <Input
-                          onChange={handleChange}
-                          name="panNo"
-                          value={currentSelectedOrganization.panNo}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <FormLabel>Website</FormLabel>
-                        <Input
-                          type="url"
-                          onChange={handleChange}
-                          name="web"
-                          value={currentSelectedOrganization.web}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <FormLabel>Telephone</FormLabel>
-                        <Input
-                          type="tel"
-                          onChange={handleChange}
-                          name="telephone"
-                          value={currentSelectedOrganization.telephone}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <FormLabel>Email</FormLabel>
-                        <Input
-                          type="email"
-                          onChange={handleChange}
-                          name="email"
-                          value={currentSelectedOrganization.email}
-                        />
-                      </FormControl>
-                      <Flex justifyContent={"center"} alignItems={"center"}>
-                        <Button
-                          size={"sm"}
-                          type="submit"
-                          isLoading={isSubmitting}
-                          colorScheme="blue"
-                        >
-                          Update
-                        </Button>
-                      </Flex>
-                    </Stack>
-                  </form>
-                </Box>
-                <Flex justifyContent={"center"} alignItems={"center"}>
-                  <Box
-                    border={"1px"}
-                    borderColor={"gray.200"}
-                    w={"100%"}
-                    marginBlock={3}
-                    boxShadow={"md"}
-                    borderRadius={"md"}
-                    p={4}
-                  >
-                    <BankAccounts bankFormik={bankFormik} />
-                  </Box>
-                </Flex>
-              </SimpleGrid>
+              <Tabs isLazy>
+                <TabList>
+                  <Tab>Organization</Tab>
+                  <Tab>Bank</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <Box maxW={"xl"}>
+                      <form onSubmit={handleSubmit}>
+                        <Stack spacing={4}>
+                          <Flex
+                            justifyContent={"space-between"}
+                            alignItems={"center"}
+                          >
+                            <Heading fontSize={"lg"}>
+                              Current Organization Details
+                            </Heading>
+                            <HelpPopover
+                              title={"Organization Details"}
+                              description={
+                                "Here you can update your organization details"
+                              }
+                            />
+                          </Flex>
+                          <FormControl isRequired>
+                            <FormLabel>Name</FormLabel>
+                            <Input
+                              onChange={handleChange}
+                              name="name"
+                              value={currentSelectedOrganization.name}
+                            />
+                          </FormControl>
+                          <FormControl isRequired>
+                            <FormLabel>Address</FormLabel>
+                            <Input
+                              onChange={handleChange}
+                              name="address"
+                              value={currentSelectedOrganization.address}
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <FormLabel>GST No</FormLabel>
+                            <Input
+                              onChange={handleChange}
+                              name="gstNo"
+                              value={currentSelectedOrganization.gstNo}
+                            />
+                          </FormControl>
+                          <FormControl isRequired>
+                            <FormLabel>PAN No</FormLabel>
+                            <Input
+                              onChange={handleChange}
+                              name="panNo"
+                              value={currentSelectedOrganization.panNo}
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <FormLabel>Website</FormLabel>
+                            <Input
+                              type="url"
+                              onChange={handleChange}
+                              name="web"
+                              value={currentSelectedOrganization.web}
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <FormLabel>Telephone</FormLabel>
+                            <Input
+                              type="tel"
+                              onChange={handleChange}
+                              name="telephone"
+                              value={currentSelectedOrganization.telephone}
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <FormLabel>Email</FormLabel>
+                            <Input
+                              type="email"
+                              onChange={handleChange}
+                              name="email"
+                              value={currentSelectedOrganization.email}
+                            />
+                          </FormControl>
+                          <Flex justifyContent={"center"} alignItems={"center"}>
+                            <Button
+                              size={"sm"}
+                              type="submit"
+                              isLoading={isSubmitting}
+                              colorScheme="blue"
+                            >
+                              Update
+                            </Button>
+                          </Flex>
+                        </Stack>
+                      </form>
+                    </Box>
+                  </TabPanel>
+                  <TabPanel>
+                    <Box maxW={"xl"}>
+                      <BankAccounts bankFormik={bankFormik} />
+                    </Box>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
               <Box>
                 <Heading fontSize={"lg"}>Registered Users</Heading>
               </Box>

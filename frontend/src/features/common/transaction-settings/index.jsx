@@ -8,6 +8,11 @@ import {
   Spinner,
   Stack,
   useToast,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -129,39 +134,33 @@ export default function TransactionSettingsPage() {
         )}
         <SimpleGrid gap={8} minChildWidth={300}>
           {formik.values.organization ? (
-            <>
-              <Box
-                border={"1px"}
-                borderColor={"gray.200"}
-                maxW={"xl"}
-                borderRadius={"md"}
-                p={5}
-                boxShadow={"md"}
-              >
-                <TransactionPrefix
-                  formik={formik}
-                  loading={loading}
-                  printFormik={printFormik}
-                />
-              </Box>
-              <Flex justifyContent={"center"} alignItems={"center"}>
-                <Box
-                  border={"1px"}
-                  borderColor={"gray.200"}
-                  width={"100%"}
-                  maxW={"xl"}
-                  borderRadius={"md"}
-                  p={5}
-                  boxShadow={"md"}
-                >
-                  <PrintSettings
-                    printFormik={printFormik}
-                    formik={formik}
-                    loading={loading}
-                  />
-                </Box>
-              </Flex>
-            </>
+            <Tabs>
+              <TabList>
+                <Tab>Transaction</Tab>
+                <Tab>Print Settings</Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  <Box maxW={"xl"}>
+                    <TransactionPrefix
+                      formik={formik}
+                      loading={loading}
+                      printFormik={printFormik}
+                    />
+                  </Box>
+                </TabPanel>
+                <TabPanel>
+                  <Box maxW={"xl"}>
+                    <PrintSettings
+                      printFormik={printFormik}
+                      formik={formik}
+                      loading={loading}
+                    />
+                  </Box>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           ) : (
             <Flex
               minH={"50svh"}

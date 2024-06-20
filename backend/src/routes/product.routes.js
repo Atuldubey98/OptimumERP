@@ -8,7 +8,6 @@ const {
   updateProduct,
   getProduct,
   deleteProduct,
-  addManyProducts,
   createManyProducts,
 } = require("../controllers/product.controller");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
