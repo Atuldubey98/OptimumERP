@@ -9,16 +9,19 @@ import {
   Heading,
   Input,
   InputGroup,
-  InputLeftAddon,
   SimpleGrid,
   Spinner,
   Switch,
-  Textarea,
+  Textarea
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useInvoicesForm from "../../../hooks/useInvoicesForm";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
+import NumberInputInteger from "../../common/NumberInputInteger";
+import PrefixFormField from "../../common/PrefixFormField";
 import MainLayout from "../../common/main-layout";
 import DateField from "../../estimates/create/DateField";
 import DescriptionField from "../../estimates/create/DescriptionField";
@@ -28,11 +31,6 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "./PartySelectBill";
-import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
-import NumberInputInteger from "../../common/NumberInputInteger";
-import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
-import PrefixFormField from "../../common/PrefixFormField";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
@@ -40,7 +38,6 @@ export default function CreateInvoicePage() {
     saveAndNew,
   });
   const loading = status === "loading";
-  const { transactionPrefix } = useCurrentOrgCurrency();
   const { disable } = useLimitsInFreePlan({
     key: "invoices",
   });

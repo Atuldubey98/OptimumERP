@@ -1,28 +1,27 @@
 import {
   Box,
+  Link as ChakraLink,
   Flex,
   Spinner,
   useDisclosure,
   useToast,
-  Link as ChakraLink,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import usePaginatedFetch from "../../../hooks/usePaginatedFetch";
-import MainLayout from "../../common/main-layout";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import TableLayout from "../../common/table-layout";
-import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
-import TableDateFilter from "../../invoices/list/TableDateFilter";
-import Pagination from "../../common/main-layout/Pagination";
-import Status from "../../estimates/list/Status";
-import { invoiceStatusList } from "../../../constants/invoice";
-import VertIconMenu from "../../common/table-layout/VertIconMenu";
-import instance from "../../../instance";
 import { isAxiosError } from "axios";
-import AlertModal from "../../common/AlertModal";
-import BillModal from "../../estimates/list/BillModal";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import moment from "moment";
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { invoiceStatusList } from "../../../constants/invoice";
+import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
+import instance from "../../../instance";
+import AlertModal from "../../common/AlertModal";
+import MainLayout from "../../common/main-layout";
+import Pagination from "../../common/main-layout/Pagination";
+import TableLayout from "../../common/table-layout";
+import VertIconMenu from "../../common/table-layout/VertIconMenu";
+import BillModal from "../../estimates/list/BillModal";
+import Status from "../../estimates/list/Status";
+import TableDateFilter from "../../invoices/list/TableDateFilter";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 
 export default function PurchaseOrderPage() {
   const { orgId } = useParams();
@@ -39,6 +38,7 @@ export default function PurchaseOrderPage() {
   } = useDateFilterFetch({
     entity: "purchaseOrders",
   });
+  const { symbol } = useCurrentOrgCurrency();
   const loading = status === "loading";
   const navigate = useNavigate();
   const toast = useToast();
@@ -163,7 +163,9 @@ export default function PurchaseOrderPage() {
               heading={"Purchase Orders"}
               tableData={purchaseOrderItems.map((item) => ({
                 ...item,
-                grandTotal: `${(item.total + item.totalTax).toFixed(2)}`,
+                grandTotal: `${symbol} ${(item.total + item.totalTax).toFixed(
+                  2
+                )}`,
                 date: moment(item.date).format("LL"),
                 partyName: (
                   <ChakraLink
