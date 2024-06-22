@@ -134,7 +134,7 @@ export default function TransactionSettingsPage() {
         )}
         <SimpleGrid gap={8} minChildWidth={300}>
           {formik.values.organization ? (
-            <Tabs>
+            <Tabs isLazy size={"sm"}>
               <TabList>
                 <Tab>Print Settings</Tab>
                 <Tab>Transaction</Tab>

@@ -223,7 +223,7 @@ export default function AdminPage() {
         ) : (
           <Fade in={!loading && organization}>
             <Stack marginBlock={3} spacing={1}>
-              <Tabs isLazy>
+              <Tabs size={"sm"} isLazy>
                 <TabList>
                   <Tab>Organization</Tab>
                   <Tab>Bank</Tab>
