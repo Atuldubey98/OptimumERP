@@ -115,7 +115,7 @@ export default function TransactionSettingsPage() {
             <Spinner />
           </Flex>
         ) : (
-          <Box>
+          <Box p={3}>
             <FormControl>
               <FormLabel fontWeight={"bold"}>Organization</FormLabel>
               <Select
