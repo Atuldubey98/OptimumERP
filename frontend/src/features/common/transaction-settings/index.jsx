@@ -109,7 +109,7 @@ export default function TransactionSettingsPage() {
   });
   return (
     <MainLayout>
-      <Stack spacing={3} p={5}>
+      <Stack spacing={3}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Spinner />
@@ -142,7 +142,7 @@ export default function TransactionSettingsPage() {
 
               <TabPanels>
                 <TabPanel>
-                  <Box maxW={"xl"}>
+                  <Box>
                     <PrintSettings
                       printFormik={printFormik}
                       formik={formik}
@@ -151,7 +151,7 @@ export default function TransactionSettingsPage() {
                   </Box>
                 </TabPanel>
                 <TabPanel>
-                  <Box maxW={"xl"}>
+                  <Box>
                     <TransactionPrefix
                       formik={formik}
                       loading={loading}

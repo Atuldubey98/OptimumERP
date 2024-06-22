@@ -15,6 +15,7 @@ import {
   Skeleton,
   Stack,
   Tooltip,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { IoIosHelpCircleOutline } from "react-icons/io";
@@ -42,15 +43,26 @@ export default function PrintSettings({ printFormik, formik, loading }) {
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
     : "free";
+  const bg = useColorModeValue("gray.100", "gray.800");
+
   return (
     <form onSubmit={printFormik.handleSubmit}>
-      <Stack spacing={6}>
-        <Flex justifyContent={"space-between"} alignItems={"center"}>
+      <Stack>
+        <Box bg={bg} p={3}>
           <Heading fontSize={"lg"}>Print Settings Invoice</Heading>
-          <PrintPopOverInstructions />
-        </Flex>
+        </Box>
         <Skeleton isLoaded={!loading}>
-          <Stack spacing={3}>
+          <Stack p={3} spacing={1}>
+            <Flex justifyContent={"flex-start"} alignItems={"center"}>
+              <Button
+                type="submit"
+                isLoading={printFormik.isSubmitting}
+                size={"sm"}
+                colorScheme="blue"
+              >
+                Update
+              </Button>
+            </Flex>
             <Box>
               <Checkbox
                 isDisabled={!formik.values.organization}
@@ -62,9 +74,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
               </Checkbox>
             </Box>
             <Tooltip
-              label={
-                currentPlan === "free" ? "Upgrade your plan" : null
-              }
+              label={currentPlan === "free" ? "Upgrade your plan" : null}
               aria-label="qr code tool tip"
             >
               <Box>
@@ -82,16 +92,6 @@ export default function PrintSettings({ printFormik, formik, loading }) {
             </Tooltip>
           </Stack>
         </Skeleton>
-        <Flex justifyContent={"center"} alignItems={"center"}>
-          <Button
-            type="submit"
-            isLoading={printFormik.isSubmitting}
-            size={"sm"}
-            colorScheme="blue"
-          >
-            Update
-          </Button>
-        </Flex>
       </Stack>
     </form>
   );
