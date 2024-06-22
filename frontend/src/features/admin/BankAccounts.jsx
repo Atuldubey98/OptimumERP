@@ -30,7 +30,7 @@ export default function BankAccounts({ bankFormik }) {
               isLoading={bankFormik.isSubmitting}
               colorScheme="blue"
             >
-              Update
+              Save
             </Button>
           </Flex>
           <SimpleGrid gap={3} minChildWidth={450}>
