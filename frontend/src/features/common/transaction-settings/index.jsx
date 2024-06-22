@@ -136,26 +136,26 @@ export default function TransactionSettingsPage() {
           {formik.values.organization ? (
             <Tabs>
               <TabList>
-                <Tab>Transaction</Tab>
                 <Tab>Print Settings</Tab>
+                <Tab>Financial year</Tab>
               </TabList>
 
               <TabPanels>
-                <TabPanel>
-                  <Box maxW={"xl"}>
-                    <TransactionPrefix
-                      formik={formik}
-                      loading={loading}
-                      printFormik={printFormik}
-                    />
-                  </Box>
-                </TabPanel>
                 <TabPanel>
                   <Box maxW={"xl"}>
                     <PrintSettings
                       printFormik={printFormik}
                       formik={formik}
                       loading={loading}
+                    />
+                  </Box>
+                </TabPanel>
+                <TabPanel>
+                  <Box maxW={"xl"}>
+                    <TransactionPrefix
+                      formik={formik}
+                      loading={loading}
+                      printFormik={printFormik}
                     />
                   </Box>
                 </TabPanel>

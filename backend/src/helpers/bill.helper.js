@@ -13,8 +13,7 @@ const getUpiQrCodeByPrintSettings = async ({
   shouldPrintQr = false,
 }) => {
   const upiUrl = `upi://pay?pa=${upi}&am=${grandTotal}`;
-  const upiQr =
-    shouldPrintQr && upi ? await promiseQrCode(upiUrl) : null;
+  const upiQr = shouldPrintQr && upi ? await promiseQrCode(upiUrl) : null;
   return upiQr;
 };
 
@@ -211,6 +210,14 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
         partyMetaHeading: "Bill To",
       };
       return proformaInvoice;
+    case "purchase_order":
+      const purchaseOrder = {
+        ...data,
+        title: "Purchase Orders",
+        billMetaHeading: "PO Information",
+        partyMetaHeading: "PO to",
+      };
+      return purchaseOrder;
     case "invoice":
       const upiQr = await getUpiQrCodeByPrintSettings({
         upi: bill.org?.bank?.upi,

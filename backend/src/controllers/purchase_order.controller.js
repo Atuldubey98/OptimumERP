@@ -23,6 +23,11 @@ const {
   hasUserReachedCreationLimits,
 } = require("../helpers/crud.helper");
 const entities = require("../constants/entities");
+const Setting = require("../models/settings.model");
+const { ToWords } = require("to-words");
+const ums = require("../constants/um");
+const taxRates = require("../constants/gst");
+const currencies = require("../constants/currencies");
 
 exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
   const requestBody = req.body;
@@ -184,71 +189,18 @@ exports.getPurchaseOrder = requestAsyncHandler(async (req, res) => {
 });
 
 exports.viewPurchaseOrder = requestAsyncHandler(async (req, res) => {
-  const id = req.params.id;
-  if (!isValidObjectId(id)) throw new PurchaseOrderNotFound();
-  const templateName = req.query.template || "simple";
-  const locationTemplate = `templates/${templateName}`;
-  const purchaseOrder = await PurchaseOrder.findOne({
-    _id: id,
+  const filter = {
+    _id: req.params.id,
     org: req.params.orgId,
-  })
-    .populate("party", "name gstNo panNo")
-    .populate("createdBy", "name email")
-    .populate("org", "name address gstNo panNo bank");
-  if (!purchaseOrder) throw new PurchaseOrderNotFound();
-  const grandTotal = (purchaseOrder.items || []).reduce(
-    (total, invoiceItem) =>
-      total +
-      (invoiceItem.price *
-        invoiceItem.quantity *
-        (100 +
-          (invoiceItem.gst === "none"
-            ? 0
-            : parseFloat(invoiceItem.gst.split(":")[1])))) /
-        100,
-    0
-  );
-  const setting = await Setting.findOne({
-    org: req.params.orgId,
+  };
+  const template = req.query.template || "simple";
+  const locationTemplate = `templates/${template}`;
+  const data = await getBillDetail({
+    Bill: PurchaseOrder,
+    filter,
+    NotFound: PurchaseOrderNotFound,
   });
-  const currencySymbol = currencies[setting.currency].symbol;
-  const items = purchaseOrder.items.map(
-    ({ name, price, quantity, gst, um, code }) => ({
-      name,
-      quantity,
-      code,
-      gst: taxRates.find((taxRate) => taxRate.value === gst)?.label,
-      um: ums.find((unit) => unit.value === um)?.label,
-      price: `${currencySymbol} ${price.toFixed(2)}`,
-      total: `${currencySymbol} ${(
-        price *
-        quantity *
-        ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-      ).toFixed(2)}`,
-    })
-  );
-  const toWords = new ToWords({
-    localeCode: setting.localeCode || "en-IN",
-    converterOptions: {
-      ignoreDecimal: true,
-    },
-  });
-  return res.render(locationTemplate, {
-    entity: purchaseOrder,
-    num: purchaseOrder.num,
-    items,
-    bank: null,
-    grandTotalInWords: toWords.convert(grandTotal, { currency: true }),
-    upiQr: null,
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    total: `${currencySymbol} ${purchaseOrder.total.toFixed(2)}`,
-    sgst: `${currencySymbol} ${purchaseOrder.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${purchaseOrder.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${purchaseOrder.igst.toFixed(2)}`,
-    title: "Purchase Order",
-    billMetaHeading: "Purchase Order information",
-    partyMetaHeading: "Order To",
-  });
+  return res.render(locationTemplate, data);
 });
 
 exports.downloadPurchaseOrder = requestAsyncHandler(async (req, res) => {

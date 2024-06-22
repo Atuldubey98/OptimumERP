@@ -181,7 +181,7 @@ export default function ExpensesPage() {
             heading={"Expense"}
             formBtnLabel={"Create New"}
             isOpen={isExpenseOpen}
-            disable={disable}
+            disable={data.reachedLimit}
             item={{
               ...expenseSelected,
               date: moment(expenseSelected.date).format("DD-MM-YYYY"),

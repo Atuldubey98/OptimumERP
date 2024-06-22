@@ -110,7 +110,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   return (
     <Stack spacing={6}>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
-        <Heading fontSize={"lg"}>Transaction</Heading>
+        <Heading fontSize={"lg"}>Close financial year</Heading>
         <TransactionPopoverInstructions />
       </Flex>
       <Skeleton isLoaded={!loading}>
