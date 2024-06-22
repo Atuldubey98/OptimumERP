@@ -149,7 +149,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <Divider />
-            <SimpleGrid minChildWidth={450} gap={4}>
+            <SimpleGrid minChildWidth={350} gap={4}>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
                   Invoice Prefix{" "}

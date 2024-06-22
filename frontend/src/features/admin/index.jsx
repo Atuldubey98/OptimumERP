@@ -254,7 +254,7 @@ export default function AdminPage() {
                                 Save
                               </Button>
                             </Flex>
-                            <SimpleGrid gap={3} minChildWidth={450}>
+                            <SimpleGrid gap={3} minChildWidth={350}>
                               <FormControl isRequired>
                                 <FormLabel>Name</FormLabel>
                                 <Input

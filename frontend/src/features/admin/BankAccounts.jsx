@@ -20,7 +20,7 @@ export default function BankAccounts({ bankFormik }) {
     <form onSubmit={bankFormik.handleSubmit}>
       <Stack>
         <Box bg={bg} p={3}>
-          <Heading fontSize={"lg"}>Print Settings Invoice</Heading>
+          <Heading fontSize={"lg"}>Bank</Heading>
         </Box>
         <Box p={4}>
           <Flex justifyContent="flex-end" alignItems={"center"}>
