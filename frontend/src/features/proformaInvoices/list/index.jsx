@@ -31,6 +31,7 @@ export default function ProformaInvoicesPage() {
     currentPage,
     totalPages,
     totalCount,
+    reachedLimit,
     fetchItems: fetchFn,
     status,
   } = useDateFilterFetch({
@@ -137,8 +138,6 @@ export default function ProformaInvoicesPage() {
       setProformaInvoiceStatus("idle");
     }
   };
-  const { disable } = useLimitsInFreePlan({ key: "proformaInvoices" });
-
   return (
     <MainLayout>
       <Box p={4}>
@@ -148,7 +147,7 @@ export default function ProformaInvoicesPage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={disable}
+            isAddDisabled={reachedLimit}
             limitKey={"proformaInvoices"}
             caption={`Total proforma invoices found : ${totalCount}`}
             heading={"Proforma Invoices"}

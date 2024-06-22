@@ -12,9 +12,17 @@ const path = require("path");
 const Invoice = require("../models/invoice.model");
 const Transaction = require("../models/transaction.model");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
-const { saveBill, getNextSequence, getBillDetail, deleteBill } = require("../helpers/bill.helper");
+const {
+  saveBill,
+  getNextSequence,
+  getBillDetail,
+  deleteBill,
+} = require("../helpers/bill.helper");
 const logger = require("../logger");
 const {
   sendHtmlToPdfResponse,
@@ -48,7 +56,7 @@ exports.getProformaInvoices = requestAsyncHandler(async (req, res) => {
       modelName: entitiesConfig.PROFORMA_INVOICES,
       model: ProformaInvoice,
     });
-  const invoices = await ProformaInvoice.find(filter)
+  const proformaInvoices = await ProformaInvoice.find(filter)
     .sort({ createdAt: -1 })
     .populate("party")
     .populate("org")
@@ -57,11 +65,16 @@ exports.getProformaInvoices = requestAsyncHandler(async (req, res) => {
     .exec();
 
   return res.status(200).json({
-    data: invoices,
+    data: proformaInvoices,
     page,
     limit,
     totalPages,
     total,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "proformaInvoices",
+    }),
   });
 });
 exports.getNextProformaInvoiceNo = requestAsyncHandler(async (req, res) => {

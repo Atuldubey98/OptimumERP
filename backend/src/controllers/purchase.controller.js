@@ -6,7 +6,10 @@ const Purchase = require("../models/purchase.model");
 const path = require("path");
 const Joi = require("joi");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 const logger = require("../logger");
 const {
@@ -93,6 +96,11 @@ exports.getPurchases = requestAsyncHandler(async (req, res) => {
     totalPages,
     total,
     message: "Purchases retrieved successfully",
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "purchases",
+    }),
   });
 });
 

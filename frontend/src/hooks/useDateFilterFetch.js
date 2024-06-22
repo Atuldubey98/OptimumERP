@@ -3,13 +3,14 @@ import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
 import useQuery from "./useQuery";
-import moment from 'moment';
+import moment from "moment";
 export default function useDateFilterFetch({ entity }) {
   const [billItems, setBillItems] = useState({
     totalPages: 0,
     totalCount: 0,
     currentPage: 0,
     items: [],
+    reachedLimit: true,
   });
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
@@ -45,6 +46,7 @@ export default function useDateFilterFetch({ entity }) {
       totalCount: data.total,
       currentPage: data.page,
       totalPages: data.totalPages,
+      reachedLimit: data.reachedLimit,
     });
     setStatus("success");
     return () => {
@@ -65,9 +67,11 @@ export default function useDateFilterFetch({ entity }) {
   useEffect(() => {
     if (entity) fetchItems();
   }, [searchQuery, dateFilter, page, entity]);
-  const { items, currentPage, totalCount, totalPages } = billItems;
+  const { items, currentPage, totalCount, totalPages, reachedLimit } =
+    billItems;
   return {
     items,
+    reachedLimit,
     onChangeDateFilter,
     dateFilter,
     status,

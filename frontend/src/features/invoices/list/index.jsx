@@ -6,6 +6,8 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { isAxiosError } from "axios";
+import moment from "moment";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../../constants/invoice";
@@ -21,12 +23,10 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
-import { isAxiosError } from "axios";
-import useLimitsInFreePlan from '../../../hooks/useLimitsInFreePlan';
-import moment from "moment";
 export default function InvoicesPage() {
   const {
     items: invoices,
+    reachedLimit,
     dateFilter,
     onChangeDateFilter,
     currentPage,
@@ -120,7 +120,6 @@ export default function InvoicesPage() {
     onOpen: openRecordPaymentModal,
     onClose: closeRecordPaymentModal,
   } = useDisclosure();
-  const { disable } = useLimitsInFreePlan({ key: "invoices" });
 
   return (
     <MainLayout>
@@ -138,7 +137,7 @@ export default function InvoicesPage() {
               />
             }
             limitKey={"invoices"}
-            isAddDisabled={disable}
+            isAddDisabled={reachedLimit}
             heading={"Invoices"}
             tableData={invoices.map(invoiceTableMapper)}
             caption={`Total invoices found : ${totalCount}`}

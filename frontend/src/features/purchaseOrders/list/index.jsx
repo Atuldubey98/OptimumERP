@@ -30,6 +30,7 @@ export default function PurchaseOrderPage() {
     items: purchaseOrderItems,
     status,
     dateFilter,
+    reachedLimit,
     onChangeDateFilter,
     fetchItems,
     totalCount,
@@ -84,7 +85,6 @@ export default function PurchaseOrderPage() {
     onClose: closeBillModal,
     onOpen: openBillModal,
   } = useDisclosure();
-  const { disable } = useLimitsInFreePlan({ key: "purchaseOrders" });
   const onSaveBill = async (item) => {
     try {
       const currentInvoice = item || invoice;
@@ -123,7 +123,7 @@ export default function PurchaseOrderPage() {
         ) : (
           <Box>
             <TableLayout
-              isAddDisabled={disable}
+              isAddDisabled={reachedLimit}
               onAddNewItem={() => {
                 navigate(`create`);
               }}

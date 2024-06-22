@@ -6,6 +6,7 @@ import useQuery from "./useQuery";
 
 export default function useExpenseCategories() {
   const [expenseCategories, setExpenseCategories] = useState([]);
+  const [reachedLimit, setReachedLimit] = useState(true);
   const [status, setStatus] = useState("idle");
   const { orgId } = useParams();
   const query = useQuery();
@@ -23,6 +24,7 @@ export default function useExpenseCategories() {
         }
       );
       setExpenseCategories(data.data);
+      setReachedLimit(data.reachedLimit);
       setStatus("success");
     }),
     [search]
@@ -35,6 +37,7 @@ export default function useExpenseCategories() {
     fetchExpenseCategories,
     status,
     expenseCategories,
+    reachedLimit,
     onSetExpenseCategories,
   };
 }

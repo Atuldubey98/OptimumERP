@@ -31,6 +31,7 @@ export default function PurchasePage() {
   const {
     items: purchases,
     dateFilter,
+    reachedLimit,
     onChangeDateFilter,
     currentPage,
     totalPages,
@@ -110,7 +111,6 @@ export default function PurchasePage() {
     onOpen: openPayout,
     onClose: closePayout,
   } = useDisclosure();
-  const { disable } = useLimitsInFreePlan({ key: "purchases" });
 
   return (
     <MainLayout>
@@ -121,7 +121,7 @@ export default function PurchasePage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={disable}
+            isAddDisabled={reachedLimit}
             filter={
               <TableDateFilter
                 onChangeDateFilter={onChangeDateFilter}

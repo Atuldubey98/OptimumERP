@@ -9,7 +9,10 @@ const Transaction = require("../models/transaction.model");
 const path = require("path");
 const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 const {
   saveBill,
@@ -94,6 +97,11 @@ exports.getQuotes = requestAsyncHandler(async (req, res) => {
     total,
     totalPages,
     message: "Quotes retrieved successfully",
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "quotes",
+    }),
   });
 });
 

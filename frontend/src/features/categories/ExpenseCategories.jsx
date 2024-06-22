@@ -34,6 +34,7 @@ export default function ExpenseCategories() {
     expenseCategories,
     status,
     onSetExpenseCategories,
+    reachedLimit,
   } = useExpenseCategories();
   const { orgId } = useParams();
   const {
@@ -129,7 +130,6 @@ export default function ExpenseCategories() {
   };
   const deleting = expenseCategoryStatus === "deleting";
   const navigate = useNavigate();
-  const { disable } = useLimitsInFreePlan({ key: "expenseCategories" });
 
   return (
     <Box p={1}>
@@ -139,7 +139,7 @@ export default function ExpenseCategories() {
         </Flex>
       ) : (
         <TableLayout
-          isAddDisabled={disable}
+          isAddDisabled={reachedLimit}
           caption={`Total expense categories : ${expenseCategories.length}`}
           filter={
             <Box maxW={"md"}>

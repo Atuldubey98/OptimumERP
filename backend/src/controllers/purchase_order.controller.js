@@ -18,7 +18,10 @@ const {
   renderHtml,
   sendHtmlToPdfResponse,
 } = require("../helpers/render_engine.helper");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entities = require("../constants/entities");
 
 exports.createPurchaseOrder = requestAsyncHandler(async (req, res) => {
@@ -71,6 +74,11 @@ exports.getPurchaseOrders = requestAsyncHandler(async (req, res) => {
     page,
     limit,
     totalPages,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "purchaseOrders",
+    }),
     total,
   });
 });

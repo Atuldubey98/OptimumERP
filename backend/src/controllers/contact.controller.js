@@ -4,7 +4,10 @@ const Contact = require("../models/contacts.model");
 const { ContactNotFound } = require("../errors/contact.error");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 
 exports.createContact = requestAsyncHandler(async (req, res) => {
@@ -38,6 +41,11 @@ exports.getContacts = requestAsyncHandler(async (req, res) => {
     totalPages,
     total,
     data: contacts,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "contacts",
+    }),
   });
 });
 exports.updateContact = requestAsyncHandler(async (req, res) => {

@@ -9,6 +9,7 @@ const usePaginatedFetch = ({ url }) => {
     totalPages: 0,
     totalCount: 0,
     currentPage: 0,
+    reachedLimit: true,
   });
   const query = useQuery();
   const [status, setStatus] = useState("idle");
@@ -32,6 +33,7 @@ const usePaginatedFetch = ({ url }) => {
         totalPages: data.totalPages,
         currentPage: data.currentPage,
         totalCount: data.totalCount,
+        reachedLimit: data.reachedLimit,
       });
       setStatus("success");
     }, [search, page])

@@ -10,6 +10,7 @@ export default function useProducts() {
     totalCount: 0,
     totalPages: 0,
     page: 0,
+    reachedLimit: true,
   });
   const [status, setStatus] = useState("idle");
   const { requestAsyncHandler } = useAsyncCall();
@@ -43,6 +44,7 @@ export default function useProducts() {
         totalCount: data.totalCount,
         totalPages: data.totalPages,
         page: data.page,
+        reachedLimit: data.reachedLimit,
       });
       setStatus("success");
       return () => {
@@ -55,6 +57,7 @@ export default function useProducts() {
     products,
     totalCount,
     totalPages,
+    reachedLimit,
     page: currentPage,
   } = productsPaginated;
   return {
@@ -62,6 +65,7 @@ export default function useProducts() {
     totalCount,
     products,
     currentPage,
+    reachedLimit,
     totalPages,
     fetchProducts,
   };

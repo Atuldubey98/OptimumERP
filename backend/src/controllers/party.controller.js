@@ -10,7 +10,10 @@ const mongoose = require("mongoose");
 const Purchase = require("../models/purchase.model");
 const Contact = require("../models/contacts.model");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 const xl = require("excel4node");
 
@@ -74,6 +77,11 @@ exports.getAllParty = requestAsyncHandler(async (req, res) => {
     totalPages,
     total,
     data: parties,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "parties",
+    }),
   });
 });
 

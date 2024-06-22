@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react";
-import MainLayout from "../common/main-layout";
 import {
   Box,
   Flex,
@@ -9,25 +7,26 @@ import {
   TagLeftIcon,
   useDisclosure,
 } from "@chakra-ui/react";
-import useProducts from "../../hooks/useProducts";
-import ProductMenu from "./ProductMenu";
-import TableLayout from "../common/table-layout";
-import ShowDrawer from "../common/ShowDrawer";
-import useQuery from "../../hooks/useQuery";
-import useProductForm from "../../hooks/useProductForm";
-import ProductFormDrawer from "./ProductFormDrawer";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { CgProductHunt } from "react-icons/cg";
+import { MdOutlineHomeRepairService } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import useAsyncCall from "../../hooks/useAsyncCall";
-import Pagination from "../common/main-layout/Pagination";
-import SearchItem from "../common/table-layout/SearchItem";
-import AlertModal from "../common/AlertModal";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-import { MdOutlineHomeRepairService } from "react-icons/md";
-import { CgProductHunt } from "react-icons/cg";
-import { ums } from "../estimates/create/data";
+import useProductForm from "../../hooks/useProductForm";
+import useProducts from "../../hooks/useProducts";
+import useQuery from "../../hooks/useQuery";
 import instance from "../../instance";
-import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
-import moment from "moment";
+import AlertModal from "../common/AlertModal";
+import ShowDrawer from "../common/ShowDrawer";
+import MainLayout from "../common/main-layout";
+import Pagination from "../common/main-layout/Pagination";
+import TableLayout from "../common/table-layout";
+import SearchItem from "../common/table-layout/SearchItem";
+import { ums } from "../estimates/create/data";
+import ProductFormDrawer from "./ProductFormDrawer";
+import ProductMenu from "./ProductMenu";
 export default function ProductsPage() {
   const {
     isOpen: isProductFormOpen,
@@ -49,6 +48,7 @@ export default function ProductsPage() {
     totalCount,
     totalPages,
     currentPage,
+    reachedLimit,
   } = useProducts();
   const { orgId = "", productCategoryId } = useParams();
   const [heading, setHeading] = useState();
@@ -139,7 +139,6 @@ export default function ProductsPage() {
       </Tag>
     ),
   });
-  const { disable } = useLimitsInFreePlan({ key: "products" });
 
   return (
     <MainLayout>
@@ -150,7 +149,7 @@ export default function ProductsPage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={disable}
+            isAddDisabled={reachedLimit}
             filter={
               <Box maxW={"md"}>
                 <SearchItem />

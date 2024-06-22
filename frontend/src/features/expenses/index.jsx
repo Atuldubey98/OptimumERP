@@ -1,22 +1,21 @@
-import MainLayout from "../common/main-layout";
-import usePaginatedFetch from "../../hooks/usePaginatedFetch";
-import { useParams } from "react-router-dom";
 import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
+import { useFormik } from "formik";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import * as Yup from "yup";
+import useAsyncCall from "../../hooks/useAsyncCall";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
+import instance from "../../instance";
+import AlertModal from "../common/AlertModal";
+import ShowDrawer from "../common/ShowDrawer";
+import MainLayout from "../common/main-layout";
+import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseForm from "./ExpenseForm";
-import { useFormik } from "formik";
-import instance from "../../instance";
-import Pagination from "../common/main-layout/Pagination";
-import { useEffect, useState } from "react";
-import ShowDrawer from "../common/ShowDrawer";
-import useAsyncCall from "../../hooks/useAsyncCall";
-import AlertModal from "../common/AlertModal";
-import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-import * as Yup from "yup";
-import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
-import moment from "moment";
 export default function ExpensesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, expenseCategoryId } = useParams();
@@ -112,7 +111,6 @@ export default function ExpensesPage() {
   });
   const deleting = expenseStatus === "deleting";
   const { symbol } = useCurrentOrgCurrency();
-  const { disable } = useLimitsInFreePlan({ key: "expenses" });
 
   return (
     <MainLayout>
@@ -123,7 +121,7 @@ export default function ExpensesPage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={disable}
+            isAddDisabled={data.reachedLimit}
             onAddNewItem={onAddNewExpense}
             filter={
               <Box maxW={"md"}>
@@ -170,12 +168,13 @@ export default function ExpensesPage() {
             }}
           />
         )}
-        <ExpenseForm
-          isOpen={isExpenseFormOpen}
-          formik={formik}
-          onClose={closeExpenseForm}
-        />
-
+        {isExpenseFormOpen ? (
+          <ExpenseForm
+            isOpen={isExpenseFormOpen}
+            formik={formik}
+            onClose={closeExpenseForm}
+          />
+        ) : null}
         {expenseSelected ? (
           <ShowDrawer
             onClickNewItem={onAddNewExpense}

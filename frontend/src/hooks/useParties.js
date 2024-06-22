@@ -7,6 +7,7 @@ import instance from "../instance";
 export default function usePartys() {
   const [parties, setPartys] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [reachedLimit, setReachedLimit] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [totalPartys, setTotalPartys] = useState(0);
   const [status, setStatus] = useState("idle");
@@ -31,6 +32,7 @@ export default function usePartys() {
       setCurrentPage(data.page);
       setTotalPages(data.totalPages);
       setPartys(data.data);
+      setReachedLimit(data.reachedLimit);
       setStatus("success");
     }),
     [searchQuery, page]
@@ -43,6 +45,7 @@ export default function usePartys() {
     parties,
     fetchPartys,
     currentPage,
+    reachedLimit,
     totalPartys,
     totalPages,
   };

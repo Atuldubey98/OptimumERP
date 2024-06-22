@@ -4,7 +4,10 @@ const Product = require("../models/product.model");
 const { OrgNotFound } = require("../errors/org.error");
 const { ProductNotFound } = require("../errors/product.error");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 const Joi = require("joi");
 exports.createProduct = requestAsyncHandler(async (req, res) => {
@@ -61,6 +64,11 @@ exports.getAllProducts = requestAsyncHandler(async (req, res) => {
     totalCount: total,
     totalPages,
     message: "Products retrieved successfully!",
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "products",
+    }),
   });
 });
 

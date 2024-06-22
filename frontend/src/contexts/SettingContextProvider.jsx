@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import { useLocation } from "react-router-dom";
 import instance from "../instance";
 import AuthContext from "./AuthContext";
 import SettingContext from "./SettingContext";
-import { useLocation } from "react-router-dom";
 export default function SettingContextProvider({ children }) {
   const [setting, setSetting] = useState(null);
   const onSetSettingForOrganization = (newSetting) => setSetting(newSetting);
@@ -27,9 +27,6 @@ export default function SettingContextProvider({ children }) {
       localStorage.removeItem("organization");
     }
   };
-  useEffect(() => {
-    fetchSetting();
-  }, [userContext.user]);
   return (
     <SettingContext.Provider
       value={{

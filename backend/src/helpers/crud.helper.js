@@ -53,3 +53,13 @@ exports.getPaginationParams = async ({
   const totalPages = Math.ceil(total / limit);
   return { filter, page, limit, skip, total, totalPages };
 };
+
+exports.hasUserReachedCreationLimits = ({
+  relatedDocsCount,
+  userLimits,
+  key,
+}) => {
+  const currentOrgDocsCount = relatedDocsCount[key];
+  const userPlanLimit = userLimits[key] || 0;
+  return currentOrgDocsCount >= userPlanLimit;
+};

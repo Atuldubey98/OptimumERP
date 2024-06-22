@@ -35,6 +35,7 @@ export default function PartysPage() {
     fetchPartys,
     loading,
     currentPage,
+    reachedLimit,
     totalPartys,
     totalPages,
   } = useParties();
@@ -97,7 +98,6 @@ export default function PartysPage() {
     openPartyFormDrawer();
   };
   const navigate = useNavigate();
-  const { disable } = useLimitsInFreePlan({ key: "parties" });
 
   return (
     <MainLayout>
@@ -108,7 +108,7 @@ export default function PartysPage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={disable}
+            isAddDisabled={reachedLimit}
             filter={
               <Box maxW={"md"}>
                 <SearchItem />

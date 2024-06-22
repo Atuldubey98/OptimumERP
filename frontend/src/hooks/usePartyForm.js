@@ -7,7 +7,7 @@ import instance from "../instance";
 
 const partyDto = Yup.object({
   name: Yup.string()
-    .min(2, "Cannot be less than 2")
+    .min(3, "Cannot be less than 2")
     .max(80, "Cannot be greater than 80")
     .required("Please give party name")
     .label("Name"),
@@ -16,7 +16,7 @@ const partyDto = Yup.object({
     .label("Shipping address")
     .optional(),
   billingAddress: Yup.string()
-    .min(2, "Cannot be less than 2")
+    .min(3, "Cannot be less than 2")
     .max(150, "Cannot be greater than 80")
     .label("Billing address"),
   gstNo: Yup.string().label("GST Number"),

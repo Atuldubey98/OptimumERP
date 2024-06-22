@@ -2,7 +2,7 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const ProductCategory = require("../models/product_category.model");
 const Product = require("../models/product.model");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const { getPaginationParams, hasUserReachedCreationLimits } = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 exports.createProductCategory = requestAsyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -36,6 +36,11 @@ exports.getAllProductCategories = requestAsyncHandler(async (req, res) => {
     limit,
     totalPages,
     totalCount: total,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "productCategories",
+    }),
   });
 });
 

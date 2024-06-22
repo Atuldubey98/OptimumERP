@@ -6,19 +6,18 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
-import usePaginatedFetch from "../../hooks/usePaginatedFetch";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import TableLayout from "../common/table-layout";
-import ItemCategoryForm from "./ItemCategoryForm";
-import useItemCategoryForm from "../../hooks/useItemCategoryForm";
-import Pagination from "../common/main-layout/Pagination";
-import VertIconMenu from "../common/table-layout/VertIconMenu";
-import AlertModal from "../common/AlertModal";
-import instance from "../../instance";
 import { isAxiosError } from "axios";
+import React, { useCallback, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import useItemCategoryForm from "../../hooks/useItemCategoryForm";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
+import instance from "../../instance";
+import AlertModal from "../common/AlertModal";
+import Pagination from "../common/main-layout/Pagination";
+import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
-import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
+import VertIconMenu from "../common/table-layout/VertIconMenu";
+import ItemCategoryForm from "./ItemCategoryForm";
 
 export default function ItemCategories() {
   const { orgId } = useParams();
@@ -80,7 +79,6 @@ export default function ItemCategories() {
     openItemCategoryDeleteModal();
   };
   const navigate = useNavigate();
-  const { disable } = useLimitsInFreePlan({ key: "productCategories" });
 
   const location = useLocation();
   return (
@@ -91,7 +89,7 @@ export default function ItemCategories() {
         </Flex>
       ) : (
         <TableLayout
-          isAddDisabled={disable}
+          isAddDisabled={data.reachedLimit}
           filter={
             <Box maxW={"md"}>
               <SearchItem />

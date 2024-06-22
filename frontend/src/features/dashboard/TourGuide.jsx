@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Heading,
   Image,
   Stack,

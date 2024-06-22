@@ -20,7 +20,10 @@ const Quotes = require("../models/quotes.model");
 const ProformaInvoice = require("../models/proforma_invoice.model");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 const {
   promiseQrCode,
@@ -119,6 +122,11 @@ exports.getInvoices = requestAsyncHandler(async (req, res) => {
     totalPages,
     total,
     message: "Invoices retrieved successfully",
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "invoices",
+    }),
   });
 });
 

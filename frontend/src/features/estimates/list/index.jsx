@@ -29,6 +29,7 @@ export default function EstimatesPage() {
     onChangeDateFilter,
     dateFilter,
     status,
+    reachedLimit,
     currentPage,
     totalPages,
     fetchItems: fetchQuotes,
@@ -123,8 +124,6 @@ export default function EstimatesPage() {
       });
     }
   };
-  const { disable } = useLimitsInFreePlan({ key: "quotes" });
-
   const deleting = estimateStatus === "deleting";
   return (
     <MainLayout>
@@ -135,7 +134,7 @@ export default function EstimatesPage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={disable}
+            isAddDisabled={reachedLimit}
             filter={
               <BillFilter
                 dateFilter={dateFilter}

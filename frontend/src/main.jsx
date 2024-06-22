@@ -10,12 +10,12 @@ import SettingContextProvider from "./contexts/SettingContextProvider.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ChakraProvider theme={theme}>
-      <AuthContextProvider>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <SettingContextProvider>
+      <SettingContextProvider>
+        <AuthContextProvider>
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
           <App />
-        </SettingContextProvider>
-      </AuthContextProvider>
+        </AuthContextProvider>
+      </SettingContextProvider>
     </ChakraProvider>
   </BrowserRouter>
 );

@@ -12,6 +12,7 @@ export default function SelectStatus({ formik, statusList }) {
     >
       <FormLabel>Status</FormLabel>
       <Select
+      colorScheme="purple"
         value={options.find((option) => option.value === formik.values.status)}
         options={options}
         onChange={({ value }) => {

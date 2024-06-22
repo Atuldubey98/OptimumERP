@@ -13,7 +13,10 @@ const logger = require("../logger");
 const { expenseCategoryDto } = require("../dto/expense_category.dto");
 const OrgModel = require("../models/org.model");
 const { expenseDto } = require("../dto/expense.dto");
-const { getPaginationParams } = require("../helpers/crud.helper");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../helpers/crud.helper");
 const entitiesConfig = require("../constants/entities");
 
 exports.getExpense = requestAsyncHandler(async (req, res) => {
@@ -35,6 +38,8 @@ exports.getExpenseCategory = requestAsyncHandler(async (req, res) => {
 exports.createExpenseCategory = requestAsyncHandler(async (req, res) => {
   const body = await expenseCategoryDto.validateAsync(req.body);
   body.org = req.params.orgId;
+  const category = new ExpenseCategory(body);
+  await category.save();
   logger.info(`created expense category ${category.id}`);
   await OrgModel.updateOne(
     { _id: req.params.orgId },
@@ -89,7 +94,14 @@ exports.getAllExpenseCategories = requestAsyncHandler(async (req, res) => {
   const search = req.query.search || "";
   if (search) filter.$text = { $search: search };
   const categories = await ExpenseCategory.find(filter);
-  return res.status(200).json({ data: categories });
+  return res.status(200).json({
+    data: categories,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "expenseCategories",
+    }),
+  });
 });
 
 exports.createExpense = requestAsyncHandler(async (req, res) => {
@@ -134,6 +146,11 @@ exports.getAllExpenses = requestAsyncHandler(async (req, res) => {
     currentPage: page,
     totalCount: total,
     totalPages,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "expenses",
+    }),
   });
 });
 
