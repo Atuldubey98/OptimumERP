@@ -157,7 +157,7 @@ export default function PartysPage() {
             heading={"Party"}
             formBtnLabel={"Create New"}
             isOpen={isPartyDrawerOpen}
-            disable={disable}
+            disable={reachedLimit}
             item={{
               ...selectedToShowParty,
               updatedByName: selectedToShowParty?.updatedBy?.name,
