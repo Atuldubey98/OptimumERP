@@ -137,7 +137,7 @@ export default function TransactionSettingsPage() {
             <Tabs>
               <TabList>
                 <Tab>Print Settings</Tab>
-                <Tab>Financial year</Tab>
+                <Tab>Transaction</Tab>
               </TabList>
 
               <TabPanels>

@@ -43,7 +43,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
     : "free";
-  const bg = useColorModeValue("gray.100", "gray.800");
+  const bg = useColorModeValue("gray.100", "gray.700");
 
   return (
     <form onSubmit={printFormik.handleSubmit}>
@@ -52,7 +52,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
           <Heading fontSize={"lg"}>Print Settings Invoice</Heading>
         </Box>
         <Skeleton isLoaded={!loading}>
-          <Stack p={3} spacing={1}>
+          <Stack spacing={2}>
             <Flex justifyContent={"flex-start"} alignItems={"center"}>
               <Button
                 type="submit"
@@ -60,7 +60,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 size={"sm"}
                 colorScheme="blue"
               >
-                Update
+                Save
               </Button>
             </Flex>
             <Box>
@@ -77,18 +77,16 @@ export default function PrintSettings({ printFormik, formik, loading }) {
               label={currentPlan === "free" ? "Upgrade your plan" : null}
               aria-label="qr code tool tip"
             >
-              <Box>
-                <Checkbox
-                  isDisabled={
-                    !formik.values.organization || currentPlan === "free"
-                  }
-                  name="upiQr"
-                  onChange={printFormik.handleChange}
-                  isChecked={printFormik.values.upiQr}
-                >
-                  Print UPI QR
-                </Checkbox>
-              </Box>
+              <Checkbox
+                isDisabled={
+                  !formik.values.organization || currentPlan === "free"
+                }
+                name="upiQr"
+                onChange={printFormik.handleChange}
+                isChecked={printFormik.values.upiQr}
+              >
+                Print UPI QR
+              </Checkbox>
             </Tooltip>
           </Stack>
         </Skeleton>

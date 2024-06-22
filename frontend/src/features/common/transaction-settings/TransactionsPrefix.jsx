@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -14,8 +15,10 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  SimpleGrid,
   Skeleton,
   Stack,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
@@ -107,15 +110,28 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
     setCurrentSelectedPrefix(prefixType);
     onOpen();
   };
+  const bg = useColorModeValue("gray.100", "gray.700");
+
   return (
     <Stack spacing={6}>
-      <Flex justifyContent={"space-between"} alignItems={"center"}>
-        <Heading fontSize={"lg"}>Close financial year</Heading>
-        <TransactionPopoverInstructions />
-      </Flex>
+      <Box p={3} bg={bg}>
+        <Heading fontSize={"lg"}>Transaction</Heading>
+      </Box>
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
-          <Stack spacing={3}>
+          <Stack spacing={2}>
+            <Flex justifyContent={"flex-start"} alignItems={"center"}>
+              <Button
+                size={"sm"}
+                isLoading={formik.isSubmitting || loading}
+                isDisabled={!formik.values.organization}
+                type="submit"
+                colorScheme="blue"
+              >
+                Save
+              </Button>
+            </Flex>
+            <Divider />
             <FormControl isDisabled={!formik.values.organization}>
               <FormLabel>Currency</FormLabel>
               <Select
@@ -132,92 +148,95 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 }}
               />
             </FormControl>
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>
-                Invoice Prefix{" "}
-                <IconButton
-                  icon={<IoAdd />}
-                  size={"xs"}
-                  isRound
-                  onClick={() => onOpenPrefixForm("invoice")}
+            <Divider />
+            <SimpleGrid minChildWidth={450} gap={4}>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>
+                  Invoice Prefix{" "}
+                  <IconButton
+                    icon={<IoAdd />}
+                    size={"xs"}
+                    isRound
+                    onClick={() => onOpenPrefixForm("invoice")}
+                  />
+                </FormLabel>
+                <Select
+                  onChange={({ value }) => {
+                    formik.setFieldValue("invoice", value);
+                  }}
+                  options={invoicePrefixOptions}
+                  value={invoicePrefixOptions.find(
+                    (prefixOption) =>
+                      prefixOption.value === formik.values.invoice
+                  )}
                 />
-              </FormLabel>
-              <Select
-                onChange={({ value }) => {
-                  formik.setFieldValue("invoice", value);
-                }}
-                options={invoicePrefixOptions}
-                value={invoicePrefixOptions.find(
-                  (prefixOption) => prefixOption.value === formik.values.invoice
-                )}
-              />
-            </FormControl>
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>
-                Quotation Prefix{" "}
-                <IconButton
-                  icon={<IoAdd />}
-                  size={"xs"}
-                  isRound
-                  onClick={() => onOpenPrefixForm("quotation")}
+              </FormControl>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>
+                  Quotation Prefix{" "}
+                  <IconButton
+                    icon={<IoAdd />}
+                    size={"xs"}
+                    isRound
+                    onClick={() => onOpenPrefixForm("quotation")}
+                  />
+                </FormLabel>
+                <Select
+                  onChange={({ value }) => {
+                    formik.setFieldValue("quotation", value);
+                  }}
+                  options={quotationPrefixOptions}
+                  value={quotationPrefixOptions.find(
+                    (prefixOption) =>
+                      prefixOption.value === formik.values.quotation
+                  )}
                 />
-              </FormLabel>
-
-              <Select
-                onChange={({ value }) => {
-                  formik.setFieldValue("quotation", value);
-                }}
-                options={quotationPrefixOptions}
-                value={quotationPrefixOptions.find(
-                  (prefixOption) =>
-                    prefixOption.value === formik.values.quotation
-                )}
-              />
-            </FormControl>
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>
-                Proforma Invoice Prefix{" "}
-                <IconButton
-                  icon={<IoAdd />}
-                  size={"xs"}
-                  isRound
-                  onClick={() => onOpenPrefixForm("proformaInvoice")}
+              </FormControl>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>
+                  Proforma Invoice Prefix{" "}
+                  <IconButton
+                    icon={<IoAdd />}
+                    size={"xs"}
+                    isRound
+                    onClick={() => onOpenPrefixForm("proformaInvoice")}
+                  />
+                </FormLabel>
+                <Select
+                  onChange={({ value }) =>
+                    formik.setFieldValue("proformaInvoice", value)
+                  }
+                  name="proformaInvoice"
+                  options={proformaInvoicePrefixOptions}
+                  value={proformaInvoicePrefixOptions.find(
+                    (prefixOption) =>
+                      prefixOption.value === formik.values.proformaInvoice
+                  )}
                 />
-              </FormLabel>
-              <Select
-                onChange={({ value }) =>
-                  formik.setFieldValue("proformaInvoice", value)
-                }
-                name="proformaInvoice"
-                options={proformaInvoicePrefixOptions}
-                value={proformaInvoicePrefixOptions.find(
-                  (prefixOption) =>
-                    prefixOption.value === formik.values.proformaInvoice
-                )}
-              />
-            </FormControl>
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>
-                Purchase Order{" "}
-                <IconButton
-                  icon={<IoAdd />}
-                  size={"xs"}
-                  isRound
-                  onClick={() => onOpenPrefixForm("purchaseOrder")}
+              </FormControl>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>
+                  Purchase Order{" "}
+                  <IconButton
+                    icon={<IoAdd />}
+                    size={"xs"}
+                    isRound
+                    onClick={() => onOpenPrefixForm("purchaseOrder")}
+                  />
+                </FormLabel>
+                <Select
+                  onChange={({ value }) =>
+                    formik.setFieldValue("purchaseOrder", value)
+                  }
+                  name="purchaseOrder"
+                  options={purchaseOrderPrefixOptions}
+                  value={purchaseOrderPrefixOptions.find(
+                    (prefixOption) =>
+                      prefixOption.value === formik.values.purchaseOrder
+                  )}
                 />
-              </FormLabel>
-              <Select
-                onChange={({ value }) =>
-                  formik.setFieldValue("purchaseOrder", value)
-                }
-                name="purchaseOrder"
-                options={purchaseOrderPrefixOptions}
-                value={purchaseOrderPrefixOptions.find(
-                  (prefixOption) =>
-                    prefixOption.value === formik.values.purchaseOrder
-                )}
-              />
-            </FormControl>
+              </FormControl>
+            </SimpleGrid>
             <Box>
               <FormControl>Fiscal Year</FormControl>
               <Flex gap={3}>
@@ -250,17 +269,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               </Flex>
             </Box>
           </Stack>
-          <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
-            <Button
-              size={"sm"}
-              isLoading={formik.isSubmitting || loading}
-              isDisabled={!formik.values.organization}
-              type="submit"
-              colorScheme="blue"
-            >
-              Update
-            </Button>
-          </Flex>
         </form>
       </Skeleton>
       <PrefixForm

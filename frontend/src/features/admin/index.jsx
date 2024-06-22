@@ -227,6 +227,7 @@ export default function AdminPage() {
                 <TabList>
                   <Tab>Organization</Tab>
                   <Tab>Bank</Tab>
+                  <Tab>Users</Tab>
                 </TabList>
 
                 <TabPanels>
@@ -324,60 +325,62 @@ export default function AdminPage() {
                       <BankAccounts bankFormik={bankFormik} />
                     </Box>
                   </TabPanel>
+                  <TabPanel>
+                    <Box p={3} bg={bg}>
+                      <Heading fontSize={"lg"}>Registered Users</Heading>
+                    </Box>
+                    <Box p={3}>
+                      <Flex justifyContent={"flex-end"} alignItems={"center"}>
+                        {organization ? (
+                          <Button
+                            isDisabled={
+                              currentPlan === "free" ||
+                              (currentPlan === "gold" && orgUsers.length >= 5)
+                            }
+                            leftIcon={<IoAdd />}
+                            colorScheme="blue"
+                            onClick={() => {
+                              formik.setValues({
+                                name: "",
+                                email: "",
+                                password: "",
+                                role: "user",
+                              });
+                              onOpen();
+                            }}
+                            size={"sm"}
+                          >
+                            Add new
+                          </Button>
+                        ) : null}
+                      </Flex>
+                      <TableContainer>
+                        <Table variant="simple">
+                          <TableCaption></TableCaption>
+                          <Thead>
+                            <Tr>
+                              <Th>Active</Th>
+                              <Th>Name</Th>
+                              <Th>Email</Th>
+                              <Th>Role</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {orgUsers.map((orgUser) => (
+                              <OrgUserRow
+                                fetchUsers={fetchOrgUsers}
+                                organization={organization}
+                                key={orgUser._id}
+                                orgUser={orgUser}
+                              />
+                            ))}
+                          </Tbody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  </TabPanel>
                 </TabPanels>
               </Tabs>
-              <Box p={3} bg={bg}>
-                <Heading fontSize={"lg"}>Registered Users</Heading>
-              </Box>
-              <Box p={3}>
-                <Flex justifyContent={"flex-end"} alignItems={"center"}>
-                  {organization ? (
-                    <Button
-                      isDisabled={
-                        currentPlan === "free" ||
-                        (currentPlan === "gold" && orgUsers.length >= 5)
-                      }
-                      leftIcon={<IoAdd />}
-                      colorScheme="blue"
-                      onClick={() => {
-                        formik.setValues({
-                          name: "",
-                          email: "",
-                          password: "",
-                          role: "user",
-                        });
-                        onOpen();
-                      }}
-                      size={"sm"}
-                    >
-                      Add new
-                    </Button>
-                  ) : null}
-                </Flex>
-                <TableContainer>
-                  <Table variant="simple">
-                    <TableCaption></TableCaption>
-                    <Thead>
-                      <Tr>
-                        <Th>Active</Th>
-                        <Th>Name</Th>
-                        <Th>Email</Th>
-                        <Th>Role</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {orgUsers.map((orgUser) => (
-                        <OrgUserRow
-                          fetchUsers={fetchOrgUsers}
-                          organization={organization}
-                          key={orgUser._id}
-                          orgUser={orgUser}
-                        />
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              </Box>
             </Stack>
           </Fade>
         )}
