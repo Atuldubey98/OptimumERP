@@ -24,6 +24,7 @@ const invoiceDto = Joi.object({
   sequence: Joi.number().label("Invoice No.").required(),
   poNo: Joi.string().label("PO Number").allow("").optional(),
   poDate: Joi.string().label("PO Date").allow("").optional(),
+  dueDate: Joi.string().label("Due Date").allow("").optional(),
   status: Joi.string()
     .default("draft")
     .valid("draft", "sent", "pending")

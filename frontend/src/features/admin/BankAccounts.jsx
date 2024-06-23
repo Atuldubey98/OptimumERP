@@ -33,7 +33,7 @@ export default function BankAccounts({ bankFormik }) {
               Save
             </Button>
           </Flex>
-          <SimpleGrid gap={3} minChildWidth={450}>
+          <SimpleGrid gap={3} minChildWidth={300}>
             <FormControl
               isRequired
               isInvalid={bankFormik.errors.accountHolderName}

@@ -18,6 +18,7 @@ import {
   SimpleGrid,
   Skeleton,
   Stack,
+  Text,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -149,7 +150,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               />
             </FormControl>
             <Divider />
-            <SimpleGrid minChildWidth={350} gap={4}>
+            <SimpleGrid minChildWidth={300} gap={4}>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
                   Invoice Prefix{" "}
@@ -238,8 +239,8 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               </FormControl>
             </SimpleGrid>
             <Box>
-              <FormControl>Fiscal Year</FormControl>
-              <Flex gap={3}>
+              <Text fontWeight={"bold"}>Fiscal Year</Text>
+              <SimpleGrid minChildWidth={150} gap={3}>
                 <FormControl
                   isDisabled={!formik.values.organization}
                   isRequired
@@ -266,7 +267,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                     onChange={formik.handleChange}
                   />
                 </FormControl>
-              </Flex>
+              </SimpleGrid>
             </Box>
           </Stack>
         </form>

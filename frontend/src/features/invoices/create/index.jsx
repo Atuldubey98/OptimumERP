@@ -12,7 +12,7 @@ import {
   SimpleGrid,
   Spinner,
   Switch,
-  Textarea
+  Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
@@ -152,6 +152,15 @@ export default function CreateInvoicePage() {
                       value={formik.values.poDate}
                       onChange={formik.handleChange}
                       name="poDate"
+                      type="date"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Due Date</FormLabel>
+                    <Input
+                      value={formik.values.dueDate}
+                      onChange={formik.handleChange}
+                      name="dueDate"
                       type="date"
                     />
                   </FormControl>

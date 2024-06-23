@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
-import moment from 'moment';
+import moment from "moment";
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("idle");
   const invoiceSchema = Yup.object().shape({
@@ -22,6 +22,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     status: Yup.string().required("Status is required"),
     poNo: Yup.string().optional(),
     poDate: Yup.string().optional(),
+    dueDate: Yup.string().optional(),
     items: Yup.array()
       .of(
         Yup.object().shape({
@@ -112,6 +113,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             prefix,
             date,
             status,
+            dueDate,
             items,
             description,
             billingAddress = "",
@@ -124,6 +126,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             terms,
             sequence,
             prefix,
+            dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
             date: new Date(date).toISOString().split("T")[0],
             status,
             partyDetails: party,

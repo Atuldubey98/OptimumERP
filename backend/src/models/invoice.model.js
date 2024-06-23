@@ -42,6 +42,9 @@ const invoiceSchema = new Schema(
     poDate: {
       type: Date,
     },
+    dueDate: {
+      type: Date,
+    },
     totalTax: {
       type: Number,
       default: 0,
