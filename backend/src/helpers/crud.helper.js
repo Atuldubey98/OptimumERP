@@ -61,5 +61,5 @@ exports.hasUserReachedCreationLimits = ({
 }) => {
   const currentOrgDocsCount = relatedDocsCount[key];
   const userPlanLimit = userLimits[key] || 0;
-  return currentOrgDocsCount >= userPlanLimit;
+  return userPlanLimit  && currentOrgDocsCount >= userPlanLimit;
 };

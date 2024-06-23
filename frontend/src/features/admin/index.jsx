@@ -226,7 +226,7 @@ export default function AdminPage() {
               <Tabs size={"sm"} isLazy>
                 <TabList>
                   <Tab>Organization</Tab>
-                  <Tab>Bank</Tab>
+
                   <Tab>Users</Tab>
                 </TabList>
 
@@ -319,12 +319,11 @@ export default function AdminPage() {
                         </Stack>
                       </form>
                     </Box>
-                  </TabPanel>
-                  <TabPanel>
                     <Box>
                       <BankAccounts bankFormik={bankFormik} />
                     </Box>
                   </TabPanel>
+
                   <TabPanel>
                     <Box p={3} bg={bg}>
                       <Heading fontSize={"lg"}>Registered Users</Heading>

@@ -49,7 +49,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
     <form onSubmit={printFormik.handleSubmit}>
       <Stack>
         <Box bg={bg} p={3}>
-          <Heading fontSize={"lg"}>Print Settings Invoice</Heading>
+          <Heading fontSize={"lg"}>Print Settings</Heading>
         </Box>
         <Skeleton isLoaded={!loading}>
           <Stack spacing={2}>
@@ -70,7 +70,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 onChange={printFormik.handleChange}
                 isChecked={printFormik.values.bank}
               >
-                Print Bank Details
+                Print Bank Details on Invoice
               </Checkbox>
             </Box>
             <Tooltip
@@ -85,7 +85,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 onChange={printFormik.handleChange}
                 isChecked={printFormik.values.upiQr}
               >
-                Print UPI QR
+                Print UPI QR on Invoice
               </Checkbox>
             </Tooltip>
           </Stack>
