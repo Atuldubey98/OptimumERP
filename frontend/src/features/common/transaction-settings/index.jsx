@@ -136,7 +136,7 @@ export default function TransactionSettingsPage() {
           {formik.values.organization ? (
             <Tabs size={"sm"}>
               <TabList>
-                <Tab>Print Settings</Tab>
+                <Tab>Configuration</Tab>
                 <Tab>Transaction</Tab>
               </TabList>
 

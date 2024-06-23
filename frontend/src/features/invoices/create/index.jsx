@@ -158,6 +158,7 @@ export default function CreateInvoicePage() {
                   <FormControl>
                     <FormLabel>Due Date</FormLabel>
                     <Input
+                      min={formik.values.date}
                       value={formik.values.dueDate}
                       onChange={formik.handleChange}
                       name="dueDate"

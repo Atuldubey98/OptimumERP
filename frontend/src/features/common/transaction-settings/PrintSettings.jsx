@@ -7,7 +7,7 @@ import {
   Skeleton,
   Stack,
   Tooltip,
-  useColorModeValue
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import AuthContext from "../../../contexts/AuthContext";
@@ -47,21 +47,16 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 Print Bank Details on Invoice
               </Checkbox>
             </Box>
-            <Tooltip
-              label={currentPlan === "free" ? "Upgrade your plan" : null}
-              aria-label="qr code tool tip"
+
+            <Checkbox
+              title={currentPlan === "free" ? "Upgrade your plan" : null}
+              isDisabled={!formik.values.organization || currentPlan === "free"}
+              name="upiQr"
+              onChange={printFormik.handleChange}
+              isChecked={printFormik.values.upiQr}
             >
-              <Checkbox
-                isDisabled={
-                  !formik.values.organization || currentPlan === "free"
-                }
-                name="upiQr"
-                onChange={printFormik.handleChange}
-                isChecked={printFormik.values.upiQr}
-              >
-                Print UPI QR on Invoice
-              </Checkbox>
-            </Tooltip>
+              Print UPI QR on Invoice
+            </Checkbox>
           </Stack>
         </Skeleton>
       </Stack>
