@@ -16,5 +16,6 @@ export default function useCurrentOrgCurrency() {
     proformaInvoice: [""],
   };
   const symbol = currencies[currency].symbol;
-  return { currency, symbol, transactionPrefix, prefixes };
+  const financialYear = setting?.financialYear;
+  return { currency, symbol, transactionPrefix, prefixes, financialYear };
 }

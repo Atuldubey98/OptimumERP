@@ -12,6 +12,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
+import HelpPopover from "../common/HelpPopover";
 
 export default function BankAccounts({ bankFormik }) {
   const bg = useColorModeValue("gray.100", "gray.700");
@@ -22,8 +23,14 @@ export default function BankAccounts({ bankFormik }) {
         <Box bg={bg} p={3}>
           <Heading fontSize={"lg"}>Bank</Heading>
         </Box>
-        <Box p={4}>
-          <Flex justifyContent="flex-end" alignItems={"center"}>
+        <Box>
+          <Flex justifyContent="space-between" alignItems={"center"}>
+            <HelpPopover
+              title={"Bank Details"}
+              description={
+                "It collects the bank details. To print it on invoice you can change application settings"
+              }
+            />
             <Button
               size={"sm"}
               type="submit"

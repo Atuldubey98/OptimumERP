@@ -3,7 +3,10 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  HStack,
   Input,
+  PinInput,
+  PinInputField,
   Stack,
   useToast,
 } from "@chakra-ui/react";
@@ -117,13 +120,14 @@ export default function ForgotPasswordPage() {
               <OTPAlert />
               <FormControl isRequired>
                 <FormLabel>OTP</FormLabel>
-                <Input
-                  value={otp}
-                  onChange={(e) => setOtp(e.currentTarget.value)}
-                  name="otp"
-                  type="text"
-                  placeholder="OTP"
-                />
+                <HStack>
+                  <PinInput value={otp} onChange={(value) => setOtp(value)} otp>
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                  </PinInput>
+                </HStack>
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>New password</FormLabel>

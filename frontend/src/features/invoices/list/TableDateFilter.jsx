@@ -10,6 +10,7 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Stack,
   useDisclosure,
   useOutsideClick,
 } from "@chakra-ui/react";
@@ -39,10 +40,12 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
             <FocusLock returnFocus persistentFocus={false}>
               <PopoverArrow />
               <PopoverCloseButton onClick={onToggle} />
-              <DateFilter
-                dateFilter={dateFilter}
-                onChangeDateFilter={onChangeDateFilter}
-              />
+              <Stack spacing={2}>
+                <DateFilter
+                  dateFilter={dateFilter}
+                  onChangeDateFilter={onChangeDateFilter}
+                />
+              </Stack>
             </FocusLock>
           </PopoverContent>
         </Popover>

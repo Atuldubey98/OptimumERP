@@ -60,8 +60,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           quotation: "",
           proformaInvoice: "",
           localeCode: "en-IN",
-          startDate: "",
-          endDate: "",
           prefixes: {
             invoice: [""],
             quotation: [""],
@@ -83,8 +81,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         localeCode: data.data.localeCode || "en-IN",
         proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
         currency: data.data.currency || "INR",
-        endDate: moment(data.data.financialYear.end).format("YYYY-MM-DD"),
-        startDate: moment(data.data.financialYear.start).format("YYYY-MM-DD"),
         prefixes: data.data.prefixes,
       });
       printFormik.setValues(data.data.printSettings);
@@ -132,24 +128,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 Save
               </Button>
             </Flex>
-            <Divider />
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Currency</FormLabel>
-              <Select
-                name="currency"
-                value={currencyOptions.find(
-                  (currencyOption) =>
-                    currencyOption.value === formik.values.currency
-                )}
-                options={currencyOptions}
-                onChange={({ value }) => {
-                  formik.setFieldValue("currency", value);
-                  const localeCode = currencies[value].localeCode;
-                  formik.setFieldValue("localeCode", localeCode);
-                }}
-              />
-            </FormControl>
-            <Divider />
+
             <SimpleGrid minChildWidth={300} gap={4}>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
@@ -238,37 +217,24 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 />
               </FormControl>
             </SimpleGrid>
-            <Box>
-              <Text fontWeight={"bold"}>Fiscal Year</Text>
-              <SimpleGrid minChildWidth={150} gap={3}>
-                <FormControl
-                  isDisabled={!formik.values.organization}
-                  isRequired
-                >
-                  <FormLabel>Start Date</FormLabel>
-                  <Input
-                    name="startDate"
-                    value={formik.values.startDate}
-                    onChange={formik.handleChange}
-                    placeholder="dd-mm-yyyy"
-                    type="date"
-                  />
-                </FormControl>
-                <FormControl
-                  isDisabled={!formik.values.organization}
-                  isRequired
-                >
-                  <FormLabel>End Date</FormLabel>
-                  <Input
-                    value={formik.values.endDate}
-                    placeholder="dd-mm-yyyy"
-                    type="date"
-                    name="endDate"
-                    onChange={formik.handleChange}
-                  />
-                </FormControl>
-              </SimpleGrid>
-            </Box>
+            <Divider />
+            <FormControl isDisabled={!formik.values.organization}>
+              <FormLabel>Currency</FormLabel>
+              <Select
+                name="currency"
+                value={currencyOptions.find(
+                  (currencyOption) =>
+                    currencyOption.value === formik.values.currency
+                )}
+                options={currencyOptions}
+                onChange={({ value }) => {
+                  formik.setFieldValue("currency", value);
+                  const localeCode = currencies[value].localeCode;
+                  formik.setFieldValue("localeCode", localeCode);
+                }}
+              />
+            </FormControl>
+            <Divider />
           </Stack>
         </form>
       </Skeleton>

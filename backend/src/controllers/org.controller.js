@@ -174,7 +174,14 @@ exports.closeFinancialYear = requestAsyncHandler(async (req, res) => {
   const setting = await Setting.findOneAndUpdate(
     { org: orgId },
     {
-      financialYear: body,
+      ...body,
+      $addToSet: {
+        "prefixes.invoice": body.transactionPrefix.invoice,
+        "prefixes.quotation": body.transactionPrefix.quotation,
+        "prefixes.purchaseOrder": body.transactionPrefix.purchaseOrder,
+        "prefixes.proformaInvoice": body.transactionPrefix.proformaInvoice,
+        "prefixes.saleOrder": body.transactionPrefix.saleOrder,
+      },
     },
     {
       new: true,

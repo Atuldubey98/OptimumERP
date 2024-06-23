@@ -39,7 +39,7 @@ export default function MainLayout({ children }) {
             <Box position={""} boxShadow={"md"} p={2}>
               <Header onSideNavOpen={onOpen} />
             </Box>
-            <Box maxH={"100%"} overflowY={"auto"}>
+            <Box flex={1} maxH={"100%"} overflowY={"auto"}>
               {children}
             </Box>
           </Flex>

@@ -6,8 +6,6 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  Input,
-  SimpleGrid,
   Spinner,
   Stack,
   Tab,
@@ -34,15 +32,16 @@ import { IoAdd } from "react-icons/io5";
 import * as Yup from "yup";
 import SettingContext from "../../contexts/SettingContext";
 import useAsyncCall from "../../hooks/useAsyncCall";
+import useAuth from "../../hooks/useAuth";
 import useOrganizations from "../../hooks/useOrganizations";
 import instance from "../../instance";
-import HelpPopover from "../common/HelpPopover";
 import MainLayout from "../common/main-layout";
+import AdminTasks from "./AdminTasks";
 import BankAccounts from "./BankAccounts";
+import CurrentOrgDetailsForm from "./CurrentOrgDetailsForm";
 import OrgUserRow from "./OrgUserRow";
 import RegisteUserDrawer from "./RegisteUserDrawer";
-import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
-import useAuth from "../../hooks/useAuth";
+import HelpPopover from "../common/HelpPopover";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -222,114 +221,48 @@ export default function AdminPage() {
           </Flex>
         ) : (
           <Fade in={!loading && organization}>
-            <Stack marginBlock={3} spacing={1}>
+            <Stack spacing={1}>
               <Tabs size={"sm"} isLazy>
                 <TabList>
                   <Tab>Organization</Tab>
-
                   <Tab>Users</Tab>
                 </TabList>
 
                 <TabPanels>
                   <TabPanel>
-                    <Box>
-                      <form onSubmit={handleSubmit}>
-                        <Stack spacing={2}>
-                          <Box p={3} bg={bg}>
-                            <Heading fontSize={"lg"}>
-                              Current Organization Details
-                            </Heading>
-                          </Box>
-                          <Box p={4}>
-                            <Flex
-                              justifyContent={"flex-end"}
-                              alignItems={"center"}
-                            >
-                              <Button
-                                size={"sm"}
-                                type="submit"
-                                isLoading={isSubmitting}
-                                colorScheme="blue"
-                              >
-                                Save
-                              </Button>
-                            </Flex>
-                            <SimpleGrid gap={3} minChildWidth={300}>
-                              <FormControl isRequired>
-                                <FormLabel>Name</FormLabel>
-                                <Input
-                                  onChange={handleChange}
-                                  name="name"
-                                  value={currentSelectedOrganization.name}
-                                />
-                              </FormControl>
-                              <FormControl isRequired>
-                                <FormLabel>Address</FormLabel>
-                                <Input
-                                  onChange={handleChange}
-                                  name="address"
-                                  value={currentSelectedOrganization.address}
-                                />
-                              </FormControl>
-                              <FormControl>
-                                <FormLabel>GST No</FormLabel>
-                                <Input
-                                  onChange={handleChange}
-                                  name="gstNo"
-                                  value={currentSelectedOrganization.gstNo}
-                                />
-                              </FormControl>
-                              <FormControl isRequired>
-                                <FormLabel>PAN No</FormLabel>
-                                <Input
-                                  onChange={handleChange}
-                                  name="panNo"
-                                  value={currentSelectedOrganization.panNo}
-                                />
-                              </FormControl>
-                              <FormControl>
-                                <FormLabel>Website</FormLabel>
-                                <Input
-                                  type="url"
-                                  onChange={handleChange}
-                                  name="web"
-                                  value={currentSelectedOrganization.web}
-                                />
-                              </FormControl>
-                              <FormControl>
-                                <FormLabel>Telephone</FormLabel>
-                                <Input
-                                  type="tel"
-                                  onChange={handleChange}
-                                  name="telephone"
-                                  value={currentSelectedOrganization.telephone}
-                                />
-                              </FormControl>
-                              <FormControl>
-                                <FormLabel>Email</FormLabel>
-                                <Input
-                                  type="email"
-                                  onChange={handleChange}
-                                  name="email"
-                                  value={currentSelectedOrganization.email}
-                                />
-                              </FormControl>
-                            </SimpleGrid>
-                          </Box>
-                        </Stack>
-                      </form>
-                    </Box>
-                    <Box>
-                      <BankAccounts bankFormik={bankFormik} />
-                    </Box>
+                    <Stack spacing={2}>
+                      <Box>
+                        <CurrentOrgDetailsForm
+                          currentSelectedOrganization={
+                            currentSelectedOrganization
+                          }
+                          handleChange={handleChange}
+                          handleSubmit={handleSubmit}
+                          isSubmitting={isSubmitting}
+                        />
+                      </Box>
+                      <Box>
+                        <BankAccounts bankFormik={bankFormik} />
+                      </Box>
+                      <Box>
+                        <AdminTasks organization={organization} />
+                      </Box>
+                    </Stack>
                   </TabPanel>
 
                   <TabPanel>
                     <Box p={3} bg={bg}>
                       <Heading fontSize={"lg"}>Registered Users</Heading>
                     </Box>
-                    <Box p={3}>
-                      <Flex justifyContent={"flex-end"} alignItems={"center"}>
+                   
+                    <Box pt={2}>
+                      <Flex justifyContent={"space-between"} alignItems={"center"}>
+                      <HelpPopover
+                      title={"Users"}
+                      description={
+                        "Here you can create users who can use the application. User can have two permissions Admin and User."
+                      }
+                    />
                         {organization ? (
                           <Button
                             isDisabled={

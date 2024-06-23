@@ -7,7 +7,7 @@ export default function DateFilter({
 }) {
   return (
     <>
-      <FormControl isRequired={isRequired}>
+      <FormControl size={"sm"} isRequired={isRequired}>
         <FormLabel fontWeight={"bold"}>Start Date</FormLabel>
         <Input
           name="startDate"
@@ -17,7 +17,7 @@ export default function DateFilter({
           type="date"
         />
       </FormControl>
-      <FormControl isRequired={isRequired}>
+      <FormControl size={"sm"} isRequired={isRequired}>
         <FormLabel fontWeight={"bold"}>End Date</FormLabel>
         <Input
           value={dateFilter.endDate}
