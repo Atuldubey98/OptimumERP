@@ -1,29 +1,29 @@
 import {
   Box,
-  Heading,
   Flex,
   FormControl,
   FormLabel,
+  Heading,
   SimpleGrid,
   Spinner,
   Stack,
-  useToast,
-  Tabs,
-  TabList,
   Tab,
-  TabPanels,
+  TabList,
   TabPanel,
+  TabPanels,
+  Tabs,
+  useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useContext, useState } from "react";
+import { useContext } from "react";
+import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../../contexts/SettingContext";
 import useOrganizations from "../../../hooks/useOrganizations";
 import instance from "../../../instance";
 import MainLayout from "../main-layout";
 import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
-import { GoOrganization } from "react-icons/go";
 export default function TransactionSettingsPage() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
@@ -134,7 +134,7 @@ export default function TransactionSettingsPage() {
         )}
         <SimpleGrid gap={8} minChildWidth={300}>
           {formik.values.organization ? (
-            <Tabs isLazy size={"sm"}>
+            <Tabs size={"sm"}>
               <TabList>
                 <Tab>Print Settings</Tab>
                 <Tab>Transaction</Tab>

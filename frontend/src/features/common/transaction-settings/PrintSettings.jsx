@@ -4,40 +4,14 @@ import {
   Checkbox,
   Flex,
   Heading,
-  IconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Skeleton,
   Stack,
   Tooltip,
-  useColorModeValue,
+  useColorModeValue
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { IoIosHelpCircleOutline } from "react-icons/io";
 import AuthContext from "../../../contexts/AuthContext";
-function PrintPopOverInstructions() {
-  return (
-    <Popover>
-      <PopoverTrigger>
-        <IconButton size={"sm"} icon={<IoIosHelpCircleOutline />} />
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverHeader>Print Settings</PopoverHeader>
-        <PopoverBody>
-          Here you can define print settings for your UPI QR Code and bank
-          details
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
+
 export default function PrintSettings({ printFormik, formik, loading }) {
   const auth = useContext(AuthContext);
   const currentPlan = auth?.user?.currentPlan
