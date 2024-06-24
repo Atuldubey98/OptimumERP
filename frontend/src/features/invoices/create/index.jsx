@@ -51,7 +51,7 @@ export default function CreateInvoicePage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner size={"md"} />
             </Flex>
-          ) : invoiceId && formik.values ? (
+          ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 {formik.values._id ? null : (
@@ -175,8 +175,6 @@ export default function CreateInvoicePage() {
                 <TermsAndCondtions formik={formik} />
               </Grid>
             </form>
-          ) : (
-            <Heading>Not found</Heading>
           )}
         </FormikProvider>
       </Box>
