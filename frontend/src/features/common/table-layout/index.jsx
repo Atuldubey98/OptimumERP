@@ -7,7 +7,7 @@ import {
   Td,
   Th,
   Thead,
-  Tr,
+  Tr
 } from "@chakra-ui/react";
 import React, { memo } from "react";
 import HeadingButtons from "./HeadingButtons";
@@ -41,7 +41,7 @@ function TableLayoutMemoized({
       />
       {filter}
       <TableContainer>
-        <Table size={"sm"} variant={"simple"}>
+        <Table size={"sm"} variant={"striped"}>
           <TableCaption>{caption}</TableCaption>
           <Thead>
             <Tr>
@@ -55,10 +55,7 @@ function TableLayoutMemoized({
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
                 {Object.keys(selectedKeys).map((col) => (
-                  <Td
-                    isNumeric={typeof tableRow[col] === "number"}
-                    key={col}
-                  >
+                  <Td isNumeric={typeof tableRow[col] === "number"} key={col}>
                     {tableRow[col]}
                   </Td>
                 ))}

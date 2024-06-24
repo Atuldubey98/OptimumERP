@@ -1,12 +1,14 @@
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { Box, Divider, Flex, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import CurrentOrganization from "../main-layout/CurrentOrganization";
+import AvatarProfileWithOptions from "./AvatarProfileWithOptions";
 import Banner from "./Banner";
 import { SidebarLinksList } from "./SidebarLinksList";
-import AvatarProfileWithOptions from "./AvatarProfileWithOptions";
 export default function Sidebar() {
+  const bg = useColorModeValue("gray.100", "gray.700");
   return (
     <Flex
+      bg={bg}
       flexDirection={"column"}
       alignItems={"center"}
       justifyContent={"space-between"}

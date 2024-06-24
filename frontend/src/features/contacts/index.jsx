@@ -1,18 +1,20 @@
 import {
   Box,
   Flex,
+  FormControl,
+  FormLabel,
   Grid,
   Heading,
   Spinner,
   Stack,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { LuContact2 } from "react-icons/lu";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
@@ -24,6 +26,10 @@ import HeadingButtons from "../common/table-layout/HeadingButtons";
 import SearchItem from "../common/table-layout/SearchItem";
 import Contact from "./Contact";
 import ContactForm from "./ContactForm";
+import FilterPopoverWrapper from "../common/FilterPopoverWrapper";
+import { Select } from "chakra-react-select";
+import { contactTypes } from "../../constants/contactTypes";
+import useQuery from "../../hooks/useQuery";
 const contactDto = Yup.object({
   name: Yup.string().label("Name").required().min(2).max(40),
   email: Yup.string().email().max(40).optional(),
@@ -34,6 +40,8 @@ const contactDto = Yup.object({
 });
 export default function ContactsPage() {
   const { orgId } = useParams();
+  const query = useQuery();
+  const type = query.get("type") || "";
   const { data, fetchFn, status } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/contacts`,
   });
@@ -120,6 +128,15 @@ export default function ContactsPage() {
       setDeleting(false);
     }
   };
+  const navigate = useNavigate();
+  const allContactTypes = [
+    {
+      value: "",
+      label: "All",
+      description: "All contacts",
+    },
+    ...contactTypes,
+  ];
   return (
     <MainLayout>
       <Box p={4}>
@@ -137,9 +154,23 @@ export default function ContactsPage() {
           </Flex>
         ) : (
           <Stack spacing={3} marginBlock={3}>
-            <Box maxW={"md"}>
-              <SearchItem placeholder="Search Contacts" />
-            </Box>
+            <Flex justifyContent={"flex-start"} gap={2} alignItems={"center"}>
+              <Box maxW={"md"} flex={1}>
+                <SearchItem placeholder="Search Contacts" />
+              </Box>
+              <FilterPopoverWrapper>
+                <FormControl>
+                  <FormLabel>Contact type</FormLabel>
+                  <Select
+                    options={allContactTypes}
+                    onChange={({ value }) => navigate(`?type=${value}`)}
+                    value={allContactTypes.find(
+                      (contactType) => contactType.value === type
+                    )}
+                  />
+                </FormControl>
+              </FilterPopoverWrapper>
+            </Flex>
             <Box maxW={"container.xxl"}>
               {data.items.length ? (
                 <Grid

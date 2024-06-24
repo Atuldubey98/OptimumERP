@@ -58,7 +58,6 @@ exports.getStats = requestAsyncHandler(async (req, res) => {
   const invoicesTotal = await Invoice.aggregate([
     {
       $match: {
-        financialYear: setting.financialYear,
         org: new Types.ObjectId(req.params.orgId),
         date: {
           $gte: startDate,
@@ -78,7 +77,6 @@ exports.getStats = requestAsyncHandler(async (req, res) => {
   const purchaseTotal = await Purchase.aggregate([
     {
       $match: {
-        financialYear: setting.financialYear,
         org: new Types.ObjectId(req.params.orgId),
         date: {
           $gte: startDate,
@@ -98,7 +96,6 @@ exports.getStats = requestAsyncHandler(async (req, res) => {
   const topFiveClientTotal = await Invoice.aggregate([
     {
       $match: {
-        financialYear: setting.financialYear,
         org: new Types.ObjectId(req.params.orgId),
         date: {
           $gte: startDate,

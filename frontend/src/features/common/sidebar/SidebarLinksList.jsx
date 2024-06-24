@@ -3,13 +3,12 @@ import {
   Divider,
   Flex,
   Icon,
-  IconButton,
   List,
   ListItem,
   Text,
 } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import React, { useState } from "react";
+import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
@@ -20,7 +19,6 @@ import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
-import AuthContext from "../../../contexts/AuthContext";
 export const SidebarLinksList = () => {
   const {
     orgId = localStorage.getItem("organization") || "",
@@ -33,10 +31,7 @@ export const SidebarLinksList = () => {
       .map((settingLink) => `/${orgId}${settingLink.link}`)
       .includes(location.pathname)
   );
-  const auth = useContext(AuthContext);
-  const currentPlan = auth?.user?.currentPlan
-    ? auth?.user?.currentPlan.plan
-    : "free";
+
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
@@ -58,7 +53,10 @@ export const SidebarLinksList = () => {
           }}
         />
         <Divider />
-        <ListItem>
+        <ListItem
+          cursor={"pointer"}
+          onClick={() => setOpenSettings(!openSettings)}
+        >
           <Flex
             p={1}
             paddingInline={2}
@@ -76,23 +74,19 @@ export const SidebarLinksList = () => {
                 <Icon as={IoSettingsOutline} />
                 <Text>Settings</Text>
               </Flex>
-              <IconButton
-                size={"xs"}
-                icon={openSettings ? <FaChevronUp /> : <FaChevronDown />}
-                cursor={"pointer"}
-                onClick={() => setOpenSettings(!openSettings)}
-              />
             </Flex>
+            {openSettings ? <FiChevronDown /> : <FiChevronRight />}
           </Flex>
         </ListItem>
         {openSettings ? <SettingLinks /> : null}
+        <Divider />
         <HeaderLink
-         headerLink={{
-           icon: LiaMoneyBillWaveAltSolid,
-           link: `/pricings`,
-           label: "Plans",
-         }}
-       />
+          headerLink={{
+            icon: LiaMoneyBillWaveAltSolid,
+            link: `/pricings`,
+            label: "Plans",
+          }}
+        />
         <HeaderLink
           headerLink={{
             icon: SiAboutdotme,

@@ -15,6 +15,7 @@ const usePaginatedFetch = ({ url }) => {
   const [status, setStatus] = useState("idle");
   const page = query.get("page") || 1;
   const search = query.get("query") || "";
+  const contactType = query.get("type");
   const { partyId, expenseCategoryId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const fetchFn = useCallback(
@@ -26,6 +27,7 @@ const usePaginatedFetch = ({ url }) => {
           search,
           party: partyId,
           category: expenseCategoryId,
+          type: contactType,
         },
       });
       setData({
@@ -36,11 +38,11 @@ const usePaginatedFetch = ({ url }) => {
         reachedLimit: data.reachedLimit,
       });
       setStatus("success");
-    }, [search, page])
+    }, [search, page, contactType])
   );
   useEffect(() => {
     fetchFn();
-  }, [search, page]);
+  }, [search, page, contactType]);
   const onSetItems = (items) => setData({ ...data, items });
   return {
     fetchFn,

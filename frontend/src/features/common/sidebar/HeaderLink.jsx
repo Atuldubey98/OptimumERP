@@ -3,7 +3,7 @@ import React from "react";
 import { NavLink, useParams } from "react-router-dom";
 export default function HeaderLink({ headerLink }) {
   const { orgId } = useParams();
-  const bg = useColorModeValue("gray.200", "gray.600");
+  const bg = useColorModeValue("gray.300", "gray.600");
 
   return (
     <ListItem key={headerLink.label}>

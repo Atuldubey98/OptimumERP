@@ -186,8 +186,8 @@ export default function ProductsPage() {
           <ShowDrawer
             disable={reachedLimit}
             onClickNewItem={onOpenDrawerForAddingNewProduct}
-            heading={"Products"}
-            formBtnLabel={"Add new product"}
+            heading={"Product"}
+            formBtnLabel={"Add new"}
             isOpen={isProductDrawerOpen}
             item={{
               ...selectedToShowProduct,

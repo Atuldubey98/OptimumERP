@@ -16,6 +16,7 @@ import { statusList } from "../create/data";
 import BillFilter from "./BillFilter";
 import BillModal from "./BillModal";
 import Status from "./Status";
+import TableDateFilter from "../../invoices/list/TableDateFilter";
 
 export default function EstimatesPage() {
   const { symbol } = useCurrentOrgCurrency();
@@ -136,7 +137,7 @@ export default function EstimatesPage() {
           <TableLayout
             isAddDisabled={reachedLimit}
             filter={
-              <BillFilter
+              <TableDateFilter
                 dateFilter={dateFilter}
                 onChangeDateFilter={onChangeDateFilter}
               />

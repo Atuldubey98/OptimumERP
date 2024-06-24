@@ -8,16 +8,12 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
+  ModalOverlay
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import TourGuide from "./TourGuide";
+import { LiaCaretLeftSolid, LiaCaretRightSolid } from "react-icons/lia";
 import dashboard from "../../assets/dashboard.png";
+import TourGuide from "./TourGuide";
 export default function GuideTourModal({ isOpen, onClose }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const onNextTab = () => setCurrentIndex((prev) => ++prev);
@@ -77,6 +73,7 @@ export default function GuideTourModal({ isOpen, onClose }) {
       description: "Configure advanced settings and user permissions.",
     },
   ];
+  const guide = tabs[currentIndex];
   return (
     <Modal
       size={"3xl"}
@@ -88,39 +85,29 @@ export default function GuideTourModal({ isOpen, onClose }) {
       <ModalContent>
         <ModalHeader>Welcome to OptimumERP!</ModalHeader>
         <ModalCloseButton />
-        <ModalBody pb={6}>
-          <Tabs index={currentIndex} orientation="vertical">
-            <TabList w={200} onChange={(index) => setCurrentIndex(index)}>
-              {tabs.map((tab, index) => (
-                <Tab onClick={() => setCurrentIndex(index)} key={tab.label}>
-                  {tab.label}
-                </Tab>
-              ))}
-            </TabList>
-
-            <TabPanels>
-              {tabs.map((tab) => (
-                <TabPanel key={tab.label}>
-                  <TourGuide
-                    description={tab.description}
-                    imgSrc={dashboard}
-                    label={tab.label}
-                  />
-                </TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
+        <ModalBody>
+          <TourGuide
+            description={guide.description}
+            imgSrc={dashboard}
+            label={guide.label}
+          />
         </ModalBody>
         <Divider />
         <ModalFooter>
           <ButtonGroup>
             {currentIndex === 0 ? null : (
-              <Button onClick={onPreviousTab} mr={3}>
+              <Button
+                leftIcon={<LiaCaretLeftSolid />}
+                onClick={onPreviousTab}
+                mr={3}
+              >
                 Previous
               </Button>
             )}
             {tabs.length - 1 === currentIndex ? null : (
-              <Button onClick={onNextTab}>Next</Button>
+              <Button rightIcon={<LiaCaretRightSolid />} onClick={onNextTab}>
+                Next
+              </Button>
             )}
             {tabs.length - 1 === currentIndex ? (
               <Button onClick={onClose} colorScheme="blue">
