@@ -125,20 +125,24 @@ exports.getNextQuotationNumber = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: nextSequence });
 });
 
-exports.viewQuote = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    _id: req.params.quoteId,
-    org: req.params.orgId,
-  };
-  const template = req.query.template || "simple";
-  const locationTemplate = `templates/${template}`;
-  const data = await getBillDetail({
-    Bill: Quote,
-    filter,
-    NotFound: QuoteNotFound,
-  });
-  return res.render(locationTemplate, data);
-});
+exports.viewQuote = async (req, res) => {
+  try {
+    const filter = {
+      _id: req.params.quoteId,
+      org: req.params.orgId,
+    };
+    const template = req.query.template || "simple";
+    const locationTemplate = `templates/${template}`;
+    const data = await getBillDetail({
+      Bill: Quote,
+      filter,
+      NotFound: QuoteNotFound,
+    });
+    return res.render(locationTemplate, data);
+  } catch (error) {
+    return res.render(`templates/error`);
+  }
+};
 
 exports.downloadQuote = requestAsyncHandler(async (req, res) => {
   const template = req.query.template || "simple";

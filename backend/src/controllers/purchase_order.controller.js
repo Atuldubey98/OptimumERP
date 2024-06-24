@@ -188,20 +188,24 @@ exports.getPurchaseOrder = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: po });
 });
 
-exports.viewPurchaseOrder = requestAsyncHandler(async (req, res) => {
-  const filter = {
-    _id: req.params.id,
-    org: req.params.orgId,
-  };
-  const template = req.query.template || "simple";
-  const locationTemplate = `templates/${template}`;
-  const data = await getBillDetail({
-    Bill: PurchaseOrder,
-    filter,
-    NotFound: PurchaseOrderNotFound,
-  });
-  return res.render(locationTemplate, data);
-});
+exports.viewPurchaseOrder = async (req, res) => {
+  try {
+    const filter = {
+      _id: req.params.id,
+      org: req.params.orgId,
+    };
+    const template = req.query.template || "simple";
+    const locationTemplate = `templates/${template}`;
+    const data = await getBillDetail({
+      Bill: PurchaseOrder,
+      filter,
+      NotFound: PurchaseOrderNotFound,
+    });
+    return res.render(locationTemplate, data);
+  } catch (error) {
+    return res.render(`templates/error`);
+  }
+};
 
 exports.downloadPurchaseOrder = requestAsyncHandler(async (req, res) => {
   const id = req.params.id;

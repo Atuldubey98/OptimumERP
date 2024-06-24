@@ -31,7 +31,6 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "./PartySelectBill";
-import { useParams } from "react-router-dom";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
@@ -42,7 +41,6 @@ export default function CreateInvoicePage() {
   const { disable } = useLimitsInFreePlan({
     key: "invoices",
   });
-  const { invoiceId } = useParams();
   return (
     <MainLayout>
       <Box p={5}>

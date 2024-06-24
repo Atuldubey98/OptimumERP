@@ -117,22 +117,26 @@ exports.getPurchase = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: purchase });
 });
 
-exports.viewPurchaseBill = requestAsyncHandler(async (req, res) => {
-  const purchaseId = req.params.purchaseId;
-  if (!isValidObjectId(purchaseId)) throw new PurchaseNotFound();
-  const filter = {
-    _id: purchaseId,
-    org: req.params.orgId,
-  };
-  const template = req.query.template || "simple";
-  const locationTemplate = `templates/${template}`;
-  const data = await getBillDetail({
-    Bill: Purchase,
-    filter,
-    NotFound: PurchaseNotFound,
-  });
-  return res.render(locationTemplate, data);
-});
+exports.viewPurchaseBill = async (req, res) => {
+  try {
+    const purchaseId = req.params.purchaseId;
+    if (!isValidObjectId(purchaseId)) throw new PurchaseNotFound();
+    const filter = {
+      _id: purchaseId,
+      org: req.params.orgId,
+    };
+    const template = req.query.template || "simple";
+    const locationTemplate = `templates/${template}`;
+    const data = await getBillDetail({
+      Bill: Purchase,
+      filter,
+      NotFound: PurchaseNotFound,
+    });
+    return res.render(locationTemplate, data);
+  } catch (error) {
+    return res.render(`templates/error`);
+  }
+};
 
 exports.downloadPurchaseInvoice = requestAsyncHandler(async (req, res) => {
   const purchaseId = req.params.purchaseId;

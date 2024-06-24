@@ -140,22 +140,26 @@ exports.getProformaInvoiceById = requestAsyncHandler(async (req, res) => {
   return res.status(200).json({ data: invoice });
 });
 
-exports.viewProformaInvoicce = requestAsyncHandler(async (req, res) => {
-  const id = req.params.id;
-  if (!isValidObjectId(id)) throw new ProformaInvoiceNotFound();
-  const filter = {
-    _id: id,
-    org: req.params.orgId,
-  };
-  const template = req.query.template || "simple";
-  const locationTemplate = `templates/${template}`;
-  const data = await getBillDetail({
-    Bill: ProformaInvoice,
-    filter,
-    NotFound: ProformaInvoiceNotFound,
-  });
-  return res.render(locationTemplate, data);
-});
+exports.viewProformaInvoicce = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!isValidObjectId(id)) throw new ProformaInvoiceNotFound();
+    const filter = {
+      _id: id,
+      org: req.params.orgId,
+    };
+    const template = req.query.template || "simple";
+    const locationTemplate = `templates/${template}`;
+    const data = await getBillDetail({
+      Bill: ProformaInvoice,
+      filter,
+      NotFound: ProformaInvoiceNotFound,
+    });
+    return res.render(locationTemplate, data);
+  } catch (error) {
+    return res.render(`templates/error`);
+  }
+};
 
 exports.downloadProformaInvoice = requestAsyncHandler(async (req, res) => {
   const template = req.query.template || "simple";
