@@ -13,7 +13,8 @@ const {
   updateInvoice,
   recordPayment,
   sendInvoice,
-  downloadOrViewInvoice,
+  viewInvoice,
+  downloadInvoice,
 } = require("../controllers/invoice.controller");
 
 const invoiceRouter = Router({
@@ -33,8 +34,8 @@ invoiceRouter.delete("/:invoiceId", deleteInvoice);
 invoiceRouter.get("/", getInvoices);
 
 invoiceRouter.patch("/:invoiceId", updateModel, updateInvoice);
-invoiceRouter.get("/:invoiceId/view", downloadOrViewInvoice(false));
-invoiceRouter.get("/:invoiceId/download", downloadOrViewInvoice(true));
+invoiceRouter.get("/:invoiceId/view", viewInvoice);
+invoiceRouter.get("/:invoiceId/download", downloadInvoice);
 invoiceRouter.post("/:invoiceId/payment", recordPayment);
 invoiceRouter.post(
   "/:invoiceId/send",

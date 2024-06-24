@@ -23,6 +23,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
+import useAsyncCall from "../../../hooks/useAsyncCall";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -96,8 +97,8 @@ export default function InvoicesPage() {
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
-
-  const onSaveBill = async (item) => {
+  const { requestAsyncHandler } = useAsyncCall();
+  const onSaveBill = requestAsyncHandler(async (item) => {
     const currentInvoice = item || invoice;
     const downloadBill = `/api/v1/organizations/${
       currentInvoice.org._id
@@ -113,7 +114,7 @@ export default function InvoicesPage() {
     link.href = href;
     link.click();
     URL.revokeObjectURL(href);
-  };
+  });
   const downloading = invoiceStatus === "downloading";
   const {
     isOpen: isRecordPaymentModalOpen,

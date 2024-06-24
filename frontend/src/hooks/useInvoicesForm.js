@@ -101,44 +101,42 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   useEffect(() => {
     (async () => {
       if (invoiceId) {
-        requestAsyncHandler(async () => {
-          setStatus("loading");
-          const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
-          );
-          const {
-            party,
-            terms,
-            sequence,
-            prefix,
-            date,
-            status,
-            dueDate,
-            items,
-            description,
-            billingAddress = "",
-            poDate = "",
-            poNo = "",
-          } = data.data;
-          formik.setValues({
-            _id: data.data._id,
-            party: party._id,
-            terms,
-            sequence,
-            prefix,
-            dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
-            date: new Date(date).toISOString().split("T")[0],
-            status,
-            partyDetails: party,
-            items,
-            description,
-            poDate: poDate ? poDate.split("T")[0] : "",
-            poNo,
-            billingAddress,
-            createdBy: data.data.createdBy._id,
-          });
-          setStatus("success");
-        })();
+        setStatus("loading");
+        const { data } = await instance.get(
+          `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
+        );
+        const {
+          party,
+          terms,
+          sequence,
+          prefix,
+          date,
+          status,
+          dueDate,
+          items,
+          description,
+          billingAddress = "",
+          poDate = "",
+          poNo = "",
+        } = data.data;
+        formik.setValues({
+          _id: data.data._id,
+          party: party._id,
+          terms,
+          sequence,
+          prefix,
+          dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
+          date: new Date(date).toISOString().split("T")[0],
+          status,
+          partyDetails: party,
+          items,
+          description,
+          poDate: poDate ? poDate.split("T")[0] : "",
+          poNo,
+          billingAddress,
+          createdBy: data.data.createdBy._id,
+        });
+        setStatus("success");
       } else {
         fetchNextInvoiceNumber();
       }

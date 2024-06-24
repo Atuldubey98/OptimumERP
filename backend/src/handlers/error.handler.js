@@ -1,5 +1,3 @@
-const { NODE_ENV } = require("../config");
-
 module.exports = (err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
@@ -31,13 +29,11 @@ module.exports = (err, req, res, next) => {
   }
   console.log(err);
   const name = err.name || "InternalError";
-  return res
-    .status(code > 500 ? 500 : code)
-    .json({
-      status: false,
-      message,
-      url: req.originalUrl,
-      method: req.method,
-      name,
-    });
+  return res.status(code > 500 ? 500 : code).json({
+    status: false,
+    message,
+    url: req.originalUrl,
+    method: req.method,
+    name,
+  });
 };

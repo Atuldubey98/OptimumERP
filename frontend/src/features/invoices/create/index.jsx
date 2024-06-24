@@ -31,6 +31,7 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "./PartySelectBill";
+import { useParams } from "react-router-dom";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
@@ -41,6 +42,7 @@ export default function CreateInvoicePage() {
   const { disable } = useLimitsInFreePlan({
     key: "invoices",
   });
+  const { invoiceId } = useParams();
   return (
     <MainLayout>
       <Box p={5}>
@@ -49,7 +51,7 @@ export default function CreateInvoicePage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner size={"md"} />
             </Flex>
-          ) : (
+          ) : invoiceId && formik.values ? (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 {formik.values._id ? null : (
@@ -173,6 +175,8 @@ export default function CreateInvoicePage() {
                 <TermsAndCondtions formik={formik} />
               </Grid>
             </form>
+          ) : (
+            <Heading>Not found</Heading>
           )}
         </FormikProvider>
       </Box>
