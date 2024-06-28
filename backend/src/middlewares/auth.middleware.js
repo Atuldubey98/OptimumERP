@@ -29,7 +29,7 @@ exports.authorize = requestAsyncHandler(async (req, __, next) => {
 exports.checkPlan = (plans) =>
   requestAsyncHandler(async (req, __, next) => {
     const currentPlan = req.session?.user?.currentPlan?.plan;
-    if (plans.includes(currentPlan)) next();
+    if (plans.includes(currentPlan)) return next();
     return next(new UpgradePlan());
   });
 
