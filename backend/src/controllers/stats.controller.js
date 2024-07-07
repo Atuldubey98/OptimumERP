@@ -53,7 +53,6 @@ exports.getStats = requestAsyncHandler(async (req, res) => {
       );
   }
   const orgId = req.params.orgId;
-  const setting = await Setting.findOne({ org: req.params.orgId });
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
   const invoicesTotal = await Invoice.aggregate([
     {

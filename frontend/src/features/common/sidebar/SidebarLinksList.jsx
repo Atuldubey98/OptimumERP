@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
@@ -31,7 +32,7 @@ export const SidebarLinksList = () => {
       .map((settingLink) => `/${orgId}${settingLink.link}`)
       .includes(location.pathname)
   );
-
+  const bg = useColorModeValue("black");
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
@@ -52,7 +53,7 @@ export const SidebarLinksList = () => {
             label: "Reports",
           }}
         />
-        <Divider />
+        <Divider bg={bg} />
         <ListItem
           cursor={"pointer"}
           onClick={() => setOpenSettings(!openSettings)}
@@ -79,7 +80,7 @@ export const SidebarLinksList = () => {
           </Flex>
         </ListItem>
         {openSettings ? <SettingLinks /> : null}
-        <Divider />
+        <Divider bg={bg} />
         <HeaderLink
           headerLink={{
             icon: LiaMoneyBillWaveAltSolid,

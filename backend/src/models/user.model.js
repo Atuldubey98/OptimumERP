@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-class User {
+class UserRepository {
   static findByEmailId(email) {
     return this.findOne({ email });
   }
@@ -36,6 +36,6 @@ const userSchema = new Schema(
   },
   { timestamps: true, versionKey: false }
 );
-userSchema.loadClass(User);
+userSchema.loadClass(UserRepository);
 const UserModel = model("user", userSchema);
 module.exports = UserModel;

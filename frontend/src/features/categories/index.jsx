@@ -7,8 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function CategoriesPage() {
   const tabs = [
-    { label: "Expense Categories", value: "expense", children: <ExpenseCategories /> },
-    { label: "Product Categories", value: "product", children: <ItemCategories /> },
+    { label: "Expense", value: "expense", children: <ExpenseCategories /> },
+    { label: "Product", value: "product", children: <ItemCategories /> },
   ];
   const navigate = useNavigate();
   const { orgId, type } = useParams();
