@@ -1,28 +1,29 @@
 const { Router } = require("express");
 const {
-  registerUser,
-  loginUser,
+  activate,
   currentUser,
-  logoutUser,
-  deactivateUser,
-  resetPassword,
+  deactivate,
   forgotPassword,
-  verifyOtpForgotPasswordAndReset,
-  activateUser,
-  updateUserDetails,
+  login,
+  verifyOtp,
+  logout,
+  resetPassword,
+  register,
+  update,
 } = require("../controllers/user.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const userRoutes = Router();
 
-userRoutes.post("/register", registerUser);
-userRoutes.post("/login", loginUser);
-userRoutes.get("/", authenticate, currentUser);
-userRoutes.patch("/", authenticate, updateUserDetails);
-userRoutes.post("/logout", authenticate, logoutUser);
-userRoutes.post("/reset-password", authenticate, resetPassword);
-userRoutes.post("/forgot-password", forgotPassword);
-userRoutes.post("/forgot-password/reset", verifyOtpForgotPasswordAndReset);
-userRoutes.post("/:orgId/deactivate", authenticate, authorize, deactivateUser);
-userRoutes.post("/:orgId/activate", authenticate, authorize, activateUser);
+userRoutes.post("/register", requestAsyncHandler(register));
+userRoutes.post("/login", requestAsyncHandler(login));
+userRoutes.get("/", authenticate, requestAsyncHandler(currentUser));
+userRoutes.patch("/", authenticate, requestAsyncHandler(update));
+userRoutes.post("/logout", authenticate, requestAsyncHandler(logout));
+userRoutes.post("/reset-password", authenticate, requestAsyncHandler(resetPassword));
+userRoutes.post("/forgot-password", requestAsyncHandler(forgotPassword));
+userRoutes.post("/forgot-password/reset", requestAsyncHandler(verifyOtp));
+userRoutes.post("/:orgId/deactivate", authenticate, authorize, requestAsyncHandler(deactivate));
+userRoutes.post("/:orgId/activate", authenticate, authorize, requestAsyncHandler(activate));
 
 module.exports = userRoutes;

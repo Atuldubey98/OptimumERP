@@ -23,7 +23,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
     requestAsyncHandler(async () => {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/expenses/categories`
+        `/api/v1/organizations/${orgId}/expenseCategories`
       );
       setExpenseCategories(data.data);
       setStatus("success");

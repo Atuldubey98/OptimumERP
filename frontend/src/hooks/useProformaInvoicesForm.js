@@ -17,7 +17,7 @@ export default function useProformaInvoicesForm() {
     party: Yup.string().required("Party is required").label("Party"),
     billingAddress: Yup.string()
       .min(2, "Billing Address Cannot be less than 2")
-      .max(80, "Billing Address Cannot be greater than 80")
+      .max(200, "Billing Address Cannot be greater than 200")
       .label("Billing address"),
     date: Yup.date().required("Date is required").label("Date"),
     status: Yup.string().required("Status is required"),

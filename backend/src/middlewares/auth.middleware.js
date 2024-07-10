@@ -5,7 +5,7 @@ const {
 } = require("../errors/user.error");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const OrgModel = require("../models/org.model");
-const OrgUser = require("../models/org_user.model");
+const OrgUser = require("../models/orgUser.model");
 const User = require("../models/user.model");
 
 const freePlanLimits = require("../constants/freePlanLimits");

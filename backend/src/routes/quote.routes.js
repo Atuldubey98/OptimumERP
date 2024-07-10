@@ -8,16 +8,17 @@ const {
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const {
-  createQuote,
-  updateQuote,
-  getQuote,
-  getQuotes,
-  getNextQuotationNumber,
-  viewQuote,
-  deleteQuote,
-  downloadQuote,
   convertQuoteToInvoice,
+  create,
+  download,
+  htmlView,
+  paginate,
+  read,
+  nextSequence,
+  remove,
+  update,
 } = require("../controllers/quotes.controller");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const quoteRouter = Router({
   mergeParams: true,
 });
@@ -26,27 +27,22 @@ quoteRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("quotes"),
-  createQuote
+  requestAsyncHandler(create)
 );
 
-quoteRouter.get("/nextQuoteNo", getNextQuotationNumber);
-quoteRouter.get("/:quoteId", getQuote);
+quoteRouter.get("/nextQuoteNo", requestAsyncHandler(nextSequence));
+quoteRouter.get("/:id", requestAsyncHandler(read));
 
 quoteRouter.post(
-  "/:quoteId/convertToInvoice",
+  "/:id/convertToInvoice",
   limitFreePlanOnCreateEntityForOrganization("invoices"),
-  convertQuoteToInvoice
+  requestAsyncHandler(convertQuoteToInvoice)
 );
-quoteRouter.delete("/:quoteId", deleteQuote);
-quoteRouter.get("/", paginateModel, getQuotes);
+quoteRouter.delete("/:id", requestAsyncHandler(remove));
+quoteRouter.get("/", paginateModel, requestAsyncHandler(paginate));
 
-quoteRouter.patch(
-  "/:quoteId",
-  updateModel,
-
-  updateQuote
-);
-quoteRouter.get("/:quoteId/view", viewQuote);
-quoteRouter.get("/:quoteId/download", downloadQuote);
+quoteRouter.patch("/:id", updateModel, requestAsyncHandler(update));
+quoteRouter.get("/:id/view", requestAsyncHandler(htmlView));
+quoteRouter.get("/:id/download", requestAsyncHandler(download));
 
 module.exports = quoteRouter;

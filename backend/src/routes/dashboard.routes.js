@@ -1,9 +1,9 @@
 const { Router } = require("express");
 
-const { getDashboard } = require("../controllers/dashboard.controller");
-
+const { read } = require("../controllers/dashboard.controller");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const dashboardRouter = Router({ mergeParams: true });
 
-dashboardRouter.get("/", getDashboard);
+dashboardRouter.get("/", requestAsyncHandler(read));
 
 module.exports = dashboardRouter;

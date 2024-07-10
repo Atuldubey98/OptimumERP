@@ -1,14 +1,15 @@
 const { Router } = require("express");
-const { createOrg, getOrgsOfUser } = require("../controllers/org.controller");
+const { getUserOrgs, create, } = require("../controllers/org.controller");
 const { authenticate } = require("../middlewares/auth.middleware");
 const { createModel } = require("../middlewares/crud.middleware");
-const orgUserRouter = require("./org_user.routes");
+const orgUserRouter = require("./orgUser.routes");
 const {
   checkOrgAuthorization,
 } = require("../middlewares/organization.middleware");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const organizationRouter = Router();
-organizationRouter.post("/", authenticate, createModel, createOrg);
-organizationRouter.get("/", authenticate, getOrgsOfUser);
+organizationRouter.post("/", authenticate, createModel, requestAsyncHandler(create));
+organizationRouter.get("/", authenticate, requestAsyncHandler(getUserOrgs));
 
 organizationRouter.use(
   "/:orgId",

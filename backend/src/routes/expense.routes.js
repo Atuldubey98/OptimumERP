@@ -11,53 +11,27 @@ const {
   createModel,
   updateModel,
 } = require("../middlewares/crud.middleware");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const {
-  getAllExpenses,
-  getAllExpenseCategories,
-  getExpense,
-  deleteExpense,
-  updateExpense,
-  createExpenseCategory,
-  updateExpenseCategory,
-  deleteExpenseCategory,
-  createExpense,
-  getExpenseCategory,
+  create,
+  read,
+  paginate,
+  remove,
+  update,
 } = require("../controllers/expenses.controller");
-
 const expenseRouter = Router({ mergeParams: true });
 
-expenseRouter.get("/", paginateModel, getAllExpenses);
+expenseRouter.get("/", paginateModel, requestAsyncHandler(paginate));
 
 expenseRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("expenses"),
-  createExpense
+  requestAsyncHandler(create)
 );
 
-expenseRouter.get(
-  "/categories",
-
-  getAllExpenseCategories
-);
-
-expenseRouter.post(
-  "/categories",
-  createModel,
-  limitFreePlanOnCreateEntityForOrganization("expenseCategories"),
-  createExpenseCategory
-);
-
-expenseRouter.patch(
-  "/categories/:categoryId",
-  updateModel,
-  updateExpenseCategory
-);
-
-expenseRouter.get("/categories/:categoryId", getExpenseCategory);
-expenseRouter.delete("/categories/:categoryId", deleteExpenseCategory);
-expenseRouter.get("/:expenseId", getExpense);
-expenseRouter.delete("/:expenseId", deleteExpense);
-expenseRouter.patch("/:expenseId", updateExpense);
+expenseRouter.get("/:expenseId", requestAsyncHandler(read));
+expenseRouter.delete("/:expenseId", requestAsyncHandler(remove));
+expenseRouter.patch("/:expenseId", updateModel, requestAsyncHandler(update));
 
 module.exports = expenseRouter;

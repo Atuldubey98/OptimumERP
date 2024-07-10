@@ -15,6 +15,7 @@ export default function NumberInputInteger({
   return (
     <NumberInput
       min={min}
+      isRequired
       value={formik.values[name]}
       onChange={(value) => {
         if (onlyInt) {

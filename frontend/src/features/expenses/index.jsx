@@ -26,7 +26,7 @@ export default function ExpensesPage() {
   const [heading, setHeading] = useState("Expenses");
   const fetchExpenseCategoryById = async () => {
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/expenses/categories/${expenseCategoryId}`
+      `/api/v1/organizations/${orgId}/expenseCategories/${expenseCategoryId}`
     );
     setHeading(`Expenses (${data.data.name})`);
   };

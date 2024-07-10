@@ -6,7 +6,7 @@ const app = require("./app");
 const http = require("http");
 const logger = require("./logger");
 const { MONGO_URI } = require("./config");
-const { connectDatabase, closeDBConnection } = require("./helpers/db_helper");
+const { connectDatabase, closeDBConnection } = require("./helpers/dbHelper");
 
 connectDatabase(MONGO_URI);
 const server = http.createServer(app);

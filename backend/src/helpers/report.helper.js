@@ -60,14 +60,13 @@ exports.getReportForBill = async ({ req, reportType }) => {
   };
   const paginationProps = reportTypes[reportType];
   if (!paginationProps) throw new Error("Report type not found");
-
   const Model = paginationProps.model;
-  const filter = await getPaginationParams({
+  const paginationParams = await getPaginationParams({
     req,
     shouldPaginate: false,
     ...paginationProps,
   });
-  let query = Model.find(filter).sort({ createdAt: -1 }).populate("party");
+  let query = Model.find(paginationParams.filter).sort({ createdAt: -1 }).populate("party");
   switch (reportType) {
     case "transactions":
       query = query.populate("doc");

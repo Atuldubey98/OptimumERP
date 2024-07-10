@@ -5,15 +5,16 @@ const {
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 
 const {
-  createPurchase,
-  getPurchase,
-  deletePurchase,
-  getPurchases,
-  updatePurchase,
-  viewPurchaseBill,
-  downloadPurchaseInvoice,
-  payoutPurchase,
+  create,
+  download,
+  htmlView,
+  paginate,
+  read,
+  remove,
+  payment,
+  update,
 } = require("../controllers/purchase.controller");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
 const purchaseRouter = Router({
   mergeParams: true,
@@ -23,14 +24,14 @@ purchaseRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("purchases"),
-  createPurchase
+  requestAsyncHandler(create)
 );
-purchaseRouter.get("/:purchaseId", getPurchase);
-purchaseRouter.delete("/:purchaseId", deletePurchase);
-purchaseRouter.get("/", getPurchases);
+purchaseRouter.get("/:id", requestAsyncHandler(read));
+purchaseRouter.delete("/:id", requestAsyncHandler(remove));
+purchaseRouter.get("/", requestAsyncHandler(paginate));
 
-purchaseRouter.patch("/:purchaseId", updateModel, updatePurchase);
-purchaseRouter.get("/:purchaseId/view", viewPurchaseBill);
-purchaseRouter.get("/:purchaseId/download", downloadPurchaseInvoice);
-purchaseRouter.post("/:purchaseId/payment", payoutPurchase);
+purchaseRouter.patch("/:id", updateModel, requestAsyncHandler(update));
+purchaseRouter.get("/:id/view", requestAsyncHandler(htmlView));
+purchaseRouter.get("/:id/download", requestAsyncHandler(download));
+purchaseRouter.post("/:id/payment", requestAsyncHandler(payment));
 module.exports = purchaseRouter;

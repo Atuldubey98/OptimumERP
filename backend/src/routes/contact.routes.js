@@ -1,26 +1,27 @@
 const { Router } = require("express");
 const {
-  createContact,
-  getContact,
-  getContacts,
-  updateContact,
-  deleteContact,
+  read,
+  create,
+  paginate,
+  remove,
+  update,
 } = require("../controllers/contact.controller");
 const {
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
 const contactRouter = Router({ mergeParams: true });
 contactRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("contacts"),
-  createContact
+  requestAsyncHandler(create)
 );
-contactRouter.get("/:id", getContact);
-contactRouter.get("/", getContacts);
-contactRouter.patch("/:id", updateModel, updateContact);
-contactRouter.delete("/:id", deleteContact);
+contactRouter.get("/:id", requestAsyncHandler(read));
+contactRouter.get("/", requestAsyncHandler(paginate));
+contactRouter.patch("/:id", updateModel, requestAsyncHandler(update));
+contactRouter.delete("/:id", requestAsyncHandler(remove));
 
 module.exports = contactRouter;

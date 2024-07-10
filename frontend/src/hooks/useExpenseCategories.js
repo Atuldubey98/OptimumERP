@@ -16,7 +16,7 @@ export default function useExpenseCategories() {
     requestAsyncHandler(async () => {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/expenses/categories`,
+        `/api/v1/organizations/${orgId}/expenseCategories`,
         {
           params: {
             search,

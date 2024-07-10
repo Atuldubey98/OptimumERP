@@ -3,27 +3,28 @@ const {
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
 const {
-  getAllProducts,
-  createProduct,
-  updateProduct,
-  getProduct,
-  deleteProduct,
-  createManyProducts,
+  paginate,
+  create,
+  read,
+  bulkCreate,
+  remove,
+  update,
 } = require("../controllers/product.controller");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const productRouter = Router({
   mergeParams: true,
 });
 
-productRouter.get("/", getAllProducts);
-productRouter.post("/bulk", createModel, createManyProducts);
+productRouter.get("/", requestAsyncHandler(paginate));
+productRouter.post("/bulk", createModel, requestAsyncHandler(bulkCreate));
 productRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("products"),
-  createProduct
+  requestAsyncHandler(create)
 );
-productRouter.patch("/:productId", updateModel, updateProduct);
-productRouter.get("/:productId", getProduct);
-productRouter.delete("/:productId", deleteProduct);
+productRouter.patch("/:productId", updateModel, requestAsyncHandler(update));
+productRouter.get("/:productId", requestAsyncHandler(read));
+productRouter.delete("/:productId", requestAsyncHandler(remove));
 module.exports = productRouter;

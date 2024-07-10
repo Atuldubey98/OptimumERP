@@ -20,7 +20,6 @@ import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseCategoryForm from "./ExpenseCategoryForm";
 
 import useAsyncCall from "../../hooks/useAsyncCall";
-import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
 const expenseCategorySchema = Yup.object({
   name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
   enabled: Yup.boolean().optional().default(true),
@@ -64,7 +63,7 @@ export default function ExpenseCategories() {
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...category } = values;
       await instance[_id ? "patch" : "post"](
-        `/api/v1/organizations/${orgId}/expenses/categories${
+        `/api/v1/organizations/${orgId}/expenseCategories${
           _id ? `/${_id}` : ""
         }`,
         category
@@ -103,7 +102,7 @@ export default function ExpenseCategories() {
       if (!expenseCategory) return;
       setExpenseCategoryStatus("deleting");
       await instance.delete(
-        `/api/v1/organizations/${orgId}/expenses/categories/${expenseCategory._id}`
+        `/api/v1/organizations/${orgId}/expenseCategories/${expenseCategory._id}`
       );
       toast({
         title: "Success",
@@ -181,7 +180,7 @@ export default function ExpenseCategories() {
                     )
                   );
                   await instance.patch(
-                    `/api/v1/organizations/${orgId}/expenses/categories/${_id}`,
+                    `/api/v1/organizations/${orgId}/expenseCategories/${_id}`,
                     { ...expenseCategory, enabled: !item.enabled }
                   );
                 }}

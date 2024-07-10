@@ -16,7 +16,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     party: Yup.string().required("Party is required").label("Party"),
     billingAddress: Yup.string()
       .min(2, "Billing Address Cannot be less than 2")
-      .max(80, "Billing Address Cannot be greater than 80")
+      .max(200, "Billing Address Cannot be greater than 200")
       .label("Billing address"),
     date: Yup.date().required("Date is required").label("Date"),
     status: Yup.string().required("Status is required"),
@@ -93,7 +93,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/invoices/next-invoice-no`
+      `/api/v1/organizations/${orgId}/invoices/nextSequence`
     );
     formik.setFieldValue("sequence", data.data);
     setStatus("success");

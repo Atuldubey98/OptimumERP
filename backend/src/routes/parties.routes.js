@@ -1,37 +1,45 @@
 const { Router } = require("express");
 const {
-  getAllParty,
-  getParty,
-  updateParty,
-  deleteParty,
-  createParty,
-  searchParty,
-  getInvoicesForParty,
-  getPartyTransactions,
-  downloadPartyTransactions,
+  create,
+  downloadPartyTransactionSummary,
+  getTransactionSummary,
+  paginate,
+  read,
+  remove,
+  searchByNameOrBA,
+  update,
 } = require("../controllers/party.controller");
 const {
   limitFreePlanOnCreateEntityForOrganization,
 } = require("../middlewares/auth.middleware");
+
 const {
   createModel,
   updateModel,
   paginateModel,
 } = require("../middlewares/crud.middleware");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
 const partyRouter = Router({ mergeParams: true });
-partyRouter.get("/", paginateModel, getAllParty);
-partyRouter.get("/search", searchParty);
+
+partyRouter.get("/", paginateModel, requestAsyncHandler(paginate));
+partyRouter.get("/search", requestAsyncHandler(searchByNameOrBA));
 partyRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("parties"),
-  createParty
+  requestAsyncHandler(create)
 );
-partyRouter.patch("/:partyId", updateModel, updateParty);
-partyRouter.get("/:partyId", getParty);
-partyRouter.get("/:partyId/invoices", getInvoicesForParty);
-partyRouter.get("/:partyId/transactions", getPartyTransactions);
-partyRouter.get("/:partyId/transactions/download", downloadPartyTransactions);
-partyRouter.delete("/:partyId", deleteParty);
+partyRouter.patch("/:partyId", updateModel, requestAsyncHandler(update));
+partyRouter.get("/:partyId", requestAsyncHandler(read));
+partyRouter.get(
+  "/:partyId/transactions",
+  requestAsyncHandler(getTransactionSummary)
+);
+partyRouter.get(
+  "/:partyId/transactions/download",
+  requestAsyncHandler(downloadPartyTransactionSummary)
+);
+partyRouter.delete("/:partyId", requestAsyncHandler(remove));
+
 module.exports = partyRouter;

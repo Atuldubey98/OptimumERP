@@ -5,17 +5,18 @@ const {
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const {
-  createInvoice,
-  getNextInvoiceNumber,
-  getInvoice,
-  deleteInvoice,
-  getInvoices,
-  updateInvoice,
-  recordPayment,
-  sendInvoice,
-  viewInvoice,
-  downloadInvoice,
+  create,
+  update,
+  htmlView,
+  nextSequence,
+  payment,
+  send,
+  remove,
+  download,
+  paginate,
+  read,
 } = require("../controllers/invoice.controller");
+const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
 const invoiceRouter = Router({
   mergeParams: true,
@@ -25,21 +26,20 @@ invoiceRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("invoices"),
-  createInvoice
+  requestAsyncHandler(create)
 );
 
-invoiceRouter.get("/next-invoice-no", getNextInvoiceNumber);
-invoiceRouter.get("/:invoiceId", getInvoice);
-invoiceRouter.delete("/:invoiceId", deleteInvoice);
-invoiceRouter.get("/", getInvoices);
-
-invoiceRouter.patch("/:invoiceId", updateModel, updateInvoice);
-invoiceRouter.get("/:invoiceId/view", viewInvoice);
-invoiceRouter.get("/:invoiceId/download", downloadInvoice);
-invoiceRouter.post("/:invoiceId/payment", recordPayment);
+invoiceRouter.get("/nextSequence", requestAsyncHandler(nextSequence));
+invoiceRouter.get("/:id", requestAsyncHandler(read));
+invoiceRouter.delete("/:id", requestAsyncHandler(remove));
+invoiceRouter.get("/", requestAsyncHandler(paginate));
+invoiceRouter.patch("/:id", updateModel, requestAsyncHandler(update));
+invoiceRouter.get("/:id/view", requestAsyncHandler(htmlView));
+invoiceRouter.get("/:id/download", requestAsyncHandler(download));
+invoiceRouter.post("/:id/payment", requestAsyncHandler(payment));
 invoiceRouter.post(
-  "/:invoiceId/send",
+  "/:id/send",
   checkPlan(["gold", "platinum"]),
-  sendInvoice
+  requestAsyncHandler(send)
 );
 module.exports = invoiceRouter;
