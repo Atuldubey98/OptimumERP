@@ -120,6 +120,7 @@ export default function ProductsPage() {
     ...product,
     um: ums.find((um) => um.value === product.um).label || "Nos",
     costPrice: `${symbol} ${product.costPrice}`,
+    sellingPrice: `${symbol} ${product.sellingPrice}`,
     type: (
       <Tag
         textTransform={"capitalize"}
@@ -173,6 +174,7 @@ export default function ProductsPage() {
             selectedKeys={{
               name: "Name",
               costPrice: "Cost Price",
+              sellingPrice: "Selling Price",
               type: "Item Type",
               um: "Unit of measurement",
             }}

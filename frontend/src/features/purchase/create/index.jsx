@@ -97,7 +97,6 @@ export default function CreatePurchasePage() {
                 <Heading fontSize={"xl"}>Purchase Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
-                    isRequired
                     isInvalid={formik.errors.num && formik.touched.num}
                   >
                     <FormLabel>Purchase No.</FormLabel>

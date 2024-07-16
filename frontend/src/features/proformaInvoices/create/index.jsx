@@ -90,7 +90,6 @@ export default function ProformaInvoiceFormPage() {
                 <Heading fontSize={"xl"}>Invoice Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
-                    isRequired
                     isInvalid={
                       formik.errors.sequence && formik.touched.sequence
                     }

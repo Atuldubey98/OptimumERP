@@ -85,7 +85,6 @@ export default function CreateEstimatePage() {
                 <Heading fontSize={"xl"}>Estimate Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
-                    isRequired
                     isInvalid={
                       formik.errors.sequence && formik.touched.sequence
                     }

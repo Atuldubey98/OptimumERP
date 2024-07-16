@@ -115,7 +115,6 @@ export default function PurchaseOrderEditPage() {
                 <Heading fontSize={"xl"}>Invoice Details</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
-                    isRequired
                     isInvalid={formik.errors.poNo && formik.touched.poNo}
                   >
                     <FormLabel>PO No.</FormLabel>
