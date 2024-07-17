@@ -1,7 +1,7 @@
 const {
   getReportForBill,
   makeReportExcelBuffer,
-} = require("../../helpers/report.helper");
+} = require("../../services/report.service");
 
 const downloadReportByType = async (req, res) => {
   const reportType = req.params.reportType;

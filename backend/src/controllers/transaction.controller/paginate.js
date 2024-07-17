@@ -1,5 +1,5 @@
 const { TRANSACTIONS } = require("../../constants/entities");
-const { getPaginationParams } = require("../../helpers/crud.helper");
+const { getPaginationParams } = require("../../services/crud.service");
 const Transaction = require("../../models/transaction.model");
 
 const paginate = async (req, res) => {

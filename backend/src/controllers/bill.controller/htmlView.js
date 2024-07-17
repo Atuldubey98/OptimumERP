@@ -1,5 +1,5 @@
 const { isValidObjectId } = require("mongoose");
-const { getBillDetail } = require("../../helpers/bill.helper");
+const { getBillDetail } = require("../../services/bill.service");
 
 const htmlView = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;

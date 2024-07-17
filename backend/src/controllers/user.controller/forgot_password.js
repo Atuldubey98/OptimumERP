@@ -1,4 +1,4 @@
-const { renderHtml } = require("../../helpers/renderEngine.helper");
+const { renderHtml } = require("../../services/renderEngine.service");
 const transporter = require("../../mailer");
 const Otp = require("../../models/otp.model");
 const User = require("../../models/user.model");

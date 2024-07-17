@@ -3,7 +3,7 @@ const ProformaInvoice = require("../../models/proformaInvoice.model");
 const Quotes = require("../../models/quotes.model");
 const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
-const { deleteBill } = require("../../helpers/bill.helper");
+const { deleteBill } = require("../../services/bill.service");
 
 const remove = async (options = {}, req, res) => {
   const { NotFound, Bill, relatedDocType } = options;

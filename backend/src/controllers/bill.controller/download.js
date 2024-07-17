@@ -1,9 +1,9 @@
 const { isValidObjectId } = require("mongoose");
-const { getBillDetail } = require("../../helpers/bill.helper");
+const { getBillDetail } = require("../../services/bill.service");
 const {
   sendHtmlToPdfResponse,
   renderHtml,
-} = require("../../helpers/renderEngine.helper");
+} = require("../../services/renderEngine.service");
 const path = require("path");
 const download = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;

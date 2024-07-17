@@ -1,5 +1,5 @@
 const entities = require("../../constants/entities");
-const { getPaginationParams, hasUserReachedCreationLimits } = require("../../helpers/crud.helper");
+const { getPaginationParams, hasUserReachedCreationLimits } = require("../../services/crud.service");
 
 const paginate = async (options = {}, req, res) => {
   const { Bill } = options;

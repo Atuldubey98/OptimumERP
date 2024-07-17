@@ -1,6 +1,6 @@
 const { isValidObjectId } = require("mongoose");
 const logger = require("../../logger");
-const { saveBill } = require("../../helpers/bill.helper");
+const { saveBill } = require("../../services/bill.service");
 
 const update = async (options = {}, req, res) => {
   const { NotFound, Duplicate, dto, Bill } = options;

@@ -4,8 +4,8 @@ const ums = require("../constants/um");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
-const { currencyToWordConverter } = require("./currencyToWordConverter");
-const { promiseQrCode } = require("./renderEngine.helper");
+const { currencyToWordConverter } = require("./currencyToWord.service");
+const { promiseQrCode } = require("./renderEngine.service");
 
 const getUpiQrCodeByPrintSettings = async ({
   upi,

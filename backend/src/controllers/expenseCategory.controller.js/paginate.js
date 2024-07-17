@@ -1,4 +1,4 @@
-const { hasUserReachedCreationLimits } = require("../../helpers/crud.helper");
+const { hasUserReachedCreationLimits } = require("../../services/crud.service");
 const ExpenseCategory = require("../../models/expenseCategory.model");
 
 const paginate = async (req, res) => {

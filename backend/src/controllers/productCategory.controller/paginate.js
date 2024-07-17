@@ -2,9 +2,9 @@ const ProductCategory = require("../../models/productCategory.model");
 const {
   hasUserReachedCreationLimits,
   getPaginationParams,
-} = require("../../helpers/crud.helper");
+} = require("../../services/crud.service");
 
-const entities = require("../..//constants/entities");
+const entities = require("../../constants/entities");
 const paginate = async (req, res) => {
   const { skip, limit, page, total, filter, totalPages } =
     await getPaginationParams({

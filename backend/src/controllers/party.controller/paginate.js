@@ -2,7 +2,7 @@ const { PARTIES } = require("../../constants/entities");
 const {
   getPaginationParams,
   hasUserReachedCreationLimits,
-} = require("../../helpers/crud.helper");
+} = require("../../services/crud.service");
 const Party = require("../../models/party.model");
 
 const paginate = async (req, res) => {

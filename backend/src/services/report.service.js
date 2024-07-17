@@ -8,7 +8,7 @@ const {
 } = require("../constants/entities");
 const Purchase = require("../models/purchase.model");
 const Transaction = require("../models/transaction.model");
-const { getPaginationParams } = require("./crud.helper");
+const { getPaginationParams } = require("./crud.service");
 
 exports.makeReportExcelBuffer = async ({ reportData, reportType }) => {
   const { bodyMapper, header } = reportDataByType[reportType];

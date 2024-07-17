@@ -1,4 +1,4 @@
-const { getNextSequence } = require("../../helpers/bill.helper");
+const { getNextSequence } = require("../../services/bill.service");
 const Quotes = require("../../models/quotes.model");
 
 const nextSequence = async (req, res) => {

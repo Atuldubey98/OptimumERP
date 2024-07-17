@@ -1,4 +1,4 @@
-const { saveBill } = require("../../helpers/bill.helper");
+const { saveBill } = require("../../services/bill.service");
 const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
 
