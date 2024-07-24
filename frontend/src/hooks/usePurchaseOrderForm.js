@@ -7,8 +7,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
+import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function usePurchaseOrderForm({ saveAndNew }) {
   const [status, setStatus] = useState("idle");
+  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseOrderSchema = Yup.object().shape({
     party: Yup.string().required("Party is required").label("Party"),
     billingAddress: Yup.string()
@@ -28,7 +31,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
-          gst: Yup.string().required("GST is required"),
+          tax: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
@@ -50,7 +53,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
     poNo: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
-    items: [defaultInvoiceItem],
+    items: [defaultReceiptItem],
     terms: "Thanks for business !",
     description: "",
     billingAddress: "",

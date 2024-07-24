@@ -41,7 +41,6 @@ exports.limitFreePlanOnCreateEntityForOrganization = (entityKey) =>
     const organization = await OrgModel.findById(orgId).select(
       "relatedDocsCount"
     );
-
     const limit = freePlanLimits[entityKey];
     if (
       organization.relatedDocsCount &&

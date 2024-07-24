@@ -24,6 +24,7 @@ export default function ShowDrawer({
   heading,
   onClickNewItem,
   disable,
+  children,
 }) {
   const getFieldsToShow = () => {
     const fields = [];
@@ -62,6 +63,7 @@ export default function ShowDrawer({
                   </Grid>
                 </Box>
               ))}
+            {children}
           </Stack>
         </DrawerBody>
         <DrawerFooter>

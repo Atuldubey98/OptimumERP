@@ -6,14 +6,18 @@ const whitelist = [
   "https://app.optimumerp.biz",
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.includes(origin) || !origin) callback(null, true);
-    else callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
-  maxAge: 86400,
-};
 const corsHandler = Router();
-corsHandler.use(cors(corsOptions));
+corsHandler.use(
+  cors({
+    origin: function (origin, callback) {
+      const corsOptions =
+        whitelist.includes(origin) || !origin
+          ? { origin: true }
+          : { origin: false };
+      callback(null, corsOptions);
+    },
+    credentials: true,
+    maxAge: 86400,
+  })
+);
 module.exports = corsHandler;

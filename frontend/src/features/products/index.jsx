@@ -24,7 +24,6 @@ import MainLayout from "../common/main-layout";
 import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
-import { ums } from "../estimates/create/data";
 import ProductFormDrawer from "./ProductFormDrawer";
 import ProductMenu from "./ProductMenu";
 export default function ProductsPage() {
@@ -118,7 +117,7 @@ export default function ProductsPage() {
   const { symbol } = useCurrentOrgCurrency();
   const productsMapper = (product) => ({
     ...product,
-    um: ums.find((um) => um.value === product.um).label || "Nos",
+    um: product.um.name,
     costPrice: `${symbol} ${product.costPrice}`,
     sellingPrice: `${symbol} ${product.sellingPrice}`,
     type: (
@@ -193,9 +192,7 @@ export default function ProductsPage() {
             isOpen={isProductDrawerOpen}
             item={{
               ...selectedToShowProduct,
-              um:
-                ums.find((um) => um.value === selectedToShowProduct.um).label ||
-                "AU",
+              um: selectedToShowProduct.um.name,
               costPrice: `${symbol} ${selectedToShowProduct.costPrice}`,
               sellingPrice: `${symbol} ${selectedToShowProduct.sellingPrice}`,
               type: selectedToShowProduct.type?.toUpperCase(),
@@ -221,6 +218,7 @@ export default function ProductsPage() {
           onClose={closeDeleteModal}
           onConfirm={onDeleteProduct}
         />
+
         <ProductFormDrawer
           formik={formik}
           isOpen={isProductFormOpen}

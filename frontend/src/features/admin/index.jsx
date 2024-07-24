@@ -178,7 +178,7 @@ export default function AdminPage() {
     <MainLayout>
       <Box>
         {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"} marginBlock={3}>
+          <Flex p={4} justifyContent={"center"} alignItems={"center"} marginBlock={3}>
             <Spinner />
           </Flex>
         ) : (

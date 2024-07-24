@@ -7,15 +7,20 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import FormDrawerLayout from "../common/form-drawer-layout";
-import { ums } from "../estimates/create/data";
 import { Select } from "chakra-react-select";
 import NumberInputInteger from "../common/NumberInputInteger";
 import ProductCategoryAsyncSelect from "./ProductCategoryAsyncSelect";
+import useUms from "../../hooks/useUms";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
   const typeOfProducts = [
     { value: "service", label: "Service" },
     { value: "goods", label: "Goods" },
   ];
+  const { ums } = useUms();
+  const umOptions = ums.map((um) => ({
+    value: um._id,
+    label: um.name,
+  }));
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
@@ -27,7 +32,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <Grid  gap={4}>
+      <Grid gap={4}>
         <FormControl
           isRequired
           isInvalid={formik.errors.name && formik.touched.name}
@@ -74,11 +79,11 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           <FormLabel>Unit of Measurement</FormLabel>
           <Select
             name={`um`}
-            value={ums.find((um) => um.value === formik.values.um)}
+            value={umOptions.find((um) => um.value === formik.values.um)}
             onChange={({ value }) => {
               formik.setFieldValue(`um`, value);
             }}
-            options={ums}
+            options={umOptions}
           />
           <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
         </FormControl>
@@ -99,7 +104,6 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
         </FormControl>
 
-        
         <FormControl isInvalid={formik.errors.code && formik.touched.code}>
           <FormLabel>HSN Code or SAC Code</FormLabel>
           <Input
@@ -124,7 +128,6 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           />
           <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
         </FormControl>
-        
       </Grid>
     </FormDrawerLayout>
   );

@@ -27,9 +27,13 @@ import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import useTaxes from "../../../hooks/useTaxes";
+import useUms from "../../../hooks/useUms";
 export default function CreatePurchasePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:purchase");
+  const { taxes } = useTaxes();
+  const { ums } = useUms();
   const { formik, status } = usePurchaseForm({
     saveAndNew,
   });
@@ -106,9 +110,7 @@ export default function CreatePurchasePage() {
                       onChange={formik.handleChange}
                       value={formik.values.num}
                     />
-                    <FormErrorMessage>
-                      {formik.errors.num}
-                    </FormErrorMessage>
+                    <FormErrorMessage>{formik.errors.num}</FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />
                   <SelectStatus
@@ -118,7 +120,12 @@ export default function CreatePurchasePage() {
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
 
-                <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
+                <ItemsList
+                  formik={formik}
+                  defaultItem={defaultInvoiceItem}
+                  taxes={taxes}
+                  ums={ums}
+                />
                 {formik.values._id ? null : (
                   <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="autoItems" mb="0">
@@ -137,7 +144,7 @@ export default function CreatePurchasePage() {
                     />
                   </FormControl>
                 )}
-                <TotalsBox quoteItems={formik.values.items} />
+                <TotalsBox quoteItems={formik.values.items} taxes={taxes}  />
                 <DescriptionField formik={formik} />
               </Grid>
             </form>

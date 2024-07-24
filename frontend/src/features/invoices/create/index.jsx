@@ -29,11 +29,14 @@ import ItemsList from "../../estimates/create/ItemList";
 import SelectStatus from "../../estimates/create/SelectStatus";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
-import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "./PartySelectBill";
+import useTaxes from "../../../hooks/useTaxes";
+import useUms from "../../../hooks/useUms";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
+  const { taxes } = useTaxes();
+  const { ums } = useUms();
   const { formik, status } = useInvoicesForm({
     saveAndNew,
   });
@@ -166,8 +169,12 @@ export default function CreateInvoicePage() {
                   </FormControl>
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
-                <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
-                <TotalsBox quoteItems={formik.values.items} />
+                <ItemsList
+                  formik={formik}
+                  taxes={taxes}
+                  ums={ums}
+                />
+                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

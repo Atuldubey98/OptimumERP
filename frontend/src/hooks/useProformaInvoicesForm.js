@@ -6,10 +6,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
+import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 
 export default function useProformaInvoicesForm() {
   const [status, setStatus] = useState("idle");
-
+  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const defaultReceiptItem = getDefaultReceiptItem();
   const proformaInvoiceSchema = Yup.object().shape({
     sequence: Yup.number()
       .required("Invoice number is required")
@@ -31,7 +33,7 @@ export default function useProformaInvoicesForm() {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
-          gst: Yup.string().required("GST is required"),
+          tax: Yup.string().required("Tax is required"),
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
@@ -53,7 +55,7 @@ export default function useProformaInvoicesForm() {
     sequence: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
-    items: [defaultInvoiceItem],
+    items: [defaultReceiptItem],
     terms: "Thanks for business !",
     description: "",
     poNo: "",

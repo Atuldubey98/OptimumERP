@@ -5,7 +5,7 @@ const itemSchema = Joi.object({
   quantity: Joi.number().required(),
   um: Joi.string().default("none"),
   code : Joi.string().default("HSN/SAC Code").allow(""),
-  gst: Joi.string().default("none"),
+  tax: Joi.string().default("none"),
 });
 
 const quoteDto = Joi.object({

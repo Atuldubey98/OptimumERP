@@ -42,20 +42,35 @@ const purchaseOrderSchema = new Schema(
       default: 0,
       required: true,
     },
-    sgst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    cgst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    igst: {
-      type: Number,
-      default: 0,
-      min: 0,
+    taxCategories: {
+      sgst: {
+        type: Number,
+        min: 0,
+      },
+      cgst: {
+        type: Number,
+        min: 0,
+      },
+      igst: {
+        type: Number,
+        min: 0,
+      },
+      vat: {
+        type: Number,
+        min: 0,
+      },
+      cess: {
+        type: Number,
+        min: 0,
+      },
+      sal: {
+        type: Number,
+        min: 0,
+      },
+      others: {
+        type: Number,
+        min: 0,
+      },
     },
     description: {
       type: String,
@@ -107,12 +122,14 @@ const purchaseOrderSchema = new Schema(
           default: 0,
         },
         um: {
-          type: String,
-          default: "none",
+          type: Types.ObjectId,
+          ref: "ums",
+          required: true,
         },
-        gst: {
-          type: String,
-          default: "none",
+        tax: {
+          type: Types.ObjectId,
+          ref: "taxes",
+          required: true,
         },
       },
     ],
@@ -139,7 +156,7 @@ const purchaseOrderSchema = new Schema(
 
 const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
 purchaseOrderSchema.index({
-  num : "text",
-  description : "text"
-})
+  num: "text",
+  description: "text",
+});
 module.exports = PurchaseOrder;

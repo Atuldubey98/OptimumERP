@@ -10,4 +10,5 @@ module.exports = {
   QUOTATION: "quotation",
   PURCHASE_ORDERS: "purchaseOrder",
   TRANSACTIONS: "transaction",
+  TAXES: "tax",
 };

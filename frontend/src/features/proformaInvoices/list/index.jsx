@@ -124,7 +124,6 @@ export default function ProformaInvoicesPage() {
       });
       onCloseConvertToInvoiceConfirmationModal();
     } catch (error) {
-      console.log(error);
       toast({
         title: isAxiosError(error) ? error.response.data.name : "Error",
         description: isAxiosError(error)
@@ -155,7 +154,6 @@ export default function ProformaInvoicesPage() {
               <VertIconMenu
                 key={item._id}
                 convertToInvoice={() => {
-                  console.log(item);
                   onOpenConvertToInvoiceConfirmationModal(item);
                 }}
                 onDownloadItem={() => onSaveBill(item)}

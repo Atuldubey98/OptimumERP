@@ -12,7 +12,7 @@ const settingSchema = new Schema({
       quotation: String,
       purchaseOrder: String,
       proformaInvoice: String,
-      saleOrder : String,
+      saleOrder: String,
     },
     default: {
       invoice: "",
@@ -67,6 +67,18 @@ const settingSchema = new Schema({
     upiQr: {
       type: Boolean,
       default: false,
+    },
+  },
+  receiptDefaults: {
+    um: {
+      type: Types.ObjectId,
+      ref: "ums",
+      required: true,
+    },
+    tax: {
+      type: Types.ObjectId,
+      ref: "taxes",
+      required: true,
     },
   },
 });

@@ -20,9 +20,9 @@ import {
 import { useFormik } from "formik";
 import moment from "moment";
 import React, { useContext } from "react";
+import SettingContext from "../../contexts/SettingContext";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
-import SettingContext from "../../contexts/SettingContext";
 export default function AdminTasks({ organization }) {
   const bg = useColorModeValue("gray.100", "gray.700");
   const { financialYear } = useCurrentOrgCurrency();
@@ -71,14 +71,12 @@ export default function AdminTasks({ organization }) {
       </Box>
       <Accordion marginBlock={2} allowToggle>
         <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box fontWeight={"bold"} as="span" flex="1" textAlign="left">
-                Close financial year
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
+          <AccordionButton>
+            <Box  as="span" flex="1" textAlign="left">
+              Close financial year
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
           <AccordionPanel pb={4}>
             <form onSubmit={formik.handleSubmit}>
               <Stack spacing={2}>

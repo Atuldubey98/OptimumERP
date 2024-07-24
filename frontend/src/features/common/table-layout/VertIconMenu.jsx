@@ -123,9 +123,11 @@ export default function VertIconMenu({
             Transactions
           </MenuItem>
         ) : null}
-        <MenuItem icon={<CiEdit size={20} />} onClick={editItem} command="⌘E">
-          Edit
-        </MenuItem>
+        {editItem ? (
+          <MenuItem icon={<CiEdit size={20} />} onClick={editItem} command="⌘E">
+            Edit
+          </MenuItem>
+        ) : null}
         {onDownloadItem ? (
           <MenuItem
             onClick={onDownloadItem}
@@ -136,13 +138,15 @@ export default function VertIconMenu({
           </MenuItem>
         ) : null}
         <Divider />
-        <MenuItem
-          icon={<RiDeleteBin2Line color="red" size={20} />}
-          onClick={deleteItem}
-          command="⌘D"
-        >
-          Delete
-        </MenuItem>
+        {deleteItem ? (
+          <MenuItem
+            icon={<RiDeleteBin2Line color="red" size={20} />}
+            onClick={deleteItem}
+            command="⌘D"
+          >
+            Delete
+          </MenuItem>
+        ) : null}
       </MenuList>
     </Menu>
   );

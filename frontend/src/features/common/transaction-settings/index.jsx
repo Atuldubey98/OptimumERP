@@ -111,7 +111,7 @@ export default function TransactionSettingsPage() {
     <MainLayout>
       <Stack spacing={3}>
         {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"}>
+          <Flex p={4} justifyContent={"center"} alignItems={"center"}>
             <Spinner />
           </Flex>
         ) : (

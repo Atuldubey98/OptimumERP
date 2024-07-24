@@ -27,11 +27,14 @@ import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
-
+import useUms from "../../../hooks/useUms";
+import useTaxes from "../../../hooks/useTaxes";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import PrefixFormField from "../../common/PrefixFormField";
 export default function ProformaInvoiceFormPage() {
   const { formik, status } = useProformaInvoicesForm();
+  const { taxes } = useTaxes();
+  const { ums } = useUms();
   const loading = status === "loading";
   const { disable } = useLimitsInFreePlan({
     key: "proformaInvoices",
@@ -136,8 +139,13 @@ export default function ProformaInvoiceFormPage() {
                   </FormControl>
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
-                <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
-                <TotalsBox quoteItems={formik.values.items} />
+                <ItemsList
+                  formik={formik}
+                  defaultItem={defaultInvoiceItem}
+                  taxes={taxes}
+                  ums={ums}
+                />
+                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

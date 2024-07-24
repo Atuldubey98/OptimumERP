@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
-import useAsyncCall from "./useAsyncCall";
-import * as Yup from "yup";
 import { useToast } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import instance from "../instance";
-import { defaultInvoiceItem } from "../features/estimates/create/data";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
+import instance from "../instance";
+import useAsyncCall from "./useAsyncCall";
+import useSetting from "./useCurrentOrgCurrency";
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("idle");
+  const { getDefaultReceiptItem } = useSetting();
+  const defaultReceiptItem = getDefaultReceiptItem();
   const invoiceSchema = Yup.object().shape({
     sequence: Yup.number()
       .required("Invoice number is required")
@@ -31,7 +33,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
-          gst: Yup.string().required("GST is required"),
+          tax: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
@@ -53,7 +55,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     sequence: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
-    items: [defaultInvoiceItem],
+    items: [],
     terms: "Thanks for business !",
     prefix: "",
     description: "",
@@ -139,6 +141,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         setStatus("success");
       } else {
         fetchNextInvoiceNumber();
+        formik.setFieldValue("items", [defaultReceiptItem]);
       }
     })();
   }, []);

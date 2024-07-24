@@ -72,6 +72,8 @@ const orgSchema = new Schema(
         creditNotes: relatedDocsCountSchema,
         debitNotes: relatedDocsCountSchema,
         recurringInvoices: relatedDocsCountSchema,
+        ums: relatedDocsCountSchema,
+        taxes: relatedDocsCountSchema,
       },
       default: {
         contacts: 0,

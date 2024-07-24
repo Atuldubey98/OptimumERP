@@ -6,8 +6,11 @@ import * as Yup from "yup";
 import { defaultQuoteItem } from "../features/estimates/create/data";
 import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
+import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function useEstimateForm() {
   const [status, setStatus] = useState("idle");
+  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const defaultReceiptItem = getDefaultReceiptItem();
   const quoteSchema = Yup.object().shape({
     sequence: Yup.number().required("Quote number is required"),
     party: Yup.string().required("Party is required"),
@@ -23,7 +26,7 @@ export default function useEstimateForm() {
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
           code: Yup.string().optional(),
-          gst: Yup.string().required("GST is required"),
+          tax: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
@@ -43,7 +46,7 @@ export default function useEstimateForm() {
       date: new Date(Date.now()).toISOString().split("T")[0],
       billingAddress: "",
       status: "draft",
-      items: [defaultQuoteItem],
+      items: [defaultReceiptItem],
       prefix: "",
       terms: "Thanks for business !",
       description: "",
@@ -101,7 +104,7 @@ export default function useEstimateForm() {
           items,
           description,
           partyDetails: party,
-          createdBy : data.data.createdBy._id
+          createdBy: data.data.createdBy._id,
         });
         setStatus("success");
       } else {

@@ -26,167 +26,12 @@ const statusList = [
   },
 ];
 
-const taxRates = [
-  {
-    value: "none",
-    label: "NONE",
-  },
-  {
-    value: "GST:5",
-    label: "GST@5%",
-  },
-  {
-    value: "GST:18",
-    label: "GST@18%",
-  },
-  {
-    value: "GST:12",
-    label: "GST@12%",
-  },
-  {
-    value: "GST:28",
-    label: "GST@28%",
-  },
-  {
-    value: "IGST:5",
-    label: "IGST@5%",
-  },
-  {
-    value: "IGST:12",
-    label: "IGST@12%",
-  },
-  {
-    value: "IGST:18",
-    label: "IGST@18%",
-  },
-  {
-    value: "IGST:28",
-    label: "IGST@28%",
-  },
-];
-const ums = [
-  {
-    value: "none",
-    label: "NONE",
-  },
-  {
-    value: "pcs",
-    label: "Pieces",
-  },
-  {
-    value: "no",
-    label: "NOS",
-  },
-  {
-    value: "kg",
-    label: "Kilograms",
-  },
-  {
-    value: "g",
-    label: "Grams",
-  },
-  {
-    value: "lb",
-    label: "Pounds",
-  },
-  {
-    value: "oz",
-    label: "Ounces",
-  },
-  {
-    value: "m",
-    label: "Meters",
-  },
-  {
-    value: "cm",
-    label: "Centimeters",
-  },
-  {
-    value: "mm",
-    label: "Millimeters",
-  },
-  {
-    value: "km",
-    label: "Kilometers",
-  },
-  {
-    value: "mi",
-    label: "Miles",
-  },
-  {
-    value: "L",
-    label: "Liters",
-  },
-  {
-    value: "ml",
-    label: "Milliliters",
-  },
-  {
-    value: "gal",
-    label: "Gallons",
-  },
-  {
-    value: "pt",
-    label: "Pints",
-  },
-  {
-    value: "qt",
-    label: "Quarts",
-  },
-  {
-    value: "ft",
-    label: "Feet",
-  },
-  {
-    value: "in",
-    label: "Inches",
-  },
-  {
-    value: "yd",
-    label: "Yards",
-  },
-  {
-    value: "sqm",
-    label: "Square Meters",
-  },
-  {
-    value: "sqft",
-    label: "Square Feet",
-  },
-  {
-    value: "sqin",
-    label: "Square Inches",
-  },
-  {
-    value: "sqyd",
-    label: "Square Yards",
-  },
-  {
-    value: "cbm",
-    label: "Cubic Meters",
-  },
-  {
-    value: "cft",
-    label: "Cubic Feet",
-  },
-  {
-    value: "cin",
-    label: "Cubic Inches",
-  },
-  {
-    value: "cyd",
-    label: "Cubic Yards",
-  },
-  {
-    value: "doz",
-    label: "Dozens",
-  },
-];
+
 const defaultQuoteItem = {
   name: "",
   quantity: 1,
   um: "none",
-  gst: "none",
+  tax: "",
   price: 0,
   code: "",
 };
@@ -195,10 +40,10 @@ const defaultInvoiceItem = {
   code: "",
   quantity: 1,
   um: "none",
-  gst: "none",
+  tax: "",
   price: 0,
 };
-function calculateGrandTotalWithTax(quoteItems) {
+function calculateGrandTotalWithTax(quoteItems, taxes) {
   let grandTotal = 0;
   let totalTax = 0;
   let total = 0;
@@ -206,8 +51,8 @@ function calculateGrandTotalWithTax(quoteItems) {
     const itemTotal = isNaN(parseFloat(quoteItem.price * quoteItem.quantity))
       ? 0
       : parseFloat(quoteItem.price * quoteItem.quantity);
-    const gstPercentage =
-      quoteItem.gst === "none" ? 0 : parseFloat(quoteItem.gst.split(":")[1]);
+    const selectedtax = taxes.find((tax) => tax._id === quoteItem.tax);
+    const gstPercentage = selectedtax ? selectedtax.percentage : 0;
     const tax = isNaN(parseFloat((itemTotal * gstPercentage) / 100))
       ? 0
       : parseFloat((itemTotal * gstPercentage) / 100);
@@ -220,8 +65,6 @@ function calculateGrandTotalWithTax(quoteItems) {
 }
 export {
   statusList,
-  taxRates,
-  ums,
   defaultQuoteItem,
   defaultInvoiceItem,
   calculateGrandTotalWithTax,

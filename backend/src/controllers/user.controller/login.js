@@ -19,7 +19,13 @@ const login = async (req, res) => {
   }).lean();
   const planLimits = {
     free: freePlanLimits,
-    gold: { organizations: 3 },
+    gold: {
+      organizations: 3,
+      ums: 100,
+      taxes: 100,
+      expenseCategories: 100,
+      productCategories: 100,
+    },
     platinum: {},
   };
   const loggedInUser = {

@@ -32,6 +32,8 @@ import PartySelectBill from "../../invoices/create/PartySelectBill";
 import usePurchaseOrderForm from "../../../hooks/usePurchaseOrderForm";
 import { FormikProvider } from "formik";
 import PrefixFormField from "../../common/PrefixFormField";
+import useTaxes from "../../../hooks/useTaxes";
+import useUms from "../../../hooks/useUms";
 export default function PurchaseOrderEditPage() {
   const { saveAndNew, onToggleSaveAndNew } = useSaveAndNewForm(
     "save-new:purchaseOrders"
@@ -39,6 +41,8 @@ export default function PurchaseOrderEditPage() {
   const { formik, status } = usePurchaseOrderForm({
     saveAndNew,
   });
+  const { taxes } = useTaxes();
+  const { ums } = useUms();
   const loading = status === "loading";
   const { disable } = useLimitsInFreePlan({
     key: "purchaseOrders",
@@ -130,7 +134,9 @@ export default function PurchaseOrderEditPage() {
                         onlyInt={true}
                       />
                     </InputGroup>
-                    <FormErrorMessage>{formik.errors.sequence}</FormErrorMessage>
+                    <FormErrorMessage>
+                      {formik.errors.sequence}
+                    </FormErrorMessage>
                   </FormControl>
                   <SelectStatus
                     formik={formik}
@@ -147,8 +153,13 @@ export default function PurchaseOrderEditPage() {
                   </FormControl>
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
-                <ItemsList formik={formik} defaultItem={defaultInvoiceItem} />
-                <TotalsBox quoteItems={formik.values.items} />
+                <ItemsList
+                  formik={formik}
+                  defaultItem={defaultInvoiceItem}
+                  taxes={taxes}
+                  ums={ums}
+                />
+                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

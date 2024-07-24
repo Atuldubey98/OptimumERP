@@ -24,6 +24,8 @@ const {
 const { authorize } = require("../middlewares/auth.middleware");
 const expenseCategoryRouter = require("./expenseCategory.routes");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
+const taxRouter = require("./tax.routes");
+const umRouter = require("./um.routes");
 
 const orgUserRouter = Router({
   mergeParams: true,
@@ -57,6 +59,8 @@ orgUserRouter.use("/expenses", expenseRouter);
 orgUserRouter.use("/settings", settingRouter);
 orgUserRouter.use("/purchases", purchaseRouter);
 orgUserRouter.use("/reports", reportRouter);
+orgUserRouter.use("/taxes", taxRouter);
+orgUserRouter.use("/ums", umRouter);
 orgUserRouter.use("/productCategories", productCategoryRouter);
 orgUserRouter.use("/expenseCategories", expenseCategoryRouter);
 orgUserRouter.use("/purchaseOrders", purchaseOrderRouter);

@@ -28,12 +28,17 @@ import TermsAndCondtions from "./TermsConditions";
 import TotalsBox from "./TotalsBox";
 import { defaultQuoteItem, statusList } from "./data";
 import PrefixFormField from "../../common/PrefixFormField";
+import useTaxes from "../../../hooks/useTaxes";
+import useUms from "../../../hooks/useUms";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
+  const { taxes } = useTaxes();
+  const { ums } = useUms();
   const loading = status === "loading";
   const { disable } = useLimitsInFreePlan({
     key: "quotes",
   });
+  const { receiptDefaults } = useCurrentOrgCurrency();
   return (
     <MainLayout>
       <Box p={5}>
@@ -107,8 +112,17 @@ export default function CreateEstimatePage() {
                   <SelectStatus formik={formik} statusList={statusList} />
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
-                <ItemsList formik={formik} defaultItem={defaultQuoteItem} />
-                <TotalsBox quoteItems={formik.values.items} />
+                <ItemsList
+                  formik={formik}
+                  ums={ums}
+                  defaultItem={{
+                    ...defaultQuoteItem,
+                    tax: receiptDefaults?.tax,
+                    um: receiptDefaults?.um,
+                  }}
+                  taxes={taxes}
+                />
+                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

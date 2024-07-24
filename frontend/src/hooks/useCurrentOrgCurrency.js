@@ -17,5 +17,27 @@ export default function useCurrentOrgCurrency() {
   };
   const symbol = currencies[currency].symbol;
   const financialYear = setting?.financialYear;
-  return { currency, symbol, transactionPrefix, prefixes, financialYear };
+  const receiptDefaults = setting?.receiptDefaults;
+  const getDefaultReceiptItem = () => {
+    return {
+      tax: receiptDefaults.tax,
+      um: receiptDefaults.um,
+      name: "",
+      code: "",
+      quantity: 1,
+      price: 0,
+    };
+  };
+  return {
+    currency,
+    symbol,
+    setting,
+    transactionPrefix,
+    fetchSetting: settingContext.fetchSetting,
+    getDefaultReceiptItem,
+    onSetNewSetting: settingContext.onSetSettingForOrganization,
+    prefixes,
+    financialYear,
+    receiptDefaults,
+  };
 }

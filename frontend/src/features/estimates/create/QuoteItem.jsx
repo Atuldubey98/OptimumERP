@@ -20,12 +20,13 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { TbEyeSearch } from "react-icons/tb";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import SelectProduct from "./SelectProduct";
-import { taxRates, ums } from "./data";
 export default function QuoteItem({
   quoteItem,
   errorsQuoteItems,
   formik,
   index,
+  taxes,
+  ums,
   deleteQuote,
 }) {
   const { symbol } = useCurrentOrgCurrency();
@@ -34,8 +35,8 @@ export default function QuoteItem({
   const subtotal = isNaN(parseFloat(quoteItem.price * quoteItem.quantity))
     ? 0
     : parseFloat(quoteItem.price * quoteItem.quantity);
-  const gstPercentage =
-    quoteItem.gst === "none" ? 0 : parseFloat(quoteItem.gst.split(":")[1]);
+  const selectedTax = taxes.find((tax) => tax._id === quoteItem.tax);
+  const gstPercentage = selectedTax ? selectedTax.percentage : 0;
   const totalTax = isNaN(parseFloat((subtotal * gstPercentage) / 100))
     ? 0
     : parseFloat((subtotal * gstPercentage) / 100);
@@ -45,6 +46,16 @@ export default function QuoteItem({
   const onOpenSearchProduct = () => {
     onOpen();
   };
+  const taxOptions = taxes.map((tax) => ({
+    label: tax.name,
+    value: tax._id,
+    isDisabled: !tax.enabled,
+  }));
+  const umOptions = ums.map((um) => ({
+    value: um._id,
+    label: um.name,
+    isDisabled: !um.enabled,
+  }));
   return (
     <Box marginBlock={5}>
       <SimpleGrid gap={2} minChildWidth={150}>
@@ -103,28 +114,28 @@ export default function QuoteItem({
           <FormControl isRequired isInvalid={errors.um && errors.um}>
             <Select
               name={`items[${index}].um`}
-              value={ums.find((um) => um.value === quoteItem.um)}
+              value={umOptions.find((um) => um.value === quoteItem.um)}
               onChange={({ value }) => {
                 formik.setFieldValue(`items[${index}].um`, value);
               }}
-              options={ums}
+              options={umOptions}
             />
             <FormErrorMessage>{errors.um}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem colSpan={1}>
-          <FormControl isRequired isInvalid={errors.gst && errors.gst}>
+          <FormControl isRequired isInvalid={errors.tax && errors.tax}>
             <Select
-              name={`items[${index}].gst`}
-              value={taxRates.find(
-                (taxRate) => taxRate.value === quoteItem.gst
+              name={`items[${index}].tax`}
+              value={taxOptions.find(
+                (taxOption) => taxOption.value === quoteItem.tax
               )}
               onChange={({ value }) => {
-                formik.setFieldValue(`items[${index}].gst`, value);
+                formik.setFieldValue(`items[${index}].tax`, value);
               }}
-              options={taxRates}
+              options={taxOptions}
             />
-            <FormErrorMessage>{errors.gst}</FormErrorMessage>
+            <FormErrorMessage>{errors.tax}</FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem colSpan={1}>

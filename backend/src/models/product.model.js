@@ -36,8 +36,8 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     um: {
-      type: String,
-      default: "none",
+      type: mongoose.Types.ObjectId,
+      ref: "ums",
       required: true,
     },
     createdBy: {

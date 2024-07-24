@@ -7,9 +7,12 @@ import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
 import moment from "moment";
+import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 
 export default function usePurchaseForm({ saveAndNew }) {
   const [status, setStatus] = useState("idle");
+  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseSchema = Yup.object().shape({
     num: Yup.string().required("Purchase number is required"),
     billingAddress: Yup.string().required("Party Address is required"),
@@ -24,7 +27,7 @@ export default function usePurchaseForm({ saveAndNew }) {
             .required("Quantity is required")
             .min(1, "Quantity must be at least 1"),
           um: Yup.string().required("Unit of measure is required"),
-          gst: Yup.string().required("GST is required"),
+          tax: Yup.string().required("GST is required"),
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
@@ -43,7 +46,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       billingAddress: "",
       date: moment().format("YYYY-MM-DD"),
       status: "unpaid",
-      items: [defaultInvoiceItem],
+      items: [defaultReceiptItem],
       autoItems: false,
       description: "",
       poNo: "",

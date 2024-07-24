@@ -94,7 +94,7 @@ export default function DashboardPage() {
     <MainLayout>
       <Box p={5}>
         <Heading fontSize={"xl"}>
-          Hi, <strong>{auth.user.name}</strong>
+          Hi, <strong>{auth?.user?.name}</strong>
         </Heading>
         <Text>Here's is overview of your business !</Text>
         <Stack marginBlock={2} spacing={3}>

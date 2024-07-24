@@ -1,9 +1,13 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
+import TaxesPage from "./features/taxes";
+import UmsPage from "./features/ums";
 const StatsPage = lazy(() => import("./features/stats"));
 const PurchaseOrderPage = lazy(() => import("./features/purchaseOrders/list"));
-const PurchaseOrderEditPage = lazy(() => import("./features/purchaseOrders/create"));
+const PurchaseOrderEditPage = lazy(() =>
+  import("./features/purchaseOrders/create")
+);
 const PricingPage = lazy(() => import("./features/pricing"));
 const ProformaInvoiceFormPage = lazy(() =>
   import("./features/proformaInvoices/create")
@@ -58,6 +62,8 @@ export default function App() {
           />
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
+          <Route element={<TaxesPage />} path="taxes" />
+          <Route element={<UmsPage />} path="ums" />
           <Route path="categories">
             <Route path=":type">
               <Route element={<CategoriesPage />} path="" />
@@ -83,7 +89,10 @@ export default function App() {
           <Route path="purchaseOrders">
             <Route element={<PurchaseOrderPage />} path="" />
             <Route element={<PurchaseOrderEditPage />} path="create" />
-            <Route element={<PurchaseOrderEditPage />} path=":purchaseOrderId/edit" />
+            <Route
+              element={<PurchaseOrderEditPage />}
+              path=":purchaseOrderId/edit"
+            />
           </Route>
           <Route path="estimates">
             <Route element={<EstimatesPage />} path="" />
@@ -94,7 +103,7 @@ export default function App() {
             <Route element={<InvoicesPage />} path="" />
             <Route element={<CreateInvoicePage />} path="create" />
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
-          </Route>   
+          </Route>
           <Route path="proformaInvoices">
             <Route element={<ProformaInvoicesPage />} path="" />
             <Route element={<ProformaInvoiceFormPage />} path="create" />

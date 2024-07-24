@@ -13,5 +13,7 @@ const freePlanLimits = {
   quotes: 200,
   organizationUsers: 1,
   recurringInvoices: 0,
+  taxes: 50,
+  ums: 60,
 };
 module.exports = freePlanLimits;

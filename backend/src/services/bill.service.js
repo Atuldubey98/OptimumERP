@@ -1,12 +1,13 @@
 const currencies = require("../constants/currencies");
-const taxRates = require("../constants/gst");
-const ums = require("../constants/um");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const { currencyToWordConverter } = require("./currencyToWord.service");
 const { promiseQrCode } = require("./renderEngine.service");
-
+const {
+  calculateTaxes,
+  calculateTaxesForBillItemsWithCurrency,
+} = require("./taxCalculator.service");
 const getUpiQrCodeByPrintSettings = async ({
   upi,
   grandTotal = 0,
@@ -17,46 +18,6 @@ const getUpiQrCodeByPrintSettings = async ({
   return upiQr;
 };
 
-const calculateTaxes = (items = []) => {
-  const total = items.reduce(
-    (prev, item) => prev + item.price * item.quantity,
-    0
-  );
-  let cgst = 0,
-    sgst = 0,
-    igst = 0;
-
-  const totalTax = items.reduce((prev, item) => {
-    const [typeOfGST, gstPercentage] = item.gst.split(":");
-    const taxPercentage = item.gst === "none" ? 0 : parseInt(gstPercentage);
-    const tax = prev + (item.price * item.quantity * taxPercentage) / 100;
-    cgst += typeOfGST === "GST" ? tax / 2 : 0;
-    sgst += typeOfGST === "GST" ? tax / 2 : 0;
-    igst += typeOfGST === "IGST" ? tax : 0;
-    return tax;
-  }, 0);
-  return {
-    total: parseFloat(total.toFixed(2)),
-    totalTax: parseFloat(totalTax.toFixed(2)),
-    cgst,
-    sgst,
-    igst,
-  };
-};
-const calculateTaxesForBillItemsWithCurrency = (items = [], currencySymbol) => {
-  return items.map(({ name, price, quantity, gst, um }) => ({
-    name,
-    quantity,
-    gst: taxRates.find((taxRate) => taxRate.value === gst).label,
-    um: ums.find((unit) => unit.value === um).label,
-    price: `${currencySymbol} ${price.toFixed(2)}`,
-    total: `${currencySymbol} ${(
-      price *
-      quantity *
-      ((100 + (gst === "none" ? 0 : parseFloat(gst.split(":")[1]))) / 100)
-    ).toFixed(2)}`,
-  }));
-};
 const getSettingForOrg = async (org) => {
   const setting = await Setting.findOne({
     org,
@@ -74,7 +35,7 @@ exports.saveBill = async ({
   billId,
 }) => {
   const body = await dto.validateAsync(requestBody);
-  const totalWithTaxes = calculateTaxes(body.items);
+  const totalWithTaxes = await calculateTaxes(body.items);
   const setting = await getSettingForOrg(body.org);
   const billBody = {
     ...body,
@@ -156,7 +117,17 @@ exports.getNextSequence = async ({ Bill, org }) => {
   );
   return bill ? (bill?.sequence || 0) + 1 : 1;
 };
-
+const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
+  const newTaxCategories = Object.entries(taxCategories).reduce(
+    (prev, current) => {
+      const [taxType, taxValue = 0] = current;
+      prev[taxType] = `${currencySymbol} ${taxValue.toFixed(2)}`;
+      return prev;
+    },
+    {}
+  );
+  return newTaxCategories;
+};
 exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const bill = await Bill.findOne(filter)
     .populate("party")
@@ -166,11 +137,15 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const setting = await getSettingForOrg(filter.org);
   const currencySymbol = currencies[setting.currency].symbol;
   const grandTotal = bill.total + bill.totalTax;
-  const items = calculateTaxesForBillItemsWithCurrency(
+  const items = await calculateTaxesForBillItemsWithCurrency(
     bill.items,
     currencySymbol
   );
   const localeCode = setting.localeCode;
+  const currencyTaxCategories = addCurrencyToTaxCategories(
+    bill.taxCategories,
+    currencySymbol
+  );
   const data = {
     entity: bill,
     num: bill.num,
@@ -181,9 +156,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     amountToWords: currencyToWordConverter(localeCode, grandTotal),
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
-    sgst: `${currencySymbol} ${bill.sgst.toFixed(2)}`,
-    cgst: `${currencySymbol} ${bill.cgst.toFixed(2)}`,
-    igst: `${currencySymbol} ${bill.igst.toFixed(2)}`,
+    ...currencyTaxCategories,
   };
   switch (Bill.modelName) {
     case "quotes":
