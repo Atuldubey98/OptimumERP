@@ -5,6 +5,7 @@ const remove = require("./remove");
 const update = require("./update");
 const htmlView = require("./htmlView");
 const download = require("./download");
+const exportData = require("./exportData");
 const getController = (options) => {
   return {
     read: (req, res) => read(options, req, res),
@@ -14,6 +15,7 @@ const getController = (options) => {
     remove: (req, res) => remove(options, req, res),
     update: (req, res) => update(options, req, res),
     download: (req, res) => download(options, req, res),
+    exportData: (req, res) => exportData(options, req, res),
   };
 };
 module.exports = getController;

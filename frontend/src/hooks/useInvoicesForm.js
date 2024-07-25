@@ -55,7 +55,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     sequence: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
-    items: [],
+    items: [defaultReceiptItem],
     terms: "Thanks for business !",
     prefix: "",
     description: "",
@@ -141,7 +141,6 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         setStatus("success");
       } else {
         fetchNextInvoiceNumber();
-        formik.setFieldValue("items", [defaultReceiptItem]);
       }
     })();
   }, []);

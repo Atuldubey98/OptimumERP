@@ -41,7 +41,7 @@ function TableLayoutMemoized({
       />
       {filter}
       <TableContainer>
-        <Table size={"sm"} variant={"striped"}>
+        <Table size={"sm"}>
           <TableCaption>{caption}</TableCaption>
           <Thead>
             <Tr>

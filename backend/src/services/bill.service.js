@@ -158,56 +158,53 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
     ...currencyTaxCategories,
   };
-  switch (Bill.modelName) {
-    case "quotes":
-      const quote = {
-        ...data,
+  const billMetaMapping = {
+    quotes: async () => {
+      return {
         title: "Quotation",
         billMetaHeading: "Estimate Information",
         partyMetaHeading: "Estimate to",
       };
-      return quote;
-    case "purchase":
-      const purchase = {
-        ...data,
+    },
+    purchase: async () => {
+      return {
         title: "Purchase",
         billMetaHeading: "Purchase Information",
         partyMetaHeading: "Bill From",
       };
-      return purchase;
-    case "proforma_invoice":
-      const proformaInvoice = {
-        ...data,
+    },
+    proforma_invoice: async () => {
+      return {
         title: "Proforma Invoice",
         billMetaHeading: "Proforma Invoice information",
         partyMetaHeading: "Bill To",
       };
-      return proformaInvoice;
-    case "purchase_order":
-      const purchaseOrder = {
-        ...data,
+    },
+    purchase_order: async () => {
+      return {
         title: "Purchase Orders",
         billMetaHeading: "PO Information",
         partyMetaHeading: "PO to",
       };
-      return purchaseOrder;
-    case "invoice":
+    },
+    invoice: async () => {
       const upiQr = await getUpiQrCodeByPrintSettings({
         upi: bill.org?.bank?.upi,
         grandTotal,
         shouldPrintQr: setting.printSettings.upiQr,
       });
       const bank = setting.printSettings.bank && bill.org.bank;
-      const invoice = {
-        ...data,
+      return {
         title: "Invoice",
         billMetaHeading: "Invoice information",
         partyMetaHeading: "Bill To",
         bank,
         upiQr,
       };
-      return invoice;
-    default:
-      return data;
-  }
+    },
+  };
+  const getBillMeta = billMetaMapping[Bill.modelName];
+  if (!getBillMeta) return data;
+  const meta = await getBillMeta();
+  return { ...data, ...meta };
 };

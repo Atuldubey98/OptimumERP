@@ -5,6 +5,8 @@ export default function ButtonIcon({
   icon,
   label,
   isDisabled = false,
+  isLoading = false,
+  colorScheme = "blue",
 }) {
   return (
     <>
@@ -12,9 +14,10 @@ export default function ButtonIcon({
         <Button
           isDisabled={isDisabled}
           leftIcon={icon}
+          isLoading={isLoading}
           onClick={onClick}
           size={"sm"}
-          colorScheme="blue"
+          colorScheme={colorScheme}
         >
           {label}
         </Button>
@@ -23,9 +26,10 @@ export default function ButtonIcon({
         <IconButton
           isDisabled={isDisabled}
           icon={icon}
+          isLoading={isLoading}
           onClick={onClick}
           size={"sm"}
-          colorScheme="blue"
+          colorScheme={colorScheme}
         />
       </Show>
     </>

@@ -5,6 +5,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Grid,
   Input,
@@ -72,10 +73,11 @@ export default function NewOrgModal({
                   placeholder="Name"
                 />
                 <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+                <FormHelperText>Name of your organization</FormHelperText>
               </FormControl>
               <FormControl
                 isRequired
-                isInvalid={formik.errors.name && formik.touched.name}
+                isInvalid={formik.errors.address && formik.touched.address}
               >
                 <FormLabel>Address</FormLabel>
                 <Input
@@ -86,11 +88,12 @@ export default function NewOrgModal({
                   placeholder="Address"
                 />
                 <FormErrorMessage>{formik.errors.address}</FormErrorMessage>
+                <FormHelperText>Address of your organization</FormHelperText>
               </FormControl>
               <FormControl
-                isInvalid={formik.errors.name && formik.touched.name}
+                isInvalid={formik.errors.gstNo && formik.touched.gstNo}
               >
-                <FormLabel>GST No. </FormLabel>
+                <FormLabel>GST No./ Tax Reg. No. </FormLabel>
                 <Input
                   onChange={formik.handleChange}
                   name="gstNo"
@@ -99,10 +102,14 @@ export default function NewOrgModal({
                   placeholder="GST No."
                 />
                 <FormErrorMessage>{formik.errors.gstNo}</FormErrorMessage>
+                <FormHelperText>
+                  GST registeration no or tax registeration no. of
+                  organization
+                </FormHelperText>
               </FormControl>
               <FormControl
                 isRequired
-                isInvalid={formik.errors.name && formik.touched.name}
+                isInvalid={formik.errors.panNo && formik.touched.panNo}
               >
                 <FormLabel>PAN No.</FormLabel>
                 <Input
@@ -112,7 +119,10 @@ export default function NewOrgModal({
                   value={formik.values.panNo}
                   placeholder="PAN No."
                 />
-                <FormErrorMessage>{formik.errors.gstNo}</FormErrorMessage>
+                <FormErrorMessage>{formik.errors.panNo}</FormErrorMessage>
+                <FormHelperText>
+                 PAN No/ TAN no. of the organization
+                </FormHelperText>
               </FormControl>
               <Text fontSize={"sm"}>
                 Rest organization details can be filled in settings

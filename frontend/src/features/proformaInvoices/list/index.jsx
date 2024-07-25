@@ -23,6 +23,7 @@ import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import moment from "moment";
+import ExporterModal from "../../common/ExporterModal";
 export default function ProformaInvoicesPage() {
   const {
     items,
@@ -137,6 +138,22 @@ export default function ProformaInvoicesPage() {
       setProformaInvoiceStatus("idle");
     }
   };
+  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
+    useDisclosure();
+  const makeProformaListMapper = (item) => ({
+    ...item,
+    date: moment(item.date).format("LL"),
+    recipient: (
+      <ChakraLink
+        to={`/${orgId}/parties/${item.party._id}/transactions`}
+        as={Link}
+      >
+        {item.party.name}
+      </ChakraLink>
+    ),
+    status: <Status status={item.status} statusList={invoiceStatusList} />,
+    grandTotal: `${symbol} ${(item.totalTax + item.total).toFixed(2)}`,
+  });
   return (
     <MainLayout>
       <Box p={4}>
@@ -146,6 +163,10 @@ export default function ProformaInvoicesPage() {
           </Flex>
         ) : (
           <TableLayout
+            showExport={{
+              status: "idle",
+              onExport: toggleExportModal,
+            }}
             isAddDisabled={reachedLimit}
             limitKey={"proformaInvoices"}
             caption={`Total proforma invoices found : ${totalCount}`}
@@ -168,24 +189,7 @@ export default function ProformaInvoicesPage() {
                 editItem={() => navigate(`${item._id}/edit`)}
               />
             ))}
-            tableData={items.map((item) => ({
-              ...item,
-              date: moment(item.date).format("LL"),
-              recipient: (
-                <ChakraLink
-                  to={`/${orgId}/parties/${item.party._id}/transactions`}
-                  as={Link}
-                >
-                  {item.party.name}
-                </ChakraLink>
-              ),
-              status: (
-                <Status status={item.status} statusList={invoiceStatusList} />
-              ),
-              grandTotal: `${symbol} ${(item.totalTax + item.total).toFixed(
-                2
-              )}`,
-            }))}
+            tableData={items.map(makeProformaListMapper)}
             onAddNewItem={() => navigate(`create`)}
             filter={
               <TableDateFilter
@@ -230,6 +234,34 @@ export default function ProformaInvoicesPage() {
           heading={"Proforma Invoice"}
           isOpen={IsBillModalOpen}
           onClose={closeBillModal}
+        />
+      ) : null}
+      {isExportModalOpen ? (
+        <ExporterModal
+          isOpen={isExportModalOpen}
+          onClose={toggleExportModal}
+          downloadUrl={`/api/v1/organizations/${orgId}/proformaInvoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
+          defaultSelectedFields={{
+            partyName: "Party Name",
+            billingAddress: "Billing Address",
+            total: "Total",
+            totalTax: "Total Tax",
+            num: "Number",
+            status: "Status",
+          }}
+          selectableFields={{
+            createdByEmail: "Created By Email",
+            createdByName: "Created By Name",
+            poNo: "PO Number",
+            poDate: "PO Date",
+            cgst: "CGST",
+            igst: "IGST",
+            sgst: "SGST",
+            vat: "VAT",
+            cess: "Cess",
+            sal: "SAL",
+            others: "Other taxes",
+          }}
         />
       ) : null}
     </MainLayout>

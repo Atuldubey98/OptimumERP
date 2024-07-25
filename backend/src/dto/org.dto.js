@@ -3,7 +3,7 @@ const Joi = require("joi");
 const createOrgDto = Joi.object({
   name: Joi.string().min(2).max(80).required().label("Name"),
   address: Joi.string().required().label("Address"),
-  gstNo: Joi.string().allow("").length(15).label("GST No."),
+  gstNo: Joi.string().allow("").label("GST No."),
   createdBy: Joi.string().required(),
   financialYear: Joi.object({
     start: Joi.string().required(),
@@ -15,7 +15,7 @@ const createOrgDto = Joi.object({
 const updateOrgDto = Joi.object({
   name: Joi.string().min(2).max(80).label("Name"),
   address: Joi.string().label("Address"),
-  gstNo: Joi.string().allow("").length(15).label("GST No."),
+  gstNo: Joi.string().allow("").label("GST No."),
   financialYear: Joi.object({
     start: Joi.string().required(),
     end: Joi.string().required(),

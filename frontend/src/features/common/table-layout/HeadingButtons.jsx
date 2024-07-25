@@ -28,11 +28,25 @@ export default function HeadingButtons({
           as={IoArrowBack}
           onClick={() => navigate(-1)}
         />
-        <Text fontSize={"xl"} fontWeight={"bold"}>
+        <Text noOfLines={1} fontSize={"xl"} fontWeight={"bold"}>
           {heading}
         </Text>
       </Flex>
       <ButtonGroup gap="4">
+        {showExport ? (
+          <Tooltip label={"Export"}>
+            <span>
+              <ButtonIcon
+                isDisabled={isAddDisabled}
+                colorScheme="green"
+                isLoading={showExport?.status === "exporting"}
+                icon={<TbTableExport />}
+                label={"Export"}
+                onClick={showExport?.onExport}
+              />
+            </span>
+          </Tooltip>
+        ) : null}
         {onAddNewItem ? (
           <Tooltip label={isAddDisabled ? "Upgrade your plan" : ""}>
             <span>
@@ -44,17 +58,6 @@ export default function HeadingButtons({
               />
             </span>
           </Tooltip>
-        ) : null}
-        {showExport ? (
-          <Button
-            colorScheme="green"
-            size={"sm"}
-            isLoading={showExport.status === "exporting"}
-            leftIcon={<TbTableExport />}
-            onClick={showExport.onExport}
-          >
-            Export
-          </Button>
         ) : null}
       </ButtonGroup>
     </Flex>

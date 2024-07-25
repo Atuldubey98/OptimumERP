@@ -10,8 +10,15 @@ const Purchase = require("../models/purchase.model");
 const Transaction = require("../models/transaction.model");
 const { getPaginationParams } = require("./crud.service");
 
-exports.makeReportExcelBuffer = async ({ reportData, reportType }) => {
-  const { bodyMapper, header } = reportDataByType[reportType];
+exports.makeReportExcelBuffer = async ({
+  reportData,
+  reportType,
+  headersSelectedRow = {},
+}) => {
+  const reportMapper = reportDataByType[reportType];
+  if (!reportMapper) throw new Error("Report type not found");
+  const { bodyMapper, header: headerRow } = reportMapper;
+  const header = headerRow || headersSelectedRow;
   const reportItems = reportData.map(bodyMapper);
   const wb = new xl.Workbook();
   const ws = wb.addWorksheet();
@@ -31,7 +38,9 @@ exports.makeReportExcelBuffer = async ({ reportData, reportType }) => {
   reportItems.forEach((reportItem, index) => {
     Object.entries(header).forEach(([key], fieldIndex) => {
       if (key != "_id")
-        ws.cell(index + 2, fieldIndex + 1).string(reportItem[key]);
+        ws.cell(index + 2, fieldIndex + 1).string(
+          String(reportItem[key] || "")
+        );
     });
   });
   const excelBuffer = await wb.writeToBuffer();
@@ -66,7 +75,9 @@ exports.getReportForBill = async ({ req, reportType }) => {
     shouldPaginate: false,
     ...paginationProps,
   });
-  let query = Model.find(paginationParams.filter).sort({ createdAt: -1 }).populate("party");
+  let query = Model.find(paginationParams.filter)
+    .sort({ createdAt: -1 })
+    .populate("party");
   switch (reportType) {
     case "transactions":
       query = query.populate("doc");

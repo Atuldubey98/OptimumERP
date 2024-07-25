@@ -207,7 +207,7 @@ export default function TransactionsPage() {
                 </Grid>
               </Stack>
             }
-            heading={`${partyName} - Transactions`}
+            heading={`Transactions-${partyName}`}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
               date: new Date(item.doc.date).toLocaleDateString(),

@@ -10,7 +10,7 @@ const {
   htmlView,
   nextSequence,
   payment,
-  send,
+  exportData,
   remove,
   download,
   paginate,
@@ -30,6 +30,7 @@ invoiceRouter.post(
 );
 
 invoiceRouter.get("/nextSequence", requestAsyncHandler(nextSequence));
+invoiceRouter.get("/export", requestAsyncHandler(exportData));
 invoiceRouter.get("/:id", requestAsyncHandler(read));
 invoiceRouter.delete("/:id", requestAsyncHandler(remove));
 invoiceRouter.get("/", requestAsyncHandler(paginate));
@@ -37,9 +38,5 @@ invoiceRouter.patch("/:id", updateModel, requestAsyncHandler(update));
 invoiceRouter.get("/:id/view", requestAsyncHandler(htmlView));
 invoiceRouter.get("/:id/download", requestAsyncHandler(download));
 invoiceRouter.post("/:id/payment", requestAsyncHandler(payment));
-invoiceRouter.post(
-  "/:id/send",
-  checkPlan(["gold", "platinum"]),
-  requestAsyncHandler(send)
-);
+
 module.exports = invoiceRouter;

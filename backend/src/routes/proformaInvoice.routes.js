@@ -10,6 +10,7 @@ const {
   paginate,
   read,
   remove,
+  exportData,
   update,
   convertProformaToInvoice,
 } = require("../controllers/proformaInvoice.controller");
@@ -24,6 +25,7 @@ proformaInvoiceRouter.get(
   "/nextProformaInvoiceNo",
   requestAsyncHandler(nextSequence)
 );
+proformaInvoiceRouter.get("/export", requestAsyncHandler(exportData));
 proformaInvoiceRouter.patch("/:id", updateModel, requestAsyncHandler(update));
 proformaInvoiceRouter.get("/:id", requestAsyncHandler(read));
 
