@@ -1,11 +1,9 @@
 module.exports = (err, req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
+  if (res.headersSent) return next(err);
   let message = err.message || "Internel server error";
   let code = err.code || 500;
   if (err.name === "ValidationError") {
-    code = 400;
+    code = 422;
     message = err.message;
   }
   if (err.name === "MongoServerError") {

@@ -32,6 +32,8 @@ import TotalsBox from "../../estimates/create/TotalsBox";
 import PartySelectBill from "./PartySelectBill";
 import useTaxes from "../../../hooks/useTaxes";
 import useUms from "../../../hooks/useUms";
+import BannerWithLabel from "../../common/BannerWithLabel";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 export default function CreateInvoicePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
@@ -44,6 +46,7 @@ export default function CreateInvoicePage() {
   const { disable } = useLimitsInFreePlan({
     key: "invoices",
   });
+  const hasError = status === "error";
   return (
     <MainLayout>
       <Box p={5}>
@@ -52,6 +55,11 @@ export default function CreateInvoicePage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner size={"md"} />
             </Flex>
+          ) : hasError ? (
+            <BannerWithLabel
+              label={"Invoice not found"}
+              Icon={FaFileInvoiceDollar}
+            />
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
@@ -169,11 +177,7 @@ export default function CreateInvoicePage() {
                   </FormControl>
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>Items</Heading>
-                <ItemsList
-                  formik={formik}
-                  taxes={taxes}
-                  ums={ums}
-                />
+                <ItemsList formik={formik} taxes={taxes} ums={ums} />
                 <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />

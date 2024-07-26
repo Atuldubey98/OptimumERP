@@ -8,7 +8,7 @@ import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function useEstimateForm() {
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const quoteSchema = Yup.object().shape({
@@ -76,7 +76,25 @@ export default function useEstimateForm() {
   });
   useEffect(() => {
     (async () => {
-      if (quoteId) {
+      try {
+        if (quoteId) {
+          await fetchQuotation();
+        } else {
+          await fetchSequence();
+        }
+      } catch (error) {
+        setStatus("error");
+      }
+      async function fetchSequence() {
+        setStatus("loading");
+        const { data } = await instance.get(
+          `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`
+        );
+        formik.setFieldValue("sequence", data.data);
+        setStatus("success");
+      }
+
+      async function fetchQuotation() {
         setStatus("loading");
         const { data } = await instance.get(
           `/api/v1/organizations/${orgId}/quotes/${quoteId}`
@@ -107,15 +125,8 @@ export default function useEstimateForm() {
           createdBy: data.data.createdBy._id,
         });
         setStatus("success");
-      } else {
-        setStatus("loading");
-        const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`
-        );
-        formik.setFieldValue("sequence", data.data);
-        setStatus("success");
       }
     })();
-  }, []);
+  }, [quoteId]);
   return { formik, status };
 }

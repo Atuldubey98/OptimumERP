@@ -8,7 +8,7 @@ import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import useSetting from "./useCurrentOrgCurrency";
 export default function useInvoicesForm({ saveAndNew = false }) {
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
   const invoiceSchema = Yup.object().shape({
@@ -101,52 +101,58 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     setStatus("success");
   });
   useEffect(() => {
-    (async () => {
-      if (invoiceId) {
-        setStatus("loading");
-        const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
-        );
-        const {
-          party,
-          terms,
-          sequence,
-          prefix,
-          date,
-          status,
-          dueDate,
-          items,
-          description,
-          billingAddress = "",
-          poDate = "",
-          poNo = "",
-        } = data.data;
-        formik.setValues({
-          _id: data.data._id,
-          party: party._id,
-          terms,
-          sequence,
-          prefix,
-          dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
-          date: new Date(date).toISOString().split("T")[0],
-          status,
-          partyDetails: party,
-          items,
-          description,
-          poDate: poDate ? poDate.split("T")[0] : "",
-          poNo,
-          billingAddress,
-          createdBy: data.data.createdBy._id,
-        });
-        setStatus("success");
-      } else {
-        fetchNextInvoiceNumber();
-      }
-    })();
+    if (invoiceId) {
+      fetchCurrentInvoice();
+      return;
+    }
+    fetchNextInvoiceNumber();
   }, []);
   const resetForm = async () => {
     formik.resetForm();
     fetchNextInvoiceNumber();
   };
   return { formik, status, resetForm };
+
+  async function fetchCurrentInvoice() {
+    try {
+      setStatus("loading");
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
+      );
+      const {
+        party,
+        terms,
+        sequence,
+        prefix,
+        date,
+        status,
+        dueDate,
+        items,
+        description,
+        billingAddress = "",
+        poDate = "",
+        poNo = "",
+      } = data.data;
+      formik.setValues({
+        _id: data.data._id,
+        party: party._id,
+        terms,
+        sequence,
+        prefix,
+        dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
+        date: new Date(date).toISOString().split("T")[0],
+        status,
+        partyDetails: party,
+        items,
+        description,
+        poDate: poDate ? poDate.split("T")[0] : "",
+        poNo,
+        billingAddress,
+        createdBy: data.data.createdBy._id,
+      });
+      setStatus("success");
+    } catch (error) {
+      setStatus("error");
+    }
+  }
 }

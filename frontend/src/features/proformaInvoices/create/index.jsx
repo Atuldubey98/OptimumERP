@@ -31,6 +31,9 @@ import useUms from "../../../hooks/useUms";
 import useTaxes from "../../../hooks/useTaxes";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import PrefixFormField from "../../common/PrefixFormField";
+import BannerWithLabel from "../../common/BannerWithLabel";
+import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
+
 export default function ProformaInvoiceFormPage() {
   const { formik, status } = useProformaInvoicesForm();
   const { taxes } = useTaxes();
@@ -39,6 +42,7 @@ export default function ProformaInvoiceFormPage() {
   const { disable } = useLimitsInFreePlan({
     key: "proformaInvoices",
   });
+  const error = status === "error";
   return (
     <MainLayout>
       <Box p={5}>
@@ -47,6 +51,11 @@ export default function ProformaInvoiceFormPage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner size={"md"} />
             </Flex>
+          ) : error ? (
+            <BannerWithLabel
+              Icon={LiaFileInvoiceDollarSolid}
+              label={"Proforma invoice not found"}
+            />
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>

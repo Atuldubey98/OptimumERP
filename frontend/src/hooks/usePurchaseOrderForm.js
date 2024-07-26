@@ -9,7 +9,7 @@ import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function usePurchaseOrderForm({ saveAndNew }) {
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseOrderSchema = Yup.object().shape({
@@ -97,50 +97,53 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
   });
   useEffect(() => {
     (async () => {
-      if (purchaseOrderId) {
-        requestAsyncHandler(async () => {
-          setStatus("loading");
-          const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/purchaseOrders/${purchaseOrderId}`
-          );
-          const {
-            party,
-            terms,
-            date,
-            status,
-            items,
-            prefix,
-            description,
-            billingAddress = "",
-            poDate = "",
-            sequence,
-          } = data.data;
-          formik.setValues({
-            _id: data.data._id,
-            party: party._id,
-            terms,
-            prefix,
-            sequence,
-            date: new Date(date).toISOString().split("T")[0],
-            status,
-            partyDetails: party,
-            items,
-            description,
-            poDate: poDate ? poDate.split("T")[0] : "",
-            sequence,
-            billingAddress,
-            createdBy: data.data.createdBy._id,
-          });
-          setStatus("success");
-        })();
-      } else {
-        fetchNextInvoiceNumber();
-      }
+      if (purchaseOrderId) await fetchPurchaseOrder();
+      else fetchNextInvoiceNumber();
     })();
-  }, []);
+  }, [purchaseOrderId]);
   const resetForm = async () => {
     formik.resetForm();
     fetchNextInvoiceNumber();
   };
   return { formik, status, resetForm };
+
+  async function fetchPurchaseOrder() {
+    try {
+      setStatus("loading");
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/purchaseOrders/${purchaseOrderId}`
+      );
+      const {
+        party,
+        terms,
+        date,
+        status,
+        items,
+        prefix,
+        description,
+        billingAddress = "",
+        poDate = "",
+        sequence,
+      } = data.data;
+      formik.setValues({
+        _id: data.data._id,
+        party: party._id,
+        terms,
+        prefix,
+        sequence,
+        date: new Date(date).toISOString().split("T")[0],
+        status,
+        partyDetails: party,
+        items,
+        description,
+        poDate: poDate ? poDate.split("T")[0] : "",
+        sequence,
+        billingAddress,
+        createdBy: data.data.createdBy._id,
+      });
+      setStatus("success");
+    } catch (error) {
+      setStatus("error");
+    }
+  }
 }

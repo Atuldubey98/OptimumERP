@@ -34,6 +34,8 @@ import { FormikProvider } from "formik";
 import PrefixFormField from "../../common/PrefixFormField";
 import useTaxes from "../../../hooks/useTaxes";
 import useUms from "../../../hooks/useUms";
+import BannerWithLabel from "../../common/BannerWithLabel";
+import { IoCartOutline } from "react-icons/io5";
 export default function PurchaseOrderEditPage() {
   const { saveAndNew, onToggleSaveAndNew } = useSaveAndNewForm(
     "save-new:purchaseOrders"
@@ -47,6 +49,7 @@ export default function PurchaseOrderEditPage() {
   const { disable } = useLimitsInFreePlan({
     key: "purchaseOrders",
   });
+  const hasError = status === "error";
   return (
     <MainLayout>
       <Box p={5}>
@@ -55,6 +58,11 @@ export default function PurchaseOrderEditPage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner size={"md"} />
             </Flex>
+          ) : hasError ? (
+            <BannerWithLabel
+              Icon={IoCartOutline}
+              label={"Purchase order not found"}
+            />
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>

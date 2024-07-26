@@ -9,7 +9,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import useAuth from "../../hooks/useAuth";
 import useProfileForm from "../../hooks/useProfileForm";
@@ -18,6 +18,36 @@ import CardWrapper from "./CardWrapper";
 import ChangePasswordForm from "./ChangePasswordForm";
 import FormModalWrapper from "./FormModalWrapper";
 import ProfileForm from "./ProfileForm";
+import SettingContext from "../../contexts/SettingContext";
+
+function ProfileInfo(props) {
+  const settingContext = useContext(SettingContext);
+  const role = settingContext?.role || "";
+  return (
+    <CardWrapper
+      title={"Profile info"}
+      subtitle={"Manage your personnel information below."}
+      footer={
+        <Flex w={"100%"} alignItems={"center"} justifyContent={"flex-end"}>
+          <IconButton isRound icon={<AiFillEdit />} onClick={props.onOpen} />
+        </Flex>
+      }
+    >
+      <Stack spacing={1}>
+        <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+          <Text fontSize={"xs"}>Name</Text> <Text>{props.user?.name}</Text>
+        </Flex>
+        <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+          <Text fontSize={"xs"}>Email</Text> <Text>{props.user?.email}</Text>
+        </Flex>
+        <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+          <Text fontSize={"xs"}>Role</Text>{" "}
+          <Text textTransform={"capitalize"}>{role}</Text>
+        </Flex>
+      </Stack>
+    </CardWrapper>
+  );
+}
 
 export default function ProfileSettingsPage() {
   const { user, activePlan } = useAuth();
@@ -46,28 +76,7 @@ export default function ProfileSettingsPage() {
               Here you can manage your personnel information.
             </Text>
           </Grid>
-          <CardWrapper
-            title={"Profile info"}
-            subtitle={"Manage your personnel information below."}
-            footer={
-              <Flex
-                w={"100%"}
-                alignItems={"center"}
-                justifyContent={"flex-end"}
-              >
-                <IconButton isRound icon={<AiFillEdit />} onClick={onOpen} />
-              </Flex>
-            }
-          >
-            <Stack spacing={1}>
-              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-                <Text fontSize={"xs"}>Name</Text> <Text>{user?.name}</Text>
-              </Flex>
-              <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-                <Text fontSize={"xs"}>Email</Text> <Text>{user?.email}</Text>
-              </Flex>
-            </Stack>
-          </CardWrapper>
+          <ProfileInfo user={user} onOpen={onOpen} />
 
           <CardWrapper
             title={"Password"}

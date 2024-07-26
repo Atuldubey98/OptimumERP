@@ -30,6 +30,8 @@ import { defaultQuoteItem, statusList } from "./data";
 import PrefixFormField from "../../common/PrefixFormField";
 import useTaxes from "../../../hooks/useTaxes";
 import useUms from "../../../hooks/useUms";
+import BannerWithLabel from "../../common/BannerWithLabel";
+import { FaFileInvoice } from "react-icons/fa6";
 export default function CreateEstimatePage() {
   const { formik, status } = useEstimateForm();
   const { taxes } = useTaxes();
@@ -39,6 +41,7 @@ export default function CreateEstimatePage() {
     key: "quotes",
   });
   const { receiptDefaults } = useCurrentOrgCurrency();
+  const hasError = status === "error";
   return (
     <MainLayout>
       <Box p={5}>
@@ -47,6 +50,8 @@ export default function CreateEstimatePage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner />
             </Flex>
+          ) : hasError ? (
+            <BannerWithLabel label="Quotation not found" Icon={FaFileInvoice} />
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>

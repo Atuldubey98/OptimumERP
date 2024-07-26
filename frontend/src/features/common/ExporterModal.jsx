@@ -67,7 +67,7 @@ export default function ExporterModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Select fields</ModalHeader>
+        <ModalHeader>Select columns</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>

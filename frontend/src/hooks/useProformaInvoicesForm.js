@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
-import useAsyncCall from "./useAsyncCall";
-import * as Yup from "yup";
 import { useToast } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
 import instance from "../instance";
-import { defaultInvoiceItem } from "../features/estimates/create/data";
+import useAsyncCall from "./useAsyncCall";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 
 export default function useProformaInvoicesForm() {
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const proformaInvoiceSchema = Yup.object().shape({
@@ -101,46 +100,52 @@ export default function useProformaInvoicesForm() {
   useEffect(() => {
     (async () => {
       if (proformaInvoiceId) {
-        requestAsyncHandler(async () => {
-          setStatus("loading");
-          const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceId}`
-          );
-          const {
-            party,
-            terms,
-            sequence,
-            date,
-            status,
-            prefix,
-            items,
-            description,
-            billingAddress = "",
-            poDate = "",
-            poNo = "",
-          } = data.data;
-          formik.setValues({
-            _id: data.data._id,
-            party: party._id,
-            terms,
-            sequence,
-            date: new Date(date).toISOString().split("T")[0],
-            status,
-            partyDetails: party,
-            items,
-            description,
-            prefix,
-            poDate: poDate ? poDate.split("T")[0] : "",
-            poNo,
-            billingAddress,
-            createdBy: data.data?.createdBy._id,
-          });
-          setStatus("success");
-        })();
+        await fetchProformaInvoice();
       } else {
         fetchNextInvoiceNumber();
       }
     })();
   }, []);
   return { formik, status };
+
+  async function fetchProformaInvoice() {
+    try {
+      setStatus("loading");
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceId}`
+      );
+      const {
+        party,
+        terms,
+        sequence,
+        date,
+        status,
+        prefix,
+        items,
+        description,
+        billingAddress = "",
+        poDate = "",
+        poNo = "",
+      } = data.data;
+      formik.setValues({
+        _id: data.data._id,
+        party: party._id,
+        terms,
+        sequence,
+        date: new Date(date).toISOString().split("T")[0],
+        status,
+        partyDetails: party,
+        items,
+        description,
+        prefix,
+        poDate: poDate ? poDate.split("T")[0] : "",
+        poNo,
+        billingAddress,
+        createdBy: data.data?.createdBy._id,
+      });
+      setStatus("success");
+    } catch (error) {
+      setStatus("error");
+    }
+  }
 }

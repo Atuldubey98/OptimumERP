@@ -15,8 +15,14 @@ import {
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { AiOutlineSave } from "react-icons/ai";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { purchaseStatusList } from "../../../constants/purchase";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import usePurchaseForm from "../../../hooks/usePurchaseForm";
+import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
+import useTaxes from "../../../hooks/useTaxes";
+import useUms from "../../../hooks/useUms";
+import BannerWithLabel from "../../common/BannerWithLabel";
 import MainLayout from "../../common/main-layout";
 import DateField from "../../estimates/create/DateField";
 import DescriptionField from "../../estimates/create/DescriptionField";
@@ -25,10 +31,6 @@ import SelectStatus from "../../estimates/create/SelectStatus";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
-import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
-import useTaxes from "../../../hooks/useTaxes";
-import useUms from "../../../hooks/useUms";
 export default function CreatePurchasePage() {
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:purchase");
@@ -41,6 +43,7 @@ export default function CreatePurchasePage() {
   const { disable } = useLimitsInFreePlan({
     key: "purchases",
   });
+  const hasError = status === "error";
   return (
     <MainLayout>
       <Box p={5}>
@@ -49,6 +52,11 @@ export default function CreatePurchasePage() {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Spinner size={"md"} />
             </Flex>
+          ) : hasError ? (
+            <BannerWithLabel
+              label={"Purchase invoice not found"}
+              Icon={FaMoneyBillTrendUp}
+            />
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
@@ -144,7 +152,7 @@ export default function CreatePurchasePage() {
                     />
                   </FormControl>
                 )}
-                <TotalsBox quoteItems={formik.values.items} taxes={taxes}  />
+                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
               </Grid>
             </form>
