@@ -9,7 +9,7 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 
 export default function useProformaInvoicesForm() {
   const [status, setStatus] = useState("loading");
-  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, receiptDefaults } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const proformaInvoiceSchema = Yup.object().shape({
     sequence: Yup.number()
@@ -55,7 +55,7 @@ export default function useProformaInvoicesForm() {
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultReceiptItem],
-    terms: "Thanks for business !",
+    terms: receiptDefaults.terms?.proformaInvoice,
     description: "",
     poNo: "",
     billingAddress: "",

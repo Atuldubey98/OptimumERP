@@ -9,7 +9,7 @@ import useAsyncCall from "./useAsyncCall";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function useEstimateForm() {
   const [status, setStatus] = useState("loading");
-  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, receiptDefaults } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const quoteSchema = Yup.object().shape({
     sequence: Yup.number().required("Quote number is required"),
@@ -40,6 +40,7 @@ export default function useEstimateForm() {
   const { orgId, quoteId } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       sequence: 1,
@@ -48,7 +49,7 @@ export default function useEstimateForm() {
       status: "draft",
       items: [defaultReceiptItem],
       prefix: "",
-      terms: "Thanks for business !",
+      terms: receiptDefaults.terms?.quote,
       description: "",
     },
     validationSchema: quoteSchema,

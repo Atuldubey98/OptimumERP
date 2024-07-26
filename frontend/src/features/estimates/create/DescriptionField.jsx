@@ -7,7 +7,7 @@ export default function DescriptionField({ formik }) {
     >
       <FormLabel>Description</FormLabel>
       <Input
-        placeholder="Write any thing to search the quote latere like email id or something to identify the quote."
+        placeholder="Write any thing to search it later like email address or something to identify it."
         name="description"
         onChange={formik.handleChange}
         value={formik.values.description}

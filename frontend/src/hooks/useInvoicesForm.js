@@ -9,7 +9,7 @@ import useAsyncCall from "./useAsyncCall";
 import useSetting from "./useCurrentOrgCurrency";
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("loading");
-  const { getDefaultReceiptItem } = useSetting();
+  const { getDefaultReceiptItem, receiptDefaults } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
   const invoiceSchema = Yup.object().shape({
     sequence: Yup.number()
@@ -56,7 +56,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultReceiptItem],
-    terms: "Thanks for business !",
+    terms: receiptDefaults.terms?.invoice,
     prefix: "",
     description: "",
     poNo: "",

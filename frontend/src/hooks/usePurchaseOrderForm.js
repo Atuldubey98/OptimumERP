@@ -10,7 +10,7 @@ import { defaultInvoiceItem } from "../features/estimates/create/data";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function usePurchaseOrderForm({ saveAndNew }) {
   const [status, setStatus] = useState("loading");
-  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, receiptDefaults } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseOrderSchema = Yup.object().shape({
     party: Yup.string().required("Party is required").label("Party"),
@@ -49,12 +49,13 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
   const { orgId, purchaseOrderId } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
+
   const defaultInvoice = {
     poNo: 1,
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultReceiptItem],
-    terms: "Thanks for business !",
+    terms: receiptDefaults.terms?.purchaseOrder,
     description: "",
     billingAddress: "",
   };

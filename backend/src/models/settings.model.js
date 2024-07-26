@@ -1,4 +1,9 @@
 const { Schema, model, Types } = require("mongoose");
+const termsSchema = {
+  type: String,
+  default: "Thanks for business !",
+  required: true,
+};
 const settingSchema = new Schema({
   org: {
     type: Types.ObjectId,
@@ -79,6 +84,12 @@ const settingSchema = new Schema({
       type: Types.ObjectId,
       ref: "taxes",
       required: true,
+    },
+    terms: {
+      invoice: termsSchema,
+      quote: termsSchema,
+      purchaseOrder: termsSchema,
+      proformaInvoice: termsSchema,
     },
   },
 });
