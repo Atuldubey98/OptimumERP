@@ -89,6 +89,7 @@ export default function ProductsPage() {
       ...product,
       categoryProps: product.category,
       category: product.category ? product.category._id : "",
+      um: product.um?._id,
     });
     openProductFormDrawer();
   };

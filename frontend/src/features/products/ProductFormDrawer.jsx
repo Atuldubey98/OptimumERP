@@ -21,6 +21,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
     value: um._id,
     label: um.name,
   }));
+  const selectedUm = umOptions.find((um) => um.value === formik.values.um);
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
@@ -79,7 +80,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           <FormLabel>Unit of Measurement</FormLabel>
           <Select
             name={`um`}
-            value={umOptions.find((um) => um.value === formik.values.um)}
+            value={selectedUm}
             onChange={({ value }) => {
               formik.setFieldValue(`um`, value);
             }}
