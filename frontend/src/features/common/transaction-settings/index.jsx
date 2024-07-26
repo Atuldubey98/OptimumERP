@@ -24,6 +24,7 @@ import instance from "../../../instance";
 import MainLayout from "../main-layout";
 import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
+import AdminLayout from "../auth-layout/AdminLayout";
 export default function TransactionSettingsPage() {
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
@@ -109,73 +110,75 @@ export default function TransactionSettingsPage() {
   });
   return (
     <MainLayout>
-      <Stack spacing={3}>
-        {loading ? (
-          <Flex p={4} justifyContent={"center"} alignItems={"center"}>
-            <Spinner />
-          </Flex>
-        ) : (
-          <Box p={3}>
-            <FormControl>
-              <FormLabel fontWeight={"bold"}>Organization</FormLabel>
-              <Select
-                value={organizationOptions.find(
-                  (org) => org.value === formik.values.organization
-                )}
-                onChange={({ value }) => {
-                  formik.setFieldValue("organization", value);
-                }}
-                isOptionDisabled={({ disabled }) => disabled}
-                options={organizationOptions}
-                name="organization"
-              />
-            </FormControl>
-          </Box>
-        )}
-        <SimpleGrid gap={8} minChildWidth={300}>
-          {formik.values.organization ? (
-            <Tabs size={"sm"}>
-              <TabList>
-                <Tab>Configuration</Tab>
-                <Tab>Transaction</Tab>
-              </TabList>
-
-              <TabPanels>
-                <TabPanel>
-                  <Box>
-                    <PrintSettings
-                      printFormik={printFormik}
-                      formik={formik}
-                      loading={loading}
-                    />
-                  </Box>
-                </TabPanel>
-                <TabPanel>
-                  <Box>
-                    <TransactionPrefix
-                      formik={formik}
-                      loading={loading}
-                      printFormik={printFormik}
-                    />
-                  </Box>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          ) : (
-            <Flex
-              minH={"50svh"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              flexDir={"column"}
-            >
-              <GoOrganization size={80} color="lightgray" />
-              <Heading color={"gray.300"} fontSize={"2xl"}>
-                Select Organization
-              </Heading>
+      <AdminLayout>
+        <Stack spacing={3}>
+          {loading ? (
+            <Flex p={4} justifyContent={"center"} alignItems={"center"}>
+              <Spinner />
             </Flex>
+          ) : (
+            <Box p={3}>
+              <FormControl>
+                <FormLabel fontWeight={"bold"}>Organization</FormLabel>
+                <Select
+                  value={organizationOptions.find(
+                    (org) => org.value === formik.values.organization
+                  )}
+                  onChange={({ value }) => {
+                    formik.setFieldValue("organization", value);
+                  }}
+                  isOptionDisabled={({ disabled }) => disabled}
+                  options={organizationOptions}
+                  name="organization"
+                />
+              </FormControl>
+            </Box>
           )}
-        </SimpleGrid>
-      </Stack>
+          <SimpleGrid gap={8} minChildWidth={300}>
+            {formik.values.organization ? (
+              <Tabs size={"sm"}>
+                <TabList>
+                  <Tab>Configuration</Tab>
+                  <Tab>Transaction</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <Box>
+                      <PrintSettings
+                        printFormik={printFormik}
+                        formik={formik}
+                        loading={loading}
+                      />
+                    </Box>
+                  </TabPanel>
+                  <TabPanel>
+                    <Box>
+                      <TransactionPrefix
+                        formik={formik}
+                        loading={loading}
+                        printFormik={printFormik}
+                      />
+                    </Box>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            ) : (
+              <Flex
+                minH={"50svh"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                flexDir={"column"}
+              >
+                <GoOrganization size={80} color="lightgray" />
+                <Heading color={"gray.300"} fontSize={"2xl"}>
+                  Select Organization
+                </Heading>
+              </Flex>
+            )}
+          </SimpleGrid>
+        </Stack>
+      </AdminLayout>
     </MainLayout>
   );
 }

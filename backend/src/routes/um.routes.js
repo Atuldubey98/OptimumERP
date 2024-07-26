@@ -7,7 +7,9 @@ const {
 } = require("../controllers/um.controller");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const { limitFreePlanOnCreateEntityForOrganization } = require("../middlewares/auth.middleware");
+const {
+  limitFreePlanOnCreateEntityForOrganization,
+} = require("../middlewares/auth.middleware");
 
 const umRouter = Router({
   mergeParams: true,

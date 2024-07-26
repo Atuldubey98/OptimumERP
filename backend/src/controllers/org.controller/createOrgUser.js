@@ -6,22 +6,13 @@ const bcryptjs = require("bcryptjs");
 const UserActivatedPlan = require("../../models/userActivatedPlans.model");
 const OrgUser = require("../../models/orgUser.model");
 const logger = require("../../logger");
+const { registerUser } = require("../../services/auth.service");
 
 const createOrgUser = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
-  const { email, password, name } = body;
-  const existingUser = await User.findByEmailId(email);
-  if (existingUser) throw new UserDuplicate();
-  const hashedPassword = await bcryptjs.hash(
-    password,
-    await bcryptjs.genSalt(10)
-  );
-  const registeredUser = await User.create({
-    email,
-    password: hashedPassword,
-    name,
-  });
+  const registeredUser = await registerUser(body);
   const org = await OrgModel.findById(req.params.orgId);
+  
   await UserActivatedPlan.create({
     user: registeredUser.id,
     plan: req.session?.user?.currentPlan?.plan,
@@ -35,10 +26,8 @@ const createOrgUser = async (req, res) => {
     role: body.role,
   });
   await orgUser.save();
-  await OrgModel.updateOne(
-    { _id: req.params.orgId },
-    { $inc: { "relatedDocsCount.organizationUsers": 1 } }
-  );
+  org.relatedDocsCount.organizationUsers++;
+  await org.save();
   logger.info(`Organization user created with id ${orgUser.id}`);
   return res
     .status(201)

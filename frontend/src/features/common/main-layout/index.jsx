@@ -4,18 +4,18 @@ import {
   Heading,
   Hide,
   Link,
-  useColorModeValue,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { Link as ReactRouterLink } from "react-router-dom";
 import PrivateRoute from "../PrivateRoute";
 import Sidebar from "../sidebar";
 import Header from "./Header";
 import NavDrawer from "./NavDrawer";
-import { Link as ReactRouterLink } from "react-router-dom";
 export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  
   return (
     <ErrorBoundary
       fallbackRender={({ error }) => {

@@ -15,13 +15,13 @@ const settingsLinks = [
     icon: HiOutlineReceiptTax,
     link: "/taxes",
     label: "Taxes",
-    role: "admin",
+    role: "user",
   },
   {
     icon: GiThermometerScale,
     link: "/ums",
     label: "Unit of measurement",
-    role: "admin",
+    role: "user",
   },
 
   {

@@ -8,7 +8,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import useSetting from "../../hooks/useCurrentOrgCurrency";
 import useTaxes from "../../hooks/useTaxes";
@@ -21,6 +21,7 @@ import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import EditTaxModal from "./EditTaxModal";
 import DefaultSwitchSetting from "./DefaultSwitchSetting";
+import SettingContext from "../../contexts/SettingContext";
 export default function TaxesPage() {
   const { status, taxes, getAll, onToggleEnabled, hasReachedLimit } =
     useTaxes();
@@ -30,7 +31,8 @@ export default function TaxesPage() {
   const { isOpen: isAddNewTaxOpen, onToggle: toggleTaxOpen } = useDisclosure();
   const { isOpen: isTaxModalOpen, onToggle: toggleTaxModal } = useDisclosure();
   const { isOpen: isAlertOpen, onToggle: toggleAlert } = useDisclosure();
-
+  const settingContext = useContext(SettingContext);
+  const role = settingContext?.role || "";
   const { orgId } = useParams();
   const toast = useToast();
 
@@ -83,6 +85,7 @@ export default function TaxesPage() {
             .join(", ")}`,
   });
 
+  const isAddDisabled = hasReachedLimit;
   return (
     <MainLayout>
       <Box p={4}>
@@ -92,7 +95,7 @@ export default function TaxesPage() {
           </Flex>
         ) : (
           <TableLayout
-            isAddDisabled={hasReachedLimit}
+            isAddDisabled={isAddDisabled}
             caption={`Total taxes ${taxes.length}`}
             onAddNewItem={toggleTaxOpen}
             filter={
@@ -146,7 +149,7 @@ export default function TaxesPage() {
       ) : null}
       {selectedTax ? (
         <ShowDrawer
-          disable={hasReachedLimit}
+          disable={isAddDisabled}
           formBtnLabel={"Add"}
           heading={"Tax"}
           isOpen={isTaxModalOpen}
@@ -170,11 +173,13 @@ export default function TaxesPage() {
             description: "Description",
           }}
         >
-          <DefaultSwitchSetting
-            receiptDefaultKey={"tax"}
-            selectedItem={selectedTax}
-            successMessage={"Default tax updated"}
-          />
+          {role === "admin" ? (
+            <DefaultSwitchSetting
+              receiptDefaultKey={"tax"}
+              selectedItem={selectedTax}
+              successMessage={"Default tax updated"}
+            />
+          ) : null}
         </ShowDrawer>
       ) : null}
     </MainLayout>

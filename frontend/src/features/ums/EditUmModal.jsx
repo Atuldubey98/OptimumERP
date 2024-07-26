@@ -46,7 +46,7 @@ export default function EditUmModal({ isOpen, onClose, fetchUms }) {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Unit</FormLabel>
+                <FormLabel>Short form</FormLabel>
                 <Input
                   required
                   name="unit"

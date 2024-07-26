@@ -42,6 +42,7 @@ import CurrentOrgDetailsForm from "./CurrentOrgDetailsForm";
 import OrgUserRow from "./OrgUserRow";
 import RegisteUserDrawer from "./RegisteUserDrawer";
 import HelpPopover from "../common/HelpPopover";
+import AdminLayout from "../common/auth-layout/AdminLayout";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -176,154 +177,164 @@ export default function AdminPage() {
   const bg = useColorModeValue("gray.100", "gray.700");
   return (
     <MainLayout>
-      <Box>
-        {loading ? (
-          <Flex p={4} justifyContent={"center"} alignItems={"center"} marginBlock={3}>
-            <Spinner />
-          </Flex>
-        ) : (
-          <Box p={3}>
-            <FormControl>
-              <FormLabel fontWeight={"bold"}>Organization</FormLabel>
-              <Select
-                options={organizationsOptions}
-                isOptionDisabled={({ disabled }) => disabled}
-                value={organizationsOptions.find(
-                  (org) => org.value == organization
-                )}
-                onChange={({ value }) => {
-                  setOrganization(value);
-                  const currentOrg = authorizedOrgs.find(
-                    (authorizedOrg) => authorizedOrg.org._id === value
-                  ).org;
-                  setValues({
-                    ...defaultOrganization,
-                    ...currentOrg,
-                  });
-                  if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
-                  fetchOrgUsers(value);
-                }}
-              />
-            </FormControl>
-          </Box>
-        )}
-        {loading || !organization || !currentSelectedOrganization ? (
-          <Flex
-            minH={"50svh"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            flexDir={"column"}
-          >
-            <GoOrganization size={80} color="lightgray" />
-            <Heading color={"gray.300"} fontSize={"2xl"}>
-              Select Organization
-            </Heading>
-          </Flex>
-        ) : (
-          <Fade in={!loading && organization}>
-            <Stack spacing={1}>
-              <Tabs size={"sm"} isLazy>
-                <TabList>
-                  <Tab>Organization</Tab>
-                  <Tab>Users</Tab>
-                </TabList>
+      <AdminLayout>
+        <Box>
+          {loading ? (
+            <Flex
+              p={4}
+              justifyContent={"center"}
+              alignItems={"center"}
+              marginBlock={3}
+            >
+              <Spinner />
+            </Flex>
+          ) : (
+            <Box p={3}>
+              <FormControl>
+                <FormLabel fontWeight={"bold"}>Organization</FormLabel>
+                <Select
+                  options={organizationsOptions}
+                  isOptionDisabled={({ disabled }) => disabled}
+                  value={organizationsOptions.find(
+                    (org) => org.value == organization
+                  )}
+                  onChange={({ value }) => {
+                    setOrganization(value);
+                    const currentOrg = authorizedOrgs.find(
+                      (authorizedOrg) => authorizedOrg.org._id === value
+                    ).org;
+                    setValues({
+                      ...defaultOrganization,
+                      ...currentOrg,
+                    });
+                    if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
+                    fetchOrgUsers(value);
+                  }}
+                />
+              </FormControl>
+            </Box>
+          )}
+          {loading || !organization || !currentSelectedOrganization ? (
+            <Flex
+              minH={"50svh"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexDir={"column"}
+            >
+              <GoOrganization size={80} color="lightgray" />
+              <Heading color={"gray.300"} fontSize={"2xl"}>
+                Select Organization
+              </Heading>
+            </Flex>
+          ) : (
+            <Fade in={!loading && organization}>
+              <Stack spacing={1}>
+                <Tabs size={"sm"} isLazy>
+                  <TabList>
+                    <Tab>Organization</Tab>
+                    <Tab>Users</Tab>
+                  </TabList>
 
-                <TabPanels>
-                  <TabPanel>
-                    <Stack spacing={2}>
-                      <Box>
-                        <CurrentOrgDetailsForm
-                          currentSelectedOrganization={
-                            currentSelectedOrganization
-                          }
-                          handleChange={handleChange}
-                          handleSubmit={handleSubmit}
-                          isSubmitting={isSubmitting}
-                        />
-                      </Box>
-                      <Box>
-                        <BankAccounts bankFormik={bankFormik} />
-                      </Box>
-                      <Box>
-                        <AdminTasks organization={organization} />
-                      </Box>
-                    </Stack>
-                  </TabPanel>
-
-                  <TabPanel>
-                    <Box p={3} bg={bg}>
-                      <Heading fontSize={"lg"}>Registered Users</Heading>
-                    </Box>
-                   
-                    <Box pt={2}>
-                      <Flex justifyContent={"space-between"} alignItems={"center"}>
-                      <HelpPopover
-                      title={"Users"}
-                      description={
-                        "Here you can create users who can use the application. User can have two permissions Admin and User."
-                      }
-                    />
-                        {organization ? (
-                          <Button
-                            isDisabled={
-                              currentPlan === "free" ||
-                              (currentPlan === "gold" && orgUsers.length >= 5)
+                  <TabPanels>
+                    <TabPanel>
+                      <Stack spacing={2}>
+                        <Box>
+                          <CurrentOrgDetailsForm
+                            currentSelectedOrganization={
+                              currentSelectedOrganization
                             }
-                            leftIcon={<IoAdd />}
-                            colorScheme="blue"
-                            onClick={() => {
-                              formik.setValues({
-                                name: "",
-                                email: "",
-                                password: "",
-                                role: "user",
-                              });
-                              onOpen();
-                            }}
-                            size={"sm"}
-                          >
-                            Add new
-                          </Button>
-                        ) : null}
-                      </Flex>
-                      <TableContainer>
-                        <Table variant="simple">
-                          <TableCaption></TableCaption>
-                          <Thead>
-                            <Tr>
-                              <Th>Active</Th>
-                              <Th>Name</Th>
-                              <Th>Email</Th>
-                              <Th>Role</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {orgUsers.map((orgUser) => (
-                              <OrgUserRow
-                                fetchUsers={fetchOrgUsers}
-                                organization={organization}
-                                key={orgUser._id}
-                                orgUser={orgUser}
-                              />
-                            ))}
-                          </Tbody>
-                        </Table>
-                      </TableContainer>
-                    </Box>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Stack>
-          </Fade>
-        )}
-        {organization ? (
-          <RegisteUserDrawer
-            isOpen={isOpen}
-            onClose={onClose}
-            formik={formik}
-          />
-        ) : null}
-      </Box>
+                            handleChange={handleChange}
+                            handleSubmit={handleSubmit}
+                            isSubmitting={isSubmitting}
+                          />
+                        </Box>
+                        <Box>
+                          <BankAccounts bankFormik={bankFormik} />
+                        </Box>
+                        <Box>
+                          <AdminTasks organization={organization} />
+                        </Box>
+                      </Stack>
+                    </TabPanel>
+
+                    <TabPanel>
+                      <Box p={3} bg={bg}>
+                        <Heading fontSize={"lg"}>Registered Users</Heading>
+                      </Box>
+
+                      <Box pt={2}>
+                        <Flex
+                          justifyContent={"space-between"}
+                          alignItems={"center"}
+                        >
+                          <HelpPopover
+                            title={"Users"}
+                            description={
+                              "Here you can create users who can use the application. User can have two permissions Admin and User."
+                            }
+                          />
+                          {organization ? (
+                            <Button
+                              isDisabled={
+                                currentPlan === "free" ||
+                                (currentPlan === "gold" && orgUsers.length >= 5)
+                              }
+                              leftIcon={<IoAdd />}
+                              colorScheme="blue"
+                              onClick={() => {
+                                formik.setValues({
+                                  name: "",
+                                  email: "",
+                                  password: "",
+                                  role: "user",
+                                });
+                                onOpen();
+                              }}
+                              size={"sm"}
+                            >
+                              Add new
+                            </Button>
+                          ) : null}
+                        </Flex>
+                        <TableContainer>
+                          <Table variant="simple">
+                            <TableCaption></TableCaption>
+                            <Thead>
+                              <Tr>
+                                <Th>Active</Th>
+                                <Th>Name</Th>
+                                <Th>Email</Th>
+                                <Th>Role</Th>
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {orgUsers.map((orgUser) => (
+                                <OrgUserRow
+                                  fetchUsers={fetchOrgUsers}
+                                  organization={organization}
+                                  key={orgUser._id}
+                                  orgUser={orgUser}
+                                />
+                              ))}
+                            </Tbody>
+                          </Table>
+                        </TableContainer>
+                      </Box>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </Stack>
+            </Fade>
+          )}
+          {organization ? (
+            <RegisteUserDrawer
+              isOpen={isOpen}
+              onClose={onClose}
+              formik={formik}
+            />
+          ) : null}
+        </Box>
+      </AdminLayout>
     </MainLayout>
   );
 }
