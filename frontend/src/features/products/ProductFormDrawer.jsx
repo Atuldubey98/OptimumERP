@@ -4,6 +4,7 @@ import {
   FormLabel,
   Grid,
   Input,
+  SimpleGrid,
   Textarea,
 } from "@chakra-ui/react";
 import FormDrawerLayout from "../common/form-drawer-layout";
@@ -88,22 +89,26 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           />
           <FormErrorMessage>{formik.errors.um}</FormErrorMessage>
         </FormControl>
-        <FormControl
-          isRequired
-          isInvalid={formik.errors.costPrice && formik.touched.costPrice}
-        >
-          <FormLabel>Cost Price</FormLabel>
-          <NumberInputInteger name={"costPrice"} formik={formik} />
-          <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
-        </FormControl>
-        <FormControl
-          isRequired
-          isInvalid={formik.errors.sellingPrice && formik.touched.sellingPrice}
-        >
-          <FormLabel>Selling Price</FormLabel>
-          <NumberInputInteger name={"sellingPrice"} formik={formik} />
-          <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
-        </FormControl>
+        <SimpleGrid minChildWidth={200} gap={2}>
+          <FormControl
+            isRequired
+            isInvalid={formik.errors.costPrice && formik.touched.costPrice}
+          >
+            <FormLabel>Cost Price</FormLabel>
+            <NumberInputInteger name={"costPrice"} formik={formik} />
+            <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
+          </FormControl>
+          <FormControl
+            isRequired
+            isInvalid={
+              formik.errors.sellingPrice && formik.touched.sellingPrice
+            }
+          >
+            <FormLabel>Selling Price</FormLabel>
+            <NumberInputInteger name={"sellingPrice"} formik={formik} />
+            <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
+          </FormControl>
+        </SimpleGrid>
 
         <FormControl isInvalid={formik.errors.code && formik.touched.code}>
           <FormLabel>HSN Code or SAC Code</FormLabel>
