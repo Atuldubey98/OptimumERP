@@ -21,7 +21,7 @@ const remove = async (req, res) => {
   const category = await ExpenseCategory.findOneAndDelete({
     org: req.params.orgId,
     _id: req.params.categoryId,
-  });
+  }).lean();
   if (!category) throw new ExpenseCategoryNotFound();
   logger.info(`deleted expense category ${category.id}`);
   await OrgModel.updateOne(

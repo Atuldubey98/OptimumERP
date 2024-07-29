@@ -14,13 +14,13 @@ app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
-app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(corsHandler);
+app.use(sessionHandler);
 
 if (NODE_ENV === "production") app.set("trust proxy", 1);
 
-app.use(sessionHandler);
 
 app.get("/", (req, res) => {
   const user = req.session.user;
@@ -35,10 +35,8 @@ app.get("/api/v1/health", (_, res) =>
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations", organizationRouter);
 
-app.use("*", (req, res) => {
-  return res
-    .status(404)
-    .json({ message: `${req.originalUrl} not found on server` });
-});
+app.use("*", (req, res) =>
+  res.status(404).json({ message: `${req.originalUrl} not found on server` })
+);
 app.use(errorHandler);
 module.exports = app;

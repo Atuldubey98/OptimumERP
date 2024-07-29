@@ -60,13 +60,7 @@ exports.saveBill = async ({
     case "proforma_invoice":
     case "purchase_order":
     case "quotes":
-      const prefix = setting.transactionPrefix[prefixType];
-      const existingBill = await Bill.findOne({
-        org: body.org,
-        sequence: body.sequence,
-        financialYear: setting.financialYear,
-        ...(billId && { _id: { $ne: billId } }),
-      });
+      const { existingBill, prefix } = await findExistingBillInFinancialYear();
       if (existingBill) throw new Duplicate(existingBill.num);
       billBody.num = prefix + body.sequence;
       billBody.prefix = prefix;
@@ -91,6 +85,17 @@ exports.saveBill = async ({
   const newTransaction = new Transaction(transaction);
   await newTransaction.save();
   return bill;
+
+  async function findExistingBillInFinancialYear() {
+    const prefix = setting.transactionPrefix[prefixType];
+    const existingBill = await Bill.findOne({
+      org: body.org,
+      sequence: body.sequence,
+      financialYear: setting.financialYear,
+      ...(billId && { _id: { $ne: billId } }),
+    });
+    return { existingBill, prefix };
+  }
 };
 
 exports.deleteBill = async ({ Bill, NotFound, filter }) => {

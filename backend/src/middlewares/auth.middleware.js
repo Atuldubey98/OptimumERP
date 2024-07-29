@@ -7,8 +7,8 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const OrgModel = require("../models/org.model");
 const OrgUser = require("../models/orgUser.model");
 const User = require("../models/user.model");
-
 const freePlanLimits = require("../constants/freePlanLimits");
+
 exports.authenticate = requestAsyncHandler(async (req, __, next) => {
   if (!req.session.user) return next(new UnAuthenticated());
   const user = await User.findById(req.session.user._id);

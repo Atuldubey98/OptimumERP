@@ -13,27 +13,24 @@ const Um = require("../../models/um.model");
 const create = async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
   const organization = new Org(body);
-  organization.relatedDocsCount.organizationUsers = 1;
   organization.relatedDocsCount.expenseCategories = expenseCategories.length;
-  const orgUser = new OrgUser({
-    org: organization.id,
-    user: req.session.user._id,
-    role: "admin",
-  });
-
-  await orgUser.save();
+  const userId = req.session?.user?._id;
+  await createOrgUserForOrganization(userId, organization);
+  organization.relatedDocsCount.organizationUsers = 1;
   const defaultOrgEntitiesPromises = [
-    createDefaultUnits(req.session?.user?._id, organization),
-    createDefaultTaxes(req.session?.user?._id, organization),
-    createDefaultExpenseCategories(organization),
+    createDefaultUnits(userId, organization),
+    createDefaultTaxes(userId, organization),
+    createDefaultExpenseCategories(userId, organization),
   ];
   const [ums, taxes] = await Promise.all(defaultOrgEntitiesPromises);
+  const noneTypeTax = taxes[0].id;
+  const noneTypeUm = ums[0].id;
   const setting = new Setting({
     org: organization.id,
     financialYear: body.financialYear,
     receiptDefaults: {
-      tax: taxes[0].id,
-      um: ums[0].id,
+      tax: noneTypeTax,
+      um: noneTypeUm,
     },
   });
 
@@ -48,6 +45,16 @@ const create = async (req, res) => {
 };
 
 module.exports = create;
+
+async function createOrgUserForOrganization(userId, organization) {
+  const orgUser = new OrgUser({
+    org: organization.id,
+    user: userId,
+    role: "admin",
+  });
+
+  await orgUser.save();
+}
 
 async function createDefaultTaxes(userId, organization) {
   const singleTaxes = await createDefaultSingleTypeTaxes(userId, organization);
@@ -103,11 +110,12 @@ async function createDefaultUnits(userId, organization) {
   return ums;
 }
 
-async function createDefaultExpenseCategories(newOrg) {
+async function createDefaultExpenseCategories(userId, newOrg) {
   await ExpenseCategory.insertMany(
     expenseCategories.map((category) => ({
       ...category,
       org: newOrg.id,
+      createdBy: userId,
       enabled: true,
     }))
   );

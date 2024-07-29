@@ -13,17 +13,27 @@ const payment = async (req, res) => {
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new PurchaseNotFound();
   const body = await paymentDto.validateAsync(req.body);
-  const purchase = await Purchase.findOne({
+  const filter = {
     _id: id,
     org: req.params.orgId,
+  };
+  const purchase = await payoutPurchaseInvoice({
+    filter,
+    body,
+    userId: req.session?.user?._id,
   });
-  const grandTotal = purchase.total + purchase.totalTax;
-  purchase.status = grandTotal > body.amount ? "unpaid" : "paid";
-  purchase.updatedBy = req.session.user._id;
-  purchase.payment = body;
-  await purchase.save();
   if (!purchase) throw new PurchaseNotFound();
   return res.status(201).json({ message: "Payment added" });
 };
 
 module.exports = payment;
+async function payoutPurchaseInvoice({ filter, userId, body }) {
+  const purchase = await Purchase.findOne(filter);
+  const grandTotal = purchase.total + purchase.totalTax;
+  const isPurchaseFullyPaid = grandTotal > body.amount;
+  purchase.status = isPurchaseFullyPaid ? "unpaid" : "paid";
+  purchase.updatedBy = userId;
+  purchase.payment = body;
+  await purchase.save();
+  return purchase;
+}

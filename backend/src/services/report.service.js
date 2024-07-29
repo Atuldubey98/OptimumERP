@@ -30,19 +30,21 @@ exports.makeReportExcelBuffer = async ({
       outline: true,
     },
   });
-  Object.values(header).forEach((value, index) => {
+  const makeHeader = (value, index) => {
     ws.cell(1, index + 1)
       .string(value)
       .style(headerStyle);
-  });
-  reportItems.forEach((reportItem, index) => {
+  };
+  Object.values(header).forEach(makeHeader);
+  const makeBody = (reportItem, index) => {
     Object.entries(header).forEach(([key], fieldIndex) => {
       if (key != "_id")
         ws.cell(index + 2, fieldIndex + 1).string(
           String(reportItem[key] || "")
         );
     });
-  });
+  };
+  reportItems.forEach(makeBody);
   const excelBuffer = await wb.writeToBuffer();
   return excelBuffer;
 };

@@ -10,7 +10,11 @@ const register = async (req, res) => {
     purchasedBy: registeredUser.id,
   });
   return res.status(201).json({
-    data: { email, name, _id: registeredUser.id },
+    data: {
+      email: registeredUser.email,
+      name: registeredUser.name,
+      _id: registeredUser.id,
+    },
     message: "User registered successfully !",
   });
 };

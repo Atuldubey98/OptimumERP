@@ -20,6 +20,14 @@ const expenseCategorySchema = new mongoose.Schema(
       required: true,
       ref: "organization",
     },
+    createdBy: {
+      type: mongoose.Types.ObjectId,
+      ref: "user",
+    },
+    updatedBy: {
+      type: mongoose.Types.ObjectId,
+      ref: "user",
+    },
   },
   {
     timestamps: true,

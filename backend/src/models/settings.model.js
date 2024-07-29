@@ -49,6 +49,7 @@ const settingSchema = new Schema({
   localeCode: {
     type: String,
     default: "en-IN",
+    required: true,
   },
   financialYear: {
     _id: false,

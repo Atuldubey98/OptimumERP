@@ -15,7 +15,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
-      index : true,
+      index: true,
       unique: true,
       lowercase: true,
       match: [
@@ -34,7 +34,20 @@ const userSchema = new Schema(
       default: true,
     },
   },
-  { timestamps: true, versionKey: false }
+  {
+    timestamps: true,
+    versionKey: false,
+    methods: {
+      activate: function () {
+        this.active = true;
+        return this.save();
+      },
+      deactivate: function () {
+        this.active = false;
+        return this.save();
+      },
+    },
+  }
 );
 userSchema.loadClass(UserRepository);
 const UserModel = model("user", userSchema);
