@@ -46,6 +46,7 @@ exports.calculateTaxesForBillItemsWithCurrency = async (
     return {
       name: item.name,
       quantity: item.quantity,
+      code : item.code,
       gst: itemTax.name,
       um: um.unit,
       price,

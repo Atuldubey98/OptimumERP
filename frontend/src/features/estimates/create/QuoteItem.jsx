@@ -46,11 +46,29 @@ export default function QuoteItem({
   const onOpenSearchProduct = () => {
     onOpen();
   };
-  const taxOptions = taxes.map((tax) => ({
+  const isGroupedTax = (tax) => tax.type === "grouped";
+  const collectAllSingleTaxesFromGrouped = (acc, tax) => {
+    return [...acc, ...tax.children.map((childTax) => childTax._id)];
+  };
+  const makeMapOfSingleTaxIds = (acc, taxId) => {
+    acc[taxId] = true;
+    return acc;
+  };
+  const singleTaxesFromGroup = taxes
+    .filter(isGroupedTax)
+    .reduce(collectAllSingleTaxesFromGrouped, [])
+    .reduce(makeMapOfSingleTaxIds, {});
+
+  const filterGroupedAndUngroupedTaxes = (tax) =>
+    !(tax._id in singleTaxesFromGroup);
+  const makeTaxOptions = (tax) => ({
     label: tax.name,
     value: tax._id,
     isDisabled: !tax.enabled,
-  }));
+  });
+  const taxOptions = taxes
+    .filter(filterGroupedAndUngroupedTaxes)
+    .map(makeTaxOptions);
   const umOptions = ums.map((um) => ({
     value: um._id,
     label: um.name,

@@ -1,6 +1,6 @@
 const ejs = require("ejs");
-const wkhtmltopdf = require("wkhtmltopdf");
 const QRCode = require("qrcode");
+const puppeteer = require("puppeteer-core");
 
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
@@ -11,15 +11,15 @@ exports.renderHtml = (location, data) => {
   });
 };
 
-exports.sendHtmlToPdfResponse = ({ html, res, pdfName }) => {
-  res.writeHead(200, {
-    "Content-Type": "application/pdf",
-    "Content-disposition": `attachment;filename=${pdfName}`,
-  });
-  return wkhtmltopdf(html, {
-    enableLocalFileAccess: true,
-    pageSize: "A4",
-  }).pipe(res);
+exports.sendHtmlToPdfResponse = async ({ html, res, pdfName }) => {
+  const pdfBuffer = await getPdfBufferUsingHtml(html);
+  res.setHeader(
+    "Content-Type",
+    "application/pdf"
+  );
+  res.setHeader("Content-Disposition", `attachment; filename=${pdfName}.pdf`);
+  res.setHeader("Content-Length", pdfBuffer.length);
+  return res.send(pdfBuffer);
 };
 
 exports.promiseQrCode = (value) => {
@@ -30,3 +30,19 @@ exports.promiseQrCode = (value) => {
     });
   });
 };
+
+async function getPdfBufferUsingHtml(html) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: `/usr/bin/chromium-browser`,
+  });
+  const urlPage = await browser.newPage();
+  await urlPage.setContent(html);
+  const buffer = await urlPage.pdf({
+    format: "A4",
+    printBackground: true,
+  });
+  await urlPage.clo;
+  await browser.close();
+  return buffer;
+}

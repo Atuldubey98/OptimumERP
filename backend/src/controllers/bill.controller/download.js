@@ -24,7 +24,7 @@ const download = async (options = {}, req, res) => {
     `../../views/templates/${template}/index.ejs`
   );
   const html = await renderHtml(pdfTemplateLocation, data);
-  sendHtmlToPdfResponse({
+  await sendHtmlToPdfResponse({
     html,
     res,
     pdfName: `${Bill.modelName}-${data.num}-${data.date}.pdf`,
