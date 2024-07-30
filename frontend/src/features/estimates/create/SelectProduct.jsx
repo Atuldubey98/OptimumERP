@@ -36,8 +36,11 @@ import instance from "../../../instance";
 import { useParams } from "react-router-dom";
 import PaginateButtons from "../../common/PaginateButtons";
 import { MdOutlineInventory2 } from "react-icons/md";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const defaultItem = getDefaultReceiptItem();
   const bg = useColorModeValue("gray.100", "gray.800");
 
   const [response, setResponse] = useState({
@@ -108,13 +111,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
             <ButtonGroup>
               <Button
                 onClick={() => {
-                  formik.setFieldValue(`items[${index}]`, {
-                    name: "",
-                    quantity: 1,
-                    um: "none",
-                    gst: "none",
-                    price: 0,
-                  });
+                  formik.setFieldValue(`items[${index}]`, defaultItem);
                   onClose();
                 }}
                 variant={"outline"}
@@ -164,9 +161,9 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                             formik.setFieldValue(`items[${index}]`, {
                               name: product.name,
                               quantity: 1,
-                              um: product.um || "none",
-                              code: product.code || "",
-                              gst: "none",
+                              um: product.um._id,
+                              code: defaultItem.code,
+                              tax : defaultItem.tax,
                               price: product.sellingPrice || 0,
                             });
                             onClose();

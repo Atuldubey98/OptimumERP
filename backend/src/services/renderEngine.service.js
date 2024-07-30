@@ -1,7 +1,6 @@
 const ejs = require("ejs");
 const QRCode = require("qrcode");
-const puppeteer = require("puppeteer-core");
-const { PUPPETEER_EXC_PATH } = require("../config");
+const puppeteer = require("puppeteer");
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(location, data, (err, html) => {
@@ -29,16 +28,19 @@ exports.promiseQrCode = (value) => {
 };
 
 async function getPdfBufferUsingHtml(html) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: PUPPETEER_EXC_PATH,
-  });
+  const browser = await puppeteer.launch();
   const urlPage = await browser.newPage();
   await urlPage.setContent(html);
+  const MARGIN = "0.5cm";
   const buffer = await urlPage.pdf({
     format: "A4",
     printBackground: true,
+    margin: {
+      bottom: MARGIN,
+      top: MARGIN,
+      right: MARGIN,
+      left: MARGIN,
+    },
   });
-  await browser.close();
   return buffer;
 }

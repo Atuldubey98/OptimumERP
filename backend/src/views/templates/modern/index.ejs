@@ -1,9 +1,9 @@
 <!-- invoice.ejs -->
 <!DOCTYPE html>
-<html>
+<html >
   <head>
     <title><%= title %></title>
-
+    <meta charset="utf-8">
     <style>
       body {
         margin: 10px;
@@ -169,7 +169,12 @@
       </div>
     </div>
     <h2>Terms & Conditions</h2>
-    <p class="terms"><%= entity.terms %></p>
+    <div class="terms">
+      <p style="font-weight: bold">Terms and Condtions</p>
+      <% entity.terms.split("\n").forEach(term => { %>
+      <p><%= term %></p>
+      <% }) %>
+    </div>
     <div
       style="
         -webkit-box-flex: 4;
