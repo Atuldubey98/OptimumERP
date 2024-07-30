@@ -1,7 +1,7 @@
 const ejs = require("ejs");
 const QRCode = require("qrcode");
 const puppeteer = require("puppeteer-core");
-
+const { PUPPETEER_EXC_PATH } = require("../config");
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(location, data, (err, html) => {
@@ -13,10 +13,7 @@ exports.renderHtml = (location, data) => {
 
 exports.sendHtmlToPdfResponse = async ({ html, res, pdfName }) => {
   const pdfBuffer = await getPdfBufferUsingHtml(html);
-  res.setHeader(
-    "Content-Type",
-    "application/pdf"
-  );
+  res.setHeader("Content-Type", "application/pdf");
   res.setHeader("Content-Disposition", `attachment; filename=${pdfName}.pdf`);
   res.setHeader("Content-Length", pdfBuffer.length);
   return res.send(pdfBuffer);
@@ -34,7 +31,7 @@ exports.promiseQrCode = (value) => {
 async function getPdfBufferUsingHtml(html) {
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: `/usr/bin/chromium-browser`,
+    executablePath: PUPPETEER_EXC_PATH,
   });
   const urlPage = await browser.newPage();
   await urlPage.setContent(html);
@@ -42,7 +39,6 @@ async function getPdfBufferUsingHtml(html) {
     format: "A4",
     printBackground: true,
   });
-  await urlPage.clo;
   await browser.close();
   return buffer;
 }
