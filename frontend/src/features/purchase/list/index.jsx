@@ -27,6 +27,8 @@ import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import PayoutModal from "./PayoutModal";
 import moment from "moment";
+import ExporterModal from "../../common/ExporterModal";
+
 export default function PurchasePage() {
   const {
     items: purchases,
@@ -111,7 +113,8 @@ export default function PurchasePage() {
     onOpen: openPayout,
     onClose: closePayout,
   } = useDisclosure();
-
+  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
+  useDisclosure();
   return (
     <MainLayout>
       <Box p={4}>
@@ -128,6 +131,10 @@ export default function PurchasePage() {
                 dateFilter={dateFilter}
               />
             }
+            showExport={{
+              onExport: toggleExportModal,
+              status: "idle",
+            }}
             limitKey={"purchases"}
             heading={"Purchase"}
             tableData={purchases.map(purchaseTableMapper)}
@@ -191,6 +198,33 @@ export default function PurchasePage() {
         {loading ? null : (
           <Pagination currentPage={currentPage} total={totalPages} />
         )}
+        {isExportModalOpen ? (
+          <ExporterModal
+            isOpen={isExportModalOpen}
+            onClose={toggleExportModal}
+            downloadUrl={`/api/v1/organizations/${orgId}/purchases/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
+            defaultSelectedFields={{
+              partyName: "Party Name",
+              billingAddress: "Billing Address",
+              total: "Total",
+              totalTax: "Total Tax",
+              num: "Number",
+              status: "Status",
+              grandTotal: "Grand Total",
+            }}
+            selectableFields={{
+              createdByEmail: "Created By Email",
+              createdByName: "Created By Name",
+              cgst: "CGST",
+              igst: "IGST",
+              sgst: "SGST",
+              vat: "VAT",
+              cess: "Cess",
+              sal: "SAL",
+              others: "Other taxes",
+            }}
+          />
+        ) : null}
       </Box>
     </MainLayout>
   );

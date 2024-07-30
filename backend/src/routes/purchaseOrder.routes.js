@@ -13,6 +13,7 @@ const {
   nextSequence,
   paginate,
   read,
+  exportData,
   remove,
   update,
 } = require("../controllers/purchaseOrder.controller");
@@ -31,6 +32,7 @@ purchaseOrderRouter.get(
   "/nextPurchaseOrderNo",
   requestAsyncHandler(nextSequence)
 );
+purchaseOrderRouter.get("/export", requestAsyncHandler(exportData));
 purchaseOrderRouter.delete("/:id", requestAsyncHandler(remove));
 purchaseOrderRouter.get("/:id", requestAsyncHandler(read));
 purchaseOrderRouter.patch("/:id", requestAsyncHandler(update));

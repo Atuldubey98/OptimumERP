@@ -27,11 +27,11 @@ const taxSchema = Yup.object({
   type: Yup.string().required("Field is required").label("Type"),
   category: Yup.string().required("Field is required").label("Category"),
   percentage: Yup.number()
-    .min(0, "Mininum allowed is 0")
+    .min(0, "Minimum allowed is 0")
     .max(100, "Maximum allowed is 100")
     .label("Percentage"),
   description: Yup.string().label("Description"),
-  children: Yup.array().of(Yup.string()).min(1).label("Group"),
+  children: Yup.array().of(Yup.string()).label("Group")
 });
 const typeOfTaxes = [
   {
@@ -119,7 +119,6 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
       }
     },
   });
-
   const childrenTaxesMap = (formik.values.children || []).reduce(
     (prev, current) => {
       prev[current] = true;

@@ -1,10 +1,5 @@
-const invoiceExportMapper = {
-  header: null,
-  bodyMapper: (item) => item,
-};
+
 const reportDataByType = {
-  invoice: invoiceExportMapper,
-  proforma_invoice: invoiceExportMapper,
   sale: {
     header: {
       num: "Invoice Number",

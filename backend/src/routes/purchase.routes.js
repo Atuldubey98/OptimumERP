@@ -11,6 +11,7 @@ const {
   paginate,
   read,
   remove,
+  exportData,
   payment,
   update,
 } = require("../controllers/purchase.controller");
@@ -26,6 +27,7 @@ purchaseRouter.post(
   limitFreePlanOnCreateEntityForOrganization("purchases"),
   requestAsyncHandler(create)
 );
+purchaseRouter.get("/export", requestAsyncHandler(exportData));
 purchaseRouter.get("/:id", requestAsyncHandler(read));
 purchaseRouter.delete("/:id", requestAsyncHandler(remove));
 purchaseRouter.get("/", requestAsyncHandler(paginate));

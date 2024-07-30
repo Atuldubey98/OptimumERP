@@ -1,5 +1,6 @@
 const xl = require("excel4node");
 const reportDataByType = require("../constants/reportDataByType");
+const exportDataByReceiptType = require("../constants/exportDataByReceiptType");
 const Invoice = require("../models/invoice.model");
 const {
   INVOICES,
@@ -13,12 +14,14 @@ const { getPaginationParams } = require("./crud.service");
 exports.makeReportExcelBuffer = async ({
   reportData,
   reportType,
-  headersSelectedRow = {},
+  isReport = true,
+  selectedHeaderRows,
 }) => {
-  const reportMapper = reportDataByType[reportType];
+  const reportTypes = isReport ? reportDataByType : exportDataByReceiptType;
+  const reportMapper = reportTypes[reportType];
   if (!reportMapper) throw new Error("Report type not found");
   const { bodyMapper, header: headerRow } = reportMapper;
-  const header = headerRow || headersSelectedRow;
+  const header = isReport ? headerRow : selectedHeaderRows;
   const reportItems = reportData.map(bodyMapper);
   const wb = new xl.Workbook();
   const ws = wb.addWorksheet();

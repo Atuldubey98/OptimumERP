@@ -15,6 +15,7 @@ const {
   paginate,
   read,
   nextSequence,
+  exportData,
   remove,
   update,
 } = require("../controllers/quotes.controller");
@@ -31,6 +32,7 @@ quoteRouter.post(
 );
 
 quoteRouter.get("/nextQuoteNo", requestAsyncHandler(nextSequence));
+quoteRouter.get("/export", requestAsyncHandler(exportData));
 quoteRouter.get("/:id", requestAsyncHandler(read));
 
 quoteRouter.post(

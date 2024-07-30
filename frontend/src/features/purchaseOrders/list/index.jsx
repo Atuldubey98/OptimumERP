@@ -22,6 +22,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import ExporterModal from "../../common/ExporterModal";
 
 export default function PurchaseOrderPage() {
   const { orgId } = useParams();
@@ -115,6 +116,8 @@ export default function PurchaseOrderPage() {
       });
     }
   };
+  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
+  useDisclosure();
   return (
     <MainLayout>
       <Box p={4}>
@@ -133,6 +136,10 @@ export default function PurchaseOrderPage() {
                   onChangeDateFilter={onChangeDateFilter}
                 />
               }
+              showExport={{
+                onExport: toggleExportModal,
+                status: "idle",
+              }}
               operations={purchaseOrderItems.map((item) => (
                 <VertIconMenu
                   key={item._id}
@@ -198,6 +205,33 @@ export default function PurchaseOrderPage() {
             bill={selectedPo}
             entity={"purchaseOrders"}
             heading={"Purchase Order"}
+          />
+        ) : null}
+        {isExportModalOpen ? (
+          <ExporterModal
+            isOpen={isExportModalOpen}
+            onClose={toggleExportModal}
+            downloadUrl={`/api/v1/organizations/${orgId}/purchaseOrders/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
+            defaultSelectedFields={{
+              partyName: "Party Name",
+              billingAddress: "Billing Address",
+              total: "Total",
+              totalTax: "Total Tax",
+              num: "Number",
+              status: "Status",
+              grandTotal: "Grand Total",
+            }}
+            selectableFields={{
+              createdByEmail: "Created By Email",
+              createdByName: "Created By Name",
+              cgst: "CGST",
+              igst: "IGST",
+              sgst: "SGST",
+              vat: "VAT",
+              cess: "Cess",
+              sal: "SAL",
+              others: "Other taxes",
+            }}
           />
         ) : null}
       </Box>

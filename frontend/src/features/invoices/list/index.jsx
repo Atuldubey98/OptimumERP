@@ -218,6 +218,7 @@ export default function InvoicesPage() {
               billingAddress: "Billing Address",
               total: "Total",
               totalTax: "Total Tax",
+              date: "Date",
               num: "Number",
               status: "Status",
               grandTotal: "Grand Total",

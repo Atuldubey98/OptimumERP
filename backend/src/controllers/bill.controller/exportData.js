@@ -4,6 +4,7 @@ const { makeReportExcelBuffer } = require("../../services/report.service");
 const billSchema = Joi.object({
   partyName: Joi.number().optional(),
   billingAddress: Joi.number().optional(),
+  date: Joi.number().optional(),
   total: Joi.number().optional(),
   totalTax: Joi.number().optional(),
   num: Joi.number().optional(),
@@ -78,13 +79,15 @@ function prepareExcelReport({ bills = [], headerRow, reportType }) {
   return makeReportExcelBuffer({
     reportData: bills,
     reportType,
-    headersSelectedRow: headerRow,
+    selectedHeaderRows: headerRow,
+    isReport: false,
   });
 }
 function prepareHeader(project = {}) {
   const projectHeaders = {
     partyName: "Party Name",
     billingAddress: "Billing Address",
+    date: "Date",
     total: "Total",
     totalTax: "Total Tax",
     num: "Number",
@@ -146,6 +149,7 @@ function makeBillsForExport({ Bill, filter, project }) {
         partyName: "$party.name",
         billingAddress: 1,
         total: 1,
+        date : 1,
         totalTax: 1,
         num: 1,
         status: 1,

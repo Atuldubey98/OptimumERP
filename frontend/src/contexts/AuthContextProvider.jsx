@@ -10,8 +10,8 @@ export default function AuthContextProvider({ children }) {
     try {
       setUserLoading(true);
       const { data } = await instance.get(`/api/v1/users`);
+      await settingContext.fetchSetting();
       setUser(data);
-      settingContext.fetchSetting();
     } catch (error) {
       setUser(null);
     } finally {

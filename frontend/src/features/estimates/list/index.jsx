@@ -17,6 +17,7 @@ import BillFilter from "./BillFilter";
 import BillModal from "./BillModal";
 import Status from "./Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
+import ExporterModal from "../../common/ExporterModal";
 
 export default function EstimatesPage() {
   const { symbol } = useCurrentOrgCurrency();
@@ -126,6 +127,8 @@ export default function EstimatesPage() {
     }
   };
   const deleting = estimateStatus === "deleting";
+  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
+  useDisclosure();
   return (
     <MainLayout>
       <Box p={4}>
@@ -143,6 +146,10 @@ export default function EstimatesPage() {
               />
             }
             limitKey={"quotes"}
+            showExport={{
+              onExport: toggleExportModal,
+              status: "idle",
+            }}
             heading={"Quotations"}
             tableData={estimates.map(estimateTableMapper)}
             caption={`Total estimates found : ${totalCount}`}
@@ -195,6 +202,35 @@ export default function EstimatesPage() {
         {loading ? null : (
           <Pagination total={totalPages} currentPage={currentPage} />
         )}
+        {isExportModalOpen ? (
+          <ExporterModal
+            isOpen={isExportModalOpen}
+            onClose={toggleExportModal}
+            downloadUrl={`/api/v1/organizations/${orgId}/quotes/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
+            defaultSelectedFields={{
+              partyName: "Party Name",
+              billingAddress: "Billing Address",
+              total: "Total",
+              totalTax: "Total Tax",
+              num: "Number",
+              status: "Status",
+              grandTotal: "Grand Total",
+            }}
+            selectableFields={{
+              createdByEmail: "Created By Email",
+              createdByName: "Created By Name",
+              poNo: "PO Number",
+              poDate: "PO Date",
+              cgst: "CGST",
+              igst: "IGST",
+              sgst: "SGST",
+              vat: "VAT",
+              cess: "Cess",
+              sal: "SAL",
+              others: "Other taxes",
+            }}
+          />
+        ) : null}
       </Box>
     </MainLayout>
   );
