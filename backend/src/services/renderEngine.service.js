@@ -43,5 +43,6 @@ async function getPdfBufferUsingHtml(html) {
       left: MARGIN,
     },
   });
+  await browser.close();
   return buffer;
 }
