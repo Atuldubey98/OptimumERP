@@ -10,6 +10,7 @@ const {
   resetPassword,
   register,
   update,
+  googleAuth,
 } = require("../controllers/user.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -17,6 +18,7 @@ const userRoutes = Router();
 
 userRoutes.post("/register", requestAsyncHandler(register));
 userRoutes.post("/login", requestAsyncHandler(login));
+userRoutes.post("/googleAuth", requestAsyncHandler(googleAuth));
 userRoutes.get("/", authenticate, requestAsyncHandler(currentUser));
 userRoutes.patch("/", authenticate, requestAsyncHandler(update));
 userRoutes.post("/logout", authenticate, requestAsyncHandler(logout));

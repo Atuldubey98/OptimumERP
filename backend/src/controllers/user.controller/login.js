@@ -35,6 +35,7 @@ async function getLoggedInUser(user) {
     email: user.email,
     name: user.name,
     _id: user._id,
+    googleId: user.googleId,
     currentPlan: activatedPlan,
     limits,
   };

@@ -33,6 +33,18 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    googleId: {
+      type: String,
+      unique: true,
+    },
+    attributes: {
+      type: {
+        googleAccessToken: String,
+        googleRefreshToken: String,
+        picture: String,
+      },
+      default: {},
+    },
   },
   {
     timestamps: true,

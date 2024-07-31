@@ -24,7 +24,7 @@ import React, { useContext } from "react";
 import SettingContext from "../../contexts/SettingContext";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
-
+import { FaGoogle } from "react-icons/fa";
 function FinancialYearCloseForm(props) {
   return (
     <AccordionItem>
@@ -108,6 +108,40 @@ function FinancialYearCloseForm(props) {
   );
 }
 
+function SMTPSetup() {
+  const params = new URLSearchParams({
+    client_id:
+      "596042218431-2e47afjel4s55s61ll477lhivucis9n3.apps.googleusercontent.com",
+    access_type: "offline",
+    scope: "email",
+    redirect_uri: `${window.origin}/auth/google`,
+    display: "popup",
+    response_type: "code",
+    prompt: "consent",
+  });
+  const queryParams = params.toString();
+  return (
+    <AccordionItem>
+      <h2>
+        <AccordionButton>
+          <Box fontWeight={"bold"} flex="1" textAlign="left">
+            SMTP Setup
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+      </h2>
+      <AccordionPanel pb={4}>
+        <Button
+          as={"a"}
+          href={`https://accounts.google.com/o/oauth2/v2/auth?${queryParams}`}
+          leftIcon={<FaGoogle />}
+        >
+          Connect google
+        </Button>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+}
 function DefaultTermsForReceiptsForm({ formik }) {
   return (
     <AccordionItem>
@@ -231,6 +265,7 @@ export default function AdminTasks({ organization }) {
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
         <DefaultTermsForReceiptsForm formik={termsFormik} />
+        <SMTPSetup />
       </Accordion>
     </Box>
   );
