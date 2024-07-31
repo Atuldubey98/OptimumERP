@@ -10,7 +10,6 @@ exports.renderHtml = (location, data) => {
   });
 };
 
-
 exports.sendHtmlToPdfResponse = async ({ html, res, pdfName }) => {
   const pdfBuffer = await getPdfBufferUsingHtml(html);
   res.setHeader("Content-Type", "application/pdf");

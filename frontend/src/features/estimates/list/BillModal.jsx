@@ -28,6 +28,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
   const [templateName, setTemplateName] = useState("simple");
   const onSaveBill = async () => {
+    setStatus("downloading");
     const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download?template=${templateName}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
@@ -37,13 +38,13 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
     link.setAttribute("download", `${heading}-${bill.date}.pdf`);
     link.href = href;
     link.click();
+    setStatus("idle");
     URL.revokeObjectURL(href);
   };
   const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=${templateName}`;
   const onPrintBill = requestAsyncHandler(async () => {
-    setStatus("loading");
+    setStatus("printing");
     const { data } = await instance.get(viewBill);
-    setStatus("success");
     const billPrint = window.open("", "");
     billPrint.document.write(data);
     billPrint.document.close();
@@ -52,6 +53,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       billPrint.print();
       billPrint.close();
     };
+    setStatus("success");
   });
   const isBillLoading = billLoadStatus === "idle";
   const templates = [
@@ -67,6 +69,9 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
     setTemplateName(currentTemplate.value);
     localStorage.setItem("template", currentTemplate.value);
   };
+  const isDownloading = status === "downloading";
+
+  const isPrinting = status === "printing";
   return (
     <Modal
       size={"full"}
@@ -89,7 +94,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
                 padding: 1,
                 borderRadius: 10,
                 border: "none",
-                zoom : 0.8
+                zoom: 0.8,
               }}
               width={"100%"}
               height={"100%"}
@@ -117,13 +122,14 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
                 leftIcon={<IoPrintOutline />}
                 onClick={onPrintBill}
                 colorScheme="blue"
-                isLoading={status === "loading"}
+                isLoading={isPrinting}
               >
                 Print
               </Button>
             </Hide>
             <Button
               leftIcon={<CiSaveDown2 />}
+              isLoading={isDownloading}
               onClick={() => {
                 onSaveBill(bill);
               }}

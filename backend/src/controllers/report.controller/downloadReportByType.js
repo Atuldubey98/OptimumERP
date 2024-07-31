@@ -13,10 +13,7 @@ const downloadReportByType = async (req, res) => {
     reportData,
     reportType,
   });
-  res.setHeader(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats')
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=report-${reportType}.xlsx `
