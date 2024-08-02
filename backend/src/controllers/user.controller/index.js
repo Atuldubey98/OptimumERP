@@ -2,7 +2,7 @@ const activate = require("./activate");
 const currentUser = require("./current_user");
 const deactivate = require("./deactivate");
 const forgotPassword = require("./forgot_password");
-const googleAuth = require("./googleAuth");
+const updateGoogleAuth = require("./updateGoogleAuth");
 const login = require("./login");
 const logout = require("./logout");
 const register = require("./register");
@@ -22,5 +22,5 @@ module.exports = {
   resetPassword,
   update,
   register,
-  googleAuth,
+  updateGoogleAuth,
 };

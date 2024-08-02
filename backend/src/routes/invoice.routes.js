@@ -14,6 +14,7 @@ const {
   remove,
   download,
   paginate,
+  send,
   read,
 } = require("../controllers/invoice.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -38,5 +39,6 @@ invoiceRouter.patch("/:id", updateModel, requestAsyncHandler(update));
 invoiceRouter.get("/:id/view", requestAsyncHandler(htmlView));
 invoiceRouter.get("/:id/download", requestAsyncHandler(download));
 invoiceRouter.post("/:id/payment", requestAsyncHandler(payment));
+invoiceRouter.post("/:id/send", requestAsyncHandler(send));
 
 module.exports = invoiceRouter;

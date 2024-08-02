@@ -3,11 +3,12 @@ const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const { currencyToWordConverter } = require("./currencyToWord.service");
-const { promiseQrCode } = require("./renderEngine.service");
+const { promiseQrCode, renderHtml } = require("./renderEngine.service");
 const {
   calculateTaxes,
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
+const path = require("path");
 const getUpiQrCodeByPrintSettings = async ({
   upi,
   grandTotal = 0,
@@ -212,4 +213,23 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   if (!getBillMeta) return data;
   const meta = await getBillMeta();
   return { ...data, ...meta };
+};
+
+exports.convertBillToHtmlByTemplate = async ({
+  Bill,
+  filter,
+  NotFound,
+  template,
+}) => {
+  const data = await this.getBillDetail({
+    Bill,
+    filter,
+    NotFound,
+  });
+  const pdfTemplateLocation = path.join(
+    __dirname,
+    `../views/templates/${template}/index.ejs`
+  );
+  const html = await renderHtml(pdfTemplateLocation, data);
+  return { html, data };
 };

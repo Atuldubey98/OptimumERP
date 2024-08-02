@@ -21,12 +21,21 @@ app.use(sessionHandler);
 
 if (NODE_ENV === "production") app.set("trust proxy", 1);
 
-
 app.get("/", (req, res) => {
   const user = req.session.user;
   res.render("landing", {
     title: "Optimum ERP",
     user,
+  });
+});
+app.get("/privacy", (req, res) => {
+  res.render("privacy", {
+    title: "Optimum ERP",
+  });
+});
+app.get("/terms", (req, res) => {
+  res.render("terms", {
+    title: "Optimum ERP",
   });
 });
 app.get("/api/v1/health", (_, res) =>

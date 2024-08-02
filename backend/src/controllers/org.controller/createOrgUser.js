@@ -7,7 +7,10 @@ const { registerUser } = require("../../services/auth.service");
 
 const createOrgUser = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
-  const registeredUser = await registerUser(body);
+  const registeredUser = await registerUser({
+    ...body,
+    attributes: req.session?.user?.attributes,
+  });
   const org = await OrgModel.findById(req.params.orgId);
 
   await UserActivatedPlan.create({

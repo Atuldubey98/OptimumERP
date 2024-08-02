@@ -3,6 +3,9 @@ class UserRepository {
   static findByEmailId(email) {
     return this.findOne({ email });
   }
+  static findByGoogleId(googleId) {
+    return this.findOne({ googleId });
+  }
 }
 const userSchema = new Schema(
   {
@@ -27,7 +30,6 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
     },
     active: {
       type: Boolean,
@@ -35,7 +37,7 @@ const userSchema = new Schema(
     },
     googleId: {
       type: String,
-      unique: true,
+      index: true,
     },
     attributes: {
       type: {
@@ -44,6 +46,7 @@ const userSchema = new Schema(
         picture: String,
       },
       default: {},
+      _id: false,
     },
   },
   {

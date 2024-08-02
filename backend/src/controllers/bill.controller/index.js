@@ -6,6 +6,7 @@ const update = require("./update");
 const htmlView = require("./htmlView");
 const download = require("./download");
 const exportData = require("./exportData");
+const send = require("./send");
 const getController = (options) => {
   return {
     read: (req, res) => read(options, req, res),
@@ -16,6 +17,7 @@ const getController = (options) => {
     update: (req, res) => update(options, req, res),
     download: (req, res) => download(options, req, res),
     exportData: (req, res) => exportData(options, req, res),
+    send: (req, res) => send(options, req, res),
   };
 };
 module.exports = getController;

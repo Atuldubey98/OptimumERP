@@ -1,29 +1,27 @@
 const { isValidObjectId } = require("mongoose");
-const { getBillDetail } = require("../../services/bill.service");
+const {
+  convertBillToHtmlByTemplate,
+} = require("../../services/bill.service");
 const {
   sendHtmlToPdfResponse,
-  renderHtml,
 } = require("../../services/renderEngine.service");
-const path = require("path");
+
 const download = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
+  const orgId = req.params.orgId;
+  const template = req.query.template || "simple";
   const filter = {
     _id: id,
-    org: req.params.orgId,
+    org: orgId,
   };
-  const template = req.query.template || "simple";
-  const data = await getBillDetail({
+  const { html, data } = await convertBillToHtmlByTemplate({
     Bill,
     filter,
     NotFound,
+    template,
   });
-  const pdfTemplateLocation = path.join(
-    __dirname,
-    `../../views/templates/${template}/index.ejs`
-  );
-  const html = await renderHtml(pdfTemplateLocation, data);
   await sendHtmlToPdfResponse({
     html,
     res,

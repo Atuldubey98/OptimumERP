@@ -25,6 +25,7 @@ import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
+import ShareBillModal from "../../common/ShareBillModal";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -124,6 +125,9 @@ export default function InvoicesPage() {
   } = useDisclosure();
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
     useDisclosure();
+  const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
+    useDisclosure();
+
   return (
     <MainLayout>
       <Box p={4}>
@@ -153,6 +157,10 @@ export default function InvoicesPage() {
                 recordPayment={() => {
                   setInvoice(invoice);
                   openRecordPaymentModal();
+                }}
+                shareItem={() => {
+                  setInvoice(invoice);
+                  toggleShareModal();
                 }}
                 showItem={() => onOpenInvoice(invoice)}
                 downloading={downloading}
@@ -186,6 +194,14 @@ export default function InvoicesPage() {
             isOpen={isOpen}
             onSaveBill={onSaveBill}
             onClose={onClose}
+          />
+        ) : null}
+        {invoice ? (
+          <ShareBillModal
+            bill={invoice}
+            isOpen={isShareModalOpen}
+            onClose={toggleShareModal}
+            billType={"invoices"}
           />
         ) : null}
         <AlertModal

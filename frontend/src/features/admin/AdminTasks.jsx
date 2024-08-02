@@ -4,9 +4,10 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Alert,
+  AlertIcon,
   Box,
   Button,
-  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -20,11 +21,13 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import moment from "moment";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { FaGoogle } from "react-icons/fa";
 import SettingContext from "../../contexts/SettingContext";
+import useAuth from "../../hooks/useAuth";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
-import { FaGoogle } from "react-icons/fa";
+import GoogleIcon from "../common/GoogleIcon";
 function FinancialYearCloseForm(props) {
   return (
     <AccordionItem>
@@ -109,17 +112,15 @@ function FinancialYearCloseForm(props) {
 }
 
 function SMTPSetup() {
-  const params = new URLSearchParams({
-    client_id:
-      "596042218431-2e47afjel4s55s61ll477lhivucis9n3.apps.googleusercontent.com",
-    access_type: "offline",
-    scope: "email",
-    redirect_uri: `${window.origin}/auth/google`,
-    display: "popup",
-    response_type: "code",
-    prompt: "consent",
-  });
-  const queryParams = params.toString();
+  const redirectUri = `${window.origin}/auth/google`;
+  const [status, setStatus] = useState("idle");
+  const auth = useAuth();
+  const onConnectToGoogle = async () => {
+    setStatus("connecting");
+    const { data } = await instance.get("/api/v1/users/googleAuth");
+    window.open(`${data.data}${redirectUri}`, "_self");
+    setStatus("idle");
+  };
   return (
     <AccordionItem>
       <h2>
@@ -131,12 +132,19 @@ function SMTPSetup() {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
+        <Box marginBottom={2}>
+          <Alert status="info">
+            <AlertIcon />
+            SMTP currently supports only Google. Button below can be used to
+            connect the google account to send receipts from the dashboard.
+          </Alert>
+        </Box>
         <Button
-          as={"a"}
-          href={`https://accounts.google.com/o/oauth2/v2/auth?${queryParams}`}
-          leftIcon={<FaGoogle />}
+          isLoading={status === "connecting"}
+          onClick={onConnectToGoogle}
+          leftIcon={<GoogleIcon />}
         >
-          Connect google
+          {auth?.user?.googleId ? "Re-Connect" : "Connect"}
         </Button>
       </AccordionPanel>
     </AccordionItem>
@@ -200,6 +208,7 @@ export default function AdminTasks({ organization }) {
   const { financialYear } = useCurrentOrgCurrency();
   const settingContext = useContext(SettingContext);
   const toast = useToast();
+  const auth = useAuth();
   const formik = useFormik({
     initialValues: {
       transactionPrefix: {
@@ -265,7 +274,9 @@ export default function AdminTasks({ organization }) {
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
         <DefaultTermsForReceiptsForm formik={termsFormik} />
-        <SMTPSetup />
+        {auth.user?.currentPlan?.purchasedBy === auth?.user._id ? (
+          <SMTPSetup />
+        ) : null}
       </Accordion>
     </Box>
   );

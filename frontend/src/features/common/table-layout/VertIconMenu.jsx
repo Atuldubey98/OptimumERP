@@ -18,7 +18,7 @@ import { RiDeleteBin2Line } from "react-icons/ri";
 import { RxDotsVertical } from "react-icons/rx";
 import { TiContacts } from "react-icons/ti";
 import { GrOverview } from "react-icons/gr";
-
+import { BsShare } from "react-icons/bs";
 export default function VertIconMenu({
   showItem,
   editItem,
@@ -28,6 +28,7 @@ export default function VertIconMenu({
   recordPayment,
   showProducts,
   showExpenses,
+  shareItem,
   showContacts,
   downloading = false,
   convertToInvoice,
@@ -53,6 +54,7 @@ export default function VertIconMenu({
             Expenses
           </MenuItem>
         ) : null}
+
         {onOverviewItem ? (
           <MenuItem
             icon={<GrOverview />}
@@ -78,6 +80,7 @@ export default function VertIconMenu({
             Payment out
           </MenuItem>
         ) : null}
+
         {convertToInvoice ? (
           <MenuItem
             icon={<FaFileInvoiceDollar size={20} />}
@@ -114,6 +117,7 @@ export default function VertIconMenu({
             Payment In
           </MenuItem>
         ) : null}
+
         {showTransactions ? (
           <MenuItem
             command="⌘T"
@@ -138,6 +142,15 @@ export default function VertIconMenu({
           </MenuItem>
         ) : null}
         <Divider />
+        {shareItem ? (
+          <MenuItem
+            icon={<BsShare size={20} />}
+            onClick={shareItem}
+            command="⌘H"
+          >
+            Share
+          </MenuItem>
+        ) : null}
         {deleteItem ? (
           <MenuItem
             icon={<RiDeleteBin2Line color="red" size={20} />}

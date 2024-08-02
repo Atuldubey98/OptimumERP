@@ -11,7 +11,7 @@ exports.renderHtml = (location, data) => {
 };
 
 exports.sendHtmlToPdfResponse = async ({ html, res, pdfName }) => {
-  const pdfBuffer = await getPdfBufferUsingHtml(html);
+  const pdfBuffer = await this.getPdfBufferUsingHtml(html);
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("Content-Disposition", `attachment; filename=${pdfName}.pdf`);
   res.setHeader("Content-Length", pdfBuffer.length);
@@ -27,7 +27,7 @@ exports.promiseQrCode = (value) => {
   });
 };
 
-async function getPdfBufferUsingHtml(html) {
+exports.getPdfBufferUsingHtml = async (html) => {
   const browser = await puppeteer.launch();
   const urlPage = await browser.newPage();
   await urlPage.setContent(html);
@@ -44,4 +44,4 @@ async function getPdfBufferUsingHtml(html) {
   });
   await browser.close();
   return buffer;
-}
+};

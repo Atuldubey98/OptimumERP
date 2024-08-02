@@ -7,6 +7,7 @@ import useAuth from "../../hooks/useAuth";
 import instance from "../../instance";
 import AuthLayout from "../common/auth-layout";
 import AuthFields from "./AuthFields";
+import GoogleIcon from "../common/GoogleIcon";
 export default function LoginPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const navigate = useNavigate();
@@ -45,16 +46,15 @@ export default function LoginPage() {
             formikHandleChange={formik.handleChange}
             formikValues={formik.values}
           />
-          <Flex justifyContent={"center"} alignItems={"center"}>
-            <Button
-              isLoading={formik.isSubmitting}
-              mt={4}
-              colorScheme="blue"
-              type="submit"
-            >
-              Login
-            </Button>
-          </Flex>
+
+          <Button
+            isLoading={formik.isSubmitting}
+            mt={4}
+            colorScheme="blue"
+            type="submit"
+          >
+            Login
+          </Button>
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
             Register Now ?
           </ChakraLink>

@@ -1,4 +1,11 @@
-import { Button, Link as ChakraLink, Flex, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Link as ChakraLink,
+  Flex,
+  Grid,
+  useToast,
+} from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
@@ -47,7 +54,7 @@ export default function RegisterPage() {
     <AuthLayout formHeading={"Sign up"}>
       <form onSubmit={formik.handleSubmit}>
         <RegisterUserFields formik={formik} />
-        <Flex mt={3} justifyContent={"center"} alignItems={"center"}>
+        <Grid marginBlock={2}>
           <Button
             isLoading={formik.isSubmitting}
             mt={4}
@@ -56,7 +63,7 @@ export default function RegisterPage() {
           >
             Register
           </Button>
-        </Flex>
+        </Grid>
         <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
           Login Now ?
         </ChakraLink>
