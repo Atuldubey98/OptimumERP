@@ -1,14 +1,14 @@
 const activate = require("./activate");
 const currentUser = require("./current_user");
 const deactivate = require("./deactivate");
-const forgotPassword = require("./forgot_password");
+const forgotPassword = require("./forgotPassword");
 const updateGoogleAuth = require("./updateGoogleAuth");
 const login = require("./login");
 const logout = require("./logout");
 const register = require("./register");
-const resetPassword = require("./reset_password");
+const resetPassword = require("./resetPassword");
 const update = require("./update");
-const verifyOtp = require("./verify_otp");
+const verifyOtp = require("./verifyOtp");
 const getGoogleAuthorizationUri = require("./getGoogleAuthorizationUri");
 const googleAuth = require("./googleAuth");
 module.exports = {

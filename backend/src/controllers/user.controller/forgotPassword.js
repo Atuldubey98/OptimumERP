@@ -3,6 +3,7 @@ const transporter = require("../../mailer");
 const Otp = require("../../models/otp.model");
 const User = require("../../models/user.model");
 const path = require("path");
+const { UserNotFound } = require("../../errors/user.error");
 const forgotPassword = async (req, res) => {
   const user = await User.findOne({ email: req.body.email }).lean();
   if (!user) throw new UserNotFound();
