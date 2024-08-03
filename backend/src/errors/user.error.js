@@ -47,6 +47,14 @@ class InvalidOtp extends Error {
     this.name = "InvalidOtp";
   }
 }
+class UserNotVerified extends Error {
+  constructor() {
+    super();
+    this.code = 401;
+    this.message = "User not verified";
+    this.name = "UserNotVerified";
+  }
+}
 class UpgradePlan extends Error {
   constructor() {
     super();
@@ -63,5 +71,6 @@ module.exports = {
   PasswordDoesNotMatch,
   UnAuthenticated,
   UnAuthorizedUser,
+  UserNotVerified,
   InvalidOtp,
 };

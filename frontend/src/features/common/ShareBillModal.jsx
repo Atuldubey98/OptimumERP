@@ -18,6 +18,7 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  FormHelperText,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -92,7 +93,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
   const filterSelectedCCOptions = (contactOption) =>
     contactOption.value in selectedCCOptions;
   const auth = useAuth();
-  const googleId = auth?.user?.googleId;
+  const isNotFree = auth?.user?.currentPlan?.plan !== "free";
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -101,7 +102,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
-            {googleId ? (
+            {isNotFree ? (
               <Stack spacing={1}>
                 <FormControl isRequired>
                   <FormLabel>To</FormLabel>
@@ -116,6 +117,9 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                     value={contactOptions.filter(filterSelectedToOptions)}
                     options={contactOptions}
                   />
+                  <FormHelperText>
+                    Only contacts of customer with email will be shown here.
+                  </FormHelperText>
                 </FormControl>
                 <FormControl>
                   <FormLabel>CC</FormLabel>
@@ -130,6 +134,9 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                     value={contactOptions.filter(filterSelectedCCOptions)}
                     options={contactOptions}
                   />
+                  <FormHelperText>
+                    Only contacts of customer with email will be shown here.
+                  </FormHelperText>
                 </FormControl>
                 <FormControl isRequired>
                   <FormLabel>Subject</FormLabel>
@@ -138,6 +145,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                     name="subject"
                     value={formik.values.subject}
                   />
+                  <FormHelperText>Subject for the mail</FormHelperText>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Body</FormLabel>
@@ -146,6 +154,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                     name="body"
                     value={formik.values.body}
                   />
+                  <FormHelperText>Body for the mail</FormHelperText>
                 </FormControl>
               </Stack>
             ) : (
@@ -160,11 +169,11 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
               >
                 <AlertIcon boxSize="40px" mr={0} />
                 <AlertTitle mt={4} mb={1} fontSize="lg">
-                  Instruction to use this feature
+                  Upgrade your plan
                 </AlertTitle>
                 <AlertDescription maxWidth="sm">
-                  Connect to smtp service to use this feature. If you are own
-                  this organization you can setup in the admin tab.
+                  Upgrade your plan to use this service. Contact admin to setup
+                  the SMTP for organization.
                 </AlertDescription>
               </Alert>
             )}
@@ -174,7 +183,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
             <Button mr={3} onClick={onClose}>
               Close
             </Button>
-            {googleId ? (
+            {isNotFree ? (
               <Button
                 isLoading={formik.isSubmitting}
                 type="submit"

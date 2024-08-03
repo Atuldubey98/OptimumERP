@@ -1,8 +1,11 @@
 const freePlanLimits = require("../constants/freePlanLimits");
 const { UserDuplicate } = require("../errors/user.error");
+const Otp = require("../models/otp.model");
 const UserModel = require("../models/user.model");
 const { getHashedString } = require("./hashing.service");
-
+const path = require("path");
+const { renderHtml } = require("./renderEngine.service");
+const transporter = require("../mailer");
 exports.registerUser = async ({ email, password, name, attributes = {} }) => {
   const existingUser = await UserModel.findByEmailId(email);
   if (existingUser) throw new UserDuplicate();
@@ -45,4 +48,21 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
   };
   const limits = planLimits[activatedPlan.plan];
   return limits;
+};
+
+exports.sendOtpEmailToUser = async ({ user, typeOfOtp, subject }) => {
+  await Otp.expireOtpByUserId(user._id, typeOfOtp);
+  const generatedOtp = await Otp.generateOtpByUserId(user._id, typeOfOtp);
+  const locationTemplate = path.join(__dirname, `../views/otp/send_otp.ejs`);
+  const html = await renderHtml(locationTemplate, {
+    otp: generatedOtp.otp,
+    expirationTime: 10,
+  });
+  const mail = await transporter.sendMail({
+    from: `"OptimumERP" <${process.env.NODE_MAILER_USER_NAME}>`,
+    to: user.email,
+    subject,
+    html,
+  });
+  return mail;
 };

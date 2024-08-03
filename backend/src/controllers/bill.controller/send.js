@@ -20,6 +20,8 @@ const send = async (options = {}, req, res) => {
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
   const body = await mailBodyDto.validateAsync(req.body);
+  const purchasedBy = req.session?.user?.currentPlan?.purchasedBy;
+  const oAuth2Client = await setupAuth2ClientByOrgOwnedBy(purchasedBy);
   if (!body.to.length)
     return res.status(200).json({ message: "Select atleast one recipent" });
   const filter = {
@@ -35,9 +37,7 @@ const send = async (options = {}, req, res) => {
     template,
   });
   const pdfBuffer = await getPdfBufferUsingHtml(html);
-  const oAuth2Client = await setupAuth2ClientByOrgOwnedBy(
-    req.session?.user?.currentPlan?.purchasedBy
-  );
+
   await sendEmail({
     auth: oAuth2Client,
     body: body.body,

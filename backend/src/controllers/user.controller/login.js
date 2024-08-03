@@ -2,6 +2,7 @@ const { loginUserDto } = require("../../dto/user.dto");
 const {
   UserNotFound,
   PasswordDoesNotMatch,
+  UserNotVerified,
 } = require("../../errors/user.error");
 const User = require("../../models/user.model");
 const UserActivatedPlan = require("../../models/userActivatedPlans.model");
@@ -18,6 +19,7 @@ const login = async (req, res) => {
   const { email, password } = body;
   const user = await User.findByEmailId(email);
   if (!user || !user.active || !user.password) throw new UserNotFound();
+  if (!user.verifiedEmail) throw new UserNotVerified();
   const isPasswordMatching = await compareHashAndActualString(
     password,
     user.password

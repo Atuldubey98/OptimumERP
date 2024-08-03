@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 class OtpRepository {
-  static expireOtpByUserId(userId) {
+  static expireOtpByUserId(userId, type = "forgotPassword") {
     return this.findOneAndUpdate(
       {
         user: userId,
         isVerified: false,
+        type,
       },
       { expiresAt: new Date(Date.now()), isVerified: true }
     );
   }
-  static generateOtpByUserId(userId) {
+  static generateOtpByUserId(userId, type = "forgotPassword") {
     function generateOTP() {
       let digits = "0123456789";
       let otp = "";
@@ -23,6 +24,7 @@ class OtpRepository {
     return this.create({
       user: userId,
       otp,
+      type,
     });
   }
 }
@@ -35,6 +37,12 @@ const otpSchema = new mongoose.Schema(
       required: true,
     },
     otp: { type: String, required: true },
+    type: {
+      type: String,
+      enum: ["register", "forgotPassword"],
+      required: true,
+      default: "forgotPassword",
+    },
     expiresAt: {
       type: Date,
       required: true,

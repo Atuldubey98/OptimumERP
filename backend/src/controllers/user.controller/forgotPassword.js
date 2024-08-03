@@ -1,24 +1,13 @@
-const { renderHtml } = require("../../services/renderEngine.service");
-const transporter = require("../../mailer");
-const Otp = require("../../models/otp.model");
 const User = require("../../models/user.model");
-const path = require("path");
 const { UserNotFound } = require("../../errors/user.error");
+const { sendOtpEmailToUser } = require("../../services/auth.service");
 const forgotPassword = async (req, res) => {
   const user = await User.findOne({ email: req.body.email }).lean();
   if (!user) throw new UserNotFound();
-  await Otp.expireOtpByUserId(user._id);
-  const generatedOtp = await Otp.generateOtpByUserId(user._id);
-  const locationTemplate = path.join(__dirname, `../../views/otp/send_otp.ejs`);
-  const html = await renderHtml(locationTemplate, {
-    otp: generatedOtp.otp,
-    expirationTime: 10,
-  });
-  await transporter.sendMail({
-    from: `"OptimumERP" <${process.env.NODE_MAILER_USER_NAME}>`,
-    to: req.body.email,
+  await sendOtpEmailToUser({
+    user,
     subject: "Reset password | OptimumERP",
-    html,
+    typeOfOtp: "forgotPassword",
   });
   return res
     .status(200)

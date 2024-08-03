@@ -39,6 +39,10 @@ invoiceRouter.patch("/:id", updateModel, requestAsyncHandler(update));
 invoiceRouter.get("/:id/view", requestAsyncHandler(htmlView));
 invoiceRouter.get("/:id/download", requestAsyncHandler(download));
 invoiceRouter.post("/:id/payment", requestAsyncHandler(payment));
-invoiceRouter.post("/:id/send", requestAsyncHandler(send));
+invoiceRouter.post(
+  "/:id/send",
+  checkPlan(["gold", "platinum"]),
+  requestAsyncHandler(send)
+);
 
 module.exports = invoiceRouter;

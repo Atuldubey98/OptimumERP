@@ -8,7 +8,7 @@ const bodyJoi = Joi.object({
   password: Joi.string().required().min(8).max(20).label("Password"),
   otp: Joi.string().required().label("OTP"),
 });
-const verifyOtp = async (req, res) => {
+const verifyForgotPasswordOtp = async (req, res) => {
   const body = await bodyJoi.validateAsync(req.body);
   const user = await User.findOne({ email: body.email });
   if (!user) throw new UserNotFound();
@@ -19,12 +19,10 @@ const verifyOtp = async (req, res) => {
   };
   const otp = await Otp.findOneAndUpdate(filter, { isVerified: true });
   if (!otp) throw new InvalidOtp();
-  user.password = await bcryptjs.hash(
-    body.password,
-    await bcryptjs.genSalt(10)
-  );
+  const SALT = await bcryptjs.genSalt(10);
+  user.password = await bcryptjs.hash(body.password, SALT);
   await user.save();
   return res.status(200).json({ message: "Password reset successful" });
 };
 
-module.exports = verifyOtp;
+module.exports = verifyForgotPasswordOtp;

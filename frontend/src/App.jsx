@@ -4,7 +4,7 @@ import FullLoader from "./features/common/FullLoader";
 import GoogleAuthAdminPage from "./features/login/GoogleAuthPage";
 import TaxesPage from "./features/taxes";
 import UmsPage from "./features/ums";
-import SettingContextProvider from "./contexts/SettingContextProvider";
+import VerifyEmailPage from "./features/verify-email";
 const StatsPage = lazy(() => import("./features/stats"));
 const PurchaseOrderPage = lazy(() => import("./features/purchaseOrders/list"));
 const PurchaseOrderEditPage = lazy(() =>
@@ -56,6 +56,7 @@ export default function App() {
         />
         <Route path="/auth/google" element={<GoogleAuthAdminPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/:orgId">
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
           <Route element={<PricingPage />} path="pricings" />

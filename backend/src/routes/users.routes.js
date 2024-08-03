@@ -5,7 +5,6 @@ const {
   deactivate,
   forgotPassword,
   login,
-  verifyOtp,
   logout,
   resetPassword,
   register,
@@ -13,12 +12,15 @@ const {
   updateGoogleAuth,
   getGoogleAuthorizationUri,
   googleAuth,
+  verifyForgotPasswordOtp,
+  verifyRegisteredUserOtp,
 } = require("../controllers/user.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const userRoutes = Router();
 
 userRoutes.post("/register", requestAsyncHandler(register));
+userRoutes.post("/verify", requestAsyncHandler(verifyRegisteredUserOtp));
 userRoutes.post("/login", requestAsyncHandler(login));
 userRoutes.patch(
   "/googleAuth",
@@ -36,7 +38,10 @@ userRoutes.post(
   requestAsyncHandler(resetPassword)
 );
 userRoutes.post("/forgot-password", requestAsyncHandler(forgotPassword));
-userRoutes.post("/forgot-password/reset", requestAsyncHandler(verifyOtp));
+userRoutes.post(
+  "/forgot-password/reset",
+  requestAsyncHandler(verifyForgotPasswordOtp)
+);
 userRoutes.post(
   "/:orgId/deactivate",
   authenticate,

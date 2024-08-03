@@ -8,8 +8,10 @@ const logout = require("./logout");
 const register = require("./register");
 const resetPassword = require("./resetPassword");
 const update = require("./update");
-const verifyOtp = require("./verifyOtp");
+const verifyForgotPasswordOtp = require("./verifyForgotPasswordOtp");
 const getGoogleAuthorizationUri = require("./getGoogleAuthorizationUri");
+const verifyRegisteredUserOtp = require("./verifyRegisteredUserOtp");
+
 const googleAuth = require("./googleAuth");
 module.exports = {
   activate,
@@ -17,7 +19,8 @@ module.exports = {
   googleAuth,
   getGoogleAuthorizationUri,
   deactivate,
-  verifyOtp,
+  verifyForgotPasswordOtp,
+  verifyRegisteredUserOtp,
   forgotPassword,
   login,
   logout,

@@ -63,9 +63,16 @@ async function createPlanForUserIfDoesNotExist(user) {
 async function createGoogleAuthUser({ googleId, userProfile, tokens }) {
   let user = await UserModel.findOne({
     googleId,
-    email: userProfile.email,
   });
-
+  if (!user) {
+    user = await UserModel.findOne({ email: userProfile.email });
+    if (user)
+      return await updateGoogleCredsInExistingEmailAddressAndVerify(
+        user,
+        googleId,
+        tokens
+      );
+  }
   const name = userProfile.given_name
     ? `${userProfile.given_name}  ${userProfile.family_name}`
     : userProfile.email;
@@ -77,9 +84,23 @@ async function createGoogleAuthUser({ googleId, userProfile, tokens }) {
       attributes: {
         picture: userProfile.picture,
       },
+      verifiedEmail: true,
     });
   user.attributes.googleAccessToken = tokens.access_token;
   user.attributes.googleRefreshToken = tokens.refresh_token;
+  user.verifiedEmail = true;
+  await user.save();
+  return user;
+}
+async function updateGoogleCredsInExistingEmailAddressAndVerify(
+  user,
+  googleId,
+  tokens
+) {
+  user.googleId = googleId;
+  user.attributes.googleAccessToken = tokens.access_token;
+  user.attributes.googleRefreshToken = tokens.refresh_token;
+  user.verifiedEmail = true;
   await user.save();
   return user;
 }

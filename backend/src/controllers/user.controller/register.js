@@ -1,6 +1,9 @@
 const { registerUserDto } = require("../../dto/user.dto");
 const UserActivatedPlan = require("../../models/userActivatedPlans.model");
-const { registerUser } = require("../../services/auth.service");
+const {
+  registerUser,
+  sendOtpEmailToUser,
+} = require("../../services/auth.service");
 
 const register = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
@@ -9,13 +12,18 @@ const register = async (req, res) => {
     user: registeredUser.id,
     purchasedBy: registeredUser.id,
   });
+  await sendOtpEmailToUser({
+    user: registeredUser,
+    subject: "Verification Mail | OptimumERP",
+    typeOfOtp: "register",
+  });
   return res.status(201).json({
     data: {
       email: registeredUser.email,
       name: registeredUser.name,
       _id: registeredUser.id,
     },
-    message: "User registered successfully !",
+    message: "Email verification sent",
   });
 };
 

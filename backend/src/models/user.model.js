@@ -35,6 +35,11 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    verifiedEmail: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
     googleId: {
       type: String,
       index: true,

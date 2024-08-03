@@ -266,6 +266,10 @@ export default function AdminTasks({ organization }) {
       setSubmitting(false);
     },
   });
+  const isCurrentUserOwnerOfOrganization =
+    auth.user?.currentPlan?.purchasedBy === auth?.user._id;
+  const isCurrentPlanGreaterThanFreePlan =
+    auth?.user.currentPlan?.plan !== "free";
   return (
     <Box>
       <Box bg={bg} p={3}>
@@ -274,7 +278,8 @@ export default function AdminTasks({ organization }) {
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
         <DefaultTermsForReceiptsForm formik={termsFormik} />
-        {auth.user?.currentPlan?.purchasedBy === auth?.user._id ? (
+        {isCurrentUserOwnerOfOrganization &&
+        isCurrentPlanGreaterThanFreePlan ? (
           <SMTPSetup />
         ) : null}
       </Accordion>
