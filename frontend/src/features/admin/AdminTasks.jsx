@@ -112,9 +112,9 @@ function FinancialYearCloseForm(props) {
 }
 
 function SMTPSetup() {
-  const redirectUri = `${window.origin}/auth/google`;
-  const [status, setStatus] = useState("idle");
   const auth = useAuth();
+  const redirectUri = `${window.origin}/auth/google/admin`;
+  const [status, setStatus] = useState("idle");
   const onConnectToGoogle = async () => {
     setStatus("connecting");
     const { data } = await instance.get("/api/v1/users/googleAuth");

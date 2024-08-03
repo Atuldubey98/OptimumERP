@@ -1,9 +1,10 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-import GoogleAuthPage from "./features/login/GoogleAuthPage";
+import GoogleAuthAdminPage from "./features/login/GoogleAuthPage";
 import TaxesPage from "./features/taxes";
 import UmsPage from "./features/ums";
+import SettingContextProvider from "./contexts/SettingContextProvider";
 const StatsPage = lazy(() => import("./features/stats"));
 const PurchaseOrderPage = lazy(() => import("./features/purchaseOrders/list"));
 const PurchaseOrderEditPage = lazy(() =>
@@ -49,7 +50,11 @@ export default function App() {
     <Suspense fallback={<FullLoader />}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/auth/google" element={<GoogleAuthPage />} />
+        <Route
+          path="/auth/google/admin"
+          element={<GoogleAuthAdminPage authenticated={true} />}
+        />
+        <Route path="/auth/google" element={<GoogleAuthAdminPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/:orgId">
           <Route element={<ProfileSettingsPage />} path="profile-settings" />

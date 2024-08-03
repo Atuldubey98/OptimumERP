@@ -54,6 +54,15 @@ export default function RegisteUserDrawer({ isOpen, onClose, formik }) {
               >
                 Is the user active ?
               </Checkbox>
+              <Checkbox
+                isChecked={formik.values.useAdminSMTP}
+                onChange={formik.handleChange}
+                colorScheme="green"
+                name="useAdminSMTP"
+                defaultChecked
+              >
+                Can user my SMTP?
+              </Checkbox>
             </Stack>
           </DrawerBody>
 

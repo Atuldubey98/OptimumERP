@@ -1,4 +1,4 @@
-const { registerUserDto } = require("../../dto/user.dto");
+const { orgUserDto } = require("../../dto/user.dto");
 const OrgModel = require("../../models/org.model");
 const UserActivatedPlan = require("../../models/userActivatedPlans.model");
 const OrgUser = require("../../models/orgUser.model");
@@ -6,10 +6,10 @@ const logger = require("../../logger");
 const { registerUser } = require("../../services/auth.service");
 
 const createOrgUser = async (req, res) => {
-  const body = await registerUserDto.validateAsync(req.body);
+  const body = await orgUserDto.validateAsync(req.body);
   const registeredUser = await registerUser({
     ...body,
-    attributes: req.session?.user?.attributes,
+    attributes: body.useAdminSMTP ? req.session?.user?.attributes : {},
   });
   const org = await OrgModel.findById(req.params.orgId);
 

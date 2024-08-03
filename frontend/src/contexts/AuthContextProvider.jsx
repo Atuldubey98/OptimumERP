@@ -1,16 +1,18 @@
 import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import instance from "../instance";
 import AuthContext from "./AuthContext";
 import SettingContext from "./SettingContext";
 export default function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
-  const settingContext = useContext(SettingContext);
+  const location = useLocation();
+  const setting = useContext(SettingContext);
   const fetchUserDetails = async () => {
     try {
       setUserLoading(true);
       const { data } = await instance.get(`/api/v1/users`);
-      await settingContext.fetchSetting();
+      await setting.fetchSetting();
       setUser(data);
     } catch (error) {
       setUser(null);
@@ -19,6 +21,7 @@ export default function AuthContextProvider({ children }) {
     }
   };
   useEffect(() => {
+    if (location.pathname === "/auth/google") return;
     fetchUserDetails();
   }, []);
   const onSetCurrentUser = (user) => setUser(user);

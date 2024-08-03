@@ -8,6 +8,7 @@ import instance from "../../instance";
 import AuthLayout from "../common/auth-layout";
 import AuthFields from "./AuthFields";
 import GoogleIcon from "../common/GoogleIcon";
+import { useState } from "react";
 export default function LoginPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const navigate = useNavigate();
@@ -36,6 +37,15 @@ export default function LoginPage() {
       }
     }),
   });
+  const redirectUri = `${window.origin}/auth/google`;
+  const [status, setStatus] = useState("idle");
+  const onConnectToGoogle = async () => {
+    setStatus("connecting");
+    const { data } = await instance.get("/api/v1/users/googleAuth");
+    window.open(`${data.data}${redirectUri}`, "_self");
+    setStatus("idle");
+  };
+  const isLoading = status === "connecting";
   return (
     <AuthLayout formHeading={"Sign in"}>
       <form onSubmit={formik.handleSubmit}>
@@ -54,6 +64,13 @@ export default function LoginPage() {
             type="submit"
           >
             Login
+          </Button>
+          <Button
+            onClick={onConnectToGoogle}
+            isLoading={isLoading}
+            leftIcon={<GoogleIcon />}
+          >
+            Continue with Google
           </Button>
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
             Register Now ?

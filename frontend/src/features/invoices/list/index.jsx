@@ -26,6 +26,7 @@ import TableDateFilter from "./TableDateFilter";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
+import useAuth from "../../../hooks/useAuth";
 export default function InvoicesPage() {
   const {
     items: invoices,
@@ -40,6 +41,7 @@ export default function InvoicesPage() {
   } = useDateFilterFetch({
     entity: "invoices",
   });
+  const auth = useAuth();
   const loading = status === "loading";
   const navigate = useNavigate();
   const { symbol } = useCurrentOrgCurrency();

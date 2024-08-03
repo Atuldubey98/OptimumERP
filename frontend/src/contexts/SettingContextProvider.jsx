@@ -1,32 +1,30 @@
-import { useContext, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import instance from "../instance";
-import AuthContext from "./AuthContext";
 import SettingContext from "./SettingContext";
 export default function SettingContextProvider({ children }) {
   const [setting, setSetting] = useState(null);
   const onSetSettingForOrganization = (newSetting) => setSetting(newSetting);
   const [currentOrgRole, setCurrentOrgRole] = useState("");
   const onSetCurrentOrgRole = (currentRole) => setCurrentOrgRole(currentRole);
-  const userContext = useContext(AuthContext);
-  const location = useLocation();
-  const orgId = location.pathname.substring(
-    1,
-    location.pathname.indexOf("/", 1)
-  );
-  const fetchSetting = async () => {
+  const navigate = useNavigate();
+  const fetchSetting = async (orgId) => {
     const storedOrgId = localStorage.getItem("organization") || orgId;
-    if (!storedOrgId && userContext.user) return;
     try {
+      if (!storedOrgId) return;
       const { data } = await instance.get(
         `/api/v1/organizations/${storedOrgId}/settings`
       );
       setSetting(data.data);
       setCurrentOrgRole(data.role);
+      if (orgId) navigate(`/${orgId}/dashboard`);
     } catch (error) {
       localStorage.removeItem("organization");
     }
   };
+  useEffect(() => {
+    fetchSetting();
+  }, [localStorage.getItem("organization")]);
   return (
     <SettingContext.Provider
       value={{

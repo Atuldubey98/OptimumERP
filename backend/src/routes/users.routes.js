@@ -12,6 +12,7 @@ const {
   update,
   updateGoogleAuth,
   getGoogleAuthorizationUri,
+  googleAuth,
 } = require("../controllers/user.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -24,6 +25,7 @@ userRoutes.patch(
   authenticate,
   requestAsyncHandler(updateGoogleAuth)
 );
+userRoutes.post("/googleAuth", requestAsyncHandler(googleAuth));
 userRoutes.get("/googleAuth", requestAsyncHandler(getGoogleAuthorizationUri));
 userRoutes.get("/", authenticate, requestAsyncHandler(currentUser));
 userRoutes.patch("/", authenticate, requestAsyncHandler(update));

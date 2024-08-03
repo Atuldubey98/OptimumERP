@@ -32,6 +32,8 @@ import AlertModal from "../common/AlertModal";
 import PrivateRoute from "../common/PrivateRoute";
 import NewOrgModal from "./NewOrgModal";
 import OrgItem from "./OrgItem";
+import SettingContextProvider from "../../contexts/SettingContextProvider";
+import AuthContextProvider from "../../contexts/AuthContextProvider";
 export default function OrgPage() {
   const {
     isOpen,
@@ -94,101 +96,108 @@ export default function OrgPage() {
     (isCurrentPlanAboveFree && noOfOrgs < 3 && didUserPurchasePlan) ||
     !noOfOrgs;
   return (
-    <PrivateRoute>
-      <Box padding={4}>
-        <Container maxW={"container.md"}>
-          <Flex alignItems={"center"} justifyContent={"space-between"}>
-            <Popover>
-              <PopoverTrigger>
-                <Button leftIcon={<CiDollar />}>Current Plan</Button>
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverHeader fontWeight={"bold"}>
-                    {popup.name}
-                  </PopoverHeader>
-                  <PopoverCloseButton />
-                  <PopoverBody>{popup.description}</PopoverBody>
-                  {/* <PopoverFooter>
-                  <Button onClick={()=>{}} colorScheme="blue"> Change Plan</Button>
-                </PopoverFooter> */}
-                </PopoverContent>
-              </Portal>
-            </Popover>
-            <Button
-              onClick={openLogoutModal}
-              leftIcon={<IoIosLogOut />}
-              colorScheme="red"
-            >
-              Logout
-            </Button>
-          </Flex>
-          <Flex
-            marginBlock={3}
-            justifyContent={"center"}
-            gap={4}
-            alignItems={"center"}
-          >
-            <Heading
-              as={"h5"}
-              fontSize={"xl"}
-              fontWeight={"bold"}
-              textAlign={"center"}
-            >
-              Your organizations
-            </Heading>
-            <FaRegCircleDot color="green" size={24} />
-          </Flex>
-          {loading ? (
-            <Flex
-              marginBlock={5}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <Spinner size={"md"} />
-            </Flex>
-          ) : (
-            <Grid gap={4} marginBlock={4}>
-              {authorizedOrgs.map((authorizedOrg) => (
-                <OrgItem org={authorizedOrg.org} key={authorizedOrg.org._id} />
-              ))}
-              {showAddOrgBtn ? (
+    <SettingContextProvider>
+      <AuthContextProvider>
+        <PrivateRoute>
+          <Box padding={4}>
+            <Container maxW={"container.md"}>
+              <Flex alignItems={"center"} justifyContent={"space-between"}>
+                <Popover>
+                  <PopoverTrigger>
+                    <Button leftIcon={<CiDollar />}>Current Plan</Button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverHeader fontWeight={"bold"}>
+                        {popup.name}
+                      </PopoverHeader>
+                      <PopoverCloseButton />
+                      <PopoverBody>{popup.description}</PopoverBody>
+                      {/* <PopoverFooter>
+                      <Button onClick={()=>{}} colorScheme="blue"> Change Plan</Button>
+                    </PopoverFooter> */}
+                    </PopoverContent>
+                  </Portal>
+                </Popover>
+                <Button
+                  onClick={openLogoutModal}
+                  leftIcon={<IoIosLogOut />}
+                  colorScheme="red"
+                >
+                  Logout
+                </Button>
+              </Flex>
+              <Flex
+                marginBlock={3}
+                justifyContent={"center"}
+                gap={4}
+                alignItems={"center"}
+              >
+                <Heading
+                  as={"h5"}
+                  fontSize={"xl"}
+                  fontWeight={"bold"}
+                  textAlign={"center"}
+                >
+                  Your organizations
+                </Heading>
+                <FaRegCircleDot color="green" size={24} />
+              </Flex>
+              {loading ? (
                 <Flex
-                  cursor={"pointer"}
-                  _hover={{
-                    backgroundColor: hoverBg,
-                    transition: "all ease-in 300ms",
-                  }}
-                  borderRadius={4}
-                  onClick={onOpenNewOrganizationModal}
-                  padding={3}
+                  marginBlock={5}
                   justifyContent={"center"}
-                  gap={4}
-                  boxShadow={"md"}
                   alignItems={"center"}
                 >
-                  <IoAdd size={34} />
+                  <Spinner size={"md"} />
                 </Flex>
-              ) : null}
-            </Grid>
-          )}
-        </Container>
-      </Box>
-      <NewOrgModal
-        onCloseNewOrgModal={onCloseNewOrgModal}
-        isOpen={isOpen}
-        onAddedFetch={fetchOrgs}
-      />
-      <AlertModal
-        confirmDisable={loggingOut}
-        isOpen={isLogoutModalOpen}
-        onClose={closeLogoutModal}
-        onConfirm={onClickLogout}
-        body={"Do you want to logout ?"}
-        header={"Logout"}
-        buttonLabel="Logout"
-      />
-    </PrivateRoute>
+              ) : (
+                <Grid gap={4} marginBlock={4}>
+                  {authorizedOrgs.map((authorizedOrg) => (
+                    <OrgItem
+                      org={authorizedOrg.org}
+                      key={authorizedOrg.org._id}
+                    />
+                  ))}
+                  {showAddOrgBtn ? (
+                    <Flex
+                      cursor={"pointer"}
+                      _hover={{
+                        backgroundColor: hoverBg,
+                        transition: "all ease-in 300ms",
+                      }}
+                      borderRadius={4}
+                      onClick={onOpenNewOrganizationModal}
+                      padding={3}
+                      justifyContent={"center"}
+                      gap={4}
+                      boxShadow={"md"}
+                      alignItems={"center"}
+                    >
+                      <IoAdd size={34} />
+                    </Flex>
+                  ) : null}
+                </Grid>
+              )}
+            </Container>
+          </Box>
+          <NewOrgModal
+            onCloseNewOrgModal={onCloseNewOrgModal}
+            isOpen={isOpen}
+            onAddedFetch={fetchOrgs}
+          />
+          <AlertModal
+            confirmDisable={loggingOut}
+            isOpen={isLogoutModalOpen}
+            onClose={closeLogoutModal}
+            onConfirm={onClickLogout}
+            body={"Do you want to logout ?"}
+            header={"Logout"}
+            buttonLabel="Logout"
+          />
+        </PrivateRoute>
+      </AuthContextProvider>
+    </SettingContextProvider>
   );
 }

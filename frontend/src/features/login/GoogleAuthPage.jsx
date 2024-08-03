@@ -1,49 +1,67 @@
-import { Box, Flex, Spinner, useToast } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
+import { isAxiosError } from "axios";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import useQuery from "../../hooks/useQuery";
 import instance from "../../instance";
-import { isAxiosError } from "axios";
-import useAuth from '../../hooks/useAuth';
-export default function GoogleAuthPage() {
+import FullLoader from "../common/FullLoader";
+import PrivateRoute from "../common/PrivateRoute";
+function GoogleAuth({ authenticated = false }) {
   const query = useQuery();
   const organization = localStorage.getItem("organization");
-  const [status, setStatus] = useState("loading");
   const toast = useToast();
   const auth = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
-    (async () => {
-      try {
-        setStatus("loading");
-        await instance.patch(`/api/v1/users/googleAuth`, {
-          code: query.get("code"),
-          redirectUri: `${window.origin}/auth/google`,
-        });
-        await auth.fetchUserDetails();
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: isAxiosError(err)
-            ? err?.response?.data.message || "Network error occured"
-            : "Network error occured",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      } finally {
-        setStatus("idle");
-      }
-    })();
+    const getGoogleAuthSetup = authenticated
+      ? runAdminAuthSetup
+      : runUserAuthSetup;
+    getGoogleAuthSetup();
   }, []);
-  return (
-    <Box h={"100svh"}>
-      {status === "loading" ? (
-        <Flex h={"100%"} justifyContent={"center"} alignItems={"center"}>
-          <Spinner />
-        </Flex>
-      ) : (
-        <Navigate to={`/${organization}/admin`} />
-      )}
-    </Box>
+  return <FullLoader />;
+
+  async function runUserAuthSetup() {
+    try {
+      await instance.post(`/api/v1/users/googleAuth`, {
+        code: query.get("code"),
+        redirectUri: `${window.origin}/auth/google`,
+      }); 
+      await auth.fetchUserDetails();
+      navigate(`/organizations`);
+    } catch (error) {
+      navigate("/");
+    }
+  }
+  async function runAdminAuthSetup() {
+    try {
+      await instance.patch(`/api/v1/users/googleAuth`, {
+        code: query.get("code"),
+        redirectUri: `${window.origin}/auth/google/admin`,
+      });
+      await auth.fetchUserDetails();
+      navigate(`/${organization}/admin`);
+    } catch (error) {
+      navigate(`/${organization}/admin`);
+      toast({
+        title: "Error",
+        description: isAxiosError(error)
+          ? error?.response?.data.message || "Network error occured"
+          : "Network error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }
+}
+
+export default function GoogleAuthPage({ authenticated = false }) {
+  return authenticated ? (
+    <PrivateRoute>
+      <GoogleAuth authenticated={authenticated} />
+    </PrivateRoute>
+  ) : (
+    <GoogleAuth authenticated={authenticated} />
   );
 }

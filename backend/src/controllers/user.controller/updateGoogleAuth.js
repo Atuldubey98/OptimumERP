@@ -1,13 +1,13 @@
-const { default: axios } = require("axios");
 const UserModel = require("../../models/user.model");
 const {
   getOAuth2Client,
   exchangeCodeForTokens,
   getUserProfile,
 } = require("../../services/googleAuth.service");
-
-const googleAuth = async (req, res) => {
-  const { code, redirectUri } = req.body;
+const { googleAuthBodyDto } = require("../../dto/user.dto");
+const updateGoogleAuth = async (req, res) => {
+  const body = await googleAuthBodyDto.validateAsync(req.body);
+  const { code, redirectUri } = body;
   const oAuth2Client = getOAuth2Client({ redirectUri });
   const { tokens } = await exchangeCodeForTokens({
     auth: oAuth2Client,
@@ -20,11 +20,10 @@ const googleAuth = async (req, res) => {
   });
   const userProfile = await getUserProfile({ auth: oAuth2Client });
   const googleId = userProfile.id;
-  await updateGoogleAuth({
+  await updateGoogleAuthInUser({
     googleAccessToken,
     googleId,
     googleRefreshToken: tokens.refresh_token,
-    picture: userProfile.picture,
     userId: req.session?.user?._id,
   });
   req.session.user = {
@@ -34,21 +33,19 @@ const googleAuth = async (req, res) => {
   return res.status(200).json({ message: "SMTP Setup successfull" });
 };
 
-module.exports = googleAuth;
+module.exports = updateGoogleAuth;
 
-function updateGoogleAuth({
+function updateGoogleAuthInUser({
   userId,
   googleId,
   googleAccessToken,
   googleRefreshToken,
-  picture,
 }) {
   return UserModel.findByIdAndUpdate(userId, {
     googleId,
     attributes: {
       googleAccessToken,
       googleRefreshToken,
-      picture,
     },
   });
 }

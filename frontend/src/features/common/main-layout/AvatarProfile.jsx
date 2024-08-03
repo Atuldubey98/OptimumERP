@@ -9,7 +9,7 @@ export default function AvatarProfile() {
   return (
     <Flex cursor={"cursor"} gap={2} alignItems={"center"}>
       <Hide below="md">
-        <Text fontWeight={"bold"}>{`${
+        <Text noOfLines={1} fontWeight={"bold"}>{`${
           user?.name
         } (${role.toLocaleUpperCase()})`}</Text>
       </Hide>
