@@ -12,6 +12,7 @@ const {
   updateGoogleAuth,
   getGoogleAuthorizationUri,
   googleAuth,
+  resendVerificationLink,
   verifyForgotPasswordOtp,
   verifyRegisteredUserOtp,
 } = require("../controllers/user.controller");
@@ -21,6 +22,11 @@ const userRoutes = Router();
 
 userRoutes.post("/register", requestAsyncHandler(register));
 userRoutes.post("/verify", requestAsyncHandler(verifyRegisteredUserOtp));
+userRoutes.post(
+  "/sendVerification",
+  requestAsyncHandler(resendVerificationLink)
+);
+
 userRoutes.post("/login", requestAsyncHandler(login));
 userRoutes.patch(
   "/googleAuth",

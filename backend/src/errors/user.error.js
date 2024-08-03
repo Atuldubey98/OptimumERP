@@ -50,7 +50,7 @@ class InvalidOtp extends Error {
 class UserNotVerified extends Error {
   constructor() {
     super();
-    this.code = 401;
+    this.code = 403;
     this.message = "User not verified";
     this.name = "UserNotVerified";
   }

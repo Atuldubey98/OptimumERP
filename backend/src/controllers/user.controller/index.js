@@ -11,10 +11,11 @@ const update = require("./update");
 const verifyForgotPasswordOtp = require("./verifyForgotPasswordOtp");
 const getGoogleAuthorizationUri = require("./getGoogleAuthorizationUri");
 const verifyRegisteredUserOtp = require("./verifyRegisteredUserOtp");
-
 const googleAuth = require("./googleAuth");
+const resendVerificationLink = require("./resendVerificationOtp");
 module.exports = {
   activate,
+  resendVerificationLink,
   currentUser,
   googleAuth,
   getGoogleAuthorizationUri,

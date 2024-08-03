@@ -1,27 +1,22 @@
 import {
   Button,
   Link as ChakraLink,
-  Flex,
-  FormControl,
   Grid,
-  PinInput,
-  PinInputField,
-  Stack,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
-import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
+import useVerificationEmail from "../../hooks/useVerificationEmail";
 import instance from "../../instance";
 import AuthLayout from "../common/auth-layout";
-import OTPAlert from "../forgot-password/OTPAlert";
 import RegisterUserFields from "./RegisterUserFields";
+import VerficationEmailForm from "./VerificationEmailForm";
 
 export default function RegisterPage() {
   const { requestAsyncHandler } = useAsyncCall();
-  const navigate = useNavigate();
 
   const toast = useToast();
   const registerSchema = Yup.object({
@@ -56,55 +51,14 @@ export default function RegisterPage() {
       setSubmitting(false);
     }),
   });
-  const verifyRegisteredUserFormik = useFormik({
-    initialValues: {
-      userId: null,
-      otp: "",
-    },
-    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { data } = await instance.post(`/api/v1/users/verify`, values);
-      toast({
-        title: "Verified",
-        description: data.message,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      verifyRegisteredUserFormik.resetForm();
-      navigate("/");
-      setSubmitting(false);
-    }),
-  });
+  const { verifyRegisteredUserFormik } = useVerificationEmail();
   return (
     <AuthLayout formHeading={"Sign up"}>
       {verifyRegisteredUserFormik.values.userId ? (
         <form onSubmit={verifyRegisteredUserFormik.handleSubmit}>
-          <Stack>
-            <OTPAlert />
-            <FormControl isRequired>
-              <Flex justifyContent={"center"} alignItems={"center"} gap={3}>
-                <PinInput
-                  value={verifyRegisteredUserFormik.values.otp}
-                  onChange={(value) =>
-                    verifyRegisteredUserFormik.setFieldValue("otp", value)
-                  }
-                  otp
-                >
-                  <PinInputField />
-                  <PinInputField />
-                  <PinInputField />
-                  <PinInputField />
-                </PinInput>
-              </Flex>
-            </FormControl>
-            <Button
-              type="submit"
-              isLoading={verifyRegisteredUserFormik.isSubmitting}
-              colorScheme="blue"
-            >
-              Verify
-            </Button>
-          </Stack>
+          <VerficationEmailForm
+            verifyRegisteredUserFormik={verifyRegisteredUserFormik}
+          />
         </form>
       ) : (
         <form onSubmit={formik.handleSubmit}>
@@ -120,9 +74,18 @@ export default function RegisterPage() {
             </Button>
           </Grid>
 
-          <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
-            Login Now ?
-          </ChakraLink>
+          <Grid gap={2}>
+            <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
+              Login Now ?
+            </ChakraLink>
+            <ChakraLink
+              color="blue.500"
+              as={ReactRouterLink}
+              to={"/verify-email"}
+            >
+              Resend Verfication
+            </ChakraLink>
+          </Grid>
         </form>
       )}
     </AuthLayout>
