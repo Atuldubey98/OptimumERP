@@ -74,7 +74,7 @@ export default function RegisterPage() {
             </Button>
           </Grid>
 
-          <Grid gap={2}>
+          <Grid gap={4}>
             <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
               Login Now ?
             </ChakraLink>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
               as={ReactRouterLink}
               to={"/verify-email"}
             >
-              Resend Verfication
+              Resend OTP to verify?
             </ChakraLink>
           </Grid>
         </form>

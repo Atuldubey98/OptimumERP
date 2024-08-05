@@ -3,10 +3,12 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Grid,
   HStack,
   Input,
   PinInput,
   PinInputField,
+  Link as ChakraLink,
   Stack,
   useToast,
 } from "@chakra-ui/react";
@@ -14,7 +16,7 @@ import React, { useState } from "react";
 import AuthLayout from "../common/auth-layout";
 import instance from "../../instance";
 import { isAxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as ReactRouterLink } from "react-router-dom";
 import OTPAlert from "./OTPAlert";
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -103,7 +105,7 @@ export default function ForgotPasswordPage() {
   return (
     <AuthLayout formHeading={"Forgot password"}>
       <form onSubmit={sent ? onSendOtp : onSendEmailForgotPassword}>
-        <Stack spacing={3}>
+        <Stack spacing={4}>
           <FormControl isRequired>
             <FormLabel>Email</FormLabel>
             <Input
@@ -151,15 +153,20 @@ export default function ForgotPasswordPage() {
               </FormControl>
             </>
           ) : null}
-          <Flex justifyContent={"center"}>
-            <Button
-              isLoading={status === "loading"}
-              type="submit"
-              colorScheme="blue"
-            >
-              {sent ? "Reset" : "Send OTP"}
-            </Button>
-          </Flex>
+
+          <Button
+            isLoading={status === "loading"}
+            type="submit"
+            colorScheme="blue"
+          >
+            {sent ? "Reset" : "Send OTP"}
+          </Button>
+
+          <Grid>
+            <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
+              Login Now ?
+            </ChakraLink>
+          </Grid>
         </Stack>
       </form>
     </AuthLayout>

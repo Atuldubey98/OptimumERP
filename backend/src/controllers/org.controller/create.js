@@ -16,7 +16,7 @@ const create = async (req, res) => {
   organization.relatedDocsCount.expenseCategories = expenseCategories.length;
   const userId = req.session?.user?._id;
   await createOrgUserForOrganization(userId, organization);
-  organization.relatedDocsCount.organizationUsers = 1;
+  organization.relatedDocsCount.organizationUsers++;
   const defaultOrgEntitiesPromises = [
     createDefaultUnits(userId, organization),
     createDefaultTaxes(userId, organization),
@@ -25,16 +25,14 @@ const create = async (req, res) => {
   const [ums, taxes] = await Promise.all(defaultOrgEntitiesPromises);
   const noneTypeTax = taxes[0].id;
   const noneTypeUm = ums[0].id;
-  const setting = new Setting({
-    org: organization.id,
-    financialYear: body.financialYear,
+  await createSettingForOrg({
+    organization,
+    body,
     receiptDefaults: {
-      tax: noneTypeTax,
-      um: noneTypeUm,
+      noneTypeTax,
+      noneTypeUm,
     },
   });
-
-  await setting.save();
   logger.info(`Organization created with id ${organization.id}`);
   organization.relatedDocsCount.ums = ums.length;
   organization.relatedDocsCount.taxes = taxes.length;
@@ -46,14 +44,24 @@ const create = async (req, res) => {
 
 module.exports = create;
 
-async function createOrgUserForOrganization(userId, organization) {
+function createSettingForOrg({ organization, body, receiptDefaults }) {
+  const setting = new Setting({
+    org: organization.id,
+    financialYear: body.financialYear,
+    receiptDefaults,
+  });
+
+  return setting.save();
+}
+
+function createOrgUserForOrganization(userId, organization) {
   const orgUser = new OrgUser({
     org: organization.id,
     user: userId,
     role: "admin",
   });
 
-  await orgUser.save();
+  return orgUser.save();
 }
 
 async function createDefaultTaxes(userId, organization) {
@@ -72,7 +80,10 @@ function getGroupedTaxesFromSingleTaxes({ singleTaxes, organization, userId }) {
     singleTax.category === "sgst" || singleTax.category === "cgst";
   const groupableTaxesSGSTCGST = singleTaxes.filter(filterSGSTCGST);
   const groupedTaxes = [];
-  for (let i = 0; i < groupableTaxesSGSTCGST.length; i += 2) {
+  const ALTERNATE_INDEX = 2;
+  const STARTING_INDEX = 0;
+  const totalTaxes = groupableTaxesSGSTCGST.length;
+  for (let i = STARTING_INDEX; i < totalTaxes; i += ALTERNATE_INDEX) {
     const sgst = groupableTaxesSGSTCGST[i];
     const cgst = groupableTaxesSGSTCGST[i + 1];
     groupedTaxes.push({
@@ -90,33 +101,32 @@ function getGroupedTaxesFromSingleTaxes({ singleTaxes, organization, userId }) {
 }
 
 async function createDefaultSingleTypeTaxes(userId, organization) {
-  return Tax.insertMany(
-    taxes.map((tax) => ({
-      ...tax,
-      createdBy: userId,
-      org: organization.id,
-    }))
-  );
+  const makeTaxForOrg = (tax) => ({
+    ...tax,
+    createdBy: userId,
+    org: organization.id,
+  });
+  return Tax.insertMany(taxes.map(makeTaxForOrg));
 }
 
 async function createDefaultUnits(userId, organization) {
-  const ums = await Um.insertMany(
-    defaultUms.map((um) => ({
-      ...um,
-      createdBy: userId,
-      org: organization.id,
-    }))
-  );
+  const makeUmForOrg = (um) => ({
+    ...um,
+    createdBy: userId,
+    org: organization.id,
+  });
+  const ums = await Um.insertMany(defaultUms.map(makeUmForOrg));
   return ums;
 }
 
 async function createDefaultExpenseCategories(userId, newOrg) {
-  await ExpenseCategory.insertMany(
-    expenseCategories.map((category) => ({
-      ...category,
-      org: newOrg.id,
-      createdBy: userId,
-      enabled: true,
-    }))
+  const makeExpenseCategoryForOrg = (category) => ({
+    ...category,
+    org: newOrg.id,
+    createdBy: userId,
+    enabled: true,
+  });
+  return ExpenseCategory.insertMany(
+    expenseCategories.map(makeExpenseCategoryForOrg)
   );
 }
