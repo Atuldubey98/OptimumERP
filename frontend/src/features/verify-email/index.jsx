@@ -8,6 +8,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  Link as ChakraLink,
   FormLabel,
   Input,
   Stack,
@@ -17,6 +18,7 @@ import useAsyncCall from "../../hooks/useAsyncCall";
 import instance from "../../instance";
 import useVerificationEmail from "../../hooks/useVerificationEmail";
 import VerficationEmailForm from "../register/VerificationEmailForm";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 export default function VerifyEmailPage() {
   const { requestAsyncHandler } = useAsyncCall();
@@ -92,6 +94,9 @@ export default function VerifyEmailPage() {
             >
               Send
             </Button>
+            <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
+              Login Now ?
+            </ChakraLink>
           </Stack>
         </form>
       )}

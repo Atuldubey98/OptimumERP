@@ -29,8 +29,8 @@ const create = async (req, res) => {
     organization,
     body,
     receiptDefaults: {
-      noneTypeTax,
-      noneTypeUm,
+      tax: noneTypeTax,
+      um: noneTypeUm,
     },
   });
   logger.info(`Organization created with id ${organization.id}`);
