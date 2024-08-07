@@ -7,5 +7,5 @@ module.exports = {
   NODE_MAILER_HOST: process.env.NODE_MAILER_HOST,
   PORT: process.env.PORT || 3000,
   PUPPETEER_EXC_PATH:
-    process.env.PUPPETEER_EXC_PATH || "/usr/bin/chromium-browser",
+    process.env.PUPPETEER_EXC_PATH || "/usr/bin/chromium-browser"
 };
