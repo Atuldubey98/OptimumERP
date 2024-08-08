@@ -13,7 +13,7 @@ export default function Banner() {
       <ChakraLink href="https://www.optimumerp.biz/">
         <Image
           src={`/favicon-${colorMode === "light" ? "white" : "black"}.svg`}
-          width={200}
+          width={150}
           objectFit={"contain"}
         />
       </ChakraLink>

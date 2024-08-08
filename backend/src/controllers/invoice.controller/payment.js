@@ -14,7 +14,7 @@ const payment = async (req, res) => {
   const body = await paymentDto.validateAsync(req.body);
   const invoice = await Invoice.findOneAndUpdate(
     { _id: req.params.id, org: req.params.orgId },
-    { payment: body, updatedBy: req.session.user._id }
+    { payment: body, updatedBy: req.session.user._id, status : "sent" }
   );
   if (!invoice) throw new InvoiceNotFound();
   return res.status(201).json({ message: "Payment added" });
