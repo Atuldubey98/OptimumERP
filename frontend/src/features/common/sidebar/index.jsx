@@ -16,7 +16,7 @@ export default function Sidebar() {
       boxShadow={"md"}
       width={"100%"}
       left={0}
-      maxWidth={350}
+      maxWidth={300}
     >
       <Box marginBlock={4}>
         <Banner />
