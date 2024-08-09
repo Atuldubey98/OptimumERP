@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
   res.render("landing", {
     title: "Optimum ERP",
     user,
+    dashboardUrl: process.env.VITE_APP_URL,
   });
 });
 app.get("/privacy", (req, res) => {

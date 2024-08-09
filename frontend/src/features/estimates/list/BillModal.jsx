@@ -4,7 +4,6 @@ import {
   ButtonGroup,
   Flex,
   Hide,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,15 +11,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Skeleton,
-  Text,
-  useColorModeValue,
+  Skeleton
 } from "@chakra-ui/react";
-import { CiSaveDown2 } from "react-icons/ci";
-import instance, { baseURL } from "../../../instance";
 import { useState } from "react";
+import { CiSaveDown2 } from "react-icons/ci";
 import { IoPrintOutline } from "react-icons/io5";
 import useAsyncCall from "../../../hooks/useAsyncCall";
+import instance, { baseURL } from "../../../instance";
 import Template from "./Template";
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const { requestAsyncHandler } = useAsyncCall();
@@ -68,9 +65,9 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const onSelectTemplate = (currentTemplate) => {
     setTemplateName(currentTemplate.value);
     localStorage.setItem("template", currentTemplate.value);
+    setBillLoadStatus("loading");
   };
   const isDownloading = status === "downloading";
-
   const isPrinting = status === "printing";
   return (
     <Modal

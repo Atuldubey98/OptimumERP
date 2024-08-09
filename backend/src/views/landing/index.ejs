@@ -47,7 +47,7 @@
           href="/"
           class="relative flex items-center inline-block h-5 h-full font-black leading-none"
         >
-          <img src="/icons/logo.svg" alt="Logo" width="100" />
+          <img src="/icons/logo.svg" alt="Logo" width="60" />
         </a>
 
         <nav
@@ -94,7 +94,7 @@
             class="flex flex-col block w-full font-medium border-t border-gray-200 md:hidden"
           >
             <a
-              href="https://app.optimumerp.biz/organizations"
+              href="<%= dashboardUrl %>"
               class="relative inline-block w-full px-5 py-3 text-sm leading-none text-center text-white bg-indigo-700 fold-bold"
               >Dashboard</a
             >
@@ -118,7 +118,7 @@
           >
           <% } %> <% if (user) { %>
           <a
-            href="https://app.optimumerp.biz/organizations"
+            href="<%= dashboardUrl %>"
             class="relative z-40 inline-block w-auto h-full px-5 py-3 text-sm font-bold leading-none text-white transition-all transition duration-100 duration-300 bg-indigo-700 rounded shadow-md fold-bold lg:bg-white lg:text-indigo-700 sm:w-full lg:shadow-none hover:shadow-xl"
             >Dashboard</a
           >

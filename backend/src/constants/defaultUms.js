@@ -5,6 +5,16 @@ const defaultUms = [
     unit: "none",
   },
   {
+    name: "NOS",
+    description: "Number",
+    unit: "NOS",
+  },
+  {
+    name: "AU",
+    description: "Atomic Unit",
+    unit: "AU",
+  },
+  {
     name: "Piece",
     description: "Individual item count",
     unit: "pc",
