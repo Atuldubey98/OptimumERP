@@ -7,7 +7,7 @@ const settingsLinks = [
   { icon: GrUserAdmin, link: "/admin", label: "Admin", role: "admin" },
   {
     icon: LuSettings2,
-    link: "/transaction-settings",
+    link: "/application",
     label: "Application",
     role: "admin",
   },

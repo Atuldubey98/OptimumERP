@@ -26,7 +26,6 @@ const statusList = [
   },
 ];
 
-
 const defaultQuoteItem = {
   name: "",
   quantity: 1,
@@ -43,7 +42,7 @@ const defaultInvoiceItem = {
   tax: "",
   price: 0,
 };
-function calculateGrandTotalWithTax(quoteItems, taxes) {
+function calculateGrandTotalWithTax({ quoteItems, taxes, discount }) {
   let grandTotal = 0;
   let totalTax = 0;
   let total = 0;
@@ -61,7 +60,10 @@ function calculateGrandTotalWithTax(quoteItems, taxes) {
     totalTax += tax;
     grandTotal += subtotal;
   });
-  return { grandTotal, totalTax, total };
+  const discountAmount =
+    discount.type === "%" ? (total * discount.value) / 100 : discount.value;
+  const currentTotal = total - discountAmount;
+  return { grandTotal, totalTax, total: currentTotal };
 }
 export {
   statusList,

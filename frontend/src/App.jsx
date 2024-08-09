@@ -2,9 +2,9 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 import GoogleAuthAdminPage from "./features/login/GoogleAuthPage";
-import TaxesPage from "./features/taxes";
-import UmsPage from "./features/ums";
-import VerifyEmailPage from "./features/verify-email";
+const TaxesPage = lazy(()=> import("./features/taxes"));
+const UmsPage = lazy(()=> import("./features/ums"));
+const VerifyEmailPage = lazy(()=> import("./features/verify-email"));
 const StatsPage = lazy(() => import("./features/stats"));
 const PurchaseOrderPage = lazy(() => import("./features/purchaseOrders/list"));
 const PurchaseOrderEditPage = lazy(() =>
@@ -65,7 +65,7 @@ export default function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="admin" element={<AdminPage />} />
           <Route
-            path="transaction-settings"
+            path="application"
             element={<TransactionSettingsPage />}
           />
           <Route element={<DashboardPage />} path="dashboard" />
