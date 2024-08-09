@@ -6,11 +6,13 @@ const {
 } = require("../middlewares/crud.middleware");
 const {
   limitFreePlanOnCreateEntityForOrganization,
+  checkPlan,
 } = require("../middlewares/auth.middleware");
 const {
   convertQuoteToInvoice,
   create,
   download,
+  send,
   htmlView,
   paginate,
   read,
@@ -46,5 +48,11 @@ quoteRouter.get("/", paginateModel, requestAsyncHandler(paginate));
 quoteRouter.patch("/:id", updateModel, requestAsyncHandler(update));
 quoteRouter.get("/:id/view", requestAsyncHandler(htmlView));
 quoteRouter.get("/:id/download", requestAsyncHandler(download));
+quoteRouter.post(
+  "/:id/send",
+  checkPlan(["gold", "platinum"]),
+  requestAsyncHandler(send)
+);
+
 
 module.exports = quoteRouter;

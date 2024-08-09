@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const {
   limitFreePlanOnCreateEntityForOrganization,
+  checkPlan,
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 
@@ -12,6 +13,7 @@ const {
   read,
   remove,
   exportData,
+  send,
   payment,
   update,
 } = require("../controllers/purchase.controller");
@@ -36,4 +38,10 @@ purchaseRouter.patch("/:id", updateModel, requestAsyncHandler(update));
 purchaseRouter.get("/:id/view", requestAsyncHandler(htmlView));
 purchaseRouter.get("/:id/download", requestAsyncHandler(download));
 purchaseRouter.post("/:id/payment", requestAsyncHandler(payment));
+purchaseRouter.post(
+  "/:id/send",
+  checkPlan(["gold", "platinum"]),
+  requestAsyncHandler(send)
+);
+
 module.exports = purchaseRouter;

@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const {
   limitFreePlanOnCreateEntityForOrganization,
+  checkPlan,
 } = require("../middlewares/auth.middleware");
 const {
   createModel,
@@ -12,6 +13,7 @@ const {
   htmlView,
   nextSequence,
   paginate,
+  send,
   read,
   exportData,
   remove,
@@ -39,4 +41,10 @@ purchaseOrderRouter.patch("/:id", requestAsyncHandler(update));
 purchaseOrderRouter.get("/", paginateModel, requestAsyncHandler(paginate));
 purchaseOrderRouter.get("/:id/view", requestAsyncHandler(htmlView));
 purchaseOrderRouter.get("/:id/download", requestAsyncHandler(download));
+purchaseOrderRouter.post(
+  "/:id/send",
+  checkPlan(["gold", "platinum"]),
+  requestAsyncHandler(send)
+);
+
 module.exports = purchaseOrderRouter;

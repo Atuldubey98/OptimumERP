@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const {
   limitFreePlanOnCreateEntityForOrganization,
+  checkPlan,
 } = require("../middlewares/auth.middleware");
 const {
   create,
@@ -10,6 +11,7 @@ const {
   paginate,
   read,
   remove,
+  send,
   exportData,
   update,
   convertProformaToInvoice,
@@ -45,4 +47,10 @@ proformaInvoiceRouter.delete("/:id", requestAsyncHandler(remove));
 proformaInvoiceRouter.get("/:id/view", requestAsyncHandler(htmlView));
 
 proformaInvoiceRouter.get("/:id/download", requestAsyncHandler(download));
+proformaInvoiceRouter.post(
+  "/:id/send",
+  checkPlan(["gold", "platinum"]),
+  requestAsyncHandler(send)
+);
+
 module.exports = proformaInvoiceRouter;
