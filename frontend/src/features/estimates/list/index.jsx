@@ -158,6 +158,9 @@ export default function EstimatesPage() {
                 convertToInvoice={() => {
                   convertToInvoice(estimate);
                 }}
+                openItem={() => {
+                  navigate(`/${orgId}/receipt/quotes/${estimate._id}`);
+                }}
                 onDownloadItem={() => {
                   onSaveBill(estimate);
                 }}

@@ -1,15 +1,8 @@
-import {
-  Button,
-  ButtonGroup,
-  Flex,
-  Icon,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { ButtonGroup, Flex, Tooltip } from "@chakra-ui/react";
 import React from "react";
-import { IoAdd, IoArrowBack } from "react-icons/io5";
+import { IoAdd } from "react-icons/io5";
 import { TbTableExport } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import BackButtonHeader from "./BackButtonHeader";
 import ButtonIcon from "./ButtonIcon";
 
 export default function HeadingButtons({
@@ -18,20 +11,9 @@ export default function HeadingButtons({
   showExport,
   isAddDisabled,
 }) {
-  const navigate = useNavigate();
-
   return (
     <Flex justifyContent={"space-between"} alignItems={"center"}>
-      <Flex justifyContent={"space-between"} gap={4} alignItems={"center"}>
-        <Icon
-          cursor={"pointer"}
-          as={IoArrowBack}
-          onClick={() => navigate(-1)}
-        />
-        <Text noOfLines={1} fontSize={"xl"} fontWeight={"bold"}>
-          {heading}
-        </Text>
-      </Flex>
+      <BackButtonHeader heading={heading} />
       <ButtonGroup gap="4">
         {showExport ? (
           <Tooltip label={"Export"}>

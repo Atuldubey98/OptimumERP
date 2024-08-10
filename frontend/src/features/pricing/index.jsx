@@ -58,6 +58,10 @@ export default function PricingPage() {
       valid: ["free", "gold", "platinum"],
     },
     {
+      value: "Mail receipts from dashboard",
+      valid: ["gold", "platinum"],
+    },
+    {
       value: "QR Code enabled on invoices",
       valid: ["gold", "platinum"],
     },

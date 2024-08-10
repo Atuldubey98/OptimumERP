@@ -186,6 +186,9 @@ export default function ProformaInvoicesPage() {
                   setProformaInvoiceSelected(item);
                   openAlertModal();
                 }}
+                openItem={() => {
+                  navigate(`/${orgId}/receipt/proformaInvoices/${item._id}`);
+                }}
                 editItem={() => navigate(`${item._id}/edit`)}
               />
             ))}

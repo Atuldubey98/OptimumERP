@@ -13,7 +13,7 @@ export default function useDateFilterFetch({ entity }) {
     reachedLimit: true,
   });
   const { requestAsyncHandler } = useAsyncCall();
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("loading");
   const controller = new AbortController();
   const { orgId } = useParams();
   const query = useQuery();

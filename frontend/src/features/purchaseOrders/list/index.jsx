@@ -117,7 +117,7 @@ export default function PurchaseOrderPage() {
     }
   };
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
-  useDisclosure();
+    useDisclosure();
   return (
     <MainLayout>
       <Box p={4}>
@@ -153,6 +153,9 @@ export default function PurchaseOrderPage() {
                   showItem={() => {
                     setSelectedPo(item);
                     openBillModal();
+                  }}
+                  openItem={() => {
+                    navigate(`/${orgId}/receipt/purchaseOrders/${item._id}`);
                   }}
                   onDownloadItem={() => {
                     onSaveBill(item);

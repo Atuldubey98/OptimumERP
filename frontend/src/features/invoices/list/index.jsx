@@ -164,6 +164,9 @@ export default function InvoicesPage() {
                   setInvoice(invoice);
                   toggleShareModal();
                 }}
+                openItem={() => {
+                  navigate(`/${orgId}/receipt/invoices/${invoice._id}`);
+                }}
                 showItem={() => onOpenInvoice(invoice)}
                 downloading={downloading}
                 onDownloadItem={() => {

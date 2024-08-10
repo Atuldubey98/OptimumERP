@@ -19,6 +19,7 @@ import { RxDotsVertical } from "react-icons/rx";
 import { TiContacts } from "react-icons/ti";
 import { GrOverview } from "react-icons/gr";
 import { BsShare } from "react-icons/bs";
+import { MdOutlineFileOpen } from "react-icons/md";
 export default function VertIconMenu({
   showItem,
   editItem,
@@ -34,6 +35,7 @@ export default function VertIconMenu({
   convertToInvoice,
   payoutPurchase,
   onOverviewItem,
+  openItem,
 }) {
   return (
     <Menu>
@@ -59,7 +61,7 @@ export default function VertIconMenu({
           <MenuItem
             icon={<GrOverview />}
             onClick={onOverviewItem}
-            command="⌘O"
+            command="⌘G"
           />
         ) : null}
         {showItem ? (
@@ -69,6 +71,15 @@ export default function VertIconMenu({
             command="⌘S"
           >
             Show
+          </MenuItem>
+        ) : null}
+        {openItem ? (
+          <MenuItem
+            icon={<MdOutlineFileOpen size={20} />}
+            onClick={openItem}
+            command="⌘O"
+          >
+            Open
           </MenuItem>
         ) : null}
         {payoutPurchase ? (
@@ -94,7 +105,7 @@ export default function VertIconMenu({
           <MenuItem
             icon={<GoTag size={20} />}
             onClick={showProducts}
-            command="⌘S"
+            command="⌘L"
           >
             Products
           </MenuItem>

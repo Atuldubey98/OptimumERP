@@ -2,9 +2,10 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 import GoogleAuthAdminPage from "./features/login/GoogleAuthPage";
-const TaxesPage = lazy(()=> import("./features/taxes"));
-const UmsPage = lazy(()=> import("./features/ums"));
-const VerifyEmailPage = lazy(()=> import("./features/verify-email"));
+const ReceiptPreview = lazy(() => import("./features/common/receipt-preview"));
+const TaxesPage = lazy(() => import("./features/taxes"));
+const UmsPage = lazy(() => import("./features/ums"));
+const VerifyEmailPage = lazy(() => import("./features/verify-email"));
 const StatsPage = lazy(() => import("./features/stats"));
 const PurchaseOrderPage = lazy(() => import("./features/purchaseOrders/list"));
 const PurchaseOrderEditPage = lazy(() =>
@@ -64,10 +65,7 @@ export default function App() {
           <Route element={<StatsPage />} path="stats" />
           <Route path="about" element={<AboutPage />} />
           <Route path="admin" element={<AdminPage />} />
-          <Route
-            path="application"
-            element={<TransactionSettingsPage />}
-          />
+          <Route path="application" element={<TransactionSettingsPage />} />
           <Route element={<DashboardPage />} path="dashboard" />
           <Route element={<ProductsPage />} path="products" />
           <Route element={<TaxesPage />} path="taxes" />
@@ -129,6 +127,7 @@ export default function App() {
             <Route path="" element={<ReportsPage />} />
             <Route path=":reportType" element={<ReportsPage />} />
           </Route>
+          <Route element={<ReceiptPreview />} path="receipt/:type/:id" />
         </Route>
         <Route path="/organizations" element={<OrgPage />} />
         <Route path="/register" element={<RegisterPage />} />
