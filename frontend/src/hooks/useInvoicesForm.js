@@ -11,7 +11,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem, receiptDefaults } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
-  
+
   const invoiceSchema = Yup.object().shape({
     sequence: Yup.number()
       .required("Invoice number is required")
@@ -144,7 +144,11 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         date: new Date(date).toISOString().split("T")[0],
         status,
         partyDetails: party,
-        items,
+        items: items.map((item) => ({
+          ...item,
+          tax: item.tax._id,
+          um: item.um._id,
+        })),
         description,
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,

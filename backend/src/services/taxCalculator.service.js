@@ -21,6 +21,7 @@ exports.calculateTaxes = async (items = []) => {
       itemSubtotal,
     });
   }
+  
   return {
     total: parseFloat(total.toFixed(2)),
     totalTax: parseFloat(totalTax.toFixed(2)),
