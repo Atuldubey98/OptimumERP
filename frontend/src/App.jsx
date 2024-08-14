@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 import GoogleAuthAdminPage from "./features/login/GoogleAuthPage";
+import ReceiptEditPage from "./features/common/receipt-create";
 const ReceiptPreview = lazy(() => import("./features/common/receipt-preview"));
 const TaxesPage = lazy(() => import("./features/taxes"));
 const UmsPage = lazy(() => import("./features/ums"));
@@ -128,6 +129,7 @@ export default function App() {
             <Route path=":reportType" element={<ReportsPage />} />
           </Route>
           <Route element={<ReceiptPreview />} path="receipt/:type/:id" />
+          <Route element={<ReceiptEditPage />} path="receipt/:type/create" />
         </Route>
         <Route path="/organizations" element={<OrgPage />} />
         <Route path="/register" element={<RegisterPage />} />

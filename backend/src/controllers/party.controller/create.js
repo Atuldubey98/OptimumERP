@@ -18,7 +18,7 @@ const create = async (req, res) => {
     { $inc: { "relatedDocsCount.parties": 1 } }
   );
   logger.info(`created party ${party.id}`);
-  return res.status(201).json({ message: "Party created !" });
+  return res.status(201).json({ message: "Party created !", data: party });
 };
 
 module.exports = create;

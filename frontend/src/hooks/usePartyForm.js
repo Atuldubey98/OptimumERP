@@ -46,16 +46,23 @@ export default function usePartyForm(onAddedFetch, onCloseDrawer) {
         org: orgId,
         panNo,
       };
+      let partyId = _id;
       if (_id)
         await instance.patch(
           `/api/v1/organizations/${orgId}/parties/${_id}`,
           party
         );
-      else await instance.post(`/api/v1/organizations/${orgId}/parties`, party);
+      else {
+        const response = await instance.post(
+          `/api/v1/organizations/${orgId}/parties`,
+          party
+        );
+        partyId = response.data.data._id;
+      }
       setSubmitting(false);
       onCloseDrawer();
+      if (onAddedFetch) onAddedFetch({ ...values, _id: partyId });
       formik.resetForm();
-      if (onAddedFetch) onAddedFetch();
     }),
   });
   return { formik };

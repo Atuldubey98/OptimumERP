@@ -13,7 +13,9 @@ import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
 import PartyFormDrawer from "./PartyFormDrawer";
 import PartyMenu from "./PartyMenu";
-import useLimitsInFreePlan from "../../hooks/useLimitsInFreePlan";
+import DisplayPartyDrawer from "./PartyDisplayDrawer";
+
+
 export default function PartysPage() {
   const {
     isOpen: isDeleteModalOpen,
@@ -152,27 +154,12 @@ export default function PartysPage() {
           onClose={onClosePartyFormDrawer}
         />
         {selectedToShowParty ? (
-          <ShowDrawer
-            onClickNewItem={onOpenDrawerForAddingNewParty}
-            heading={"Party"}
-            formBtnLabel={"Create New"}
-            isOpen={isPartyDrawerOpen}
-            disable={reachedLimit}
-            item={{
-              ...selectedToShowParty,
-              updatedByName: selectedToShowParty?.updatedBy?.name,
-              createdByName: selectedToShowParty?.createdBy?.name,
-            }}
-            onClose={onCloseParty}
-            selectedKeys={{
-              name: "Name",
-              shippingAddress: "Shipping address",
-              billingAddress: "Billing address",
-              gstNo: "GST No",
-              panNo: "PAN No",
-              updatedByName: "Updated By",
-              createdByName: "Created By",
-            }}
+          <DisplayPartyDrawer
+            isPartyDrawerOpen={isPartyDrawerOpen}
+            reachedLimit={reachedLimit}
+            selectedToShowParty={selectedToShowParty}
+            onCloseParty={onCloseParty}
+            onOpenDrawerForAddingNewParty={onOpenDrawerForAddingNewParty}
           />
         ) : null}
         {loading ? null : (

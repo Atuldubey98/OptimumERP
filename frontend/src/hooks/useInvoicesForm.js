@@ -57,7 +57,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     date: new Date(Date.now()).toISOString().split("T")[0],
     status: "sent",
     items: [defaultReceiptItem],
-    terms: receiptDefaults.terms?.invoice,
+    terms: receiptDefaults?.terms?.invoice,
     prefix: "",
     description: "",
     poNo: "",

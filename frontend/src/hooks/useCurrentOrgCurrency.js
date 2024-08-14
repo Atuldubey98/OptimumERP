@@ -20,8 +20,8 @@ export default function useCurrentOrgCurrency() {
   const receiptDefaults = setting?.receiptDefaults;
   const getDefaultReceiptItem = () => {
     return {
-      tax: receiptDefaults?.tax,
-      um: receiptDefaults?.um,
+      tax: receiptDefaults?.tax._id,
+      um: receiptDefaults?.um._id,
       name: "",
       code: "",
       quantity: 1,

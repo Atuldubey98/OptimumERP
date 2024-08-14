@@ -45,18 +45,19 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
         updatedAt,
         ...product
       } = values;
+      const response = await instance[productId ? "patch" : "post"](
+        productId
+          ? `/api/v1/organizations/${orgId}/products/${productId}`
+          : `/api/v1/organizations/${orgId}/products`,
+        productId
+          ? {
+              ...product,
+              category: values.category ? values.category : null,
+            }
+          : product
+      );
 
-      if (productId)
-        await instance.patch(
-          `/api/v1/organizations/${orgId}/products/${productId}`,
-          {
-            ...product,
-            category: values.category ? values.category : null,
-          }
-        );
-      else
-        await instance.post(`/api/v1/organizations/${orgId}/products`, product);
-      if (onAddedFetch) onAddedFetch();
+      if (onAddedFetch) onAddedFetch(response.data.data);
       onCloseDrawer();
       formik.resetForm();
       setSubmitting(false);

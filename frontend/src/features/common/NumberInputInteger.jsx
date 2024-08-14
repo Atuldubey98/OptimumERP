@@ -11,6 +11,7 @@ export default function NumberInputInteger({
   name,
   onlyInt = false,
   min = 0,
+  placeholder = "",
 }) {
   return (
     <NumberInput
@@ -26,7 +27,7 @@ export default function NumberInputInteger({
         }
       }}
     >
-      <NumberInputField />
+      <NumberInputField placeholder={placeholder} />
       <NumberInputStepper>
         <NumberIncrementStepper />
         <NumberDecrementStepper />
