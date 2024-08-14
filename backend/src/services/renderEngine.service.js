@@ -28,7 +28,9 @@ exports.promiseQrCode = (value) => {
 };
 
 exports.getPdfBufferUsingHtml = async (html) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch(
+    process.env.NODE_ENV === "development"? {} : {executablePath : "/snap/bin/chromium"}
+  );
   const urlPage = await browser.newPage();
   await urlPage.setContent(html);
   const MARGIN = "0.5cm";
