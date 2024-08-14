@@ -35,4 +35,4 @@ jobs:
       - name: Restart app
         run: |
           npm install pm2 -g
-          pm2 restart backend
+          pm2 start /home/ubuntu/actions-runner/_work/OptimumERP/OptimumERP/ecosystem.config.js

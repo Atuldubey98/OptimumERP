@@ -129,7 +129,6 @@ export default function App() {
             <Route path=":reportType" element={<ReportsPage />} />
           </Route>
           <Route element={<ReceiptPreview />} path="receipt/:type/:id" />
-          <Route element={<ReceiptEditPage />} path="receipt/:type/create" />
         </Route>
         <Route path="/organizations" element={<OrgPage />} />
         <Route path="/register" element={<RegisterPage />} />
