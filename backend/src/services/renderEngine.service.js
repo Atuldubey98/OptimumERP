@@ -29,7 +29,9 @@ exports.promiseQrCode = (value) => {
 
 exports.getPdfBufferUsingHtml = async (html) => {
   const browser = await puppeteer.launch(
-    process.env.NODE_ENV === "development"? {} : {executablePath : "/snap/bin/chromium"}
+    process.env.NODE_ENV === "development"
+      ? {}
+      : { executablePath: "/snap/bin/chromium" }
   );
   const urlPage = await browser.newPage();
   await urlPage.setContent(html);
@@ -37,6 +39,7 @@ exports.getPdfBufferUsingHtml = async (html) => {
   const buffer = await urlPage.pdf({
     format: "A4",
     printBackground: true,
+    scale: 0.75,
     margin: {
       bottom: MARGIN,
       top: MARGIN,

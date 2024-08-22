@@ -84,10 +84,6 @@ export default function TransactionSettingsPage() {
         },
         currency: values.currency,
         localeCode: values.localeCode,
-        financialYear: {
-          start: values.startDate,
-          end: values.endDate,
-        },
         prefixes: values.prefixes,
       });
 

@@ -11,7 +11,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem, receiptDefaults } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
-
+  
   const invoiceSchema = Yup.object().shape({
     sequence: Yup.number()
       .required("Invoice number is required")

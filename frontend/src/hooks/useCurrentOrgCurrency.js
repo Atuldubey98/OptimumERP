@@ -18,6 +18,7 @@ export default function useCurrentOrgCurrency() {
   const symbol = currencies[currency].symbol;
   const financialYear = setting?.financialYear;
   const receiptDefaults = setting?.receiptDefaults;
+  
   const getDefaultReceiptItem = () => {
     return {
       tax: receiptDefaults?.tax._id,
