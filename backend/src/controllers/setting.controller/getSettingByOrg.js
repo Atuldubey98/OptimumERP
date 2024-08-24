@@ -15,7 +15,7 @@ const getSettingByOrg = async (req, res) => {
     org: orgId,
     user: req.session.user._id,
   }).select("role");
-  const role = orgUser.role;
+  const role = orgUser.role;  
   return res.status(200).json({ data: setting, role });
 };
 
