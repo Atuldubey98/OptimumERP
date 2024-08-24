@@ -13,6 +13,7 @@ export default function DefaultSwitchSetting({
   const { orgId } = useParams();
   const receiptDefaultValue = receiptDefaults[receiptDefaultKey];
   const toast = useToast();
+  
   return (
     <FormControl
       justifyContent={"flex-start"}
@@ -22,14 +23,14 @@ export default function DefaultSwitchSetting({
     >
       <FormLabel fontWeight={"bold"}>Is Default ?</FormLabel>
       <Switch
-        isChecked={receiptDefaultValue === selectedItem._id}
-        isDisabled={receiptDefaultValue === selectedItem._id}
+        isChecked={receiptDefaultValue._id === selectedItem._id}
+        isDisabled={receiptDefaultValue._id === selectedItem._id}
         onChange={async () => {
           onSetNewSetting({
             ...setting,
             receiptDefaults: {
               ...setting.receiptDefaults,
-              [receiptDefaultKey]: selectedItem._id,
+              [receiptDefaultKey]: selectedItem,
             },
           });
           const settingsUrl = `/api/v1/organizations/${orgId}/settings`;
@@ -37,6 +38,7 @@ export default function DefaultSwitchSetting({
           await instance.patch(settingsUrl, {
             [receiptDefaultUpdateKey]: selectedItem._id,
           });
+          
           toast({
             title: "Success",
             description: successMessage,
