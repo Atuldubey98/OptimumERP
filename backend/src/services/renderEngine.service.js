@@ -1,6 +1,6 @@
 const ejs = require("ejs");
 const QRCode = require("qrcode");
-const puppeteer = require("puppeteer");
+const fetch = require("node-fetch");
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(location, data, (err, html) => {
@@ -28,25 +28,19 @@ exports.promiseQrCode = (value) => {
 };
 
 exports.getPdfBufferUsingHtml = async (html) => {
-  const browser = await puppeteer.launch(
-    process.env.NODE_ENV === "development"
-      ? {}
-      : { executablePath: "/snap/bin/chromium" }
-  );
-  const urlPage = await browser.newPage();
-  await urlPage.setContent(html);
-  const MARGIN = "0.5cm";
-  const buffer = await urlPage.pdf({
-    format: "A4",
-    printBackground: true,
-    scale: 0.75,
-    margin: {
-      bottom: MARGIN,
-      top: MARGIN,
-      right: MARGIN,
-      left: MARGIN,
+  const apiKey = process.env.PDF_SHIFT_API_KEY;
+  const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic " + Buffer.from(apiKey).toString("base64"),
+      "Content-type": "application/json",
     },
+    body: JSON.stringify({
+      source: html,
+    }),
   });
-  await browser.close();
+  if (!response.ok) throw new Error("Pdf generation failed");
+  const buffer = await response.buffer();
   return buffer;
 };
