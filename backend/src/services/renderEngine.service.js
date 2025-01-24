@@ -29,6 +29,7 @@ exports.promiseQrCode = (value) => {
 
 exports.getPdfBufferUsingHtml = async (html) => {
   const apiKey = process.env.PDF_SHIFT_API_KEY;
+  
   const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
     method: "POST",
     headers: {
