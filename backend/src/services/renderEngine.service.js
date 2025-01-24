@@ -26,6 +26,7 @@ exports.promiseQrCode = (value) => {
     });
   });
 };
+
 exports.getPdfBufferUsingHtml = async (html) => {
   const apiKey = process.env.PDF_SHIFT_API_KEY;
 
