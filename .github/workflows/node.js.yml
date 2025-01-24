@@ -36,4 +36,4 @@ jobs:
       - name: Restart app
         run: |
           npm install pm2 -g
-          pm2 restart
+          pm2 restart backend
