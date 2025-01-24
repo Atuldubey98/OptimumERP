@@ -6,7 +6,7 @@ import instance from "../instance";
 const productDto = Yup.object({
   name: Yup.string()
     .min(2, "Cannot be less than 2")
-    .max(80, "Cannot be greater than 80")
+    .max(350, "Cannot be greater than 350")
     .required("Please give party name")
     .label("Name"),
   costPrice: Yup.number().min(0).required().label("Cost Price"),
