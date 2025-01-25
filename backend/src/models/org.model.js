@@ -28,6 +28,9 @@ const orgSchema = new Schema(
       ref: "user",
       required: true,
     },
+    logo: {
+      type: String,
+    },
     panNo: {
       type: String,
     },

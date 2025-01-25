@@ -6,6 +6,7 @@ module.exports = {
   NODE_MAILER_APP_PASSWORD: process.env.NODE_MAILER_APP_PASSWORD,
   NODE_MAILER_HOST: process.env.NODE_MAILER_HOST,
   PORT: process.env.PORT || 3000,
-  PUPPETEER_EXC_PATH:
-    process.env.PUPPETEER_EXC_PATH || "/usr/bin/chromium-browser",
+  CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 };
