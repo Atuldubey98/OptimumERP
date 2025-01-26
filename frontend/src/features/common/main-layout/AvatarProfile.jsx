@@ -13,7 +13,7 @@ export default function AvatarProfile() {
           user?.name
         } (${role.toLocaleUpperCase()})`}</Text>
       </Hide>
-      <Avatar size={"sm"} name={user?.name} />
+      <Avatar size={"sm"} name={user?.name} src={user?.avatar} />
     </Flex>
   );
 }

@@ -5,7 +5,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import React from "react";
-export default function ProfileForm({ formik }) {
+export default function ProfileForm({ formik }) {  
   return (
     <FormControl isInvalid={formik.errors.name} isRequired>
       <FormLabel>Name</FormLabel>

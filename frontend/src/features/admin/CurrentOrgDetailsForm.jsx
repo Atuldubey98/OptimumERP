@@ -23,9 +23,7 @@ export default function CurrentOrgDetailsForm({
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
-        <Box p={3} bg={bg}>
-          <Heading fontSize={"lg"}>Current Organization Details </Heading>
-        </Box>
+       
         <Box>
           <Flex justifyContent={"space-between"} alignItems={"center"}>
             <HelpPopover

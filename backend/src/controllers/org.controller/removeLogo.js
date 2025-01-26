@@ -1,8 +1,9 @@
 const cloudinary = require("../../cloudinary");
+const OrgModel = require("../../models/org.model")
 const removeLogo = async (req, res) => {
   const response = await cloudinary.uploader.destroy(`OptimumERP/${req.params.orgId}`);
   await OrgModel.updateOne(
-    { _id: req.parms.orgId },
+    { _id: req.params.orgId },
     { logo: null },
     { lean: true }
   );

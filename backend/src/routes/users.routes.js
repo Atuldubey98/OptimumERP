@@ -15,9 +15,12 @@ const {
   resendVerificationLink,
   verifyForgotPasswordOtp,
   verifyRegisteredUserOtp,
+  uploadAvatar,
+  removeAvatar,
 } = require("../controllers/user.controller");
 const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
+const { avatarUploader } = require("../middlewares/uploader.middleware");
 const userRoutes = Router();
 
 userRoutes.post("/register", requestAsyncHandler(register));
@@ -38,6 +41,17 @@ userRoutes.get("/googleAuth", requestAsyncHandler(getGoogleAuthorizationUri));
 userRoutes.get("/", authenticate, requestAsyncHandler(currentUser));
 userRoutes.patch("/", authenticate, requestAsyncHandler(update));
 userRoutes.post("/logout", authenticate, requestAsyncHandler(logout));
+userRoutes.post(
+  "/avatar",
+  authenticate,
+  avatarUploader.single("avatar"),
+  requestAsyncHandler(uploadAvatar)
+);
+userRoutes.delete(
+  "/avatar",
+  authenticate,
+  requestAsyncHandler(removeAvatar)
+);
 userRoutes.post(
   "/reset-password",
   authenticate,

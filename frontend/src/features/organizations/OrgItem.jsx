@@ -1,4 +1,4 @@
-import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Spinner, Text } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../contexts/SettingContext";
@@ -12,7 +12,7 @@ export default function OrgItem({ org }) {
     setStatus("success");
   };
   const loading = status === "loading";
- 
+
   return (
     <Flex
       borderRadius={4}
@@ -24,7 +24,11 @@ export default function OrgItem({ org }) {
       onClick={visitOrganizationDashboard}
       alignItems={"center"}
     >
-      <GoOrganization size={34} />
+      {org?.logo ? (
+        <Image src={org?.logo} width={34} />
+      ) : (
+        <GoOrganization size={34} />
+      )}
       <Box>
         <Flex gap={3}>
           <Text fontWeight={"bold"}>{org.name}</Text>

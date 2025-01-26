@@ -3,13 +3,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import instance from "../instance";
 import useAuth from "./useAuth";
+import { useEffect } from "react";
 
 export default function useProfileForm({ closeForm }) {
   const { user, fetchUserDetails } = useAuth();
+
   const toast = useToast();
   const formik = useFormik({
     initialValues: {
-      name: user ? user.name : "",
+      name: user?.name,
     },
     onSubmit: async (values, { setSubmitting }) => {
       const { data } = await instance.patch("/api/v1/users", values);

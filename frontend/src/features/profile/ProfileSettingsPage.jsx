@@ -5,11 +5,13 @@ import {
   Grid,
   Heading,
   IconButton,
+  Input,
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import useAuth from "../../hooks/useAuth";
 import useProfileForm from "../../hooks/useProfileForm";
@@ -19,9 +21,14 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import FormModalWrapper from "./FormModalWrapper";
 import ProfileForm from "./ProfileForm";
 import SettingContext from "../../contexts/SettingContext";
+import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
+import instance from "../../instance";
+import { isAxiosError } from "axios";
 
 function ProfileInfo(props) {
   const settingContext = useContext(SettingContext);
+  const auth = useAuth();
+  const plan = auth?.user?.currentPlan?.plan;
   const role = settingContext?.role || "";
   return (
     <CardWrapper
@@ -44,17 +51,56 @@ function ProfileInfo(props) {
           <Text fontSize={"xs"}>Role</Text>{" "}
           <Text textTransform={"capitalize"}>{role}</Text>
         </Flex>
+        <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
+          <Text fontSize={"xs"}>Plan</Text>{" "}
+          <Text textTransform={"capitalize"}>{plan}</Text>
+        </Flex>
       </Stack>
     </CardWrapper>
   );
 }
 
 export default function ProfileSettingsPage() {
-  const { user, activePlan } = useAuth();
-  const currentPlan = user?.currentPlan ? user?.currentPlan.plan : "free";
+  const { user, fetchUserDetails } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { formik } = useProfileForm({ closeForm: onClose });
-
+  const profileLogoRef = useRef(null);
+  const toast = useToast();
+  const [status, setStatus] = useState("idle");
+  const onUploadFile = async (e) => {
+    try {
+      setStatus("uploading");
+      const file = e.currentTarget.files[0];
+      if (!file) return;
+      const form = new FormData();
+      form.append("avatar", file);
+      await instance.post("/api/v1/users/avatar", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      await fetchUserDetails();
+      toast({
+        title: "Success",
+        description: "Profile updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: isAxiosError(error)
+          ? error?.response?.data?.message
+          : "Some error occured",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setStatus("idle");
+    }
+  };
   return (
     <MainLayout>
       <Box p={5}>
@@ -67,7 +113,7 @@ export default function ProfileSettingsPage() {
           m={"auto"}
           gap={5}
         >
-          <Avatar name={user ? user.name : ""} size={"xl"} />
+          <Avatar name={user?.name} src={user?.avatar} size={"xl"} />
           <Grid w={"100%"} gap={3}>
             <Heading fontSize={"2xl"} textAlign={"center"}>
               Welcome, {user ? user.name : ""}
@@ -92,6 +138,65 @@ export default function ProfileSettingsPage() {
           onClose={onClose}
           handleSubmit={formik.handleSubmit}
         >
+          <Flex
+            gap={2}
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDir={"column"}
+            margin={"auto"}
+          >
+            <Avatar
+              margin={"auto"}
+              size={"2xl"}
+              name={user?.name}
+              src={user?.avatar}
+            />
+            <Flex gap={3} justifyContent={"center"} alignItems={"center"}>
+              <Input
+                ref={profileLogoRef}
+                type="file"
+                accept="image/*"
+                display={"none"}
+                onChange={onUploadFile}
+              />
+              <IconButton
+                size={"sm"}
+                isLoading={status === "uploading"}
+                colorScheme="yellow"
+                icon={<MdOutlineFileUpload />}
+                onClick={() => profileLogoRef.current.click()}
+              />
+              {user?.avatar && (
+                <IconButton
+                  size={"sm"}
+                  isLoading={status === "removing"}
+                  colorScheme="red"
+                  variant={"outline"}
+                  icon={<MdDelete />}
+                  onClick={async () => {
+                    try {
+                      setStatus("removing");
+                      await instance.delete("/api/v1/users/avatar");
+                      await fetchUserDetails();
+                    } catch (error) {
+                      toast({
+                        title: "Error",
+                        description: isAxiosError(error)
+                          ? error?.response?.data?.message
+                          : "Some error occured",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                      });
+                    } finally {
+                      setStatus("idle");
+                    }
+                  }}
+                />
+              )}
+            </Flex>
+          </Flex>
+
           <ProfileForm formik={formik} />
         </FormModalWrapper>
       </Box>

@@ -13,11 +13,15 @@ const getGoogleAuthorizationUri = require("./getGoogleAuthorizationUri");
 const verifyRegisteredUserOtp = require("./verifyRegisteredUserOtp");
 const googleAuth = require("./googleAuth");
 const resendVerificationLink = require("./resendVerificationOtp");
+const uploadAvatar = require("./uploadAvatar");
+const removeAvatar = require("./removeAvatar");
 module.exports = {
   activate,
+  uploadAvatar,
   resendVerificationLink,
   currentUser,
   googleAuth,
+  removeAvatar,
   getGoogleAuthorizationUri,
   deactivate,
   verifyForgotPasswordOtp,

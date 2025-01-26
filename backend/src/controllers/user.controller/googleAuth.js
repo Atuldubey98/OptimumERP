@@ -81,9 +81,8 @@ async function createGoogleAuthUser({ googleId, userProfile, tokens }) {
       name,
       email: userProfile.email,
       googleId,
-      attributes: {
-        picture: userProfile.picture,
-      },
+      avatar: userProfile.picture,
+      attributes: {},
       verifiedEmail: true,
     });
   user.attributes.googleAccessToken = tokens.access_token;

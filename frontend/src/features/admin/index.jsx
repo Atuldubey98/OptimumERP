@@ -6,6 +6,9 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  IconButton,
+  Image,
+  Input,
   Spinner,
   Stack,
   Tab,
@@ -26,7 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import { GoOrganization } from "react-icons/go";
 import { IoAdd } from "react-icons/io5";
 import * as Yup from "yup";
@@ -43,6 +46,14 @@ import OrgUserRow from "./OrgUserRow";
 import RegisteUserDrawer from "./RegisteUserDrawer";
 import HelpPopover from "../common/HelpPopover";
 import AdminLayout from "../common/auth-layout/AdminLayout";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/react";
+import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -54,7 +65,7 @@ export default function AdminPage() {
       .min(3, "Min length should be 3")
       .max(30, "Max length cannot be greater than 20"),
   });
-  const { authorizedOrgs, loading } = useOrganizations();
+  const { authorizedOrgs, loading, fetchOrgs } = useOrganizations();
   const setting = useContext(SettingContext);
   const [organization, setOrganization] = useState("");
   const [orgUsers, setOrgUsers] = useState([]);
@@ -109,6 +120,7 @@ export default function AdminPage() {
     email: "",
     web: "",
     telephone: "",
+    logo: "",
   };
   const {
     values: currentSelectedOrganization,
@@ -176,6 +188,10 @@ export default function AdminPage() {
     ? auth?.user?.currentPlan.plan
     : "free";
   const bg = useColorModeValue("gray.100", "gray.700");
+  const orgName = currentSelectedOrganization?.name;
+  const logo = currentSelectedOrganization?.logo;
+  const logoInputRef = useRef(null);
+  const [logoStatus, setLogoStatus] = useState("idle");
   return (
     <MainLayout>
       <AdminLayout>
@@ -239,16 +255,130 @@ export default function AdminPage() {
                   <TabPanels>
                     <TabPanel>
                       <Stack spacing={2}>
-                        <Box>
-                          <CurrentOrgDetailsForm
-                            currentSelectedOrganization={
-                              currentSelectedOrganization
-                            }
-                            handleChange={handleChange}
-                            handleSubmit={handleSubmit}
-                            isSubmitting={isSubmitting}
-                          />
-                        </Box>
+                        <Stack spacing={2}>
+                          <Box bg={bg} p={2}>
+                            <Heading fontSize={"lg"}>
+                              Organization information
+                            </Heading>
+                          </Box>
+                          <Accordion allowToggle>
+                            <AccordionItem>
+                              <h2>
+                                <AccordionButton>
+                                  <Box
+                                    fontWeight={"bold"}
+                                    flex="1"
+                                    textAlign="left"
+                                  >
+                                    Details
+                                  </Box>
+                                  <AccordionIcon />
+                                </AccordionButton>
+                              </h2>
+                              <AccordionPanel pb={4}>
+                                <CurrentOrgDetailsForm
+                                  currentSelectedOrganization={
+                                    currentSelectedOrganization
+                                  }
+                                  handleChange={handleChange}
+                                  handleSubmit={handleSubmit}
+                                  isSubmitting={isSubmitting}
+                                />
+                              </AccordionPanel>
+                            </AccordionItem>
+
+                            <AccordionItem>
+                              <h2>
+                                <AccordionButton>
+                                  <Box
+                                    flex="1"
+                                    fontWeight={"bold"}
+                                    textAlign="left"
+                                  >
+                                    Change logo
+                                  </Box>
+                                  <AccordionIcon />
+                                </AccordionButton>
+                              </h2>
+                              <AccordionPanel pb={4}>
+                                <Flex
+                                  gap={3}
+                                  justifyContent={"flex-start"}
+                                  alignItems={"center"}
+                                >
+                                  <Box
+                                    p={2}
+                                    borderRadius={"md"}
+                                    border={"1px solid lightgray"}
+                                  >
+                                    {logo ? (
+                                      <Image
+                                        width={50}
+                                        src={logo}
+                                        alt={orgName}
+                                      />
+                                    ) : (
+                                      <GoOrganization size={50} />
+                                    )}
+                                  </Box>
+                                  <Input
+                                    ref={logoInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                      setLogoStatus("uploading");
+                                      const file = e.currentTarget.files[0];
+                                      if (!file) return;
+                                      const form = new FormData();
+                                      form.append("logo", file);
+                                      await instance.post(
+                                        `/api/v1/organizations/${organization}/logo`,
+                                        form,
+                                        {
+                                          headers: {
+                                            "Content-Type":
+                                              "multipart/form-data",
+                                          },
+                                        }
+                                      );
+                                      setting.fetchSetting();
+                                      fetchOrgs();
+                                      setOrganization(null);
+                                      setLogoStatus("idle");
+                                    }}
+                                    display={"none"}
+                                  />
+                                  <IconButton
+                                    size={"sm"}
+                                    colorScheme="yellow"
+                                    isLoading={logoStatus === "uploading"}
+                                    icon={<MdOutlineFileUpload />}
+                                    onClick={() => logoInputRef.current.click()}
+                                  />
+                                  {logo && (
+                                    <IconButton
+                                      size={"sm"}
+                                      colorScheme="red"
+                                      variant={"outline"}
+                                      isLoading={logoStatus === "deleting"}
+                                      icon={<MdDelete />}
+                                      onClick={async () => {
+                                        setLogoStatus("deleting");
+                                        await instance.delete(
+                                          `/api/v1/organizations/${organization}/logo`
+                                        );
+                                        setting.fetchSetting();
+                                        fetchOrgs();
+                                        setOrganization(null);
+                                        setLogoStatus("idle");
+                                      }}
+                                    />
+                                  )}
+                                </Flex>
+                              </AccordionPanel>
+                            </AccordionItem>
+                          </Accordion>
+                        </Stack>
                         <Box>
                           <BankAccounts bankFormik={bankFormik} />
                         </Box>

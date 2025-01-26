@@ -44,6 +44,9 @@ const userSchema = new Schema(
       type: String,
       index: true,
     },
+    avatar: {
+      type: String,
+    },
     attributes: {
       type: {
         googleAccessToken: String,
