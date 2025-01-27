@@ -101,7 +101,23 @@
   <body>
     <div class="invoice-container">
       <div class="company-info">
-        <h1><%= entity.org.name %></h1>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          "
+        >
+          <% if (entity?.org?.logo) { %>
+          <img
+            width="50px"
+            src="<%= entity?.org?.logo %>"
+            alt="<%= entity?.org?.name %>"
+          />
+          <% } %>
+          <h1><%= entity.org.name %></h1>
+        </div>
         <p><%= entity.org.address %></p>
         <p>GSTIN: <%= entity.org.gstNo %></p>
         <p>PAN: <%= entity.org.panNo %></p>

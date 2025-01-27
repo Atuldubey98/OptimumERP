@@ -1,15 +1,15 @@
 <!-- invoice.ejs -->
 <!DOCTYPE html>
-<html >
+<html>
   <head>
     <title><%= title %></title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <style>
       body {
         margin: 10px;
         color: #333;
         box-sizing: border-box;
-        font-family: 'Noto Sans Bengali', 'Arial', sans-serif;
+        font-family: "Noto Sans Bengali", "Arial", sans-serif;
         zoom: 0.8;
       }
 
@@ -76,11 +76,20 @@
   <body>
     <h1><%= title %></h1>
 
-    <div class="company-info">
-      <p><strong><%= entity.org.name %></strong></p>
-      <p><%= entity.org.address %></p>
-      <p>GST No: <%= entity.org.gstNo %></p>
-      <p>PAN No: <%= entity.org.panNo %></p>
+    <div style="display: flex; align-items: center; justify-content: flex-start; gap: 10px;">
+      <% if (entity?.org?.logo) { %>
+      <img
+        width="200px"
+        src="<%= entity?.org?.logo %>"
+        alt="<%= entity?.org?.name %>"
+      />
+      <% } %>
+      <div class="company-info">
+        <p><strong><%= entity.org.name %></strong></p>
+        <p><%= entity.org.address %></p>
+        <p>GST No: <%= entity.org.gstNo %></p>
+        <p>PAN No: <%= entity.org.panNo %></p>
+      </div>
     </div>
 
     <div class="meta">

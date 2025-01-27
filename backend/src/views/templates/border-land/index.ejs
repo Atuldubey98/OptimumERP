@@ -10,7 +10,7 @@
         margin: 1rem;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Noto Sans Bengali', 'Arial', sans-serif;
+        font-family: "Noto Sans Bengali", "Arial", sans-serif;
         border: 1px solid black;
       }
       .item-table {
@@ -47,7 +47,13 @@
     <header style="border-bottom: 1px solid black">
       <div style="margin: auto">
         <h1 style="text-align: center; color: rgb(56, 14, 95)">
-          <%= entity.org.name %>
+          <% if (entity?.org?.logo) { %>
+          <img
+            width="30px"
+            src="<%= entity?.org?.logo %>"
+            alt="<%= entity?.org?.name %>"
+          />
+          <% } %> <%= entity.org.name %>
         </h1>
         <div>
           <div
