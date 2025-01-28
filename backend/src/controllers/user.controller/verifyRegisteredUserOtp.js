@@ -14,6 +14,7 @@ const verifyRegisteredUserOtp = async (req, res) => {
   const otp = await Otp.findOneAndUpdate(filter, { isVerified: true });
   if (!otp) throw new InvalidOtp();
   user.verifiedEmail = true;
+  user.active = true;
   await user.save();
   return res.status(200).json({ message: "Login to continue" });
 };
