@@ -1,12 +1,7 @@
-import {
-  Button,
-  Link as ChakraLink,
-  Grid,
-  useToast
-} from "@chakra-ui/react";
+import { Button, Link as ChakraLink, Grid, useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useVerificationEmail from "../../hooks/useVerificationEmail";
@@ -30,6 +25,7 @@ export default function RegisterPage() {
       .min(3, "Minimum length should be 3")
       .max(30, "Maximum length cannot be greater than 20"),
   });
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -39,6 +35,20 @@ export default function RegisterPage() {
     validationSchema: registerSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { data } = await instance.post(`/api/v1/users/register`, values);
+     
+      formik.resetForm();
+      setSubmitting(false);
+      if (import.meta.env.DEV) {
+        toast({
+          title: "Registered",
+          description: "Dev user registered",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        navigate(`/`);
+        return;
+      }
       toast({
         title: "Verify",
         description: data.message,
@@ -46,9 +56,7 @@ export default function RegisterPage() {
         duration: 3000,
         isClosable: true,
       });
-      formik.resetForm();
       verifyRegisteredUserFormik.setFieldValue("userId", data.data._id);
-      setSubmitting(false);
     }),
   });
   const { verifyRegisteredUserFormik } = useVerificationEmail();

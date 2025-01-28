@@ -28,20 +28,22 @@ exports.promiseQrCode = (value) => {
 };
 
 exports.getPdfBufferUsingHtml = async (html) => {
-  const apiKey = process.env.PDF_SHIFT_API_KEY;
-
-  const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
-    method: "POST",
-    headers: {
-      Authorization:
-        "Basic " + Buffer.from(apiKey).toString("base64"),
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify({
-      source: html,
-    }),
-  });
-  if (!response.ok) throw new Error("Pdf generation failed");
-  const buffer = await response.buffer();
-  return buffer;
+  try {
+    const apiKey = process.env.PDF_SHIFT_API_KEY;    
+    const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
+      method: "POST",
+      headers: {
+        Authorization: "Basic " + Buffer.from(apiKey).toString("base64"),
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        source: html,
+      }),
+    });
+    if (!response.ok) throw new Error("Pdf generation failed");
+    const buffer = await response.buffer();
+    return buffer;
+  } catch (error) {
+    throw error;
+  }
 };

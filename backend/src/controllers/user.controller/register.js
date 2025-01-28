@@ -7,16 +7,22 @@ const {
 
 const register = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
-  const registeredUser = await registerUser(body);
+  const isDevelopmentEnv = process.env.NODE_ENV === "development";
+  const registeredUser = await registerUser({
+    ...body,
+    active: isDevelopmentEnv,
+    verifiedEmail : isDevelopmentEnv
+  });
   await UserActivatedPlan.create({
     user: registeredUser.id,
     purchasedBy: registeredUser.id,
   });
-  await sendOtpEmailToUser({
-    user: registeredUser,
-    subject: "Verification Mail | OptimumERP",
-    typeOfOtp: "register",
-  });
+  if (!isDevelopmentEnv)
+    await sendOtpEmailToUser({
+      user: registeredUser,
+      subject: "Verification Mail | OptimumERP",
+      typeOfOtp: "register",
+    });
   return res.status(201).json({
     data: {
       email: registeredUser.email,

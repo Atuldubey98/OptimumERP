@@ -1,9 +1,8 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
-import GoogleAuthAdminPage from "./features/login/GoogleAuthPage";
-import ReceiptEditPage from "./features/common/receipt-create";
 const ReceiptPreview = lazy(() => import("./features/common/receipt-preview"));
+const GoogleAuthAdminPage = lazy(() => import("./features/login/GoogleAuthPage"));
 const TaxesPage = lazy(() => import("./features/taxes"));
 const UmsPage = lazy(() => import("./features/ums"));
 const VerifyEmailPage = lazy(() => import("./features/verify-email"));

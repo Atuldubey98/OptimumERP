@@ -6,7 +6,14 @@ const { getHashedString } = require("./hashing.service");
 const path = require("path");
 const { renderHtml } = require("./renderEngine.service");
 const transporter = require("../mailer");
-exports.registerUser = async ({ email, password, name, attributes = {} }) => {
+exports.registerUser = async ({
+  email,
+  password,
+  name,
+  attributes = {},
+  active = false,
+  verifiedEmail = false,
+}) => {
   const existingUser = await UserModel.findByEmailId(email);
   if (existingUser) throw new UserDuplicate();
   const hashedPassword = await getHashedString(password);
@@ -15,6 +22,8 @@ exports.registerUser = async ({ email, password, name, attributes = {} }) => {
     password: hashedPassword,
     name,
     attributes,
+    verifiedEmail,
+    active,
   });
   return registeredUser;
 };
