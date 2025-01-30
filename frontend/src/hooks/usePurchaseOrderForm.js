@@ -65,6 +65,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...purchaseOrder } = values;
+      
       const items = values.items.map(({ _id, ...item }) => item);
       await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/purchaseOrders/${_id || ""}`,
@@ -87,7 +88,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
       }
       setSubmitting(false);
     }),
-  });
+  });  
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
@@ -135,7 +136,11 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
         date: new Date(date).toISOString().split("T")[0],
         status,
         partyDetails: party,
-        items,
+        items: items.map((item) => ({
+          ...item,
+          tax: item.tax._id,
+          um: item.um._id,
+        })),
         description,
         poDate: poDate ? poDate.split("T")[0] : "",
         sequence,

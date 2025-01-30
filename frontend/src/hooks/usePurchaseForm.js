@@ -127,7 +127,11 @@ export default function usePurchaseForm({ saveAndNew }) {
         num,
         date: new Date(date).toISOString().split("T")[0],
         status,
-        items,
+        items: items.map((item) => ({
+          ...item,
+          tax: item.tax._id,
+          um: item.um._id,
+        })),
         description,
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,

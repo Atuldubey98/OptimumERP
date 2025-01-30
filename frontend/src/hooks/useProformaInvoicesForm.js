@@ -135,7 +135,11 @@ export default function useProformaInvoicesForm() {
         date: new Date(date).toISOString().split("T")[0],
         status,
         partyDetails: party,
-        items,
+        items: items.map((item) => ({
+          ...item,
+          tax: item.tax._id,
+          um: item.um._id,
+        })),
         description,
         prefix,
         poDate: poDate ? poDate.split("T")[0] : "",
