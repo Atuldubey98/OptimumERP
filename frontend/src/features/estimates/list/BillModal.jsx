@@ -2,8 +2,9 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Divider,
   Flex,
-  Hide,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,68 +12,52 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Skeleton
+  Skeleton,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { IoCheckmark } from "react-icons/io5";
 import { CiSaveDown2 } from "react-icons/ci";
-import { IoPrintOutline } from "react-icons/io5";
-import useAsyncCall from "../../../hooks/useAsyncCall";
 import instance, { baseURL } from "../../../instance";
-import Template from "./Template";
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
-  const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
+  const templateColors = [
+    { name: "Dark Purple", hex: "3f51b5" },
+    { name: "Dark Green", hex: "388e3c" },
+    { name: "Dark Purple", hex: "7b1fa2" },
+    { name: "Dark Red", hex: "d32f2f" },
+    { name: "Dark Gray", hex: "616161" },
+  ];
+  const [color, setColor] = useState(templateColors[0].hex);
   const [templateName, setTemplateName] = useState("simple");
+  const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download`;
   const onSaveBill = async () => {
     setStatus("downloading");
-    const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download?template=${templateName}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
+      params: {
+        template: templateName,
+        color,
+      },
     });
     const href = URL.createObjectURL(data);
     const link = document.createElement("a");
-    link.setAttribute("download", `${heading}-${bill.date}.pdf`);
+    link.setAttribute("download", `${entity}-${bill.num}.pdf`);
     link.href = href;
     link.click();
-    setStatus("idle");
     URL.revokeObjectURL(href);
-  };
-  const viewBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/view?template=${templateName}`;
-  const onPrintBill = requestAsyncHandler(async () => {
-    setStatus("printing");
-    const { data } = await instance.get(viewBill);
-    const billPrint = window.open("", "");
-    billPrint.document.write(data);
-    billPrint.document.close();
-    billPrint.onload = function () {
-      billPrint.focus();
-      billPrint.print();
-      billPrint.close();
-    };
-    setStatus("success");
-  });
-  const isBillLoading = billLoadStatus === "idle";
-  const templates = [
-    { value: "simple", label: "Simple", templateImg: "/templates/simple.png" },
-    { value: "modern", label: "Modern", templateImg: "/templates/modern.png" },
-    {
-      value: "border-land",
-      label: "Border-land",
-      templateImg: "/templates/border-land.png",
-    },
-  ];
-  const onSelectTemplate = (currentTemplate) => {
-    setTemplateName(currentTemplate.value);
-    localStorage.setItem("template", currentTemplate.value);
-    setBillLoadStatus("loading");
+    setStatus("idle");
   };
   const isDownloading = status === "downloading";
-  const isPrinting = status === "printing";
+
   return (
     <Modal
-      size={"full"}
-      onClose={onClose}
+      size={"5xl"}
+      onClose={() => {
+        onClose();
+        setBillLoadStatus("loading");
+      }}
       isOpen={isOpen}
       scrollBehavior={"inside"}
     >
@@ -80,56 +65,57 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       <ModalContent>
         <ModalHeader>{heading}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody h={"100%"}>
-          <Skeleton w={"100%"} h={"65svh"} isLoaded={isBillLoading}>
+        <ModalBody h={"100svh"}>
+          <Skeleton isLoaded={billLoadStatus === "idle"}>
             <iframe
               onLoad={() => {
                 setBillLoadStatus("idle");
               }}
-              style={{
-                margin: "auto",
-                padding: 1,
-                borderRadius: 10,
-                border: "none",
-                zoom: 0.8,
-              }}
               width={"100%"}
-              height={"100%"}
-              src={`${baseURL}${viewBill}`}
+              height={"550px"}
+              src={
+                baseURL +
+                downloadBill +
+                `?template=${templateName}&color=${color}`
+              }
             />
           </Skeleton>
-          <Box>
-            <Flex justifyContent={"flex-start"} gap={3}>
-              {templates.map((template) => (
-                <Template
-                  key={template.value}
-                  template={template}
-                  currentTemplateName={templateName}
-                  onSelectTemplate={onSelectTemplate}
-                />
-              ))}
-            </Flex>
-          </Box>
         </ModalBody>
         <ModalFooter>
+          <Flex mr={6} justifyContent={"center"} alignItems={"center"} gap={2}>
+            {templateColors.map((templateColor) => (
+              <Box key={templateColor.hex}>
+                <Tooltip label={templateColor.name}>
+                  <Flex
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    key={templateColor.hex}
+                    onClick={() => {
+                      setBillLoadStatus("loading");
+                      setColor(templateColor.hex);
+                    }}
+                    cursor={"pointer"}
+                    bg={`#${templateColor.hex}`}
+                    width={"40px"}
+                    height={"40px"}
+                    borderRadius={"50%"}
+                  >
+                    {color === templateColor.hex && (
+                      <IoCheckmark size={20} color="white" />
+                    )}
+                  </Flex>
+                </Tooltip>
+              </Box>
+            ))}
+          </Flex>
+          <Divider orientation="vertical" />
           <ButtonGroup>
             <Button onClick={onClose}>Close</Button>
-            <Hide below="md">
-              <Button
-                leftIcon={<IoPrintOutline />}
-                onClick={onPrintBill}
-                colorScheme="blue"
-                isLoading={isPrinting}
-              >
-                Print
-              </Button>
-            </Hide>
+
             <Button
               leftIcon={<CiSaveDown2 />}
               isLoading={isDownloading}
-              onClick={() => {
-                onSaveBill(bill);
-              }}
+              onClick={onSaveBill}
               colorScheme="green"
             >
               Download

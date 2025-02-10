@@ -324,7 +324,7 @@ export default function AdminPage() {
                                   <Input
                                     ref={logoInputRef}
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/png"
                                     onChange={async (e) => {
                                       setLogoStatus("uploading");
                                       const file = e.currentTarget.files[0];

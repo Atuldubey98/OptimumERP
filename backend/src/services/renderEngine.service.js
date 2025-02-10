@@ -1,6 +1,8 @@
 const ejs = require("ejs");
 const QRCode = require("qrcode");
 const fetch = require("node-fetch");
+const PdfMake = require("pdfmake");
+const path = require("path");
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(location, data, (err, html) => {
@@ -29,7 +31,7 @@ exports.promiseQrCode = (value) => {
 
 exports.getPdfBufferUsingHtml = async (html) => {
   try {
-    const apiKey = process.env.PDF_SHIFT_API_KEY;    
+    const apiKey = process.env.PDF_SHIFT_API_KEY;
     const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
       method: "POST",
       headers: {
@@ -46,4 +48,36 @@ exports.getPdfBufferUsingHtml = async (html) => {
   } catch (error) {
     throw error;
   }
+};
+
+exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
+  const getPathForFonts = (filename) => {
+    return path.join(__dirname, "..", "..", "public", "fonts", filename);
+  };
+
+  return new Promise((resolve, reject) => {
+    const pdfmake = new PdfMake({
+      Roboto: {
+        normal: getPathForFonts("Roboto-Regular.ttf"),
+        bold: getPathForFonts("Roboto-Medium.ttf"),
+        italics: getPathForFonts("Roboto-Italic.ttf"),
+        bolditalics: getPathForFonts("Roboto-MediumItalic.ttf"),
+      },
+    });
+    const printer = pdfmake.createPdfKitDocument(docDefinition);
+    const chunks = [];
+    const onNewPdfChunk = (chunk) => {
+      chunks.push(chunk);
+    };
+    printer.on("data", onNewPdfChunk);
+    const onEndPdfChunks = () => {
+      resolve(Buffer.concat(chunks));
+    };
+    printer.on("end", onEndPdfChunks);
+    const onErrorInChunking = () => {
+      reject(new Error("Some error occured"));
+    };
+    printer.on("error", onErrorInChunking);
+    printer.end();
+  });
 };
