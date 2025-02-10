@@ -7,13 +7,14 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
+import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   FaFileInvoice,
   FaFileInvoiceDollar,
   FaMoneyBillTrendUp,
 } from "react-icons/fa6";
-import { GoPeople } from "react-icons/go";
 import { useNavigate, useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
 import { purchaseStatusList } from "../../constants/purchase";
@@ -26,23 +27,58 @@ import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
 import GuideTourModal from "./GuideTourModal";
-import PeriodSelect from "./PeriodSelect";
-import moment from "moment";
-
+import { GoPeople } from "react-icons/go";
+import { GiExpense } from "react-icons/gi";
 export default function DashboardPage() {
+  const dashboardEntityConfiguration = {
+    invoices: {
+      label: "Invoices",
+      Icon: FaFileInvoiceDollar,
+      tableHeading: "Recent Sales",
+      statusConfig: invoiceStatusList,
+    },
+    parties: {
+      label: "Parties",
+      Icon: GoPeople,
+    },
+    expenses: {
+      label: "Expenses",
+      Icon: GiExpense,
+    },
+    purchases: {
+      label: "Purchase",
+      Icon: FaMoneyBillTrendUp,
+      tableHeading: "Recent Purchase",
+      statusConfig: purchaseStatusList,
+    },
+    quotes: {
+      label: "Quotation",
+      Icon: FaFileInvoice,
+      tableHeading: "Recent Estimates ",
+      statusConfig: statusList,
+    },
+  };
   const [dashboard, setDashboard] = useState({
-    invoiceThisMonth: 0,
-    quotesThisMonth: 0,
-    partysThisMonth: 0,
-    purchasesThisMonth: 0,
-    expensesThisMonth: 0,
-    recentInvoices: [],
-    recentQuotes: [],
-    recentPurchases: [],
+    counts: {
+      invoices: 0,
+      quotes: 0,
+      expenses: 0,
+      purchases: 0,
+      parties: 0,
+    },
+    tables: {
+      invoices: [],
+      quotes: [],
+      purchases: [],
+    },
   });
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const [currentPeriod, setCurrentPeriod] = useState("lastMonth");
+  const [statPeriod, setStatPeriod] = useState({
+    endDate: moment().format("YYYY-MM-DD"),
+    startDate: moment().subtract(1, "M").format("YYYY-MM-DD"),
+  });
   const [status, setStatus] = useState("idle");
   const fetchDashboard = useCallback(
     requestAsyncHandler(async () => {
@@ -50,9 +86,7 @@ export default function DashboardPage() {
       const { data } = await instance.get(
         `/api/v1/organizations/${orgId}/dashboard`,
         {
-          params: {
-            period: currentPeriod,
-          },
+          params: statPeriod,
         }
       );
       setDashboard(data.data);
@@ -75,14 +109,17 @@ export default function DashboardPage() {
     {
       label: "This week",
       value: "lastWeek",
+      params: [7, "D"],
     },
     {
       label: "This month",
       value: "lastMonth",
+      params: [1, "M"],
     },
     {
       label: "This year",
       value: "lastYear",
+      params: [1, "Y"],
     },
   ];
   const currentPeriodLabel = periods.find(
@@ -90,6 +127,15 @@ export default function DashboardPage() {
   ).label;
   const auth = useAuth();
   const navigate = useNavigate();
+  const dashboardReceiptTableMapper = (itemStatusList) => (item) => ({
+    _id: item._id,
+    num: item.num,
+    partyName: item.party.name,
+    total: item.total,
+    totalTax: item.totalTax,
+    status: <Status status={item.status} statusList={itemStatusList} />,
+    date: moment(item.date).format("DD-MM-YYYY"),
+  });
   return (
     <MainLayout>
       <Box p={5}>
@@ -99,11 +145,18 @@ export default function DashboardPage() {
         <Text>Here's is overview of your business !</Text>
         <Stack marginBlock={2} spacing={3}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
-            <PeriodSelect
-              onChangePeriod={({ value }) => {
+            <Select
+              options={periods}
+              onChange={({ params, value }) => {
+                setStatPeriod({
+                  ...statPeriod,
+                  endDate: moment()
+                    .subtract(...params)
+                    .format("YYYY-MM-DD"),
+                });
                 setCurrentPeriod(value);
               }}
-              currentPeriod={currentPeriod}
+              value={periods.find((period) => period.value === currentPeriod)}
             />
           </Flex>
           <Flex
@@ -113,101 +166,43 @@ export default function DashboardPage() {
             wrap={"wrap"}
             gap={5}
           >
-            <Skeleton maxW={350} w={"100%"} isLoaded={!loading}>
-              <Dashcard
-                period={currentPeriodLabel}
-                dashType="Invoices"
-                icon={<FaFileInvoiceDollar size={30} />}
-                dashTotal={dashboard.invoiceThisMonth}
-              />
-            </Skeleton>
-            <Skeleton maxW={350} w={"100%"} isLoaded={!loading}>
-              <Dashcard
-                icon={<GoPeople size={30} />}
-                period={currentPeriodLabel}
-                dashType="Parties"
-                dashTotal={dashboard.partysThisMonth}
-              />
-            </Skeleton>
-            <Skeleton maxW={350} w={"100%"} isLoaded={!loading}>
-              <Dashcard
-                period={currentPeriodLabel}
-                icon={<FaFileInvoice size={30} />}
-                dashType="Quotations"
-                dashTotal={dashboard.quotesThisMonth}
-              />
-            </Skeleton>
-            <Skeleton w={"100%"} maxW={350} isLoaded={!loading}>
-              <Dashcard
-                icon={<FaMoneyBillTrendUp size={30} />}
-                period={currentPeriodLabel}
-                dashType="Purchase"
-                dashTotal={dashboard.purchasesThisMonth}
-              />
-            </Skeleton>
+            {Object.entries(dashboard.counts).map(([entity, count], index) => {
+              const { Icon, label } = dashboardEntityConfiguration[entity];
+              return (
+                <Skeleton maxW={350} w={"100%"} isLoaded={!loading} key={index}>
+                  <Dashcard
+                    period={currentPeriodLabel}
+                    dashType={label}
+                    icon={<Icon size={30} />}
+                    dashTotal={count}
+                  />
+                </Skeleton>
+              );
+            })}
           </Flex>
           <Stack>
-            <Skeleton isLoaded={!loading}>
-              <DashboardTable
-                heading={"Recent Sales"}
-                tableRows={dashboard.recentInvoices.map((invoice) => ({
-                  _id: invoice._id,
-                  num: invoice.num,
-                  partyName: invoice.party.name,
-                  total: invoice.total,
-                  totalTax: invoice.totalTax,
-                  status: (
-                    <Status
-                      status={invoice.status}
-                      statusList={invoiceStatusList}
-                    />
-                  ),
-                  date: moment(invoice.date).format("DD-MM-YYYY"),
-                }))}
-                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
-                onViewMore={() => navigate(`/${orgId}/invoices`)}
-              />
-            </Skeleton>
-
-            <Skeleton isLoaded={!loading}>
-              <DashboardTable
-                heading={"Recent Purchases"}
-                tableRows={dashboard.recentPurchases.map((purchase) => ({
-                  _id: purchase._id,
-                  num: purchase.num,
-                  partyName: purchase.party.name,
-                  total: purchase.total,
-                  totalTax: purchase.totalTax,
-                  status: (
-                    <Status
-                      status={purchase.status}
-                      statusList={purchaseStatusList}
-                    />
-                  ),
-                  date: moment(purchase.date).format("DD-MM-YYYY"),
-                }))}
-                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
-                onViewMore={() => navigate(`/${orgId}/purchases`)}
-              />
-            </Skeleton>
-            <Skeleton isLoaded={!loading}>
-              <DashboardTable
-                heading={"Recent Quotations"}
-                tableRows={dashboard.recentQuotes.map((quote) => ({
-                  _id: quote._id,
-                  num: quote.num,
-                  partyName: quote?.party.name,
-                  total: quote.total,
-                  totalTax: quote.totalTax,
-                  status: (
-                    <Status status={quote.status} statusList={statusList} />
-                  ),
-                  date: moment(quote.date).format("DD-MM-YYYY"),
-                }))}
-                tableHeads={["NUM", "Party name", "Total", "Status", "Date"]}
-                onViewMore={() => navigate(`/${orgId}/estimates`)}
-              />
-            </Skeleton>
+            {Object.entries(dashboard.tables).map(([entity, items], index) => {
+              const { tableHeading, statusConfig } =
+                dashboardEntityConfiguration[entity];
+              return (
+                <Skeleton key={index} isLoaded={!loading}>
+                  <DashboardTable
+                    heading={tableHeading}
+                    tableRows={items.map(
+                      dashboardReceiptTableMapper(statusConfig)
+                    )}
+                    tableHeads={[
+                      "NUM",
+                      "Party name",
+                      "Total",
+                      "Status",
+                      "Date",
+                    ]}
+                    onViewMore={() => navigate(`/${orgId}/${entity}`)}
+                  />
+                </Skeleton>
+              );
+            })}
           </Stack>
         </Stack>
       </Box>

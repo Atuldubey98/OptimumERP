@@ -6,61 +6,11 @@ const Party = require("../../models/party.model");
 const Expense = require("../../models/expense.model");
 const Purchase = require("../../models/purchase.model");
 const read = async (req, res) => {
-  const currentDate = new Date();
-  let startDate, endDate;
-
-  const { period } = req.query;
-  switch (period) {
-    case "lastWeek":
-      startDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate() - 7
-      );
-      endDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate()
-      );
-      break;
-    case "lastMonth":
-      startDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      );
-      endDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        0
-      );
-      break;
-    case "lastYear":
-      startDate = new Date(currentDate.getFullYear() - 1, 0, 1);
-      endDate = new Date(currentDate.getFullYear(), 11, 31);
-      break;
-    default:
-      startDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      );
-      endDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        0
-      );
-  }
-
+  const { startDate, endDate } = req.query;
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
   const countEntitiesPromises = [Invoice, Quotes, Expense, Purchase];
-  const [
-    invoiceThisMonth,
-    quotesThisMonth,
-    expensesThisMonth,
-    purchasesThisMonth,
-  ] = await Promise.all(
+  const [invCount, quoCount, expCount, purCount] = await Promise.all(
     countEntitiesPromises.map((model) =>
       model.countDocuments({
         date: {
@@ -71,15 +21,22 @@ const read = async (req, res) => {
       })
     )
   );
-  const partysThisMonth = await Party.countDocuments({
+  const partiesCount = await Party.countDocuments({
     createdAt: {
       $gte: startDate,
       $lte: endDate,
     },
     org: orgId,
   }).exec();
+  const counts = {
+    invoices: invCount,
+    quotes: quoCount,
+    expenses: expCount,
+    purchases: purCount,
+    parties: partiesCount,
+  };
   const recentEntities = [Invoice, Quotes, Purchase];
-  const [recentInvoices, recentQuotes, recentPurchases] = await Promise.all(
+  const [invoices, quotes, purchases] = await Promise.all(
     recentEntities.map((model) =>
       model
         .find({ org: orgId })
@@ -92,14 +49,12 @@ const read = async (req, res) => {
   );
   return res.status(200).json({
     data: {
-      invoiceThisMonth,
-      quotesThisMonth,
-      recentPurchases,
-      expensesThisMonth,
-      partysThisMonth,
-      recentInvoices,
-      recentQuotes,
-      purchasesThisMonth,
+      counts,
+      tables: {
+        invoices,
+        quotes,
+        purchases,
+      },
     },
   });
 };
