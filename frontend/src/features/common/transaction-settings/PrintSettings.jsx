@@ -3,14 +3,15 @@ import {
   Button,
   Checkbox,
   Flex,
+  FormControl,
   Heading,
   Skeleton,
   Stack,
-  Tooltip,
   useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import AuthContext from "../../../contexts/AuthContext";
+import { Select } from "chakra-react-select";
 
 export default function PrintSettings({ printFormik, formik, loading }) {
   const auth = useContext(AuthContext);
@@ -18,7 +19,10 @@ export default function PrintSettings({ printFormik, formik, loading }) {
     ? auth?.user?.currentPlan.plan
     : "free";
   const bg = useColorModeValue("gray.100", "gray.700");
-
+  const templateOptions = [
+    { value: "simple", label: "Simple template " },
+    { value: "borderLand", label: "Border Land template " },
+  ];
   return (
     <form onSubmit={printFormik.handleSubmit}>
       <Stack>
@@ -37,6 +41,19 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 Save
               </Button>
             </Flex>
+            <FormControl>
+              <Select
+                options={templateOptions}
+                onChange={({ value }) =>
+                  printFormik.setFieldValue("defaultTemplate", value)
+                }
+                value={templateOptions.find(
+                  (templateOption) =>
+                    templateOption.value ===
+                    printFormik?.values?.defaultTemplate
+                )}
+              />
+            </FormControl>
             <Box>
               <Checkbox
                 isDisabled={!formik.values.organization}

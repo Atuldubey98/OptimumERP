@@ -33,6 +33,7 @@ export default function TransactionSettingsPage() {
     initialValues: {
       bank: false,
       upiQr: false,
+      defaultTemplate: "simple",
     },
     onSubmit: async (values, { setSubmitting }) => {
       const settingsUrl = `/api/v1/organizations/${formik.values.organization}/settings`;
@@ -40,6 +41,7 @@ export default function TransactionSettingsPage() {
       await instance.patch(settingsUrl, {
         printSettings: values,
       });
+      settingContext.fetchSetting()
       toast({
         title: "Success",
         description: "Setting updated",

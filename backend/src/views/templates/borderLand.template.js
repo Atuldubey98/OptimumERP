@@ -1,177 +1,417 @@
 const borderLandTemplate = (data, color) => {
   return {
     content: [
-      // Company Header
+      // Header
       {
         columns: [
           data.entity.org.logo
-            ? { image: data.entity.org.logo, width: 80, margin: [0, 0, 20, 0] }
+            ? {
+                image: data.entity.org.logo,
+                width: 50,
+                alignment: "center",
+              }
             : {},
-          {
-            stack: [
-              { text: data.entity.org.name, style: "headerTitle" },
-              { text: data.entity.org.address, style: "headerSub" },
-              { text: `GST NO: ${data.entity.org.gstNo}`, style: "headerSub" },
-              { text: `PAN NO: ${data.entity.org.panNo}`, style: "headerSub" },
-            ],
-            alignment: "right",
-          },
+
+          [
+            {
+              text: data.title.toLocaleUpperCase(),
+              style: "invoiceTitle",
+              width: "*",
+            },
+            {
+              stack: [
+                {
+                  columns: [
+                    {
+                      text: "Invoice #",
+                      style: "invoiceSubTitle",
+                      width: "*",
+                    },
+                    {
+                      text: data.num,
+                      style: "invoiceSubValue",
+                      width: 100,
+                    },
+                  ],
+                },
+                {
+                  columns: [
+                    {
+                      text: "Date Issued",
+                      style: "invoiceSubTitle",
+                      width: "*",
+                    },
+                    {
+                      text: new Date(data.entity.date).toDateString(),
+                      style: "invoiceSubValue",
+                      width: 100,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         ],
-        margin: [0, 0, 0, 10],
       },
-
-      // Title
-      {
-        text: data.title.toLocaleUpperCase(),
-        style: "mainTitle",
-        alignment: "center",
-        margin: [0, 10, 0, 10],
-      },
-
-      // Party & Invoice Details
+      // Billing Headers
       {
         columns: [
           {
-            stack: [
-              { text: data.partyMetaHeading, style: "subHeader" },
-              { text: data.entity.party.name },
-              { text: data.entity.billingAddress },
-              data.entity.party.gstNo && {
-                text: `GST NO: ${data.entity.party.gstNo}`,
-              },
-              data.entity.party.panNo && {
-                text: `PAN NO: ${data.entity.party.panNo}`,
-              },
-            ].filter(Boolean),
+            text: "Billing From",
+            style: "invoiceBillingTitle",
           },
           {
-            stack: [
-              { text: data.billMetaHeading, style: "subHeader" },
-              {
-                text: `Date: ${new Date(
-                  data.entity.date
-                ).toLocaleDateString()}`,
-              },
-              { text: `Order No: ${data.num}` },
-              data.entity.poNo && { text: `PO No: ${data.entity.poNo}` },
-              data.entity.poDate && {
-                text: `PO Date: ${new Date(
-                  data.entity.poDate
-                ).toLocaleDateString()}`,
-              },
-            ].filter(Boolean),
-            alignment: "right",
+            text: "Billing To",
+            style: "invoiceBillingTitle",
           },
         ],
-        margin: [0, 10, 0, 20],
       },
-
-      // Item Table
+      // Billing Details
+      {
+        columns: [
+          {
+            text: `${data.entity.org.name}`,
+            style: "invoiceBillingDetails",
+          },
+          {
+            text: `${data.entity.party.name}`,
+            style: "invoiceBillingDetails",
+          },
+        ],
+      },
+      // Billing Address Title
+      {
+        columns: [
+          {
+            text: "Address",
+            style: "invoiceBillingAddressTitle",
+          },
+          {
+            text: "Address",
+            style: "invoiceBillingAddressTitle",
+          },
+        ],
+      },
+      // Billing Address
+      {
+        columns: [
+          {
+            text: data.entity?.org.address,
+            style: "invoiceBillingAddress",
+          },
+          {
+            text: data.entity.billingAddress,
+            style: "invoiceBillingAddress",
+          },
+        ],
+      },
+      // Line breaks
+      "\n\n",
+      // Items
       {
         table: {
           headerRows: 1,
-          widths: ["auto", "*", "auto", "auto", "auto", "auto", "auto", "auto"],
+          widths: ["*", 40, "auto", 40, "auto", 80],
+
           body: [
             [
-              { text: "S.No", style: "tableHeader" },
-              { text: "Item Description", style: "tableHeader" },
-              { text: "HSN/SAC", style: "tableHeader" },
-              { text: "UM", style: "tableHeader" },
-              { text: "Qty", style: "tableHeader" },
-              { text: "Rate", style: "tableHeader" },
-              { text: "Tax", style: "tableHeader" },
-              { text: "Amount", style: "tableHeader" },
+              {
+                text: "Product",
+                style: "itemsHeader",
+              },
+              {
+                text: "Qty",
+                style: ["itemsHeader", "center"],
+              },
+              {
+                text: "HSN Code",
+                style: ["itemsHeader", "center"],
+              },
+              {
+                text: "Tax",
+                style: ["itemsHeader", "center"],
+              },
+              {
+                text: "Price",
+                style: ["itemsHeader", "center"],
+              },
+              {
+                text: "Total",
+                style: ["itemsHeader", "center"],
+              },
             ],
-            ...data.items.map((item, index) => [
-              index + 1,
-              item.name,
-              item.code,
-              item.um,
-              item.quantity,
-              item.price,
-              item.gst,
-              item.total,
+            ...data.items.map((item) => [
+              [
+                {
+                  text: item.name,
+                  style: "itemTitle",
+                },
+              ],
+              {
+                text: item.quantity,
+                style: "itemNumber",
+              },
+              {
+                text: item.code,
+                style: "itemNumber",
+              },
+              {
+                text: item.gst,
+                style: "itemNumber",
+              },
+              {
+                text: item.price,
+                style: "itemPrice",
+              },
+              {
+                text: item.total,
+                style: "itemTotal",
+              },
             ]),
           ],
         },
         layout: {
-          hLineWidth: () => 0.5,
-          vLineWidth: () => 0.5,
-          fillColor: (rowIndex) =>
-            rowIndex === 0 ? color : rowIndex % 2 === 0 ? "#f9f9f9" : null,
+          fillColor: (rowIndex) => (rowIndex === 0 ? color : null),
         },
+        //  layout: 'lightHorizontalLines'
       },
-
-      // Summary Section
+      // TOTAL
       {
         table: {
-          widths: ["*", "auto"],
+          headerRows: 0,
+          widths: ["*", 80],
+
           body: [
-            ["Gross Amount", data.total],
-            ["SGST", data.sgst],
-            ["CGST", data.cgst],
-            ["IGST", data.igst],
             [
               {
-                text: "Grand Total",
-                bold: true,
-                fillColor: color,
-                color: "white",
+                text: "Subtotal",
+                style: "itemsFooterSubTitle",
+              },
+              {
+                text: data.total,
+                style: "itemsFooterSubValue",
+              },
+            ],
+            [
+              {
+                text: "TAX",
+                style: "itemsFooterSubTitle",
+              },
+              {
+                text: data.entity?.totalTax,
+                style: "itemsFooterSubValue",
+              },
+            ],
+            [
+              {
+                text: "TOTAL",
+                style: "itemsFooterTotalTitle",
               },
               {
                 text: data.grandTotal,
-                bold: true,
-                fillColor: color,
-                color: "white",
+                style: "itemsFooterTotalValue",
               },
             ],
-            [
-              {
-                text: "Amount in Words",
-                colSpan: 2,
-                italics: true,
-                fillColor: "#f0f0f0",
-              },
-              {},
-            ],
-            [{ text: data.amountToWords, colSpan: 2 }, {}],
           ],
         },
-        margin: [0, 20, 0, 20],
+        layout: "lightHorizontalLines",
       },
 
-      // Terms & Conditions
-      data.entity.terms && {
-        text: `TERMS AND CONDITIONS:\n${data.entity.terms}`,
-        style: "terms",
-        margin: [0, 0, 0, 20],
-      },
-
-      // Footer
+      // Signature
+     
       {
-        text: "(Authorised Signatory)",
-        style: "footerSignatory",
+        text: "AMOUNT IN WORDS",
+      },
+      {
+        text: data.amountToWords,
+        style: {
+          bold: true,
+        },
+      },
+      {
+        text: "Authorized Signatory",
+        style: "signatory",
         alignment: "right",
-        margin: [0, 30, 0, 0],
+        margin: [0, 50, 0, 0],
+      },
+      data.bank
+        ? {
+            columns: [
+              {
+                stack: [
+                  { text: "Bank Account Details:", style: "subheader" },
+                  { text: `Bank Name: ${data.bank.name}` },
+                  { text: `Account Holder: ${data.bank.accountHolderName}` },
+                  { text: `Account Number: ${data.bank.accountNo}` },
+                  { text: `IFSC Code: ${data.bank.ifscCode}` },
+                ],
+              },
+              data.upiQr
+                ? {
+                    stack: [
+                      { text: "UPI QR Code", style: "subheader" },
+                      { image: data.upiQr, width: 100 },
+                    ],
+                    alignment: "right",
+                  }
+                : {},
+            ],
+          }
+        : {},
+      {
+        text: "Terms and Conditions:",
+        style: "notesTitle",
+      },
+      {
+        text: data.entity.terms,
+        style: "notesText",
       },
     ],
-
     styles: {
-      headerTitle: { fontSize: 16, bold: true },
-      headerSub: { fontSize: 10, color: "#444" },
-      mainTitle: { fontSize: 18, bold: true, color: color },
-      subHeader: { fontSize: 12, bold: true, margin: [0, 5, 0, 5] },
-      tableHeader: {
+      // Document Header
+      documentHeaderLeft: {
+        fontSize: 10,
+        margin: [5, 5, 5, 5],
+        alignment: "left",
+      },
+      documentHeaderCenter: {
+        fontSize: 10,
+        margin: [5, 5, 5, 5],
+        alignment: "center",
+      },
+      documentHeaderRight: {
+        fontSize: 10,
+        margin: [5, 5, 5, 5],
+        alignment: "right",
+      },
+      // Document Footer
+      documentFooterLeft: {
+        fontSize: 10,
+        margin: [5, 5, 5, 5],
+        alignment: "left",
+      },
+      signatory: { bold: true, decoration: "underline" },
+      subheader: { fontSize: 14, bold: true, color: color },
+
+      documentFooterCenter: {
+        fontSize: 10,
+        margin: [5, 5, 5, 5],
+        alignment: "center",
+      },
+      documentFooterRight: {
+        fontSize: 10,
+        margin: [5, 5, 5, 5],
+        alignment: "right",
+      },
+      // Invoice Title
+      invoiceTitle: {
+        fontSize: 22,
         bold: true,
-        fontSize: 11,
-        fillColor: color,
+        alignment: "right",
+        margin: [0, 0, 0, 15],
+      },
+      // Invoice Details
+      invoiceSubTitle: {
+        fontSize: 12,
+        alignment: "right",
+      },
+      invoiceSubValue: {
+        fontSize: 12,
+        alignment: "right",
+      },
+      // Billing Headers
+      invoiceBillingTitle: {
+        fontSize: 14,
+        bold: true,
+        alignment: "left",
+        margin: [0, 20, 0, 5],
+      },
+      // Billing Details
+      invoiceBillingDetails: {
+        alignment: "left",
+      },
+      invoiceBillingAddressTitle: {
+        margin: [0, 7, 0, 3],
+        bold: true,
+      },
+      invoiceBillingAddress: {},
+      // Items Header
+      itemsHeader: {
+        margin: [0, 5, 0, 5],
+        bold: true,
         color: "white",
       },
-      terms: { fontSize: 9, italics: true, color: "#666" },
-      footerSignatory: { bold: true, decoration: "underline", fontSize: 12 },
-    },
+      // Item Title
+      itemTitle: {
+        bold: true,
+      },
+      itemSubTitle: {
+        italics: true,
+        fontSize: 11,
+      },
+      itemNumber: {
+        margin: [0, 5, 0, 5],
+        alignment: "right",
+        noWrap: true,
+      },
+      itemPrice: {
+        margin: [0, 5, 0, 5],
+        alignment: "right",
+        noWrap: true,
+      },
+      itemTotal: {
+        margin: [0, 5, 0, 5],
+        bold: true,
+        alignment: "right",
+      },
 
+      // Items Footer (Subtotal, Total, Tax, etc)
+      itemsFooterSubTitle: {
+        margin: [0, 5, 0, 5],
+        bold: true,
+        alignment: "right",
+      },
+      itemsFooterSubValue: {
+        margin: [0, 5, 0, 5],
+        bold: true,
+        alignment: "center",
+      },
+      itemsFooterTotalTitle: {
+        margin: [0, 5, 0, 5],
+        bold: true,
+        alignment: "right",
+      },
+      itemsFooterTotalValue: {
+        margin: [0, 5, 0, 5],
+        bold: true,
+        alignment: "center",
+      },
+      signaturePlaceholder: {
+        margin: [0, 70, 0, 0],
+      },
+      signatureName: {
+        bold: true,
+        alignment: "center",
+      },
+      signatureJobTitle: {
+        italics: true,
+        fontSize: 10,
+        alignment: "center",
+      },
+      notesTitle: {
+        fontSize: 10,
+        bold: true,
+        margin: [0, 50, 0, 3],
+      },
+      notesText: {
+        fontSize: 10,
+      },
+      center: {
+        alignment: "center",
+      },
+    },
     defaultStyle: {
+      columnGap: 10,
       fontSize: 10,
     },
   };

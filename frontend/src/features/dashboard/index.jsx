@@ -35,6 +35,7 @@ export default function DashboardPage() {
       label: "Invoices",
       Icon: FaFileInvoiceDollar,
       tableHeading: "Recent Sales",
+      route : "invoices",
       statusConfig: invoiceStatusList,
     },
     parties: {
@@ -47,12 +48,14 @@ export default function DashboardPage() {
     },
     purchases: {
       label: "Purchase",
+      route : "purchases",
       Icon: FaMoneyBillTrendUp,
       tableHeading: "Recent Purchase",
       statusConfig: purchaseStatusList,
     },
     quotes: {
       label: "Quotation",
+      route : "estimates",
       Icon: FaFileInvoice,
       tableHeading: "Recent Estimates ",
       statusConfig: statusList,
@@ -182,7 +185,7 @@ export default function DashboardPage() {
           </Flex>
           <Stack>
             {Object.entries(dashboard.tables).map(([entity, items], index) => {
-              const { tableHeading, statusConfig } =
+              const { tableHeading, statusConfig, route } =
                 dashboardEntityConfiguration[entity];
               return (
                 <Skeleton key={index} isLoaded={!loading}>
@@ -198,7 +201,7 @@ export default function DashboardPage() {
                       "Status",
                       "Date",
                     ]}
-                    onViewMore={() => navigate(`/${orgId}/${entity}`)}
+                    onViewMore={() => navigate(`/${orgId}/${route}`)}
                   />
                 </Skeleton>
               );

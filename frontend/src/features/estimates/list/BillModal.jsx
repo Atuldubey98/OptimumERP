@@ -19,6 +19,7 @@ import { useState } from "react";
 import { IoCheckmark } from "react-icons/io5";
 import { CiSaveDown2 } from "react-icons/ci";
 import instance, { baseURL } from "../../../instance";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
@@ -30,7 +31,9 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
     { name: "Dark Gray", hex: "616161" },
   ];
   const [color, setColor] = useState(templateColors[0].hex);
-  const [templateName, setTemplateName] = useState("simple");
+  const settingContext = useCurrentOrgCurrency();
+  const setting = settingContext?.setting;
+  const templateName = setting?.printSettings?.defaultTemplate || "simple";
   const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download`;
   const onSaveBill = async () => {
     setStatus("downloading");

@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
+const { templates } = require("../constants/template");
 const termsSchema = {
   type: String,
   default: "Thanks for business !",
@@ -73,6 +74,11 @@ const settingSchema = new Schema({
     upiQr: {
       type: Boolean,
       default: false,
+    },
+    defaultTemplate: {
+      type: String,
+      default: "simple",
+      enum: templates.map((template) => template.value),
     },
   },
   receiptDefaults: {
