@@ -1,0 +1,269 @@
+# This file is intended to store or describe schemas used in the project.
+# Add your schema definitions, descriptions, or references here.
+
+# =====================
+# Invoice Schema
+# =====================
+# Joi DTO (backend/src/dto/invoice.dto.js):
+# - party: string (required)
+# - billingAddress: string (required)
+# - description: string (optional)
+# - terms: string (optional)
+# - items: array of { name, price, quantity, code, um, tax } (required)
+# - date: date (required)
+# - prefix: string (required)
+# - org: string (optional)
+# - sequence: number (required)
+# - poNo: string (optional)
+# - poDate: string (optional)
+# - dueDate: string (optional)
+# - status: string (draft|sent|pending, default: draft)
+# - createdBy: string (optional)
+# - updatedBy: string (optional)
+#
+# Mongoose Model (backend/src/models/invoice.model.js):
+# - party: ObjectId (required, ref: party)
+# - payment: { amount, paymentMode, description, date }
+# - billingAddress: string (required)
+# - total: number (required, default: 0)
+# - poNo: string (default: "")
+# - poDate: Date
+# - dueDate: Date
+# - totalTax: number (required, default: 0)
+# - taxCategories: { sgst, cgst, igst, vat, cess, sal, others }
+# - description: string (default: "Thanks for the business.")
+# - terms: string
+# - org: ObjectId (required, ref: organization)
+# - items: [ { name, price, code, quantity, um, tax } ]
+# - date: Date (default: now)
+# - num: string (default: "")
+# - sequence: number (required)
+# - prefix: string (default: "")
+# - createdBy: ObjectId (required, ref: user)
+# - updatedBy: ObjectId (ref: user)
+# - status: string (draft|sent|pending, default: sent)
+# - financialYear: { start: Date, end: Date } (required)
+
+# =====================
+# Contact Schema
+# =====================
+# Joi DTO (backend/src/dto/contact.dto.js):
+# - name: string (required, 2-40 chars)
+# - email: string (optional, email, max 40)
+# - party: string (optional, default: null)
+# - telephone: string (optional)
+# - description: string (optional, max 80)
+# - type: string (required)
+# - createdBy: string (required)
+# - updatedBy: string (optional)
+#
+# Mongoose Model (backend/src/models/contacts.model.js):
+# - org: ObjectId (required, ref: organization)
+# - createdBy: ObjectId (required, ref: user)
+# - email: string
+# - party: ObjectId (ref: party)
+# - telephone: string
+# - name: string (required)
+# - type: string (enum)
+# - updatedBy: String (ref: user)
+
+# =====================
+# Product Schema
+# =====================
+# Joi DTO (backend/src/dto/product.dto.js):
+# - name: string (required, max 150)
+# - costPrice: number
+# - sellingPrice: number
+# - description: string (max 200, optional)
+# - um: string (optional, default: NONE)
+# - type: string (required, goods|service)
+# - code: string (optional)
+# - category: string (optional)
+# - createdBy: string
+# - updatedBy: string (optional)
+#
+# Mongoose Model (backend/src/models/product.model.js):
+# - name: string (required)
+# - costPrice: number (default: 0)
+# - sellingPrice: number (default: 0)
+# - description: string (default: "")
+# - category: ObjectId (ref: product_category)
+# - type: string (required, enum: service|goods)
+# - code: string
+# - org: ObjectId (required, ref: organization)
+# - um: ObjectId (required, ref: ums)
+# - createdBy: ObjectId (required, ref: user)
+# - updatedBy: ObjectId (ref: user)
+
+# =====================
+# Tax Schema
+# =====================
+# Joi DTO (backend/src/dto/tax.dto.js):
+# - name: string (required, max 8)
+# - description: string (max 80, optional)
+# - type: string (required, single|grouped, default: single)
+# - category: string (required, igst|sgst|cgst|vat|cess|sal|others|none)
+# - children: array of string (ObjectId)
+# - percentage: number (0-100, default: 0)
+# - enabled: boolean (default: true, optional)
+# - createdBy: string (required)
+#
+# Mongoose Model (backend/src/models/tax.model.js):
+# - name: string (required, maxLength: 20)
+# - org: ObjectId (required, ref: organization)
+# - description: string (maxLength: 80)
+# - type: string (required, enum: single|grouped, default: single)
+# - category: string (required, enum: igst|sgst|cgst|vat|cess|sal|none|others)
+# - children: [ObjectId] (ref: taxes)
+# - percentage: number (required, 0-100, default: 0)
+# - createdBy: ObjectId (required, ref: user)
+# - enabled: boolean (required, default: true)
+
+# =====================
+# Organization Schema
+# =====================
+# Joi DTO (backend/src/dto/org.dto.js):
+# - name: string (required, 2-80 chars)
+# - address: string (required)
+# - gstNo: string (optional)
+# - createdBy: string (required)
+# - financialYear: { start: string, end: string } (required)
+# - panNo: string (optional)
+#
+# Mongoose Model (backend/src/models/org.model.js):
+# - name: string (required, 2-80 chars)
+# - address: string (required)
+# - gstNo: string
+# - createdBy: ObjectId (required, ref: user)
+# - logo: string
+# - panNo: string
+# - telephone: string
+# - email: string
+# - web: string
+# - bank: { name, accountHolderName, ifscCode, accountNo, upi }
+# - relatedDocsCount: { contacts, invoices, expenses, ... }
+# - timestamps, versionKey: false
+
+# =====================
+# Expense Schema
+# =====================
+# Joi DTO (backend/src/dto/expense.dto.js):
+# - description: string (required)
+# - amount: number (required)
+# - category: string (optional)
+# - date: string (optional)
+# - createdBy: string (optional)
+# - updatedBy: string (optional)
+#
+# Mongoose Model (backend/src/models/expense.model.js):
+# - description: string (required, maxLength: 150)
+# - org: ObjectId (required, ref: organization)
+# - amount: number (required)
+# - category: ObjectId (ref: expense_category)
+# - date: Date (required, default: now)
+# - timestamps, versionKey: false
+
+# =====================
+# Expense Category Schema
+# =====================
+# Joi DTO (backend/src/dto/expenseCategory.dto.js):
+# - name: string (required, max 80)
+# - description: string (optional, max 150)
+# - enabled: boolean (optional)
+# - createdBy: string (required)
+# - updatedBy: string (optional)
+#
+# Mongoose Model (backend/src/models/expenseCategory.model.js):
+# - name: string (required, maxLength: 80)
+# - description: string (maxLength: 150)
+# - enabled: boolean (default: true)
+# - org: ObjectId (required, ref: organization)
+# - createdBy: ObjectId (ref: user)
+# - updatedBy: ObjectId (ref: user)
+# - timestamps, versionKey: false
+
+# =====================
+# Purchase Schema
+# =====================
+# Joi DTO (backend/src/dto/purchase.dto.js):
+# - party: string (required)
+# - description: string (optional)
+# - org: string (optional)
+# - billingAddress: string (required)
+# - terms: string (optional)
+# - items: array of { name, price, quantity, code, um, tax } (required)
+# - date: date (required)
+# - createdBy: string (optional)
+# - updatedBy: string (optional)
+# - num: string (required)
+# - status: string (unpaid|paid, default: unpaid)
+#
+# Mongoose Model (backend/src/models/purchase.model.js):
+# - party: ObjectId (required, ref: party)
+# - billingAddress: string (required)
+# - payment: { amount, paymentMode, description, date }
+# - total: number (required, default: 0)
+# - totalTax: number (required, default: 0)
+# - taxCategories: { sgst, cgst, igst, vat, cess, sal, others }
+# - description: string (default: "Thanks for the business.")
+# - org: ObjectId (required, ref: organization)
+# - items: [ { name, price, code, quantity, um, tax } ]
+# - date: Date (default: now)
+# - num: string (required)
+# - createdBy: ObjectId (required, ref: user)
+# - updatedBy: ObjectId (ref: user)
+# - status: string (paid|unpaid, default: sent)
+# - financialYear: { start: Date, end: Date } (required)
+# - timestamps, versionKey: false
+
+# =====================
+# Purchase Order Schema
+# =====================
+# Joi DTO (backend/src/dto/purchaseOrder.dto.js):
+# - party: string (required)
+# - org: string (required)
+# - sequence: number (required)
+# - discount: number (optional, default: 0)
+# - date: string (required)
+# - prefix: string (optional)
+# - description: string (optional)
+# - billingAddress: string (required)
+# - items: array of { name, price, quantity, um, code, tax } (required)
+# - terms: string (optional)
+# - num: string (optional, default: "")
+# - status: string (draft|sent|paid, default: draft)
+# - createdBy: string (optional)
+# - updatedBy: string (optional)
+#
+# Mongoose Model (backend/src/models/purchaseOrder.model.js):
+# - party: ObjectId (required, ref: party)
+# - billingAddress: string (required)
+# - discount: number (default: 0)
+# - total: number (required, default: 0)
+# - sequence: number (required)
+# - num: string (required)
+# - prefix: string (default: "")
+# - date: Date
+# - totalTax: number (required, default: 0)
+# - taxCategories: { sgst, cgst, igst, vat, cess, sal, others }
+# - description: string (default: "Thanks for the business.")
+# - terms: string
+# - org: ObjectId (required, ref: organization)
+# - num: string (default: "")
+# - createdBy: ObjectId (required, ref: user)
+# - updatedBy: ObjectId (ref: user)
+# - status: string (draft|sent|paid, default: sent)
+# - items: [ { name, price, code, quantity, um, tax } ]
+# - financialYear: { start: Date, end: Date } (required)
+# - timestamps, versionKey: false
+
+# =====================
+# Sale Order Schema REMOVED
+# =====================
+
+# ... Add more schemas as needed ...
+
+# End of schemas.txt
+# =====================
+# This file is auto-generated from DTOs and Mongoose models. Edit with care.
+# =====================
