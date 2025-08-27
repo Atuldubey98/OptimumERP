@@ -1,15 +1,14 @@
 const winston = require("winston");
-const { combine, timestamp, printf, colorize, align } = winston.format;
 
+const logFormat = winston.format.printf(({ level, message, timestamp }) => {
+  return `[${timestamp}] ${level}: ${message}`;
+});
 const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || "info",
-  format: combine(
-    colorize({ all: true }),
-    timestamp({
-      format: "YYYY-MM-DD hh:mm:ss.SSS A",
-    }),
-    align(),
-    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  format: winston.format.combine(
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.colorize(),
+    logFormat
   ),
   transports: [new winston.transports.Console()],
 });

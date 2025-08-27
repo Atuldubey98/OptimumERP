@@ -21,8 +21,8 @@ export default function AboutPage() {
           flexDir={"column"}
           alignItems={"center"}
         >
-          <Image w={"sm"} src="/favicon-white.svg" />
-          <Heading textAlign={"center"}>
+          <Image w={"xs"} src="/favicon.svg" />
+          <Heading fontSize={20} textAlign={"center"}>
             Unlock the Power of Seamless Business Operations
           </Heading>
           <Text>
