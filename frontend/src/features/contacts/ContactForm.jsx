@@ -11,7 +11,6 @@ import React from "react";
 import FormDrawerLayout from "../common/form-drawer-layout";
 import PartySelectBill from "../invoices/create/PartySelectBill";
 import { Select } from "chakra-react-select";
-import { contactTypes } from "../../constants/contactTypes";
 
 export default function ContactForm({
   isSubmitting,
@@ -19,6 +18,7 @@ export default function ContactForm({
   onClose,
   formik,
   handleFormSubmit,
+  contactTypes,
 }) {
   const currentSelectedContact = contactTypes.find(
     (type) => type.value === formik.values.type

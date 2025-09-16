@@ -4,9 +4,11 @@ const errorHandler = require("./handlers/error.handler");
 const path = require("path");
 const morgan = require("morgan");
 const organizationRouter = require("./routes/org.routes");
+const propertyRouter = require("./routes/property.routes");
 const { NODE_ENV } = require("./config");
 const sessionHandler = require("./handlers/session.handler");
 const corsHandler = require("./handlers/cors.handler");
+const { authenticate } = require("./middlewares/auth.middleware");
 const app = express();
 
 app.set("view engine", "ejs");
@@ -44,6 +46,8 @@ app.get("/api/v1/health", (_, res) =>
 );
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations", organizationRouter);
+app.use("/api/v1/property", authenticate,propertyRouter );
+
 
 app.use("*", (req, res) =>
   res.status(404).json({ message: `${req.originalUrl} not found on server` })

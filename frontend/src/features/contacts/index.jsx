@@ -28,8 +28,8 @@ import Contact from "./Contact";
 import ContactForm from "./ContactForm";
 import FilterPopoverWrapper from "../common/FilterPopoverWrapper";
 import { Select } from "chakra-react-select";
-import { contactTypes } from "../../constants/contactTypes";
 import useQuery from "../../hooks/useQuery";
+import useProperty from "../../hooks/useProperty";
 const contactDto = Yup.object({
   name: Yup.string().label("Name").required().min(2).max(40),
   email: Yup.string().email().max(40).optional(),
@@ -42,10 +42,12 @@ export default function ContactsPage() {
   const { orgId } = useParams();
   const query = useQuery();
   const type = query.get("type") || "";
+  const { status: propertyStatus, value: contactTypes = [] } =
+    useProperty("CONTACT_TYPES");
   const { data, fetchFn, status } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/contacts`,
   });
-  const loading = status === "loading";
+  const loading = status === "loading" || propertyStatus === "loading";
   const {
     isOpen: isContactFormOpen,
     onOpen: openContactForm,
@@ -137,6 +139,10 @@ export default function ContactsPage() {
     },
     ...contactTypes,
   ];
+  const mapContactTypes = contactTypes.reduce((acc, contactType) => {
+    acc[contactType.value] = contactType;
+    return acc;
+  }, {});  
   return (
     <MainLayout>
       <Box p={4}>
@@ -184,7 +190,7 @@ export default function ContactsPage() {
                   {data.items.map((item) => (
                     <Contact
                       key={item._id}
-                      item={item}
+                      item={{...item, type : mapContactTypes[item.type]?.label || "Unknown"}}
                       onDeleteContact={() => {
                         setSelectedContact(item);
                         openContactDeleteModal();
@@ -233,6 +239,7 @@ export default function ContactsPage() {
         isSubmitting={formik.isSubmitting}
         isOpen={isContactFormOpen}
         onClose={closeContactForm}
+        contactTypes={contactTypes}
         handleFormSubmit={formik.handleSubmit}
       />
       <AlertModal

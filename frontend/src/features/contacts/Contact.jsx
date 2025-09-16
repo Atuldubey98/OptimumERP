@@ -15,7 +15,6 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { RiDeleteBin2Line } from "react-icons/ri";
-import { contactTypes } from "../../constants/contactTypes";
 export default function Contact({ item, onDeleteContact, onEditContact }) {
   const { orgId } = useParams();
   return (
@@ -55,8 +54,7 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
           )}
         </Text>
         <Text noOfLines={1}>
-          {contactTypes.find((contactType) => contactType.value === item.type)
-            .label || "Unknown Type"}
+          {item.type}
         </Text>
       </CardBody>
       <CardFooter>

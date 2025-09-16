@@ -1,6 +1,6 @@
 const { Schema, Types, model } = require("mongoose");
-const contactTypes = require("../constants/contactType");
 const Party = require("./party.model");
+const Property = require("./properties.model");
 
 const contactSchema = new Schema(
   {
@@ -38,7 +38,13 @@ const contactSchema = new Schema(
     },
     type: {
       type: String,
-      enum: contactTypes.map((contact) => contact.value),
+      validate: {
+        validator : async (value)=>{
+          const property = await Property.findOne({name : "CONTACT_TYPES", "value.value": value}).lean();
+          return property != null;
+        },
+        message : "Invalid contact type"
+      }
     },
     updatedBy: {
       type: String,
