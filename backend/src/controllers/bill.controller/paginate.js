@@ -22,7 +22,6 @@ const paginate = async (options = {}, req, res) => {
     limit,
     totalPages,
     total,
-    message: "Invoices retrieved successfully",
     reachedLimit: hasUserReachedCreationLimits({
       relatedDocsCount: res.locals.organization.relatedDocsCount,
       userLimits: req.session.user.limits,
