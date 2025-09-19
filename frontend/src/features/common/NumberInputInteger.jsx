@@ -12,10 +12,12 @@ export default function NumberInputInteger({
   onlyInt = false,
   min = 0,
   placeholder = "",
+  max ,
 }) {
   return (
     <NumberInput
       min={min}
+      max={max}
       isRequired
       value={formik.values[name]}
       onChange={(value) => {

@@ -12,3 +12,8 @@ exports.getCurrencyConfig = async (filter = {})=>{
     const property = await Property.findOne({name : "CURRENCIES_CONFIG", ...filter}).lean();
     return property;
 }
+
+exports.getTemplateConfig = async (filter = {})=>{
+    const property = await Property.findOne({name : "TEMPLATES_CONFIG", ...filter}).lean();
+    return property;
+}

@@ -22,11 +22,11 @@ import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { paymentMethods } from "../../../constants/invoice";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import instance from "../../../instance";
 import NumberInputInteger from "../../common/NumberInputInteger";
+import useProperty from "../../../hooks/useProperty";
 
 export default function PayoutModal({
   purchase,
@@ -37,6 +37,8 @@ export default function PayoutModal({
   const { requestAsyncHandler } = useAsyncCall();
   const toast = useToast();
   const { orgId } = useParams();
+  const {value : paymentMethods = []} = useProperty("PAYMENT_METHODS");
+  
   const defaultPayment = {
     amount: 0,
     paymentMode: "",
@@ -101,13 +103,18 @@ export default function PayoutModal({
                 <strong> Total Tax: </strong>
                 {symbol} {purchase.totalTax.toFixed(2)}
               </Text>
-              <Divider/>
+              <Divider />
               <FormControl
                 isInvalid={formik.errors.amount && formik.touched.amount}
               >
                 <FormLabel>Amount</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
-                  <NumberInputInteger formik={formik} name={"amount"} min={0} />
+                  <NumberInputInteger
+                    formik={formik}
+                    name={"amount"}
+                    min={0}
+                    max={purchase?.total + purchase?.totalTax}
+                  />
                   <Button
                     colorScheme="green"
                     onClick={() =>

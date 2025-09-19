@@ -1,6 +1,6 @@
 const { Schema, Types, model } = require("mongoose");
-const paymentMethods = require("../constants/paymentMethods");
 const Party = require("./party.model");
+const Property = require("./properties.model");
 const invoiceSchema = new Schema(
   {
     party: {
@@ -23,7 +23,6 @@ const invoiceSchema = new Schema(
         },
         paymentMode: {
           type: String,
-          enum: paymentMethods.map((method) => method.value),
         },
         description: {
           type: String,
@@ -32,6 +31,13 @@ const invoiceSchema = new Schema(
           type: Date,
         },
       },
+      validate : {
+        validator:  async function (value) {       
+          const payment = await Property.findOne({name : "PAYMENT_METHODS", "value.value" : value.paymentMode});
+          return Boolean(payment);
+        },
+        message : () => `Payment method does not exist`
+      }
     },
     billingAddress: {
       type: String,

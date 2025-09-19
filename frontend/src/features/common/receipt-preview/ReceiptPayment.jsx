@@ -2,12 +2,13 @@ import {
     Box,
     Text
 } from "@chakra-ui/react";
+import useProperty from "../../../hooks/useProperty";
 import moment from "moment";
-import React from "react";
-import { paymentMethods } from "../../../constants/invoice";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function ReceiptPayment(props) {
   const { symbol } = useCurrentOrgCurrency();
+  const {value : paymentMethods = []} = useProperty("PAYMENT_METHODS");
+
   const label = paymentMethods.find(
     (method) => method.value === props.payment.paymentMode
   ).label;

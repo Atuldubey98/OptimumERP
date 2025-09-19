@@ -1,5 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
-const { templates } = require("../constants/template");
+const Property = require("./properties.model");
 const termsSchema = {
   type: String,
   default: "Thanks for business !",
@@ -67,19 +67,28 @@ const settingSchema = new Schema({
     required: true,
   },
   printSettings: {
-    bank: {
-      type: Boolean,
-      default: false,
+    type: {
+      bank: {
+        type: Boolean,
+        default: false,
+      },
+      upiQr: {
+        type: Boolean,
+        default: false,
+      },
+      defaultTemplate: {
+        type: String,
+        default: "simple",
+        required : true,
+      },
     },
-    upiQr: {
-      type: Boolean,
-      default: false,
-    },
-    defaultTemplate: {
-      type: String,
-      default: "simple",
-      enum: templates.map((template) => template.value),
-    },
+    validate : {
+      validator : async function(v){
+        const property = await Property.findOne({name : "TEMPLATES_CONFIG", "value.value" : v.defaultTemplate}).lean();
+        return property != null;
+      },
+      message : props => `${props.value} is not a valid print setting`
+    }
   },
   receiptDefaults: {
     um: {

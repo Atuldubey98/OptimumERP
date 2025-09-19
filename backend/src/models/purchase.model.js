@@ -1,5 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
-const paymentMethods = require("../constants/paymentMethods");
+const Property = require("./properties.model");
 
 const purchaseInvoice = new Schema(
   {
@@ -20,7 +20,6 @@ const purchaseInvoice = new Schema(
         },
         paymentMode: {
           type: String,
-          enum: paymentMethods.map((method) => method.value),
         },
         description: {
           type: String,
@@ -29,6 +28,14 @@ const purchaseInvoice = new Schema(
           type: Date,
         },
       },
+      validate : {
+        validator:  async (value) => {
+          if(!value) return true;
+          const payment = await Property.findOne({name : "PAYMENT_METHODS", "value.value" : value.paymentMode});
+          return Boolean(payment);
+        },
+        message : () => `Payment method does not exist` 
+      }
     },
     total: {
       type: Number,

@@ -1,7 +1,6 @@
 import {
   Button,
   Divider,
-  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -14,21 +13,20 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spinner,
   Stack,
   Text,
   Textarea,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import NumberInputInteger from "../../common/NumberInputInteger";
 import { Select } from "chakra-react-select";
-import { paymentMethods } from "../../../constants/invoice";
-import useAsyncCall from "../../../hooks/useAsyncCall";
-import instance from "../../../instance";
+import { useFormik } from "formik";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import instance from "../../../instance";
+import NumberInputInteger from "../../common/NumberInputInteger";
+import useProperty from "../../../hooks/useProperty";
 export default function RecordPaymentModal({
   isOpen,
   onClose,
@@ -36,6 +34,7 @@ export default function RecordPaymentModal({
   fetchInvoices,
 }) {
   const { requestAsyncHandler } = useAsyncCall();
+  const {value : paymentMethods = []} = useProperty("PAYMENT_METHODS");
   const toast = useToast();
   const { orgId } = useParams();
   const defaultPayment = {
@@ -108,7 +107,7 @@ export default function RecordPaymentModal({
               >
                 <FormLabel>Amount</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
-                  <NumberInputInteger formik={formik} name={"amount"} min={0} />
+                  <NumberInputInteger formik={formik} name={"amount"} min={0} max={invoice.total + invoice.totalTax} />
                   <Button
                     colorScheme="green"
                     onClick={() =>

@@ -9,20 +9,21 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
-import AuthContext from "../../../contexts/AuthContext";
 import { Select } from "chakra-react-select";
-
+import { useContext } from "react";
+import AuthContext from "../../../contexts/AuthContext";
+import useProperty from "../../../hooks/useProperty";
 export default function PrintSettings({ printFormik, formik, loading }) {
   const auth = useContext(AuthContext);
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
     : "free";
   const bg = useColorModeValue("gray.100", "gray.700");
-  const templateOptions = [
-    { value: "simple", label: "Simple template " },
-    { value: "borderLand", label: "Border Land template " },
-  ];
+  const { value : templates = []} = useProperty("TEMPLATES_CONFIG");
+  const templateOptions = templates.map((template) => ({
+    label: template.name,
+    value: template.value,
+  }));
   return (
     <form onSubmit={printFormik.handleSubmit}>
       <Stack>

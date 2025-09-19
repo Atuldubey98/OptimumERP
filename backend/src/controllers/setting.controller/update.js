@@ -8,7 +8,7 @@ const update = async (req, res) => {
   const updatedSetting = await Setting.findOneAndUpdate(
     { org: orgId },
     req.body,
-    { new: true }
+    { new: true , runValidators: true}
   ).populate("org");
   return res.status(200).json({ data: updatedSetting });
 };

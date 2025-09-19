@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const { getBillDetail } = require("../../services/bill.service");
-
+const propertyService = require("../../services/property.service");
+const { PropertyNotFound } = require("../../errors/property.error");
 const htmlView = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;
   try {
@@ -11,6 +12,8 @@ const htmlView = async (options = {}, req, res) => {
       org: req.params.orgId,
     };
     const template = req.query.template || "simple";
+    const property = await propertyService.getTemplateConfig({ "value.value" : template });
+    if(!property) throw new PropertyNotFound();
     const locationTemplate = `templates/${template}`;
     const data = await getBillDetail({
       Bill,
