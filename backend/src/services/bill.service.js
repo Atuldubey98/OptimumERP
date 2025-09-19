@@ -1,8 +1,8 @@
-const currencies = require("../constants/currencies");
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const { currencyToWordConverter } = require("./currencyToWord.service");
+const propertyService = require("./property.service");
 const { promiseQrCode, renderHtml } = require("./renderEngine.service");
 const {
   calculateTaxes,
@@ -141,7 +141,8 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     .populate("org");
   if (!bill) throw new NotFound();
   const setting = await getSettingForOrg(filter.org);
-  const currencySymbol = currencies[setting.currency].symbol;
+  const currencies = await propertyService.getCurrencyConfig();
+  const currencySymbol = currencies.value[setting.currency].symbol;
   const grandTotal = bill.total + bill.totalTax;
   const items = await calculateTaxesForBillItemsWithCurrency(
     bill.items,
@@ -151,7 +152,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const currencyTaxCategories = addCurrencyToTaxCategories(
     bill.taxCategories,
     currencySymbol
-  );
+  );  
   const data = {
     entity: bill,
     num: bill.num,

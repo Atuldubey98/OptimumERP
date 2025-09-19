@@ -32,7 +32,6 @@ import ReceiptPayment from "./ReceiptPayment";
 export default function ReceiptDisplay({ receipt, meta }) {
   const { type, orgId } = useParams();
   const navigate = useNavigate();
-
   const onDownloadReceipt = async () => {
     try {
       const templateName = localStorage.getItem("template") || "simple";

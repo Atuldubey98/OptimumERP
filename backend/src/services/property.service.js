@@ -7,3 +7,8 @@ exports.getByName = async (name) => {
     if(!property) throw new PropertyNotFound();
     return property;
 }
+
+exports.getCurrencyConfig = async (filter = {})=>{
+    const property = await Property.findOne({name : "CURRENCIES_CONFIG", ...filter}).lean();
+    return property;
+}

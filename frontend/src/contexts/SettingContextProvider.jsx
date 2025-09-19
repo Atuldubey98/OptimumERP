@@ -15,8 +15,8 @@ export default function SettingContextProvider({ children }) {
       const { data } = await instance.get(
         `/api/v1/organizations/${storedOrgId}/settings`
       );
-      setSetting(data.data);
-      setCurrentOrgRole(data.role);
+      setSetting({...data.data.setting, currency : data.data.currency});
+      setCurrentOrgRole(data.data.role);
       if (orgId) navigate(`/${orgId}/dashboard`);
     } catch (error) {
       localStorage.removeItem("organization");

@@ -7,48 +7,20 @@ import {
   FormLabel,
   Heading,
   IconButton,
-  Input,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   SimpleGrid,
   Skeleton,
   Stack,
-  Text,
   useColorModeValue,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useEffect, useState } from "react";
-import currencies from "../../../assets/currency.json";
-import instance from "../../../instance";
-import { IoIosHelpCircleOutline } from "react-icons/io";
-import PrefixForm from "./PrefixForm";
 import { IoAdd } from "react-icons/io5";
-import moment from "moment";
-function TransactionPopoverInstructions() {
-  return (
-    <Popover>
-      <PopoverTrigger>
-        <IconButton size={"sm"} icon={<IoIosHelpCircleOutline />} />
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverHeader>Transaction Settings</PopoverHeader>
-        <PopoverBody>
-          Define your currency, invoice prefixes, quotation prefixes and fiscal
-          year here.
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
+import instance from "../../../instance";
+import PrefixForm from "./PrefixForm";
+import useProperty from '../../../hooks/useProperty'
 export default function TransactionPrefix({ formik, loading, printFormik }) {
+ const {value : currencies = {}} = useProperty("CURRENCIES_CONFIG");
   useEffect(() => {
     (async () => {
       if (!formik.values.organization) {
@@ -73,17 +45,19 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       const { data } = await instance.get(
         `/api/v1/organizations/${formik.values.organization}/settings`
       );
+      console.log(data);
+      
       formik.setValues({
         organization: formik.values.organization,
-        invoice: data.data.transactionPrefix.invoice,
-        quotation: data.data.transactionPrefix.quotation,
-        purchaseOrder: data.data.transactionPrefix.purchaseOrder || "",
-        localeCode: data.data.localeCode || "en-IN",
-        proformaInvoice: data.data.transactionPrefix.proformaInvoice || "",
-        currency: data.data.currency || "INR",
-        prefixes: data.data.prefixes,
+        invoice: data.data.setting.transactionPrefix.invoice,
+        quotation: data.data.setting.transactionPrefix.quotation,
+        purchaseOrder: data.data.setting.transactionPrefix.purchaseOrder || "",
+        localeCode: data.data.setting.localeCode,
+        proformaInvoice: data.data.setting.transactionPrefix.proformaInvoice || "",
+        currency: data.data.currency.code,
+        prefixes: data.data.setting.prefixes,
       });
-      printFormik.setValues(data.data.printSettings);
+      printFormik.setValues(data.data.setting.printSettings);
     })();
   }, [formik.values.organization]);
   const currencyCodes = Object.keys(currencies);
@@ -108,7 +82,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
     onOpen();
   };
   const bg = useColorModeValue("gray.100", "gray.700");
-
+  
   return (
     <Stack spacing={6}>
       <Box p={3} bg={bg}>
@@ -229,7 +203,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 options={currencyOptions}
                 onChange={({ value }) => {
                   formik.setFieldValue("currency", value);
-                  const localeCode = currencies[value].localeCode;
+                  const localeCode = currencies[value].localCode;                                    
                   formik.setFieldValue("localeCode", localeCode);
                 }}
               />

@@ -94,7 +94,7 @@ export default function TransactionSettingsPage() {
         currentOrg === values.organization &&
         settingContext.onSetSettingForOrganization
       )
-        settingContext.onSetSettingForOrganization(data.data);
+        settingContext.fetchSetting();
 
       toast({
         title: "Success",
