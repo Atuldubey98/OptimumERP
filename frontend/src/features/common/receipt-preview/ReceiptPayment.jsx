@@ -8,10 +8,9 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function ReceiptPayment(props) {
   const { symbol } = useCurrentOrgCurrency();
   const {value : paymentMethods = []} = useProperty("PAYMENT_METHODS");
-
   const label = paymentMethods.find(
-    (method) => method.value === props.payment.paymentMode
-  ).label;
+    (method) => method?.value === props.payment?.paymentMode
+  )?.label;
   return (
     <Box>
       <Text>
