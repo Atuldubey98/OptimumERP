@@ -4,62 +4,34 @@ const Purchase = require("../../models/purchase.model");
 const { Types, isValidObjectId } = require("mongoose");
 const { OrgNotFound } = require("../../errors/org.error");
 
-const getOrgStats = async (req, res) => {
-  const currentDate = new Date();
-  let startDate, endDate;
-
-  const { period } = req.query;
-  switch (period) {
-    case "lastWeek":
-      startDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate() - 7
-      );
-      endDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate()
-      );
-      break;
-    case "lastMonth":
-      startDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      );
-      endDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        0
-      );
-      break;
-    case "lastYear":
-      startDate = new Date(currentDate.getFullYear() - 1, 0, 1);
-      endDate = new Date(currentDate.getFullYear(), 11, 31);
-      break;
-    default:
-      startDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      );
-      endDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        0
-      );
+const getPeriodFilters = (period)=>{
+  const periodFilters = {
+    lastWeek: {
+      $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+      $lte: new Date(),
+    },
+    lastMonth: {
+      $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      $lte: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+    },
+    lastYear: {
+      $gte: new Date(new Date().getFullYear() - 1, 0, 1),
+      $lte: new Date(new Date().getFullYear(), 11, 31),
+    },
   }
+  return periodFilters[period] || periodFilters['lastMonth'];
+}
+
+const getOrgStats = async (req, res) => {
+  const { period } = req.query;
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
+  const periodFilter = getPeriodFilters(period);
   const invoicesTotal = await Invoice.aggregate([
     {
       $match: {
         org: new Types.ObjectId(req.params.orgId),
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        date: periodFilter,
       },
     },
     {
@@ -75,10 +47,7 @@ const getOrgStats = async (req, res) => {
     {
       $match: {
         org: new Types.ObjectId(req.params.orgId),
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        date: periodFilter,
       },
     },
     {
@@ -94,10 +63,7 @@ const getOrgStats = async (req, res) => {
     {
       $match: {
         org: new Types.ObjectId(req.params.orgId),
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        date: periodFilter,
       },
     },
     {
@@ -133,10 +99,7 @@ const getOrgStats = async (req, res) => {
     {
       $match: {
         org: new Types.ObjectId(req.params.orgId),
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        date: periodFilter,
       },
     },
     {

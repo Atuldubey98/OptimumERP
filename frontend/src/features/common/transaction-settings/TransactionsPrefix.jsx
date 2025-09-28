@@ -45,7 +45,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       const { data } = await instance.get(
         `/api/v1/organizations/${formik.values.organization}/settings`
       );
-      console.log(data);
       
       formik.setValues({
         organization: formik.values.organization,

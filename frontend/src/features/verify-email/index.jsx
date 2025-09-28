@@ -45,7 +45,6 @@ export default function VerifyEmailPage() {
     verifyRegisteredUserFormik.values?.verficationStatus === "unverified";
   const isUserVerified =
     verifyRegisteredUserFormik.values?.verficationStatus === "verified";
-  console.log(verifyRegisteredUserFormik.values?.verficationStatus);
 
   return (
     <AuthLayout formHeading={"Verify email"}>
