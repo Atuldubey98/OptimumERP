@@ -32,7 +32,7 @@ export default function StatsPage() {
   const { orgId } = useParams();
   const [status, setStatus] = useState("idle");
   const loading = status === "loading";
-  const [currentPeriod, setCurrentPeriod] = useState("lastMonth");
+  const [currentPeriod, setCurrentPeriod] = useState("thisMonth");
   const fetchStats = useCallback(async () => {
     setStatus("loading");
     const { data } = await instance.get(
@@ -57,15 +57,15 @@ export default function StatsPage() {
   const periods = [
     {
       label: "This week",
-      value: "lastWeek",
+      value: "thisWeek",
     },
     {
       label: "This month",
-      value: "lastMonth",
+      value: "thisMonth",
     },
     {
       label: "This year",
-      value: "lastYear",
+      value: "thisYear",
     },
   ];
   const currentPeriodLabel = periods.find(

@@ -6,20 +6,20 @@ const { OrgNotFound } = require("../../errors/org.error");
 
 const getPeriodFilters = (period)=>{
   const periodFilters = {
-    lastWeek: {
+    thisWeek: {
       $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
       $lte: new Date(),
     },
-    lastMonth: {
+    thisMonth: {
       $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       $lte: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
     },
-    lastYear: {
+    thisYear: {
       $gte: new Date(new Date().getFullYear() - 1, 0, 1),
       $lte: new Date(new Date().getFullYear(), 11, 31),
     },
   }
-  return periodFilters[period] || periodFilters['lastMonth'];
+  return periodFilters[period] || periodFilters['thisYear'];
 }
 
 const getOrgStats = async (req, res) => {
@@ -27,7 +27,7 @@ const getOrgStats = async (req, res) => {
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
   const periodFilter = getPeriodFilters(period);
-  const invoicesTotal = await Invoice.aggregate([
+  const aggregator = [
     {
       $match: {
         org: new Types.ObjectId(req.params.orgId),
@@ -42,24 +42,12 @@ const getOrgStats = async (req, res) => {
         count: { $sum: 1 },
       },
     },
+  ]
+  const [invoicesTotal, purchaseTotal] = await Promise.all([
+    Invoice.aggregate(aggregator),
+    Purchase.aggregate(aggregator),
   ]);
-  const purchaseTotal = await Purchase.aggregate([
-    {
-      $match: {
-        org: new Types.ObjectId(req.params.orgId),
-        date: periodFilter,
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        totalTax: { $sum: "$totalTax" },
-        total: { $sum: "$total" },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-  const topFiveClientTotal = await Invoice.aggregate([
+  const topFiveAggregator = [
     {
       $match: {
         org: new Types.ObjectId(req.params.orgId),
@@ -94,7 +82,8 @@ const getOrgStats = async (req, res) => {
     {
       $unwind: "$party",
     },
-  ]);
+  ];
+  const topFiveClientTotal = await Invoice.aggregate(topFiveAggregator);
   const expensesByCategory = await Expense.aggregate([
     {
       $match: {

@@ -10,7 +10,7 @@ const read = async (req, res) => {
   const orgId = req.params.orgId;
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
   const countEntitiesPromises = [Invoice, Quotes, Expense, Purchase];
-  const [invCount, quoCount, expCount, purCount] = await Promise.all(
+  const [invCount, quoCount, expCount, purCount, partiesCount] = await Promise.all(
     countEntitiesPromises.map((model) =>
       model.countDocuments({
         date: {
@@ -21,13 +21,7 @@ const read = async (req, res) => {
       })
     )
   );
-  const partiesCount = await Party.countDocuments({
-    createdAt: {
-      $gte: startDate,
-      $lte: endDate,
-    },
-    org: orgId,
-  }).exec();
+ 
   const counts = {
     invoices: invCount,
     quotes: quoCount,

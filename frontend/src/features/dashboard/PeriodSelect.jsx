@@ -4,15 +4,15 @@ export default function PeriodSelect({ currentPeriod, onChangePeriod }) {
   const periods = [
     {
       label: "This week",
-      value: "lastWeek",
+      value: "thisWeek",
     },
     {
       label: "This month",
-      value: "lastMonth",
+      value: "thisMonth",
     },
     {
       label: "This year",
-      value: "lastYear",
+      value: "thisYear",
     },
   ];
   return (
