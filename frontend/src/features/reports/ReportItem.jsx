@@ -23,6 +23,14 @@ import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 import moment from "moment";
+const reportTypes = {
+  invoice : "Invoice  ",
+  purchase : "Purchase",
+  expense : "Expense",
+  quotes : "Quotes",
+  proforma_invoice : "Proforma Invoice",
+  purchase_order : "Purchase Order",
+}
 const reportDataByType = {
   sale: {
     header: {
@@ -74,7 +82,7 @@ const reportDataByType = {
     bodyMapper: (item) => ({
       _id: item._id,
       num: item.doc?.num,
-      type: item?.docModel,
+      type: reportTypes[item?.docModel],
       amount: (item.total + item.totalTax).toFixed(2),
       relatedTo: item?.party?.name || item.doc?.description || "",
       createdAt: new Date(item.createdAt).toLocaleDateString(),
