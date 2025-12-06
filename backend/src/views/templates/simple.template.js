@@ -85,11 +85,11 @@ const simpleTemplate = (data, color) => {
               index + 1,
               item.name,
               item.um,
-              { text: item.code, noWrap: true }, // Prevent wrapping in Code column
+              { text: item.code, noWrap: true,alignment : "right" }, // Prevent wrapping in Code column
               item.gst,
-              { text: item.quantity, noWrap: true }, // Prevent wrapping in Quantity column
-              { text: item.price, noWrap: true }, // Prevent wrapping in Price column
-              { text: item.total, noWrap: true }, // Prevent wrapping in Amount column
+              { text: item.quantity, noWrap: true, alignment : "right" }, // Prevent wrapping in Quantity column
+              { text: item.price, noWrap: true, alignment : "right" }, // Prevent wrapping in Price column
+              { text: item.total, noWrap: true, alignment : "right" }, // Prevent wrapping in Amount column
             ]),
           ],
         },
@@ -150,15 +150,15 @@ const simpleTemplate = (data, color) => {
       },
     ],
     styles: {
-      header: { fontSize: 18, bold: true, color: color },
-      subheader: { fontSize: 14, bold: true, color: color },
-      tableHeader: { bold: true, fontSize: 12, color: "white" },
+      header: { fontSize: 14, bold: true, color: color },
+      subheader: { fontSize: 10, bold: true, color: color },
+      tableHeader: { bold: true, color: "white" },
       terms: { italics: true },
       signatory: { bold: true, decoration: "underline" },
-      mainTitle: { fontSize: 18, bold: true, color: color },
+      mainTitle: { fontSize: 14, bold: true, color: color },
     },
     defaultStyle: {
-      fontSize: 10,
+      fontSize: 8,
       lineHeight: 1.2,
     },
   };
