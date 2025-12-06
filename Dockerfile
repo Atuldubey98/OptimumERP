@@ -29,6 +29,8 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# Expose ports
+EXPOSE 80 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
