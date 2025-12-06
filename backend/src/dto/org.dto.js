@@ -10,6 +10,7 @@ const createOrgDto = Joi.object({
     end: Joi.string().required(),
   }).required(),
   panNo: Joi.string().label("PAN No."),
+  timezone: Joi.string().required().label("Timezone"),
 });
 
 const updateOrgDto = Joi.object({

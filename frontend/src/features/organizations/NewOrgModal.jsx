@@ -43,6 +43,7 @@ export default function NewOrgModal({
       await instance.post(`/api/v1/organizations`, {
         ...resetOrg,
         financialYear: { start: financialYearStart, end: financialYearEnd },
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
       onAddedFetch();
       onCloseNewOrgModal();

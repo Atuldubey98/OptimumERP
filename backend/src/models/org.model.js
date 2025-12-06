@@ -23,6 +23,10 @@ const orgSchema = new Schema(
     gstNo: {
       type: String,
     },
+    timezone: {
+      type: String,
+      required: true,
+    },
     createdBy: {
       type: Types.ObjectId,
       ref: "user",
