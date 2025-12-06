@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    image: atuldubey017/optimumerp
     container_name: optimumerp
     ports:
       - "80:80"
     environment:
-      - NODE_ENV=development
-      - MONGO_URI=mongodb://127.0.0.1/erp
+      - NODE_ENV=production
+      - MONGO_URI=your-mongodb-uri
       - SESSION_SECRET=YOUR_SESSION_SECRET
       - NODE_MAILER_USER_NAME=your-email@gmail.com
       - NODE_MAILER_APP_PASSWORD=your-app-password
@@ -20,8 +20,6 @@ services:
       - CLOUDINARY_NAME=your-cloudinary-name
       - CLOUDINARY_API_KEY=your-cloudinary-api-key
       - CLOUDINARY_API_SECRET=your-cloudinary-api-secret
-    env_file:
-      - ./.env
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/api/v1/health"]
