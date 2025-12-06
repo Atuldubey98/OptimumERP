@@ -169,28 +169,28 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     quotes: async () => {
       return {
         title: "Quotation",
-        billMetaHeading: "Estimate Information",
+        billMetaHeading: "Estimate Details",
         partyMetaHeading: "Estimate to",
       };
     },
     purchase: async () => {
       return {
         title: "Purchase",
-        billMetaHeading: "Purchase Information",
+        billMetaHeading: "Purchase Details",
         partyMetaHeading: "Bill From",
       };
     },
     proforma_invoice: async () => {
       return {
         title: "Proforma Invoice",
-        billMetaHeading: "Proforma Invoice information",
+        billMetaHeading: "Proforma Invoice Details",
         partyMetaHeading: "Bill To",
       };
     },
     purchase_order: async () => {
       return {
         title: "Purchase Orders",
-        billMetaHeading: "PO Information",
+        billMetaHeading: "PO Details",
         partyMetaHeading: "PO to",
       };
     },
@@ -198,12 +198,12 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
       const upiQr = await getUpiQrCodeByPrintSettings({
         upi: bill.org?.bank?.upi,
         grandTotal,
-        shouldPrintQr: setting.printSettings.upiQr,
+        shouldPrintQr: setting?.printSettings?.upiQr,
       });
-      const bank = setting.printSettings.bank & bill.org.bank ? bill.org.bank : null;      
+      const bank = setting?.printSettings?.bank & bill.org.bank ? bill.org.bank : null;      
       return {
         title: "Invoice",
-        billMetaHeading: "Invoice information",
+        billMetaHeading: "Invoice Details",
         partyMetaHeading: "Bill To",
         bank,
         upiQr,

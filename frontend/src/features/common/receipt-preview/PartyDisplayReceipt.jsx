@@ -23,10 +23,10 @@ export default function PartyDisplayReceipt(props) {
         {props.receipt.party?.shippingAddress}
       </Text>
       <Text>
-        <strong>GST</strong> : {props.receipt.party?.gst}
+        <strong>GST</strong> : {props.receipt.party?.gstNo}
       </Text>
       <Text>
-        <strong>PAN</strong> : {props.receipt.party?.pan}
+        <strong>PAN</strong> : {props.receipt.party?.panNo}
       </Text>
     </Box>
   );

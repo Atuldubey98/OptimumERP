@@ -26,6 +26,10 @@ module.exports = (err, req, res, next) => {
     code = 401;
   }
   const name = err.name || "InternalError";
+  if(process.env.NODE_ENV !== "development") {
+    console.error(err);
+  }
+  
   return res.status(code > 500 ? 500 : code).json({
     status: false,
     message,
