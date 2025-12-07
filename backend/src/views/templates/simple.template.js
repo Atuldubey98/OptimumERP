@@ -49,8 +49,12 @@ const simpleTemplate = (data, color) => {
           {
             stack: [
               { text: data.billMetaHeading, style: "subheader" },
-              { text: `Date: ${new Date(data.entity.date).toDateString()}` },
-              { text: `Number: ${data.num}` },
+              { text: `Date: ${new Date(data.entity.date).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}` },
+              { text: `Number: ${data.num}`, bold: true },
               data.entity.poNo ? { text: `PO No: ${data.entity.poNo}` } : {},
               data.entity.poDate
                 ? {

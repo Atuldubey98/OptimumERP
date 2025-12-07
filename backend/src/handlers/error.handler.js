@@ -26,7 +26,7 @@ module.exports = (err, req, res, next) => {
     code = 401;
   }
   const name = err.name || "InternalError";
-  if(process.env.NODE_ENV !== "development") {
+  if(process.env.NODE_ENV === "development") {
     console.error(err);
   }
   

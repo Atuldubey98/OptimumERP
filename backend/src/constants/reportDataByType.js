@@ -19,7 +19,11 @@ const reportDataByType = {
       poNo: item.poNo,
       poDate: item.poDate ? new Date(item.poDate).toLocaleDateString() : "",
       num: item.num,
-      date: new Date(item.date).toLocaleDateString(),
+      date: new Date(item.date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
       totalTax: item.totalTax.toFixed(2),
       grandTotal: (item.totalTax + item.total).toFixed(2),
       status: (item?.status || "").toLocaleUpperCase(),
