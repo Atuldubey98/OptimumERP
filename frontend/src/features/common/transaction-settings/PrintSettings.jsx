@@ -23,7 +23,8 @@ export default function PrintSettings({ printFormik, formik, loading }) {
   const templateOptions = templates.map((template) => ({
     label: template.name,
     value: template.value,
-  }));
+  }));  
+  
   return (
     <form onSubmit={printFormik.handleSubmit}>
       <Stack>
@@ -46,7 +47,10 @@ export default function PrintSettings({ printFormik, formik, loading }) {
               <Select
                 options={templateOptions}
                 onChange={({ value }) =>
-                  printFormik.setFieldValue("defaultTemplate", value)
+                 {
+                   printFormik.setFieldValue("defaultTemplate", value);
+                 
+                 }
                 }
                 value={templateOptions.find(
                   (templateOption) =>
@@ -57,10 +61,10 @@ export default function PrintSettings({ printFormik, formik, loading }) {
             </FormControl>
             <Box>
               <Checkbox
-                isDisabled={!formik.values.organization}
+                isDisabled={!formik.values?.organization}
                 name="bank"
                 onChange={printFormik.handleChange}
-                isChecked={printFormik.values.bank}
+                isChecked={printFormik.values?.bank}
               >
                 Print Bank Details on Invoice
               </Checkbox>
@@ -68,10 +72,10 @@ export default function PrintSettings({ printFormik, formik, loading }) {
 
             <Checkbox
               title={currentPlan === "free" ? "Upgrade your plan" : null}
-              isDisabled={!formik.values.organization || currentPlan === "free"}
+              isDisabled={!formik.values?.organization || currentPlan === "free"}
               name="upiQr"
               onChange={printFormik.handleChange}
-              isChecked={printFormik.values.upiQr}
+              isChecked={printFormik.values?.upiQr}
             >
               Print UPI QR on Invoice
             </Checkbox>

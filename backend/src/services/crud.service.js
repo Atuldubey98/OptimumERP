@@ -9,8 +9,16 @@ const {
   QUOTATION,
   TRANSACTIONS,
 } = require("../constants/entities");
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId, default: mongoose } = require("mongoose");
 
+exports.executeMongoDbTransaction = async (operationsCallback) => {
+  const session = await mongoose.startSession();
+  return session.withTransaction(async () => {
+    return await operationsCallback(session);
+  }).finally(() => {
+    session.endSession();
+  });
+}
 exports.getPaginationParams = async ({
   req,
   modelName,
@@ -61,5 +69,5 @@ exports.hasUserReachedCreationLimits = ({
 }) => {
   const currentOrgDocsCount = relatedDocsCount[key];
   const userPlanLimit = userLimits[key] || 0;
-  return userPlanLimit  && currentOrgDocsCount >= userPlanLimit;
+  return userPlanLimit && currentOrgDocsCount >= userPlanLimit;
 };

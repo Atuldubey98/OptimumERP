@@ -37,7 +37,6 @@ export default function TransactionSettingsPage() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       const settingsUrl = `/api/v1/organizations/${formik.values.organization}/settings`;
-
       await instance.patch(settingsUrl, {
         printSettings: values,
       });

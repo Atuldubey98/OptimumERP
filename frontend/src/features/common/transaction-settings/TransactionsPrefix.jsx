@@ -20,7 +20,7 @@ import instance from "../../../instance";
 import PrefixForm from "./PrefixForm";
 import useProperty from '../../../hooks/useProperty'
 export default function TransactionPrefix({ formik, loading, printFormik }) {
- const {value : currencies = {}} = useProperty("CURRENCIES_CONFIG");
+  const { value: currencies = {} } = useProperty("CURRENCIES_CONFIG");
   useEffect(() => {
     (async () => {
       if (!formik.values.organization) {
@@ -45,7 +45,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       const { data } = await instance.get(
         `/api/v1/organizations/${formik.values.organization}/settings`
       );
-      
+
       formik.setValues({
         organization: formik.values.organization,
         invoice: data.data.setting.transactionPrefix.invoice,
@@ -56,7 +56,8 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         currency: data.data.currency.code,
         prefixes: data.data.setting.prefixes,
       });
-      printFormik.setValues(data.data.setting.printSettings);
+
+      data?.data.setting.printSettings && printFormik.setValues(data.data.setting.printSettings);
     })();
   }, [formik.values.organization]);
   const currencyCodes = Object.keys(currencies);
@@ -81,7 +82,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
     onOpen();
   };
   const bg = useColorModeValue("gray.100", "gray.700");
-  
+
   return (
     <Stack spacing={6}>
       <Box p={3} bg={bg}>
@@ -202,7 +203,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 options={currencyOptions}
                 onChange={({ value }) => {
                   formik.setFieldValue("currency", value);
-                  const localeCode = currencies[value].localCode;                                    
+                  const localeCode = currencies[value].localCode;
                   formik.setFieldValue("localeCode", localeCode);
                 }}
               />

@@ -9,63 +9,68 @@ const OrgUser = require("../../models/orgUser.model");
 const Setting = require("../../models/settings.model");
 const Tax = require("../../models/tax.model");
 const Um = require("../../models/um.model");
+const { executeMongoDbTransaction } = require("../../services/crud.service");
 
 const create = async (req, res) => {
   const body = await createOrgDto.validateAsync(req.body);
-  const organization = new Org(body);
-  organization.relatedDocsCount.expenseCategories = expenseCategories.length;
-  const userId = req.session?.user?._id;
-  await createOrgUserForOrganization(userId, organization);
-  organization.relatedDocsCount.organizationUsers++;
-  const defaultOrgEntitiesPromises = [
-    createDefaultUnits(userId, organization),
-    createDefaultTaxes(userId, organization),
-    createDefaultExpenseCategories(userId, organization),
-  ];
-  const [ums, taxes] = await Promise.all(defaultOrgEntitiesPromises);
-  const noneTypeTax = taxes[0].id;
-  const noneTypeUm = ums[0].id;
-  await createSettingForOrg({
-    organization,
-    body,
-    receiptDefaults: {
-      tax: noneTypeTax,
-      um: noneTypeUm,
-    },
-  });
-  logger.info(`Organization created with id ${organization.id}`);
-  organization.relatedDocsCount.ums = ums.length;
-  organization.relatedDocsCount.taxes = taxes.length;
-  await organization.save();
+  const org = await executeMongoDbTransaction(async (session) => {
+    const organization = new Org(body);
+    organization.relatedDocsCount.expenseCategories = expenseCategories.length;
+    const userId = req.session?.user?._id;
+    await createOrgUserForOrganization(userId, organization, session);
+    organization.relatedDocsCount.organizationUsers++;
+    const defaultOrgEntitiesPromises = [
+      createDefaultUnits(userId, organization, session),
+      createDefaultTaxes(userId, organization, session),
+      createDefaultExpenseCategories(userId, organization, session),
+    ];
+    const [ums, taxes] = await Promise.all(defaultOrgEntitiesPromises);
+    const noneTypeTax = taxes[0].id;
+    const noneTypeUm = ums[0].id;
+    await createSettingForOrg({
+      organization,
+      body,
+      receiptDefaults: {
+        tax: noneTypeTax,
+        um: noneTypeUm,
+      },
+      session
+    });
+    logger.info(`Organization created with id ${organization.id}`);
+    organization.relatedDocsCount.ums = ums.length;
+    organization.relatedDocsCount.taxes = taxes.length;
+    await organization.save({ session });
+    return organization;
+  })
   return res
     .status(201)
-    .json({ message: "Organization registered", data: organization });
+    .json({ message: "Organization registered", data: org });
 };
 
 module.exports = create;
 
-function createSettingForOrg({ organization, body, receiptDefaults }) {
+function createSettingForOrg({ organization, body, receiptDefaults, session }) {
   const setting = new Setting({
     org: organization.id,
     financialYear: body.financialYear,
     receiptDefaults,
   });
 
-  return setting.save();
+  return setting.save({ session });
 }
 
-function createOrgUserForOrganization(userId, organization) {
+function createOrgUserForOrganization(userId, organization, session) {
   const orgUser = new OrgUser({
     org: organization.id,
     user: userId,
     role: "admin",
   });
 
-  return orgUser.save();
+  return orgUser.save({ session });
 }
 
-async function createDefaultTaxes(userId, organization) {
-  const singleTaxes = await createDefaultSingleTypeTaxes(userId, organization);
+async function createDefaultTaxes(userId, organization, session) {
+  const singleTaxes = await createDefaultSingleTypeTaxes(userId, organization, session);
   const groupedTaxes = getGroupedTaxesFromSingleTaxes({
     singleTaxes,
     organization,
@@ -100,26 +105,26 @@ function getGroupedTaxesFromSingleTaxes({ singleTaxes, organization, userId }) {
   return groupedTaxes;
 }
 
-async function createDefaultSingleTypeTaxes(userId, organization) {
+async function createDefaultSingleTypeTaxes(userId, organization, session) {
   const makeTaxForOrg = (tax) => ({
     ...tax,
     createdBy: userId,
     org: organization.id,
   });
-  return Tax.insertMany(taxes.map(makeTaxForOrg));
+  return Tax.insertMany(taxes.map(makeTaxForOrg), { session });
 }
 
-async function createDefaultUnits(userId, organization) {
+async function createDefaultUnits(userId, organization, session) {
   const makeUmForOrg = (um) => ({
     ...um,
     createdBy: userId,
     org: organization.id,
   });
-  const ums = await Um.insertMany(defaultUms.map(makeUmForOrg));
+  const ums = await Um.insertMany(defaultUms.map(makeUmForOrg), { session });
   return ums;
 }
 
-async function createDefaultExpenseCategories(userId, newOrg) {
+async function createDefaultExpenseCategories(userId, newOrg, session) {
   const makeExpenseCategoryForOrg = (category) => ({
     ...category,
     org: newOrg.id,
@@ -127,6 +132,6 @@ async function createDefaultExpenseCategories(userId, newOrg) {
     enabled: true,
   });
   return ExpenseCategory.insertMany(
-    expenseCategories.map(makeExpenseCategoryForOrg)
+    expenseCategories.map(makeExpenseCategoryForOrg), { session }
   );
 }

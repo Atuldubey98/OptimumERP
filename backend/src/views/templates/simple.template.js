@@ -76,23 +76,23 @@ const simpleTemplate = (data, color) => {
           widths: ["auto", "*", "auto", "auto", "auto", "auto", "auto", "auto"],
           body: [
             [
-              { text: "Line no.", style: "tableHeader" },
+              { text: "Sno.", style: "tableHeader" },
               { text: "Item", style: "tableHeader" },
-              { text: "UM", style: "tableHeader" },
               { text: "HSN/SAC Code", style: "tableHeader" },
-              { text: "Tax", style: "tableHeader" },
-              { text: "Qty", style: "tableHeader" },
+              { text: "UM", style: "tableHeader" },
               { text: "Rate", style: "tableHeader" },
+              { text: "Qty", style: "tableHeader" },
+              { text: "Tax", style: "tableHeader" },
               { text: "Amount", style: "tableHeader" },
             ],
             ...data.items.map((item, index) => [
               index + 1,
               item.name,
+              { text: item.code, noWrap: true, alignment: "right" }, // Prevent wrapping in Code column
               item.um,
-              { text: item.code, noWrap: true,alignment : "right" }, // Prevent wrapping in Code column
-              item.gst,
-              { text: item.quantity, noWrap: true, alignment : "right" }, // Prevent wrapping in Quantity column
               { text: item.price, noWrap: true, alignment : "right" }, // Prevent wrapping in Price column
+              { text: item.quantity, noWrap: true, alignment : "right" }, // Prevent wrapping in Quantity column
+              item.gst,
               { text: item.total, noWrap: true, alignment : "right" }, // Prevent wrapping in Amount column
             ]),
           ],
@@ -106,9 +106,10 @@ const simpleTemplate = (data, color) => {
           widths: ["*", "auto"],
           body: [
             ["Subtotal:", data.total],
-            ["SGST:", data.sgst],
-            ["CGST:", data.cgst],
-            ["IGST:", data.igst],
+            ...Object.entries(data.currencyTaxCategories).map(([taxName, taxValue]) => [
+              `${taxName.toLocaleUpperCase()}:`,
+              taxValue,
+            ]),
             ["Grand Total:", data.grandTotal],
             ["Amount in words:", data.amountToWords],
           ],

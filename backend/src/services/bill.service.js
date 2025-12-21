@@ -34,6 +34,7 @@ exports.saveBill = async ({
   NotFound,
   prefixType = "quotation",
   billId,
+  session,
 }) => {
   const body = await dto.validateAsync(requestBody);
   const totalWithTaxes = await calculateTaxes(body.items);
@@ -71,20 +72,23 @@ exports.saveBill = async ({
   }
   const bill = billId
     ? await Bill.findOneAndUpdate(
-        {
-          _id: billId,
-          org: body.org,
-        },
-        billBody,
-        {
-          new: true,
-        }
-      )
-    : await new Bill(billBody).save();
+      {
+        _id: billId,
+        org: body.org,
+      },
+      billBody,
+      {
+        new: true,
+        session
+      }
+    )
+    : await new Bill(billBody).save({session});
   if (billId && !bill) throw new NotFound();
   transaction.doc = bill.id;
   const newTransaction = new Transaction(transaction);
-  await newTransaction.save();
+  await newTransaction.save({
+    session
+  })
   return bill;
 
   async function findExistingBillInFinancialYear() {
@@ -127,6 +131,7 @@ const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
   const newTaxCategories = Object.entries(taxCategories).reduce(
     (prev, current) => {
       const [taxType, taxValue = 0] = current;
+      if(taxValue === 0) return prev;
       prev[taxType] = `${currencySymbol} ${taxValue.toFixed(2)}`;
       return prev;
     },
@@ -152,7 +157,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const currencyTaxCategories = addCurrencyToTaxCategories(
     bill.taxCategories,
     currencySymbol
-  );  
+  );
   const data = {
     entity: bill,
     num: bill.num,
@@ -163,8 +168,9 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     amountToWords: currencyToWordConverter(localeCode, grandTotal),
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
-    ...currencyTaxCategories,
+    currencyTaxCategories,
   };
+
   const billMetaMapping = {
     quotes: async () => {
       return {
@@ -200,7 +206,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
         grandTotal,
         shouldPrintQr: setting?.printSettings?.upiQr,
       });
-      const bank = setting?.printSettings?.bank & bill.org.bank ? bill.org.bank : null;      
+      const bank = setting?.printSettings?.bank & bill.org.bank ? bill.org.bank : null;
       return {
         title: "Invoice",
         billMetaHeading: "Invoice Details",
