@@ -1,40 +1,31 @@
-# Stage 1: Build Frontend
-FROM node:18-alpine AS frontend-builder
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ .
-RUN npm run build
-
-# Stage 2: Build Backend
-FROM node:18-alpine AS backend-builder
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm install
-COPY backend/ .
-
-# Stage 3: Production Runtime
-FROM node:18-alpine
-WORKDIR /app
+FROM node:20-alpine
 
 # Install nginx
-RUN apk add --no-cache nginx curl
+RUN apk add --no-cache nginx bash
 
-# Copy backend from backend-builder
-COPY --from=backend-builder /app/backend ./backend
+WORKDIR /app
 
-# Copy frontend build from frontend-builder
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+# Backend deps
+COPY backend/package*.json ./backend/
+RUN cd backend && npm ci
 
-# Copy nginx configuration
+# Frontend deps + build
+COPY frontend/package*.json ./frontend/
+RUN cd frontend && npm ci
+
+COPY frontend ./frontend
+RUN cd frontend && npm run build
+
+COPY backend ./backend
+
+# Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose ports
+# Copy frontend build to nginx
+RUN mkdir -p /usr/share/nginx/html
+RUN cp -r frontend/dist/* /usr/share/nginx/html/
+
 EXPOSE 80 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:5000 || exit 1
-
-# Start both nginx and backend server
-CMD ["sh", "-c", "nginx -g 'daemon off;' & node backend/src/server.js"]
+# Start BOTH backend & nginx
+CMD sh -c "cd /app/backend && npm start & nginx -g 'daemon off;'"
