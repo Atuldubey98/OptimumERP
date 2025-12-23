@@ -66,7 +66,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     initialValues: defaultInvoice,
     validationSchema: invoiceSchema,
     validateOnChange: false,
-    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
+    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {      
       const { _id, ...invoice } = values;
       const items = values.items.map(({ _id, ...item }) => item);
       await instance[_id ? "patch" : "post"](
@@ -90,7 +90,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       }
       setSubmitting(false);
     }),
-  });
+  });  
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
