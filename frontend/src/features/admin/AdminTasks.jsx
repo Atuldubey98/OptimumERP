@@ -99,6 +99,7 @@ function FinancialYearCloseForm(props) {
             </SimpleGrid>
             <Button
               size={"sm"}
+              type="submit"
               loadingText="Closing"
               isLoading={props.formik.isSubmitting}
             >

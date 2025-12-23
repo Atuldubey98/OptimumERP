@@ -41,9 +41,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         })
       )
       .min(1),
-    terms: Yup.string()
-      .required("Terms are required")
-      .label("Terms & Conditions"),
+    terms: Yup.string(),
     description: Yup.string()
       .max(80, "Description cannot be greater than 80")
       .label("Description"),

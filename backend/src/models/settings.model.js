@@ -3,7 +3,6 @@ const Property = require("./properties.model");
 const termsSchema = {
   type: String,
   default: "Thanks for business !",
-  required: true,
 };
 const settingSchema = new Schema({
   org: {
