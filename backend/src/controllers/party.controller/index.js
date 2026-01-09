@@ -1,6 +1,7 @@
 const create = require("./create");
 const downloadPartyTransactionSummary = require("./downloadPartyTransactionSummary");
 const getTransactionSummary = require("./getTransactionSummary");
+const migrate = require("./migrate");
 const paginate = require("./paginate");
 const read = require("./read");
 const remove = require("./remove");
@@ -15,4 +16,5 @@ module.exports = {
   remove,
   searchByNameOrBA,
   update,
+  migrate,
 };

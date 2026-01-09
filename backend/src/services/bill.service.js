@@ -206,7 +206,8 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
         grandTotal,
         shouldPrintQr: setting?.printSettings?.upiQr,
       });
-      const bank = setting?.printSettings?.bank & bill.org.bank ? bill.org.bank : null;
+      
+      const bank = setting?.printSettings?.bank && bill.org.bank ? bill.org.bank : null;      
       return {
         title: "Invoice",
         billMetaHeading: "Invoice Details",

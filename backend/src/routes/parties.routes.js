@@ -8,6 +8,7 @@ const {
   remove,
   searchByNameOrBA,
   update,
+  migrate,
 } = require("../controllers/party.controller");
 const {
   limitFreePlanOnCreateEntityForOrganization,
@@ -41,5 +42,5 @@ partyRouter.get(
   requestAsyncHandler(downloadPartyTransactionSummary)
 );
 partyRouter.delete("/:partyId", requestAsyncHandler(remove));
-
+partyRouter.post("/migrate/:platform", requestAsyncHandler(migrate));
 module.exports = partyRouter;
