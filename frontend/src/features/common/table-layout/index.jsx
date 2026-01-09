@@ -40,7 +40,7 @@ function TableLayoutMemoized({
         showExport={showExport}
       />
       {filter}
-      <TableContainer>
+      <TableContainer overflowX={"auto"}>
         <Table size={"sm"}>
           <TableCaption>{caption}</TableCaption>
           <Thead>
@@ -55,7 +55,9 @@ function TableLayoutMemoized({
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
                 {Object.keys(selectedKeys).map((col) => (
-                  <Td isNumeric={typeof tableRow[col] === "number"} key={col}>
+                  <Td maxW={300} whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis" title={tableRow[col]} isNumeric={typeof tableRow[col] === "number"} key={col}>
                     {tableRow[col]}
                   </Td>
                 ))}

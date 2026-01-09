@@ -20,6 +20,7 @@ const {
   paginateModel,
 } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
+const { spreadSheetUploader } = require("../middlewares/uploader.middleware");
 
 const partyRouter = Router({ mergeParams: true });
 
@@ -42,5 +43,7 @@ partyRouter.get(
   requestAsyncHandler(downloadPartyTransactionSummary)
 );
 partyRouter.delete("/:partyId", requestAsyncHandler(remove));
-partyRouter.post("/migrate/:platform", requestAsyncHandler(migrate));
+partyRouter.post("/migrate/:platform",
+  createModel,
+  requestAsyncHandler(migrate));
 module.exports = partyRouter;
