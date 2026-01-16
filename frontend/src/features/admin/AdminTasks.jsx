@@ -10,13 +10,22 @@ import {
   Button,
   FormControl,
   FormLabel,
+  Grid,
   Heading,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   SimpleGrid,
   Stack,
   Text,
   Textarea,
   useColorModeValue,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
@@ -28,6 +37,7 @@ import useAuth from "../../hooks/useAuth";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
 import GoogleIcon from "../common/GoogleIcon";
+import { GoPeople } from "react-icons/go";
 function FinancialYearCloseForm(props) {
   return (
     <AccordionItem>
@@ -204,6 +214,74 @@ function DefaultTermsForReceiptsForm({ formik }) {
     </AccordionItem>
   );
 }
+
+function MigrateFromOtherSoftware() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <AccordionItem>
+      <h2>
+        <AccordionButton>
+          <Box fontWeight={"bold"} flex="1" textAlign="left">
+            Import
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+      </h2>
+      <AccordionPanel pb={4}>
+        <Button onClick={onOpen} leftIcon={<GoPeople />} variant={"primary"}>
+          Party
+        </Button>
+        <PartyImportModal isOpen={isOpen} onClose={onClose} />
+      </AccordionPanel>
+    </AccordionItem>
+  );
+}
+function PartyImportModal({ isOpen, onClose }) {
+  const toast = useToast();
+
+  const handleDownloadSample = () => {
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      encodeURIComponent(
+        "Party Name,Address,Tax No"
+      );
+    const link = document.createElement("a");
+    link.setAttribute("href", csvContent);
+    link.setAttribute("download", "party_sample.csv");
+    link.click();
+    toast({
+      title: "Download started",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Import Parties</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Stack spacing={4}>
+            <Text>Upload a CSV file to import parties into your system.</Text>
+            <Button onClick={handleDownloadSample} variant="outline">
+              Download Sample CSV
+            </Button>
+            <Input type="file" accept=".csv" placeholder="Select CSV file" />
+          </Stack>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" mr={3} onClick={onClose}>
+            Cancel
+          </Button>
+          <Button colorScheme="blue">Import</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
 export default function AdminTasks({ organization }) {
   const bg = useColorModeValue("gray.100", "gray.700");
   const { financialYear } = useCurrentOrgCurrency();
@@ -283,6 +361,7 @@ export default function AdminTasks({ organization }) {
         isCurrentPlanGreaterThanFreePlan ? (
           <SMTPSetup />
         ) : null}
+        <MigrateFromOtherSoftware />
       </Accordion>
     </Box>
   );
