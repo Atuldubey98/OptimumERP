@@ -85,10 +85,19 @@ exports.saveBill = async ({
     : await new Bill(billBody).save({session});
   if (billId && !bill) throw new NotFound();
   transaction.doc = bill.id;
-  const newTransaction = new Transaction(transaction);
-  await newTransaction.save({
-    session
-  })
+  await Transaction.findOneAndUpdate(
+    {
+      org: transaction.org,
+      docModel: transaction.docModel,
+      doc: bill.id,
+    },
+    transaction,
+    {
+      upsert: true,
+      new: true,
+      session,
+    }
+  );
   return bill;
 
   async function findExistingBillInFinancialYear() {

@@ -32,7 +32,7 @@ function TableLayoutMemoized({
     return tableRow;
   });
   return (
-    <Stack spacing={4}>
+    <Stack spacing={4} w="100%">
       <HeadingButtons
         heading={heading}
         isAddDisabled={isAddDisabled}
@@ -40,7 +40,7 @@ function TableLayoutMemoized({
         showExport={showExport}
       />
       {filter}
-      <TableContainer overflowX={"auto"}>
+      <TableContainer>
         <Table size={"sm"}>
           <TableCaption>{caption}</TableCaption>
           <Thead>
@@ -55,7 +55,7 @@ function TableLayoutMemoized({
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
                 {Object.keys(selectedKeys).map((col) => (
-                  <Td maxW={300} whiteSpace="nowrap"
+                  <Td maxW={"20svw"} whiteSpace="nowrap"
                     overflow="hidden"
                     textOverflow="ellipsis" title={tableRow[col]} isNumeric={typeof tableRow[col] === "number"} key={col}>
                     {tableRow[col]}
