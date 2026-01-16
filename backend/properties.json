@@ -1,0 +1,198 @@
+[{
+  
+  "name": "PAYMENT_METHODS",
+  "value": [
+    {
+      "value": "",
+      "label": "Default Payment"
+    },
+    {
+      "value": "card",
+      "label": "Credit/Debit Card Payments"
+    },
+    {
+      "value": "eft",
+      "label": "Electronic Funds Transfer (EFT)"
+    },
+    {
+      "value": "direct_debit",
+      "label": "Direct Debit"
+    },
+    {
+      "value": "bank_transfer",
+      "label": "Bank Transfers"
+    },
+    {
+      "value": "online_wallet",
+      "label": "Online Payment Wallets"
+    },
+    {
+      "value": "mobile",
+      "label": "Mobile Payments"
+    },
+    {
+      "value": "cash",
+      "label": "Cash Payments"
+    },
+    {
+      "value": "cheque",
+      "label": "Cheque Payments"
+    },
+    {
+      "value": "installments",
+      "label": "Payment Plans/Installments"
+    },
+    {
+      "value": "ecommerce",
+      "label": "Payment Integration with E-commerce Platforms"
+    },
+    {
+      "value": "intl_methods",
+      "label": "International Payment Methods"
+    },
+    {
+      "value": "ach",
+      "label": "Automated Clearing House (ACH) Payments"
+    },
+    {
+      "value": "crypto",
+      "label": "Cryptocurrency Payments"
+    }
+  ]
+},
+{
+  
+  "name": "CONTACT_TYPES",
+  "value": [
+    {
+      "value": "unknown",
+      "label": "Default Contact",
+      "description": "Contact is undentified"
+    },
+    {
+      "value": "customer",
+      "label": "Customer",
+      "description": "Individuals or organizations that purchase goods or services from the company."
+    },
+    {
+      "value": "supplier",
+      "label": "Supplier or Vendor",
+      "description": "Individuals or companies that provide goods or services to the company."
+    },
+    {
+      "value": "employee",
+      "label": "Employee",
+      "description": "Individuals employed by the company, including full-time, part-time, and contract workers."
+    },
+    {
+      "value": "prospect",
+      "label": "Prospect or Lead",
+      "description": "Individuals or organizations that have shown interest in the company's products or services but haven't made a purchase yet."
+    },
+    {
+      "value": "partner",
+      "label": "Partner or Affiliate",
+      "description": "Other businesses or organizations that collaborate with the company in various capacities, such as distribution partners, resellers, or strategic alliances."
+    },
+    {
+      "value": "government",
+      "label": "Government Agency",
+      "description": "Contacts related to regulatory bodies, tax authorities, or other government entities that the company interacts with for compliance purposes."
+    },
+    {
+      "value": "marketing",
+      "label": "Marketing or PR Contact",
+      "description": "Individuals or organizations involved in marketing campaigns, public relations activities, or media relations."
+    },
+    {
+      "value": "internal",
+      "label": "Internal Contact",
+      "description": "Contacts within the organization who are not necessarily customers or suppliers, such as department heads, managers, or colleagues."
+    },
+    {
+      "value": "service",
+      "label": "Service Provider",
+      "description": "Individuals or companies that provide specialized services to the company, such as IT support, consulting services, or maintenance contracts."
+    },
+    {
+      "value": "contractor",
+      "label": "Contractor or Freelancer",
+      "description": "Individuals or companies hired on a temporary or project basis to perform specific tasks or services for the company."
+    }
+  ]
+},
+{
+  
+  "name": "TEMPLATES_CONFIG",
+  "value": [
+    {
+      "value": "simple",
+      "name": "Simple template "
+    },
+    {
+      "value": "borderLand",
+      "name": "Border Land template "
+    }
+  ]
+},
+{
+  
+  "name": "CURRENCIES_CONFIG",
+  "value": {
+    "EUR": {
+      "symbol": "€",
+      "name": "Euro",
+      "symbol_native": "€",
+      "decimal_digits": 2,
+      "rounding": 0,
+      "code": "EUR",
+      "name_plural": "euros",
+      "locale": "French",
+      "localCode": "fr-FR"
+    },
+    "INR": {
+      "symbol": "₹",
+      "name": "Indian Rupee",
+      "symbol_native": "₹",
+      "decimal_digits": 2,
+      "rounding": 0,
+      "code": "INR",
+      "name_plural": "Indian rupees",
+      "locale": "English",
+      "localCode": "en-IN"
+    },
+    "BRL": {
+      "symbol": "R$",
+      "name": "Brazilian Real",
+      "symbol_native": "R$",
+      "decimal_digits": 2,
+      "rounding": 0,
+      "code": "BRL",
+      "name_plural": "Brazilian reals",
+      "locale": "Portuguese",
+      "localCode": "pt-BR"
+    },
+    "BDT": {
+      "symbol": "৳",
+      "name": "Bangladeshi Taka",
+      "symbol_native": "৳",
+      "decimal_digits": 2,
+      "rounding": 0,
+      "code": "BDT",
+      "name_plural": "Bangladeshi takas",
+      "locale": "English",
+      "localCode": "en-BD"
+    },
+    "AUD": {
+      "symbol": "$",
+      "name": "Australian Dollar",
+      "symbol_native": "$",
+      "decimal_digits": 2,
+      "rounding": 0,
+      "code": "AUD",
+      "name_plural": "Australian dollars",
+      "locale": "English",
+      "localCode": "en-US"
+    }
+  }
+}]

@@ -21,8 +21,10 @@ const simpleTemplate = (data, color) => {
             stack: [
               { text: data.entity.org.name, style: "header" },
               { text: data.entity.org.address },
-              { text: `GSTIN: ${data.entity.org.gstNo}` },
-              { text: `PAN: ${data.entity.org.panNo}` },
+              { text: "GSTIN: ", style: "inline" },
+              { text: data.entity.org.gstNo },
+              { text: "PAN: ", style: "inline" },
+              { text: data.entity.org.panNo },
             ],
             alignment: "right",
           },
@@ -36,13 +38,13 @@ const simpleTemplate = (data, color) => {
           {
             stack: [
               { text: data.partyMetaHeading, style: "subheader" },
-              { text: data.entity.party.name },
+              { text: data.entity.party.name, style : { bold: true } },
               { text: data.entity.billingAddress },
               data.entity.party.gstNo
-                ? { text: `GSTIN: ${data.entity.party.gstNo}` }
+                ? { text: ["GSTIN: ", { text: data.entity.party.gstNo }] }
                 : {},
               data.entity.party.panNo
-                ? { text: `PAN: ${data.entity.party.panNo}` }
+                ? { text: ["PAN: ", { text: data.entity.party.panNo }] }
                 : {},
             ],
           },
@@ -88,12 +90,12 @@ const simpleTemplate = (data, color) => {
             ...data.items.map((item, index) => [
               index + 1,
               item.name,
-              { text: item.code, noWrap: true, alignment: "right" }, // Prevent wrapping in Code column
+              { text: item.code, noWrap: true, alignment: "right" },
               item.um,
-              { text: item.price, noWrap: true, alignment : "right" }, // Prevent wrapping in Price column
-              { text: item.quantity, noWrap: true, alignment : "right" }, // Prevent wrapping in Quantity column
+              { text: item.price, noWrap: true, alignment : "right" },
+              { text: item.quantity, noWrap: true, alignment : "right" },
               item.gst,
-              { text: item.total, noWrap: true, alignment : "right" }, // Prevent wrapping in Amount column
+              { text: item.total, noWrap: true, alignment : "right" },
             ]),
           ],
         },
@@ -118,8 +120,10 @@ const simpleTemplate = (data, color) => {
       },
       data.entity.terms
         ? {
-            text: `Terms and Conditions:\n${data.entity.terms}`,
-            style: "terms",
+            stack: [
+              { text: "Terms and Conditions:", style: "termsHeading" },
+              { text: data.entity.terms, style: "terms" },
+            ],
             margin: [0, 0, 0, 20],
           }
         : {},
@@ -158,6 +162,7 @@ const simpleTemplate = (data, color) => {
       header: { fontSize: 14, bold: true, color: color },
       subheader: { fontSize: 10, bold: true, color: color },
       tableHeader: { bold: true, color: "white" },
+      termsHeading: { bold: true },
       terms: { italics: true },
       signatory: { bold: true, decoration: "underline" },
       mainTitle: { fontSize: 14, bold: true, color: color },

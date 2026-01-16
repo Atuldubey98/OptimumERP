@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node .",
-    "dev": "export NODE_ENV=development && nodemon ."
+    "seeder": "node src/seeder.js",
+    "dev": "export NODE_ENV=development && npm run seeder && nodemon ."
   },
   "author": "",
   "license": "ISC",
