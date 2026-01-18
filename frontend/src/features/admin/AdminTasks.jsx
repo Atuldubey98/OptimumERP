@@ -329,10 +329,7 @@ export default function AdminTasks({ organization }) {
     },
     onSubmit: async (values, { setSubmitting }) => {
       await instance.patch(`/api/v1/organizations/${organization}/settings`, {
-        receiptDefaults: {
-          ...(settingContext.setting?.receiptDefaults || {}),
-          terms: values.terms,
-        },
+        "receiptDefaults.terms": values.terms,
       });
       await settingContext.fetchSetting();
       toast({
