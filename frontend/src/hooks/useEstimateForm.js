@@ -30,7 +30,7 @@ export default function useEstimateForm() {
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
-        })
+        }),
       )
       .min(1),
     terms: Yup.string().required("Terms are required"),
@@ -62,7 +62,7 @@ export default function useEstimateForm() {
         {
           ...estimate,
           items,
-        }
+        },
       );
       toast({
         title: "Success",
@@ -89,7 +89,7 @@ export default function useEstimateForm() {
       async function fetchSequence() {
         setStatus("loading");
         const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`
+          `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`,
         );
         formik.setFieldValue("sequence", data.data);
         setStatus("success");
@@ -98,7 +98,7 @@ export default function useEstimateForm() {
       async function fetchQuotation() {
         setStatus("loading");
         const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/quotes/${quoteId}`
+          `/api/v1/organizations/${orgId}/quotes/${quoteId}`,
         );
         const {
           party,
@@ -120,7 +120,11 @@ export default function useEstimateForm() {
           sequence,
           date: new Date(date).toISOString().split("T")[0],
           status,
-          items,
+          items: items.map((item) => ({
+            ...item,
+            tax: item.tax._id,
+            um: item.um._id,
+          })),
           description,
           partyDetails: party,
           createdBy: data.data.createdBy._id,
