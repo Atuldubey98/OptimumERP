@@ -12,3 +12,4 @@ CLOUDINARY_NAME=your_value
 CLOUDINARY_API_KEY=your_value
 CLOUDINARY_API_SECRET=your_value
 IMPORT_CRON_SCHEDULE=your_value
+LOG_FILE_PATH=your_value
