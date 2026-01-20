@@ -7,17 +7,7 @@ const propertyService = require("./services/property.service");
 const Property = require("./models/properties.model");
 const fs = require("fs/promises");
 const dbService = require("./services/db.service");
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "seeder.log" }),
-  ],
-});
+const logger = require("./logger");
 const checkIfSeeded = async () => {
   try {
     return await propertyService.getByName("SEEDED_DB");
