@@ -215,7 +215,7 @@ function DefaultTermsForReceiptsForm({ formik }) {
   );
 }
 
-function MigrateFromOtherSoftware() {
+function MigrateFromOtherSoftware({ organization }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <AccordionItem>
@@ -231,19 +231,23 @@ function MigrateFromOtherSoftware() {
         <Button onClick={onOpen} leftIcon={<GoPeople />} variant={"primary"}>
           Party
         </Button>
-        <PartyImportModal isOpen={isOpen} onClose={onClose} />
+        <PartyImportModal
+          organization={organization}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
       </AccordionPanel>
     </AccordionItem>
   );
 }
-function PartyImportModal({ isOpen, onClose }) {
+function PartyImportModal({ organization, isOpen, onClose }) {
   const toast = useToast();
-
+  const [file, setFile] = useState(null);
   const handleDownloadSample = () => {
     const csvContent =
       "data:text/csv;charset=utf-8," +
       encodeURIComponent(
-        "Party Name,Address,Tax No"
+        `Name,"Billing Address","Shipping Address","GST No","PAN No"`,
       );
     const link = document.createElement("a");
     link.setAttribute("href", csvContent);
@@ -256,29 +260,72 @@ function PartyImportModal({ isOpen, onClose }) {
       isClosable: true,
     });
   };
-
+  const onUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      toast({
+        title: "No file selected",
+        description: "Please select a CSV file to upload.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await instance.post(
+      `/api/v1/organizations/${organization}/parties/import`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    toast({
+      title: "Import Successful",
+      description: response.data.message,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    onClose();
+  };
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Import Parties</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Stack spacing={4}>
-            <Text>Upload a CSV file to import parties into your system.</Text>
-            <Button onClick={handleDownloadSample} variant="outline">
-              Download Sample CSV
+      <form onSubmit={onUpload}>
+        <ModalContent>
+          <ModalHeader>Import Parties</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Stack spacing={4}>
+              <Text>Using the below button download the sample csv</Text>
+              <Button onClick={handleDownloadSample} variant="outline">
+                Download Sample CSV
+              </Button>
+              <Text>Upload a CSV file to import parties into your system.</Text>
+              <Input
+                onChange={(e) => {
+                  setFile(e.currentTarget.files[0]);
+                }}
+                type="file"
+                accept=".csv"
+                placeholder="Select CSV file"
+              />
+            </Stack>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={onClose}>
+              Cancel
             </Button>
-            <Input type="file" accept=".csv" placeholder="Select CSV file" />
-          </Stack>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="blue">Import</Button>
-        </ModalFooter>
-      </ModalContent>
+            <Button type="submit" colorScheme="blue">
+              Import
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </form>
     </Modal>
   );
 }
@@ -309,7 +356,7 @@ export default function AdminTasks({ organization }) {
     onSubmit: async (data, { setSubmitting }) => {
       await instance.post(
         `/api/v1/organizations/${organization}/closeFinancialYear`,
-        data
+        data,
       );
       toast({
         title: "Success",
@@ -358,7 +405,7 @@ export default function AdminTasks({ organization }) {
         isCurrentPlanGreaterThanFreePlan ? (
           <SMTPSetup />
         ) : null}
-        <MigrateFromOtherSoftware />
+        <MigrateFromOtherSoftware organization={organization} />
       </Accordion>
     </Box>
   );

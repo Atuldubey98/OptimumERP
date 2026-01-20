@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node .",
-    "cron" : "node src/cron.js",
+    "cron": "export NODE_ENV=development && node src/cron.js",
     "seeder": "node src/seeder.js",
     "dev": "export NODE_ENV=development && npm run seeder && nodemon ."
   },
@@ -17,6 +17,7 @@
     "cloudinary": "^1.21.0",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
+    "cron": "^4.4.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.1",
     "ejs": "^3.1.9",
@@ -29,7 +30,6 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "node-cron": "^4.2.1",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.0.3",
     "pdfmake": "^0.2.18",

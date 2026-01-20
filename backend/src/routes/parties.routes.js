@@ -8,10 +8,12 @@ const {
   remove,
   searchByNameOrBA,
   update,
-  migrate,
+  importParties,
 } = require("../controllers/party.controller");
 const {
   limitFreePlanOnCreateEntityForOrganization,
+  authenticate,
+  authorize,
 } = require("../middlewares/auth.middleware");
 
 const {
@@ -20,7 +22,7 @@ const {
   paginateModel,
 } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
-const { spreadSheetUploader } = require("../middlewares/uploader.middleware");
+const { csvUploader } = require("../middlewares/uploader.middleware");
 
 const partyRouter = Router({ mergeParams: true });
 
@@ -30,20 +32,25 @@ partyRouter.post(
   "/",
   createModel,
   limitFreePlanOnCreateEntityForOrganization("parties"),
-  requestAsyncHandler(create)
+  requestAsyncHandler(create),
 );
 partyRouter.patch("/:partyId", updateModel, requestAsyncHandler(update));
 partyRouter.get("/:partyId", requestAsyncHandler(read));
 partyRouter.get(
   "/:partyId/transactions",
-  requestAsyncHandler(getTransactionSummary)
+  requestAsyncHandler(getTransactionSummary),
 );
 partyRouter.get(
   "/:partyId/transactions/download",
-  requestAsyncHandler(downloadPartyTransactionSummary)
+  requestAsyncHandler(downloadPartyTransactionSummary),
 );
 partyRouter.delete("/:partyId", requestAsyncHandler(remove));
-partyRouter.post("/migrate/:platform",
+partyRouter.post(
+  "/import",
+  authenticate,
+  authorize,
   createModel,
-  requestAsyncHandler(migrate));
+  csvUploader.single("file"),
+  requestAsyncHandler(importParties),
+);
 module.exports = partyRouter;

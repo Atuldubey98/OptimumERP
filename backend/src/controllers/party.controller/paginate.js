@@ -11,8 +11,7 @@ const paginate = async (req, res) => {
       req,
       model: Party,
       modelName: PARTIES,
-    });
-
+    });      
   const parties = await Party.find(filter)
     .sort({ createdAt: -1 })
     .skip(skip)
