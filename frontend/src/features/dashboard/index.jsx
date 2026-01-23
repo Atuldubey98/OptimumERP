@@ -112,7 +112,7 @@ export default function DashboardPage() {
     {
       label: "This week",
       value: "lastWeek",
-      params: [7, "days"],
+      params: [7, "D"],
     },
     {
       label: "This month",
