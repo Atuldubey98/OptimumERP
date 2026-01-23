@@ -31,6 +31,7 @@ const orgSchema = new Schema(
       type: Types.ObjectId,
       ref: "user",
       required: true,
+      index: true,
     },
     logo: {
       type: String,
