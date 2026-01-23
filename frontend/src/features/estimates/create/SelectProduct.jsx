@@ -40,7 +40,7 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
   const { getDefaultReceiptItem } = useCurrentOrgCurrency();
-  const defaultItem = getDefaultReceiptItem();
+  const defaultItem = getDefaultReceiptItem();  
   const bg = useColorModeValue("gray.100", "gray.800");
 
   const [response, setResponse] = useState({
@@ -162,7 +162,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                               name: product.name,
                               quantity: 1,
                               um: product.um._id,
-                              code: defaultItem.code,
+                              code: product.code,
                               tax : defaultItem.tax,
                               price: product.sellingPrice || 0,
                             });
