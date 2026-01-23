@@ -106,9 +106,7 @@ export default function InvoicesPage() {
     const currentInvoice = item || invoice;
     const downloadBill = `/api/v1/organizations/${
       currentInvoice.org._id
-    }/invoices/${currentInvoice._id}/download?template=${
-      localStorage.getItem("template") || "simple"
-    }`;
+    }/invoices/${currentInvoice._id}/download`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

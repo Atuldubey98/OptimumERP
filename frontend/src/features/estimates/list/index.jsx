@@ -65,7 +65,7 @@ export default function EstimatesPage() {
       if (!estimate) return;
       setEstimateStatus("deleting");
       await instance.delete(
-        `/api/v1/organizations/${orgId}/quotes/${estimate._id}`
+        `/api/v1/organizations/${orgId}/quotes/${estimate._id}`,
       );
       onCloseDeleteModal();
       fetchQuotes();
@@ -88,9 +88,7 @@ export default function EstimatesPage() {
     const currentEstimate = quotation || item;
     const downloadBill = `/api/v1/organizations/${
       currentEstimate.org._id
-    }/quotes/${currentEstimate._id}/download?template=${
-      localStorage.getItem("template") || "simple"
-    }`;
+    }/quotes/${currentEstimate._id}/download`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });
@@ -105,7 +103,7 @@ export default function EstimatesPage() {
   const convertToInvoice = async (quote) => {
     try {
       const { data } = await instance.post(
-        `/api/v1/organizations/${orgId}/quotes/${quote._id}/convertToInvoice`
+        `/api/v1/organizations/${orgId}/quotes/${quote._id}/convertToInvoice`,
       );
       toast({
         title: "Success",
@@ -128,7 +126,7 @@ export default function EstimatesPage() {
   };
   const deleting = estimateStatus === "deleting";
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
-  useDisclosure();
+    useDisclosure();
   return (
     <MainLayout>
       <Box p={4}>

@@ -5,14 +5,21 @@ const {
 } = require("../../services/renderEngine.service");
 const templator = require("../../views/templates/templator");
 const https = require("https");
+const Setting = require("../../models/settings.model");
+const logger = require("../../logger");
 const download = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
   const orgId = req.params.orgId;
-  const template = req.query.template || "simple";
-  const paramsColor = req.query.color || "3f51b5"    
-  const color = `#${paramsColor}`
+  const setting = await Setting.findOne(
+    { org: orgId },
+    { "printSettings.defaultTemplate": 1 },
+  );
+  const template = req.query.template || setting?.printSettings?.defaultTemplate;
+  logger.info(`Using template: ${template}`);
+  const paramsColor = req.query.color || "3f51b5";
+  const color = `#${paramsColor}`;
   const filter = {
     _id: id,
     org: orgId,

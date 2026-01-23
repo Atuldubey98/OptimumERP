@@ -38,7 +38,7 @@ const simpleTemplate = (data, color) => {
           {
             stack: [
               { text: data.partyMetaHeading, style: "subheader" },
-              { text: data.entity.party.name, style : { bold: true } },
+              { text: data.entity.party.name, style: { bold: true } },
               { text: data.entity.billingAddress },
               data.entity.party.gstNo
                 ? { text: ["GSTIN: ", { text: data.entity.party.gstNo }] }
@@ -51,17 +51,22 @@ const simpleTemplate = (data, color) => {
           {
             stack: [
               { text: data.billMetaHeading, style: "subheader" },
-              { text: `Date: ${new Date(data.entity.date).toLocaleDateString("en-IN", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })}` },
+              {
+                text: `Date: ${new Date(data.entity.date).toLocaleDateString(
+                  "en-IN",
+                  {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  },
+                )}`,
+              },
               { text: `Number: ${data.num}`, bold: true },
               data.entity.poNo ? { text: `PO No: ${data.entity.poNo}` } : {},
               data.entity.poDate
                 ? {
                     text: `PO Date: ${new Date(
-                      data.entity.poDate
+                      data.entity.poDate,
                     ).toDateString()}`,
                   }
                 : {},
@@ -92,10 +97,10 @@ const simpleTemplate = (data, color) => {
               item.name,
               { text: item.code, noWrap: true, alignment: "right" },
               item.um,
-              { text: item.price, noWrap: true, alignment : "right" },
-              { text: item.quantity, noWrap: true, alignment : "right" },
+              { text: item.price, noWrap: true, alignment: "right" },
+              { text: item.quantity, noWrap: true, alignment: "right" },
               item.gst,
-              { text: item.total, noWrap: true, alignment : "right" },
+              { text: item.total, noWrap: true, alignment: "right" },
             ]),
           ],
         },
@@ -108,10 +113,12 @@ const simpleTemplate = (data, color) => {
           widths: ["*", "auto"],
           body: [
             ["Subtotal:", data.total],
-            ...Object.entries(data.currencyTaxCategories).map(([taxName, taxValue]) => [
-              `${taxName.toLocaleUpperCase()}:`,
-              taxValue,
-            ]),
+            ...Object.entries(data.currencyTaxCategories).map(
+              ([taxName, taxValue]) => [
+                `${taxName.toLocaleUpperCase()}:`,
+                taxValue,
+              ],
+            ),
             ["Grand Total:", data.grandTotal],
             ["Amount in words:", data.amountToWords],
           ],
@@ -171,6 +178,7 @@ const simpleTemplate = (data, color) => {
       fontSize: 8,
       lineHeight: 1.2,
     },
+    pageMargins: [20, 20, 20, 20],
   };
 };
 
