@@ -12,7 +12,9 @@ export default function OrgItem({ org }) {
     setStatus("success");
   };
   const loading = status === "loading";
-
+  const logo = !(org?.logo || "").startsWith("http")
+    ? `${import.meta.env.VITE_API_URL}/${org.logo}`
+    : org?.logo;
   return (
     <Flex
       borderRadius={4}
@@ -25,7 +27,7 @@ export default function OrgItem({ org }) {
       alignItems={"center"}
     >
       {org?.logo ? (
-        <Image src={org?.logo} width={34} />
+        <Image src={logo} width={34} />
       ) : (
         <GoOrganization size={34} />
       )}

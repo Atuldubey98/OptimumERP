@@ -1,11 +1,13 @@
-import { Box, Flex, Grid, Heading, Image } from "@chakra-ui/react";
-import React, { useContext } from "react";
-import SettingContext from "../../../contexts/SettingContext";
+import { Box, Grid, Heading, Image } from "@chakra-ui/react";
+import { useContext } from "react";
 import { GoOrganization } from "react-icons/go";
+import SettingContext from "../../../contexts/SettingContext";
 export default function CurrentOrganization() {
   const settingContext = useContext(SettingContext);
   const orgName = settingContext?.setting?.org.name;
-  const logo = settingContext?.setting?.org?.logo;
+  const logo = !(settingContext?.setting?.org?.logo || "").startsWith("http")
+    ? `${import.meta.env.VITE_API_URL}/${settingContext?.setting?.org?.logo}`
+    : settingContext?.setting?.org?.logo;
   return (
     <Box p={3}>
       <Grid

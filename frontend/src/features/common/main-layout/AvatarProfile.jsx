@@ -6,17 +6,20 @@ export default function AvatarProfile() {
   const { user } = useAuth();
   const settingContext = useContext(SettingContext);
   const role = settingContext?.role || "";
+  const avatar = !user?.avatar?.startsWith("http")
+    ? `${import.meta.env.VITE_API_URL}/${user?.avatar}`
+    : user?.avatar;
   return (
     <Flex cursor={"cursor"} gap={2} alignItems={"center"}>
       <Hide below="md">
-        <Flex  justifyContent={"center"} alignItems={"center"} gap={2}>
-          <Text noOfLines={1} fontWeight={"bold"}>{`${
-            user?.name
-          } `} </Text>
+        <Flex justifyContent={"center"} alignItems={"center"} gap={2}>
+          <Text noOfLines={1} fontWeight={"bold"}>
+            {`${user?.name} `}{" "}
+          </Text>
           <Tag colorScheme="teal">{role.toLocaleUpperCase()}</Tag>
         </Flex>
       </Hide>
-      <Avatar size={"sm"} name={user?.name} src={user?.avatar} />
+      <Avatar size={"sm"} name={user?.name} src={avatar} />
     </Flex>
   );
 }

@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
-export const baseURL = import.meta.env.PROD ? "" :  "http://localhost:3000";
+export const baseURL = import.meta.env.VITE_API_URL;
 const instance = axios.create({
   baseURL,
   withCredentials: true,

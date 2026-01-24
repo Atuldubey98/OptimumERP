@@ -101,6 +101,9 @@ export default function ProfileSettingsPage() {
       setStatus("idle");
     }
   };
+  const avatar = !user?.avatar?.startsWith("http")
+    ? `${import.meta.env.VITE_API_URL}/${user?.avatar}`
+    : user?.avatar;
   return (
     <MainLayout>
       <Box p={5}>
@@ -113,7 +116,15 @@ export default function ProfileSettingsPage() {
           m={"auto"}
           gap={5}
         >
-          <Avatar name={user?.name} src={user?.avatar} size={"xl"} />
+          <Avatar
+            name={user?.name}
+            src={
+              user?.avatar?.startsWith("http")
+                ? user?.avatar
+                : `${import.meta.env.VITE_API_URL}/${user?.avatar}`
+            }
+            size={"xl"}
+          />
           <Grid w={"100%"} gap={3}>
             <Heading fontSize={"2xl"} textAlign={"center"}>
               Welcome, {user ? user.name : ""}
@@ -149,7 +160,7 @@ export default function ProfileSettingsPage() {
               margin={"auto"}
               size={"2xl"}
               name={user?.name}
-              src={user?.avatar}
+              src={avatar}
             />
             <Flex gap={3} justifyContent={"center"} alignItems={"center"}>
               <Input

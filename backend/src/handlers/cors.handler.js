@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const cors = require("cors");
 const whitelist = [
-  "http://localhost:5173",
   "http://localhost:9000",
   "https://app.optimumerp.biz",
+  process.env.VITE_APP_URL,
 ];
 
 const corsHandler = Router();
@@ -18,6 +18,6 @@ corsHandler.use(
     },
     credentials: true,
     maxAge: 86400,
-  })
+  }),
 );
 module.exports = corsHandler;

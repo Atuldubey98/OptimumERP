@@ -85,7 +85,7 @@ export default function AdminPage() {
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { data } = await instance.post(
         `/api/v1/organizations/${organization}/users`,
-        values
+        values,
       );
       toast({
         title: "Registered",
@@ -106,10 +106,10 @@ export default function AdminPage() {
         data.data.map((responseData) => ({
           ...responseData.user,
           role: responseData.role,
-        }))
+        })),
       );
     }),
-    []
+    [],
   );
 
   const defaultOrganization = {
@@ -164,7 +164,7 @@ export default function AdminPage() {
         `/api/v1/organizations/${organization}`,
         {
           bank: data,
-        }
+        },
       );
       toast({
         title: "Bank",
@@ -189,7 +189,9 @@ export default function AdminPage() {
     : "free";
   const bg = useColorModeValue("gray.100", "gray.700");
   const orgName = currentSelectedOrganization?.name;
-  const logo = currentSelectedOrganization?.logo;
+  const logo = !currentSelectedOrganization?.logo?.startsWith("http")
+    ? `${import.meta.env.VITE_API_URL}/${currentSelectedOrganization?.logo}`
+    : currentSelectedOrganization?.logo;
   const logoInputRef = useRef(null);
   const [logoStatus, setLogoStatus] = useState("idle");
   return (
@@ -213,12 +215,12 @@ export default function AdminPage() {
                   options={organizationsOptions}
                   isOptionDisabled={({ disabled }) => disabled}
                   value={organizationsOptions.find(
-                    (org) => org.value == organization
+                    (org) => org.value == organization,
                   )}
                   onChange={({ value }) => {
                     setOrganization(value);
                     const currentOrg = authorizedOrgs.find(
-                      (authorizedOrg) => authorizedOrg.org._id === value
+                      (authorizedOrg) => authorizedOrg.org._id === value,
                     ).org;
                     setValues({
                       ...defaultOrganization,
@@ -339,7 +341,7 @@ export default function AdminPage() {
                                             "Content-Type":
                                               "multipart/form-data",
                                           },
-                                        }
+                                        },
                                       );
                                       setting.fetchSetting();
                                       fetchOrgs();
@@ -365,7 +367,7 @@ export default function AdminPage() {
                                       onClick={async () => {
                                         setLogoStatus("deleting");
                                         await instance.delete(
-                                          `/api/v1/organizations/${organization}/logo`
+                                          `/api/v1/organizations/${organization}/logo`,
                                         );
                                         setting.fetchSetting();
                                         fetchOrgs();
