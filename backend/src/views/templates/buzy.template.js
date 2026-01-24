@@ -211,7 +211,7 @@ const buzyTemplate = (data, color) => {
           body: [
             [
               { text: "Sno.", style: "tableHeader" },
-              { text: "Item", style: "tableHeader" },
+              { text: "Items", style: "tableHeader" },
               { text: "HSN/SAC Code", style: "tableHeader" },
               { text: "UM", style: "tableHeader" },
               { text: "Rate", style: "tableHeader" },
@@ -360,20 +360,33 @@ const buzyTemplate = (data, color) => {
         columns: [
           { width: "*", text: "" },
           {
-            width: 200,
-            stack: [
-              {
-                text: `For, ${data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : ""}`,
-                style: "inlineBold",
-                alignment: "center",
-              },
-              { text: "\n\n\n", margin: [0, 0, 0, 0] },
-              {
-                text: "Authorized Signatory",
-                style: "inlineBold",
-                alignment: "center",
-              },
-            ],
+            table: {
+              widths: ["*", 200],
+              dontBreakRows: true,
+              body: [
+                [
+                  { text: "" },
+                  {
+                    pageBreak: "avoid",
+                    stack: [
+                      {
+                        text: `For, ${data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : ""}`,
+                        style: "inlineBold",
+                        alignment: "center",
+                        margin: [0, 0, 0, 24],
+                      },
+                      {
+                        text: "Authorized Signatory",
+                        style: "inlineBold",
+                        alignment: "center",
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+            layout: "noBorders",
+            margin: [0, 12, 0, 0],
           },
         ],
         margin: [0, 12, 0, 0],
