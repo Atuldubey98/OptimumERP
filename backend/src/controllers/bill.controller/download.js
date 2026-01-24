@@ -51,30 +51,7 @@ const download = async (options = {}, req, res) => {
 module.exports = download;
 
 async function getBase64Url(url) {
-  if (url.startsWith("http")) {
-    return new Promise((resolve, reject) => {
-      https
-        .get(url, (res) => {
-          let data = [];
-
-          res.on("data", (chunk) => {
-            data.push(chunk);
-          });
-
-          res.on("end", () => {
-            const buffer = Buffer.concat(data);
-            const base64 = buffer.toString("base64");
-            const contentType = res.headers["content-type"];
-            const base64Url = `data:${contentType};base64,${base64}`;
-            resolve(base64Url);
-          });
-        })
-        .on("error", (err) => {
-          reject(err);
-        });
-    });
-  }
-  const buffer = await fs.readFile(path.resolve(__dirname, "../../../", url));
+  const buffer = await fs.readFile(path.join(process.cwd(), url));
   const base64 = buffer.toString("base64");
   return `data:image/${url.split(".").pop()};base64,${base64}`;
 }

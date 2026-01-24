@@ -1,14 +1,11 @@
-const cloudinary = require("../cloudinary");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require("multer");
 
-const avatarStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "OptimumERP",
-    public_id: (req) => {
-      const user = req.session.user;
-      return user._id;
-    },
+const avatarStorage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, `${process.env.NETWORK_STORAGE_PATH}/avatars`);
+  },
+  filename: (_, file, cb) => {
+    cb(null, `avatar_${file.originalname}`);
   },
 });
 
