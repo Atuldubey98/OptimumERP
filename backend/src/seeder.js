@@ -2,7 +2,6 @@ require("dotenv").config({
   path:
     process.env.NODE_ENV === "development" ? "../.env.development" : "../.env",
 });
-const winston = require("winston");
 const propertyService = require("./services/property.service");
 const Property = require("./models/properties.model");
 const fs = require("fs/promises");
