@@ -2,6 +2,7 @@ import { Box, Flex, Image, Spinner, Text } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../contexts/SettingContext";
+import useStorageUtil from "../../hooks/useStorageUtil";
 export default function OrgItem({ org }) {
   const [status, setStatus] = useState("idle");
   const settingContext = useContext(SettingContext);
@@ -12,9 +13,8 @@ export default function OrgItem({ org }) {
     setStatus("success");
   };
   const loading = status === "loading";
-  const logo = !(org?.logo || "").startsWith("http")
-    ? `${import.meta.env.VITE_API_URL}/${org.logo}`
-    : org?.logo;
+  const { getFileUrl } = useStorageUtil();
+  const logo = getFileUrl(org?.logo);
   return (
     <Flex
       borderRadius={4}

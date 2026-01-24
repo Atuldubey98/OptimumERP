@@ -7,6 +7,9 @@ const templator = require("../../views/templates/templator");
 const https = require("https");
 const Setting = require("../../models/settings.model");
 const logger = require("../../logger");
+const fs = require("fs/promises");
+const path = require("path");
+
 const download = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;
   const id = req.params.id;
@@ -16,7 +19,8 @@ const download = async (options = {}, req, res) => {
     { org: orgId },
     { "printSettings.defaultTemplate": 1 },
   );
-  const template = req.query.template || setting?.printSettings?.defaultTemplate;
+  const template =
+    req.query.template || setting?.printSettings?.defaultTemplate;
   logger.info(`Using template: ${template}`);
   const paramsColor = req.query.color || "3f51b5";
   const color = `#${paramsColor}`;
@@ -46,26 +50,31 @@ const download = async (options = {}, req, res) => {
 
 module.exports = download;
 
-function getBase64Url(url) {
-  return new Promise((resolve, reject) => {
-    https
-      .get(url, (res) => {
-        let data = [];
+async function getBase64Url(url) {
+  if (url.startsWith("http")) {
+    return new Promise((resolve, reject) => {
+      https
+        .get(url, (res) => {
+          let data = [];
 
-        res.on("data", (chunk) => {
-          data.push(chunk);
-        });
+          res.on("data", (chunk) => {
+            data.push(chunk);
+          });
 
-        res.on("end", () => {
-          const buffer = Buffer.concat(data);
-          const base64 = buffer.toString("base64");
-          const contentType = res.headers["content-type"];
-          const base64Url = `data:${contentType};base64,${base64}`;
-          resolve(base64Url);
+          res.on("end", () => {
+            const buffer = Buffer.concat(data);
+            const base64 = buffer.toString("base64");
+            const contentType = res.headers["content-type"];
+            const base64Url = `data:${contentType};base64,${base64}`;
+            resolve(base64Url);
+          });
+        })
+        .on("error", (err) => {
+          reject(err);
         });
-      })
-      .on("error", (err) => {
-        reject(err);
-      });
-  });
+    });
+  }
+  const buffer = await fs.readFile(path.resolve(__dirname, "../../../", url));
+  const base64 = buffer.toString("base64");
+  return `data:image/${url.split(".").pop()};base64,${base64}`;
 }

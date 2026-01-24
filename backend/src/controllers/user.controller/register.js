@@ -4,10 +4,11 @@ const {
   registerUser,
   sendOtpEmailToUser,
 } = require("../../services/auth.service");
-
+const logger = require("../../logger");
 const register = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
   const isDevelopmentEnv = process.env.NODE_ENV === "development";
+  logger.info("Registering user with email: ", body.email, " in env: ", process.env.NODE_ENV);
   const registeredUser = await registerUser({
     ...body,
     active: isDevelopmentEnv,

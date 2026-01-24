@@ -24,6 +24,7 @@ import SettingContext from "../../contexts/SettingContext";
 import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 import instance from "../../instance";
 import { isAxiosError } from "axios";
+import useStorageUtil from "../../hooks/useStorageUtil";
 
 function ProfileInfo(props) {
   const settingContext = useContext(SettingContext);
@@ -101,9 +102,8 @@ export default function ProfileSettingsPage() {
       setStatus("idle");
     }
   };
-  const avatar = !user?.avatar?.startsWith("http")
-    ? `${import.meta.env.VITE_API_URL}/${user?.avatar}`
-    : user?.avatar;
+  const { getFileUrl } = useStorageUtil();
+  const avatar = getFileUrl(user?.avatar);
   return (
     <MainLayout>
       <Box p={5}>
@@ -116,15 +116,7 @@ export default function ProfileSettingsPage() {
           m={"auto"}
           gap={5}
         >
-          <Avatar
-            name={user?.name}
-            src={
-              user?.avatar?.startsWith("http")
-                ? user?.avatar
-                : `${import.meta.env.VITE_API_URL}/${user?.avatar}`
-            }
-            size={"xl"}
-          />
+          <Avatar name={user?.name} src={avatar} size={"xl"} />
           <Grid w={"100%"} gap={3}>
             <Heading fontSize={"2xl"} textAlign={"center"}>
               Welcome, {user ? user.name : ""}

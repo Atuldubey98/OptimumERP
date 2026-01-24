@@ -54,6 +54,7 @@ import {
   AccordionIcon,
 } from "@chakra-ui/react";
 import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
+import useStorageUtil from "../../hooks/useStorageUtil";
 export default function AdminPage() {
   const registerSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -189,9 +190,8 @@ export default function AdminPage() {
     : "free";
   const bg = useColorModeValue("gray.100", "gray.700");
   const orgName = currentSelectedOrganization?.name;
-  const logo = !currentSelectedOrganization?.logo?.startsWith("http")
-    ? `${import.meta.env.VITE_API_URL}/${currentSelectedOrganization?.logo}`
-    : currentSelectedOrganization?.logo;
+  const { getFileUrl } = useStorageUtil();
+  const logo = getFileUrl(currentSelectedOrganization?.logo);
   const logoInputRef = useRef(null);
   const [logoStatus, setLogoStatus] = useState("idle");
   return (

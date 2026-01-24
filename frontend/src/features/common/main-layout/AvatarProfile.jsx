@@ -2,13 +2,13 @@ import { Avatar, Flex, Hide, Tag, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import SettingContext from "../../../contexts/SettingContext";
 import useAuth from "../../../hooks/useAuth";
+import useStorageUtil from "../../../hooks/useStorageUtil";
 export default function AvatarProfile() {
   const { user } = useAuth();
   const settingContext = useContext(SettingContext);
   const role = settingContext?.role || "";
-  const avatar = !user?.avatar?.startsWith("http")
-    ? `${import.meta.env.VITE_API_URL}/${user?.avatar}`
-    : user?.avatar;
+  const { getFileUrl } = useStorageUtil();
+  const avatar = getFileUrl(user?.avatar);
   return (
     <Flex cursor={"cursor"} gap={2} alignItems={"center"}>
       <Hide below="md">
