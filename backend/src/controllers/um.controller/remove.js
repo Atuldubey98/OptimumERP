@@ -51,7 +51,7 @@ const remove = async (req, res) => {
     const bill = await findBillWithUm(Bill, umId);
     if (bill) throw new Error(message);
   }
-  const um = await Um.findOneAndDelete({
+  const um = await Um.softDelete({
     _id: req.params.id,
     org: req.params.orgId,
   });

@@ -18,7 +18,7 @@ const remove = async (req, res) => {
       reason: "Expense category linked to expense",
     });
   }
-  const category = await ExpenseCategory.findOneAndDelete({
+  const category = await ExpenseCategory.softDelete({
     org: req.params.orgId,
     _id: req.params.categoryId,
   }).lean();

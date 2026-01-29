@@ -7,13 +7,13 @@ const Transaction = require("../../models/transaction.model");
 const remove = async (req, res) => {
   const { expenseId } = req.params;
   if (!expenseId) throw new ExpenseNotFound();
-  const deletedExpense = await Expense.findOneAndDelete({
+  const deletedExpense = await Expense.softDelete({
     _id: expenseId,
     org: req.params.orgId,
   });
 
   if (!deletedExpense) throw new ExpenseNotFound();
-  const transaction = await Transaction.findOneAndDelete({
+  const transaction = await Transaction.softDelete({
     org: req.params.orgId,
     docModel: "expense",
     doc: expenseId,

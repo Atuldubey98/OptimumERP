@@ -39,12 +39,14 @@ const partySchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true, versionKey: false, collection: "parties" }
+  { timestamps: true, versionKey: false, collection: "parties" },
 );
 partySchema.index({
   name: "text",
   billingAddress: "text",
   shippingAddress: "text",
-}); 
+});
+
 const Party = model("party", partySchema);
+
 module.exports = Party;

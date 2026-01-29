@@ -8,7 +8,7 @@ const remove = async (req, res) => {
   const orgId = req.params.orgId;
   if (!productId) throw new ProductNotFound();
   if (!orgId) throw new OrgNotFound();
-  const deletedProduct = await Product.findOneAndDelete({
+  const deletedProduct = await Product.softDelete({
     _id: productId,
     org: req.params.orgId,
   }).lean();

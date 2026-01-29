@@ -17,7 +17,7 @@ const remove = async (req, res) => {
     party: req.params.partyId,
   });
   if (contact) throw new PartyNotDelete({ reason: "contact is linked" });
-  const party = await Party.findOneAndDelete({
+  const party = await Party.softDelete({
     _id: req.params.partyId,
     org: req.params.orgId,
   });

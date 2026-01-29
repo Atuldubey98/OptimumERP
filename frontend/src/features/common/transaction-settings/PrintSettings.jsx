@@ -4,6 +4,7 @@ import {
   Checkbox,
   Flex,
   FormControl,
+  FormLabel,
   Heading,
   Skeleton,
   Stack,
@@ -44,6 +45,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
               </Button>
             </Flex>
             <FormControl>
+              <FormLabel>Default Template</FormLabel>
               <Select
                 options={templateOptions}
                 onChange={({ value }) =>

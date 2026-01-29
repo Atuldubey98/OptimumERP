@@ -20,7 +20,7 @@ const download = async (options = {}, req, res) => {
     { "printSettings.defaultTemplate": 1 },
   );
   const template =
-    req.query.template || setting?.printSettings?.defaultTemplate;
+    req.query.template || setting?.printSettings?.defaultTemplate || "simple";
   logger.info(`Using template: ${template}`);
   const paramsColor = req.query.color || "3f51b5";
   const color = `#${paramsColor}`;

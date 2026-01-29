@@ -113,9 +113,9 @@ exports.saveBill = async ({
 };
 
 exports.deleteBill = async ({ Bill, NotFound, filter }) => {
-  const bill = await Bill.findOneAndDelete(filter);
+  const bill = await Bill.softDelete(filter);
   if (!bill) throw new NotFound();
-  const transaction = await Transaction.findOneAndDelete({
+  const transaction = await Transaction.softDelete({
     org: filter.org,
     docModel: Bill.modelName,
     doc: filter._id,
@@ -204,7 +204,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
     },
     purchase_order: async () => {
       return {
-        title: "Purchase Orders",
+        title: "Purchase Order",
         billMetaHeading: "PO Details",
         partyMetaHeading: "PO to",
       };

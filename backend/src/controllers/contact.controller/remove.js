@@ -4,7 +4,7 @@ const Contact = require("../../models/contacts.model");
 const OrgModel = require("../../models/org.model");
 
 const remove = async (req, res) => {
-  const deletedContact = await Contact.findOneAndDelete({
+  const deletedContact = await Contact.softDelete({
     _id: req.params.id,
     org: req.params.orgId,
   });

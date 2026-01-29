@@ -7,7 +7,7 @@ const remove = async (req, res) => {
     return res
       .status(400)
       .json({ message: "Product category used by product" });
-  const deletedProductCategory = await ProductCategory.findOneAndDelete({
+  const deletedProductCategory = await ProductCategory.softDelete({
     _id: req.params.id,
     org: req.params.orgId,
   });

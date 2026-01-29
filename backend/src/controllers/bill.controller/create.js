@@ -2,6 +2,7 @@ const { saveBill } = require("../../services/bill.service");
 const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
+const billTypes = require("../../constants/billTypes");
 
 const create = async (options = {}, req, res) => {
   const { NotFound, Duplicate, dto, Bill, prefixType, relatedDocType } =
@@ -25,9 +26,11 @@ const create = async (options = {}, req, res) => {
     ).session(session);
     logger.info(`${Bill.modelName} created ${bill.id}`);
   });
+  const billLabel = billTypes[Bill.modelName] || Bill.modelName;  
+  logger.info(`${billLabel} created successfully`);
   return res
     .status(201)
-    .json({ message: `${Bill.modelName} created !` });
+    .json({ message: `${billLabel} created successfully !` });
 };
 
 module.exports = create;
