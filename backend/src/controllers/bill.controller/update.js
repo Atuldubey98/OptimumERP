@@ -20,7 +20,7 @@ const update = async (options = {}, req, res) => {
   });
   logger.info(`${Bill.modelName} updated ${bill.id}`);
   const billLabel = billTypes[Bill.modelName] || Bill.modelName;
-  const message = `${billLabel} updated successfully`;
+  const message = `${billLabel} updated !`;
   return res.status(200).json({ message });
 };
 

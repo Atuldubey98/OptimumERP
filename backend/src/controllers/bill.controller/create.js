@@ -30,7 +30,7 @@ const create = async (options = {}, req, res) => {
   logger.info(`${billLabel} created successfully`);
   return res
     .status(201)
-    .json({ message: `${billLabel} created successfully !` });
+    .json({ message: `${billLabel} created !` });
 };
 
 module.exports = create;
