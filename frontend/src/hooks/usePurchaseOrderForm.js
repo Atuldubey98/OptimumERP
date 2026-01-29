@@ -67,7 +67,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
       const { _id, ...purchaseOrder } = values;
       
       const items = values.items.map(({ _id, ...item }) => item);
-      await instance[_id ? "patch" : "post"](
+     const res = await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/purchaseOrders/${_id || ""}`,
         {
           ...purchaseOrder,
@@ -76,7 +76,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
       );
       toast({
         title: "Success",
-        description: _id ? "Purchase order updated" : "Purchase order created",
+        description: res?.data?.message,
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,

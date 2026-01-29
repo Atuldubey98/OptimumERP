@@ -71,7 +71,7 @@ export default function usePurchaseForm({ saveAndNew }) {
           })),
         });
       }
-      await instance[_id ? "patch" : "post"](
+      const res =  await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/purchases/${_id || ""}`,
         {
           ...purchase,
@@ -80,7 +80,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       );
       toast({
         title: "Success",
-        description: _id ? "Purchase updated" : "Purchase created",
+        description: res?.data?.message,
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,

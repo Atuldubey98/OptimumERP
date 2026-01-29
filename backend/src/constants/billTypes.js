@@ -8,7 +8,7 @@ const billTypes = Object.freeze({
 
 module.exports = {
     [billTypes.INVOICE] : "Invoice",
-    [billTypes.PURCHASE] : "PurchaseInvoice",
+    [billTypes.PURCHASE] : "Purchase Invoice",
     [billTypes.QUOTE] : "Quotation",
     [billTypes.PURCHASE_ORDER] : "Purchase Order",
     [billTypes.PROFORMA_INVOICE] : "Proforma Invoice",

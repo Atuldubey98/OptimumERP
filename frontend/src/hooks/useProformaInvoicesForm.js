@@ -36,7 +36,7 @@ export default function useProformaInvoicesForm() {
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
-        })
+        }),
       )
       .min(1),
     terms: Yup.string()
@@ -69,18 +69,16 @@ export default function useProformaInvoicesForm() {
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, partyDetails, ...invoice } = values;
       const items = values.items.map(({ _id, ...item }) => item);
-      await instance[_id ? "patch" : "post"](
+      const res = await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/proformaInvoices/${_id || ""}`,
         {
           ...invoice,
           items,
-        }
+        },
       );
       toast({
         title: "Success",
-        description: _id
-          ? "Proforma Invoice updated"
-          : "Proforma Invoice created",
+        description: res?.data?.message,
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,
@@ -92,7 +90,7 @@ export default function useProformaInvoicesForm() {
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/proformaInvoices/nextProformaInvoiceNo`
+      `/api/v1/organizations/${orgId}/proformaInvoices/nextProformaInvoiceNo`,
     );
     formik.setFieldValue("sequence", data.data);
     setStatus("success");
@@ -112,7 +110,7 @@ export default function useProformaInvoicesForm() {
     try {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceId}`
+        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceId}`,
       );
       const {
         party,
