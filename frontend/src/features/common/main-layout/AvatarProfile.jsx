@@ -13,7 +13,7 @@ export default function AvatarProfile() {
     <Flex cursor={"cursor"} gap={2} alignItems={"center"}>
       <Hide below="md">
         <Flex justifyContent={"center"} alignItems={"center"} gap={2}>
-          <Text noOfLines={1} fontWeight={"bold"}>
+          <Text noOfLines={1} textOverflow={"ellipsis"} fontWeight={"bold"}>
             {`${user?.name} `}{" "}
           </Text>
           <Tag colorScheme="teal">{role.toLocaleUpperCase()}</Tag>

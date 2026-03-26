@@ -25,7 +25,7 @@ const seedProperties = async (properties) => {
   for (const prop of properties) {
     await Property.updateOne(
       { name: prop.name },
-      { $setOnInsert: prop },
+      { $set: prop },
       { upsert: true }
     )
       .lean()
@@ -46,7 +46,7 @@ const seeder = async () => {
     await dbService.connectDatabase(process.env.MONGO_URI);
     
     const property = await checkIfSeeded();
-    if (property) {
+    if (property?.value) {
       logger.info("Database already seeded. Exiting seeder.");
       await dbService.closeDBConnection();
       process.exit(0);
