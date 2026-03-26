@@ -1,4 +1,4 @@
-import { Button, Link as ChakraLink, Flex, Grid } from "@chakra-ui/react";
+import { Button, Link as ChakraLink, Flex, Grid, Show } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -65,13 +65,15 @@ export default function LoginPage() {
           >
             Login
           </Button>
-          <Button
-            onClick={onConnectToGoogle}
-            isLoading={isLoading}
-            leftIcon={<GoogleIcon />}
-          >
-            Continue with Google
-          </Button>
+          {import.meta.env.VITE_GOOGLE_SSO_ENABLED === "true" ? (
+            <Button
+              onClick={onConnectToGoogle}
+              isLoading={isLoading}
+              leftIcon={<GoogleIcon />}
+            >
+              Continue with Google
+            </Button>
+          ) : null}
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
             Register Now ?
           </ChakraLink>

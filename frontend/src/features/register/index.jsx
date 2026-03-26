@@ -35,13 +35,17 @@ export default function RegisterPage() {
     validationSchema: registerSchema,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { data } = await instance.post(`/api/v1/users/register`, values);
-     
+
       formik.resetForm();
       setSubmitting(false);
-      if (import.meta.env.DEV) {
+      if (
+        import.meta.env.DEV ||
+        !import.meta.env.VITE_GOOGLE_SSO_ENABLED ||
+        import.meta.env.VITE_GOOGLE_SSO_ENABLED === "false"
+      ) {
         toast({
           title: "Registered",
-          description: "Dev user registered",
+          description: "User registered",
           status: "success",
           duration: 3000,
           isClosable: true,
