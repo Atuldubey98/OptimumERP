@@ -1,5 +1,4 @@
 import { Box, Divider, Flex, useColorModeValue } from "@chakra-ui/react";
-import React from "react";
 import CurrentOrganization from "../main-layout/CurrentOrganization";
 import AvatarProfileWithOptions from "./AvatarProfileWithOptions";
 import Banner from "./Banner";
