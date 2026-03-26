@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "prestart": "export NODE_ENV=production && npm run seeder",
     "start": "node .",
     "cron": "export NODE_ENV=development && node src/cron.js",
     "seeder": "node src/seeder.js",

@@ -1,0 +1,51 @@
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mern_mongo
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  mongo-init:
+    image: mongo:7
+    depends_on:
+      - mongo
+    entrypoint: >
+      bash -c "
+        until mongosh --host mongo:27017 --eval 'db.adminCommand({ ping: 1 })' > /dev/null 2>&1; do
+          sleep 2;
+        done;
+        mongosh --host mongo:27017 --eval '
+          rs.initiate({
+            _id: \"rs0\",
+            members: [{ _id: 0, host: \"mongo:27017\" }]
+          })
+        ';
+      "
+    restart: "no"
+
+  backend:
+    build: ./backend
+    container_name: mern_backend
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: mern_frontend
+    ports:
+      - "5173:3000"
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
