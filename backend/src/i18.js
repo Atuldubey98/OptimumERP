@@ -19,19 +19,18 @@ i18next
       "party",
       "quote",
       "purchase",
-      "purchase_order",
-      "proforma_invoice",
-      "sale_order",
+      "purchaseOrder",
+      "proformaInvoice",
+      "saleOrder",
       "expense",
-      "expense_category",
+      "expenseCategory",
       "product",
       "tax",
       "organization",
       "property",
-      "recurring_invoice",
+      "recurringInvoice",
       "common",
       "billing",
-      "bill_metadata",
     ],
 
     defaultNS: "common",
@@ -39,7 +38,7 @@ i18next
     backend: {
       loadPath: path.join(
         __dirname,
-        "../../translations/{{lng}}/{{ns}}.json"
+        "../public/translations/{{lng}}/{{ns}}.json",
       ),
     },
 
