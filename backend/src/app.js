@@ -17,7 +17,6 @@ const i18 = require("./i18");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 
-app.use(express.static(path.join(__dirname, "../public")));
 
 if (process.env.NETWORK_STORAGE_PATH) {
   logger.info(`Using network storage at ${process.env.NETWORK_STORAGE_PATH}`);
@@ -36,6 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan(NODE_ENV === "development" ? "dev" : "combined"));
 app.use(corsHandler);
 app.use(sessionHandler);
+app.use(express.static(path.join(__dirname, "../public")));
 
 if (NODE_ENV === "production") app.set("trust proxy", 1);
 app.use(middleware.handle(i18));

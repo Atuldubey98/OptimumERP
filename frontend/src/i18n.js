@@ -10,12 +10,11 @@ i18n
   .init({
     fallbackLng: "en",
     supportedLngs: ["en", "pt"],
-    ns : ["health"],
+    ns: ["health"],
     debug: false,
     interpolation: { escapeValue: false },
     backend: {
       loadPath: `${import.meta.env.VITE_API_URL}/translations/{{lng}}/{{ns}}.json`,
-      crossDomain: true,
     },
   });
 
