@@ -1,0 +1,11 @@
+{
+  "invoice": {
+    "not_found": "A fatura não existe",
+    "not_deleted": "A fatura não foi excluída",
+    "already_exists": "Já existe uma fatura com este ID",
+    "created": "Fatura criada com sucesso",
+    "updated": "Fatura atualizada com sucesso",
+    "deleted": "Fatura excluída com sucesso",
+    "payment_added": "Pagamento adicionado"
+  }
+}

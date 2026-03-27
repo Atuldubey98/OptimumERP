@@ -1,0 +1,10 @@
+{
+  "quote": {
+    "not_found": "O orçamento não existe",
+    "already_exists": "Já existe um orçamento com este ID",
+    "created": "Orçamento criado com sucesso",
+    "updated": "Orçamento atualizado com sucesso",
+    "deleted": "Orçamento excluído com sucesso",
+    "converted_to_invoice": "Fatura criada"
+  }
+}

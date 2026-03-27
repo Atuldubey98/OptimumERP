@@ -59,7 +59,7 @@ class UpgradePlan extends Error {
   constructor() {
     super();
     this.code = 400;
-    this.message = "Upgrade you plan";
+    this.message = "Upgrade your plan";
     this.name = "UpgradePlan";
   }
 }

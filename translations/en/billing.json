@@ -1,0 +1,26 @@
+{
+  "billing": {
+    "billing": {
+      "no_template_found": "No template found"
+    }
+  },
+  "bill_metadata": {
+    "bill_metadata": {
+      "quotation_title": "Quotation",
+      "quotation_meta_heading": "Estimate Details",
+      "quotation_party_heading": "Estimate to",
+      "purchase_title": "Purchase",
+      "purchase_meta_heading": "Purchase Details",
+      "purchase_party_heading": "Bill From",
+      "proforma_invoice_title": "Proforma Invoice",
+      "proforma_invoice_meta_heading": "Proforma Invoice Details",
+      "proforma_invoice_party_heading": "Bill To",
+      "purchase_order_title": "Purchase Order",
+      "purchase_order_meta_heading": "PO Details",
+      "purchase_order_party_heading": "PO to",
+      "invoice_title": "Invoice",
+      "invoice_meta_heading": "Invoice Details",
+      "invoice_party_heading": "Bill To"
+    }
+  }
+}

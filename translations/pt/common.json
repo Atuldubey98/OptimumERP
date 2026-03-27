@@ -1,0 +1,9 @@
+{
+  "common": {
+    "report_type_not_found": "Tipo de relatório não encontrado",
+    "pdf_generation_failed": "Falha na geração do PDF",
+    "error_occurred": "Ocorreu um erro ao processar sua solicitação",
+    "db_connection_error": "Ocorreu um erro ao conectar ao MongoDB",
+    "some_error_occurred": "Ocorreu um erro"
+  }
+}

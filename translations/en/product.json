@@ -1,0 +1,10 @@
+{
+  "product": {
+    "product": {
+      "not_found": "Product Not found",
+      "created": "Product created successfully",
+      "updated": "Product updated successfully",
+      "deleted": "Product deleted successfully"
+    }
+  }
+}

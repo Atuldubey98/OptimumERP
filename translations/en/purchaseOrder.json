@@ -1,0 +1,11 @@
+{
+  "purchase_order": {
+    "purchase_order": {
+      "not_found": "Purchase order does not exists",
+      "already_exists": "Purchase order already exists with quotation id",
+      "created": "Purchase order created successfully",
+      "updated": "Purchase order updated successfully",
+      "deleted": "Purchase order deleted successfully"
+    }
+  }
+}

@@ -2,6 +2,7 @@ const { isValidObjectId } = require("mongoose");
 const { InvoiceNotFound } = require("../../errors/invoice.error");
 const Joi = require("joi");
 const Invoice = require("../../models/invoice.model");
+
 const paymentDto = Joi.object({
   description: Joi.string().allow("").required().label("Description"),
   amount: Joi.number().required().label("Amount"),
@@ -18,6 +19,6 @@ const payment = async (req, res) => {
     { runValidators: true, new: true }
   ).lean();
   if (!invoice) throw new InvoiceNotFound();
-  return res.status(201).json({ message: "Payment added" });
+  return res.status(201).json({ message: req.t('invoice:invoice:payment_added') });
 };
 module.exports = payment;

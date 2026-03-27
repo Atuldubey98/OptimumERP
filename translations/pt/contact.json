@@ -1,0 +1,8 @@
+{
+  "contact": {
+    "not_found": "O contato não existe",
+    "created": "Contato criado com sucesso",
+    "updated": "Contato atualizado com sucesso",
+    "deleted": "Contato excluído com sucesso"
+  }
+}

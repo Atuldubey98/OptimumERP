@@ -1,0 +1,10 @@
+{
+  "property": {
+    "property": {
+      "not_found": "Property does not exists",
+      "created": "Property created successfully",
+      "updated": "Property updated successfully",
+      "deleted": "Property deleted successfully"
+    }
+  }
+}

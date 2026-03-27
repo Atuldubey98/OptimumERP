@@ -1,0 +1,10 @@
+{
+  "tax": {
+    "tax": {
+      "not_found": "Tax not found",
+      "created": "Tax created successfully",
+      "updated": "Tax updated successfully",
+      "deleted": "Tax deleted successfully"
+    }
+  }
+}

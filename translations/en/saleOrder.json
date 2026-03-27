@@ -1,0 +1,12 @@
+{
+  "sale_order": {
+    "sale_order": {
+      "not_found": "Sale Order does not exists",
+      "not_deleted": "Invoice not deleted",
+      "already_exists": "Invoice already exists with invoice id",
+      "created": "Sale Order created successfully",
+      "updated": "Sale Order updated successfully",
+      "deleted": "Sale Order deleted successfully"
+    }
+  }
+}

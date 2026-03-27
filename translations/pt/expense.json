@@ -1,0 +1,8 @@
+{
+  "expense": {
+    "not_found": "Despesa não encontrada",
+    "created": "Despesa criada com sucesso",
+    "updated": "Despesa atualizada com sucesso",
+    "deleted": "Despesa excluída com sucesso"
+  }
+}

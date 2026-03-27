@@ -10,7 +10,7 @@ class QuotationDuplicate extends Error {
   constructor(quotationId) {
     super();
     this.code = 400;
-    this.message = `Quotation already exists with quotation id : ${quotationId}`;
+    this.message = `Quotation already exists with quotation id: ${quotationId}`;
     this.name = "QuotationDuplicate";
   }
 }

@@ -32,6 +32,7 @@ const download = async (options = {}, req, res) => {
     Bill,
     filter,
     NotFound,
+    t: req.t,
   });
   const runner = templator(template);
   const orgLogoUrl = data?.entity?.org?.logo;

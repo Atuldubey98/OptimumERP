@@ -1,0 +1,9 @@
+{
+  "purchase_order": {
+    "not_found": "O pedido de compra não existe",
+    "already_exists": "Já existe um pedido de compra com este ID de orçamento",
+    "created": "Pedido de compra criado com sucesso",
+    "updated": "Pedido de compra atualizado com sucesso",
+    "deleted": "Pedido de compra excluído com sucesso"
+  }
+}

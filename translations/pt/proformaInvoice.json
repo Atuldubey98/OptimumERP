@@ -1,0 +1,10 @@
+{
+  "proforma_invoice": {
+    "not_found": "A fatura proforma não existe",
+    "not_deleted": "A fatura proforma não foi excluída",
+    "already_exists": "Já existe uma fatura com este ID",
+    "created": "Fatura proforma criada com sucesso",
+    "updated": "Fatura proforma atualizada com sucesso",
+    "deleted": "Fatura proforma excluída com sucesso"
+  }
+}

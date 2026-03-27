@@ -1,0 +1,12 @@
+{
+  "quote": {
+    "quote": {
+      "not_found": "Quote does not exists",
+      "already_exists": "Quotation already exists with quotation id",
+      "created": "Quote created successfully",
+      "updated": "Quote updated successfully",
+      "deleted": "Quote deleted successfully",
+      "converted_to_invoice": "Invoice created"
+    }
+  }
+}

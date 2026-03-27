@@ -1,0 +1,9 @@
+{
+  "recurring_invoice": {
+    "not_found": "A fatura recorrente não existe",
+    "is_invalid": "A fatura recorrente é inválida",
+    "created": "Fatura recorrente criada com sucesso",
+    "updated": "Fatura recorrente atualizada com sucesso",
+    "deleted": "Fatura recorrente excluída com sucesso"
+  }
+}

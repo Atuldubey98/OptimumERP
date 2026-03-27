@@ -1,0 +1,9 @@
+{
+  "party": {
+    "not_found": "A parte não existe",
+    "not_deleted": "A parte não foi excluída",
+    "created": "Parte criada com sucesso",
+    "updated": "Parte atualizada com sucesso",
+    "deleted": "Parte excluída com sucesso"
+  }
+}

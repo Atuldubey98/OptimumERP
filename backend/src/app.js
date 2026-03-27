@@ -11,6 +11,8 @@ const corsHandler = require("./handlers/cors.handler");
 const { authenticate } = require("./middlewares/auth.middleware");
 const logger = require("./logger");
 const app = express();
+const middleware = require("i18next-http-middleware");
+const i18 = require("./i18");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
@@ -36,6 +38,7 @@ app.use(corsHandler);
 app.use(sessionHandler);
 
 if (NODE_ENV === "production") app.set("trust proxy", 1);
+app.use(middleware.handle(i18));
 
 app.get("/", (req, res) => {
   const user = req.session.user;
@@ -55,9 +58,9 @@ app.get("/terms", (req, res) => {
     title: "Optimum ERP",
   });
 });
-app.get("/api/v1/health", (_, res) =>
-  res.status(200).send("Server is running"),
-);
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).send(req.t("health:health"));
+});
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/organizations", organizationRouter);
 app.use("/api/v1/property", authenticate, propertyRouter);

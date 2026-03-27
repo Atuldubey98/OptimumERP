@@ -19,6 +19,7 @@ const htmlView = async (options = {}, req, res) => {
       Bill,
       filter,
       NotFound: NotFound,
+      t: req.t,
     });
     return res.render(locationTemplate, data);
   } catch (error) {

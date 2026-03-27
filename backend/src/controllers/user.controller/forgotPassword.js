@@ -11,7 +11,7 @@ const forgotPassword = async (req, res) => {
   });
   return res
     .status(200)
-    .json({ message: "OTP Sent ! Please check your email." });
+    .json({ message: req.t('user:user:otp_sent') });
 };
 
 module.exports = forgotPassword;

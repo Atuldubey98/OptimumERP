@@ -1,0 +1,11 @@
+{
+  "recurring_invoice": {
+    "recurring_invoice": {
+      "not_found": "Recurring Invoice does not exists",
+      "is_invalid": "Recurring Invoice is invalid",
+      "created": "Recurring Invoice created successfully",
+      "updated": "Recurring Invoice updated successfully",
+      "deleted": "Recurring Invoice deleted successfully"
+    }
+  }
+}

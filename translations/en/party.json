@@ -1,0 +1,11 @@
+{
+  "party": {
+    "party": {
+      "not_found": "Party does not exists",
+      "not_deleted": "Party not deleted",
+      "created": "Party created successfully",
+      "updated": "Party updated successfully",
+      "deleted": "Party deleted successfully"
+    }
+  }
+}

@@ -31,7 +31,7 @@ const createOrgUser = async (req, res) => {
   logger.info(`Organization user created with id ${orgUser.id}`);
   return res
     .status(201)
-    .json({ message: "User registered successfully for organization" });
+    .json({ message: req.t('user:user:registered') });
 };
 
 module.exports = createOrgUser;

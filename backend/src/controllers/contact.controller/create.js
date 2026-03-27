@@ -13,7 +13,7 @@ const create = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.contacts": 1 } }
   );
-  return res.status(200).json({ data: contact });
+  return res.status(200).json({ data: contact, message: req.t('contact:contact:created') });
 };
 
 module.exports = create;

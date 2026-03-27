@@ -7,6 +7,7 @@ import AuthContextProvider from "./contexts/AuthContextProvider.jsx";
 import "./index.css";
 import theme from "./theme";
 import SettingContextProvider from "./contexts/SettingContextProvider.jsx";
+import './i18n';
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ChakraProvider theme={theme}>

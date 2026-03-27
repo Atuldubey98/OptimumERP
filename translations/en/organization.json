@@ -1,0 +1,10 @@
+{
+  "organization": {
+    "organization": {
+      "not_found": "Organization does not exists",
+      "created": "Organization created successfully",
+      "updated": "Organization updated successfully",
+      "deleted": "Organization deleted successfully"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "purchase": {
+    "not_found": "A compra não existe",
+    "already_exists": "Já existe uma compra com este número",
+    "created": "Compra criada com sucesso",
+    "updated": "Compra atualizada com sucesso",
+    "deleted": "Compra excluída com sucesso"
+  }
+}

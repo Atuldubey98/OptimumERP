@@ -1,0 +1,8 @@
+{
+  "tax": {
+    "not_found": "Imposto não encontrado",
+    "created": "Imposto criado com sucesso",
+    "updated": "Imposto atualizado com sucesso",
+    "deleted": "Imposto excluído com sucesso"
+  }
+}

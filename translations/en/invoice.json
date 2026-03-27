@@ -1,0 +1,13 @@
+{
+  "invoice": {
+    "invoice": {
+      "not_found": "Invoice does not exists",
+      "not_deleted": "Invoice not deleted",
+      "already_exists": "Invoice already exists with invoice id",
+      "created": "Invoice created successfully",
+      "updated": "Invoice updated successfully",
+      "deleted": "Invoice deleted successfully",
+      "payment_added": "Payment added"
+    }
+  }
+}

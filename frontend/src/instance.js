@@ -1,5 +1,5 @@
 import axios, { isAxiosError } from "axios";
-
+import i18n from './i18n';
 export const baseURL = import.meta.env.VITE_API_URL;
 console.log({baseURL});
 
@@ -21,6 +21,17 @@ instance.interceptors.response.use(
     )
       window.location.href = "/";
     
+    return Promise.reject(error);
+  }
+);
+
+instance.interceptors.request.use(
+  (config) => {
+    const language = i18n.language || 'en';
+    config.headers['Accept-Language'] = language;
+    return config;
+  },
+  (error) => {
     return Promise.reject(error);
   }
 );

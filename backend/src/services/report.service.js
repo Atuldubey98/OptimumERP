@@ -43,7 +43,7 @@ exports.makeReportExcelBuffer = async ({
     Object.entries(header).forEach(([key], fieldIndex) => {
       if (key != "_id")
         ws.cell(index + 2, fieldIndex + 1).string(
-          String(reportItem[key] || "")
+          String(reportItem[key] || ""),
         );
     });
   };

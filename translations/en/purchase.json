@@ -1,0 +1,11 @@
+{
+  "purchase": {
+    "purchase": {
+      "not_found": "Purchase does not exists",
+      "already_exists": "Purchase already exists with purchase no",
+      "created": "Purchase created successfully",
+      "updated": "Purchase updated successfully",
+      "deleted": "Purchase deleted successfully"
+    }
+  }
+}

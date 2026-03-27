@@ -30,7 +30,7 @@ const updateGoogleAuth = async (req, res) => {
     ...req.session.user,
     googleId,
   };
-  return res.status(200).json({ message: "SMTP Setup successfull" });
+  return res.status(200).json({ message: req.t('user:user:smtp_setup_success') });
 };
 
 module.exports = updateGoogleAuth;

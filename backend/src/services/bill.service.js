@@ -148,7 +148,7 @@ const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
   );
   return newTaxCategories;
 };
-exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
+exports.getBillDetail = async ({ Bill, filter, NotFound, t }) => {
   const bill = await Bill.findOne(filter)
     .populate("party")
     .populate("createdBy", "name email _id")
@@ -183,30 +183,30 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
   const billMetaMapping = {
     quotes: async () => {
       return {
-        title: "Quotation",
-        billMetaHeading: "Estimate Details",
-        partyMetaHeading: "Estimate to",
+        title: t ? t('bill_metadata:bill_metadata:quotation_title') : "Quotation",
+        billMetaHeading: t ? t('bill_metadata:bill_metadata:quotation_meta_heading') : "Estimate Details",
+        partyMetaHeading: t ? t('bill_metadata:bill_metadata:quotation_party_heading') : "Estimate to",
       };
     },
     purchase: async () => {
       return {
-        title: "Purchase",
-        billMetaHeading: "Purchase Details",
-        partyMetaHeading: "Bill From",
+        title: t ? t('bill_metadata:bill_metadata:purchase_title') : "Purchase",
+        billMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_meta_heading') : "Purchase Details",
+        partyMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_party_heading') : "Bill From",
       };
     },
     proforma_invoice: async () => {
       return {
-        title: "Proforma Invoice",
-        billMetaHeading: "Proforma Invoice Details",
-        partyMetaHeading: "Bill To",
+        title: t ? t('bill_metadata:bill_metadata:proforma_invoice_title') : "Proforma Invoice",
+        billMetaHeading: t ? t('bill_metadata:bill_metadata:proforma_invoice_meta_heading') : "Proforma Invoice Details",
+        partyMetaHeading: t ? t('bill_metadata:bill_metadata:proforma_invoice_party_heading') : "Bill To",
       };
     },
     purchase_order: async () => {
       return {
-        title: "Purchase Order",
-        billMetaHeading: "PO Details",
-        partyMetaHeading: "PO to",
+        title: t ? t('bill_metadata:bill_metadata:purchase_order_title') : "Purchase Order",
+        billMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_order_meta_heading') : "PO Details",
+        partyMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_order_party_heading') : "PO to",
       };
     },
     invoice: async () => {
@@ -218,9 +218,9 @@ exports.getBillDetail = async ({ Bill, filter, NotFound }) => {
       
       const bank = setting?.printSettings?.bank && bill.org.bank ? bill.org.bank : null;      
       return {
-        title: "Invoice",
-        billMetaHeading: "Invoice Details",
-        partyMetaHeading: "Bill To",
+        title: t ? t('bill_metadata:bill_metadata:invoice_title') : "Invoice",
+        billMetaHeading: t ? t('bill_metadata:bill_metadata:invoice_meta_heading') : "Invoice Details",
+        partyMetaHeading: t ? t('bill_metadata:bill_metadata:invoice_party_heading') : "Bill To",
         bank,
         upiQr,
       };
@@ -237,11 +237,13 @@ exports.convertBillToHtmlByTemplate = async ({
   filter,
   NotFound,
   template,
+  t,
 }) => {
   const data = await this.getBillDetail({
     Bill,
     filter,
     NotFound,
+    t,
   });
   const pdfTemplateLocation = path.join(
     __dirname,

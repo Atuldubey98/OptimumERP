@@ -35,6 +35,7 @@ const send = async (options = {}, req, res) => {
     filter,
     NotFound,
     template,
+    t: req.t,
   });
   const pdfBuffer = await getPdfBufferUsingHtml(html);
 

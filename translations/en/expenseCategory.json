@@ -1,0 +1,11 @@
+{
+  "expense_category": {
+    "expense_category": {
+      "not_found": "Expense category not found",
+      "not_deleted": "Expense category not deleted",
+      "created": "Expense category created successfully",
+      "updated": "Expense category updated successfully",
+      "deleted": "Expense category deleted successfully"
+    }
+  }
+}

@@ -75,7 +75,7 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
     };
     printer.on("end", onEndPdfChunks);
     const onErrorInChunking = () => {
-      reject(new Error("Some error occured"));
+      reject(new Error("Some error occurred"));
     };
     printer.on("error", onErrorInChunking);
     printer.end();

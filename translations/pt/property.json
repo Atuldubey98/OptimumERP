@@ -1,0 +1,8 @@
+{
+  "property": {
+    "not_found": "A propriedade não existe",
+    "created": "Propriedade criada com sucesso",
+    "updated": "Propriedade atualizada com sucesso",
+    "deleted": "Propriedade excluída com sucesso"
+  }
+}

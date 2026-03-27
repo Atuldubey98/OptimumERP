@@ -7,7 +7,7 @@ const connectDatabase = async (MONGO_URI) => {
     logger.info("Connected to mongodb");
     return connection;
   } catch (error) {
-    logger.error("Some error occured in connecting to mongodb");
+    logger.error("Some error occurred in connecting to mongodb");
     throw error;
   }
 };
@@ -17,7 +17,7 @@ const closeDBConnection = async () => {
     await mongoose.connection.close();
     logger.info("Disconnected from mongodb");
   } catch (error) {
-    logger.error("Some error occured in connecting to mongodb");
+    logger.error("Some error occurred in connecting to mongodb");
     throw error;
   }
 };

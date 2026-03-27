@@ -3,6 +3,7 @@ const logger = require("../../logger");
 const Contact = require("../../models/contacts.model");
 const OrgModel = require("../../models/org.model");
 
+
 const remove = async (req, res) => {
   const deletedContact = await Contact.softDelete({
     _id: req.params.id,
@@ -14,7 +15,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.contacts": -1 } }
   );
-  return res.status(200).json({ message: "Contact deleted" });
+  return res.status(200).json({ message: req.t('contact:contact:deleted') });
 };
 
 module.exports = remove;

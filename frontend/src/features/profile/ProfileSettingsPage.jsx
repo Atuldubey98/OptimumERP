@@ -25,6 +25,7 @@ import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 import instance from "../../instance";
 import { isAxiosError } from "axios";
 import useStorageUtil from "../../hooks/useStorageUtil";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 function ProfileInfo(props) {
   const settingContext = useContext(SettingContext);
@@ -126,6 +127,12 @@ export default function ProfileSettingsPage() {
             </Text>
           </Grid>
           <ProfileInfo user={user} onOpen={onOpen} />
+          <CardWrapper
+            title={"Language"}
+            subtitle={"Here you can change your language preferences"}
+          >
+            <LanguageSwitcher />
+          </CardWrapper>
 
           <CardWrapper
             title={"Password"}

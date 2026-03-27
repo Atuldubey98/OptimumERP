@@ -1,0 +1,10 @@
+{
+  "expense": {
+    "expense": {
+      "not_found": "Expense not found",
+      "created": "Expense created successfully",
+      "updated": "Expense updated successfully",
+      "deleted": "Expense deleted successfully"
+    }
+  }
+}

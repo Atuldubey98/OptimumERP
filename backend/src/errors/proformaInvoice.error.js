@@ -19,7 +19,7 @@ class ProformaInvoiceDuplicate extends Error {
   constructor(num) {
     super();
     this.code = 400;
-    this.message = `Invoice already exists with invoice id : ${num}`;
+    this.message = `Invoice already exists with invoice id: ${num}`;
     this.name = "InvoiceDuplicate";
   }
 }

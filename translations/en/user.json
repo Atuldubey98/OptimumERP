@@ -1,0 +1,17 @@
+{
+  "user": {
+    "user": {
+      "already_exists": "User already exists",
+      "not_found": "User does not exists",
+      "password_mismatch": "Password does not match",
+      "not_authenticated": "User not authenticated",
+      "not_authorized": "User not authorized",
+      "not_verified": "User not verified",
+      "upgrade_plan": "Upgrade your plan",
+      "invalid_otp": "Invalid OTP",
+      "otp_sent": "OTP Sent! Please check your email",
+      "registered": "User registered successfully for organization",
+      "smtp_setup_success": "SMTP Setup successful"
+    }
+  }
+}

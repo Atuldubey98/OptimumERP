@@ -18,7 +18,7 @@ const getSettingByOrg = async (req, res) => {
   const role = orgUser.role;  
   const currencyConfig = await propertyService.getCurrencyConfig();
   const currency = currencyConfig.value[setting.currency];  
-  return res.status(200).json({ data: {setting, role, currency} });
+  return res.status(200).json({ data: {setting, role, currency}   });
 };
 
 module.exports = getSettingByOrg;

@@ -1,0 +1,22 @@
+{
+  "billing": {
+    "no_template_found": "Nenhum modelo encontrado"
+  },
+  "bill_metadata": {
+    "quotation_title": "Orçamento",
+    "quotation_meta_heading": "Detalhes da Estimativa",
+    "quotation_party_heading": "Estimativa para",
+    "purchase_title": "Compra",
+    "purchase_meta_heading": "Detalhes da Compra",
+    "purchase_party_heading": "Faturado por",
+    "proforma_invoice_title": "Fatura Proforma",
+    "proforma_invoice_meta_heading": "Detalhes da Fatura Proforma",
+    "proforma_invoice_party_heading": "Faturar para",
+    "purchase_order_title": "Pedido de Compra",
+    "purchase_order_meta_heading": "Detalhes do Pedido",
+    "purchase_order_party_heading": "Pedido para",
+    "invoice_title": "Fatura",
+    "invoice_meta_heading": "Detalhes da Fatura",
+    "invoice_party_heading": "Faturar para"
+  }
+}
