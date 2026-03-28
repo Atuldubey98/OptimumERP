@@ -17,39 +17,47 @@ Tech stack:
 - Install Docker
 - Install Docker Compose plugin
 
-2. Open project directory
+2. Clone repository
+```bash
+git clone https://github.com/Atuldubey98/OptimumERP.git
+```
+
+3. Open project directory
 ```bash
 cd OptimumERP
 ```
 
-3. Create environment file
+4. Create environment file
 - Create .env in project root.
 - Use env.txt as reference.
-- Set required values for:
-  - MONGO_URI
-  - SESSION_SECRET
-  - NODE_MAILER_USER_NAME
-  - NODE_MAILER_APP_PASSWORD
-  - NODE_MAILER_HOST
-  - VITE_APP_URL
-  - VITE_API_URL
+- Add only these keys in .env:
 
-4. Start all services
+```dotenv
+MONGO_URI=mongodb://mongo:27017/mernapp?replicaSet=rs0
+SESSION_SECRET=SESSION_SECRET
+VITE_API_URL=http://localhost:3000
+IMPORT_CRON_SCHEDULE=*/5 * * * *
+LOG_FILE_PATH=./logs/app.log
+DEFAULT_USER_PLAN=platinum
+NETWORK_STORAGE_PATH=./uploads
+```
+
+5. Start all services
 ```bash
 docker compose up -d --build
 ```
 
-5. Verify services
+6. Verify services
 ```bash
 docker compose ps
 ```
 
-6. Verify backend health
+7. Verify backend health
 ```bash
 curl http://localhost:3000/api/v1/health
 ```
 
-7. Access application
+8. Access application
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3000/api/v1
 
