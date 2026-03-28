@@ -10,6 +10,7 @@
   },
   "api": {
     "entity_created": "{{entity}} criado",
+    "entity_updated": "{{entity}} atualizado",
     "entity_deleted": "{{entity}} excluído",
     "entity_linked": "{{entity}} está vinculado",
     "select_at_least_one_recipient": "Selecione pelo menos um destinatário",
@@ -64,6 +65,7 @@
     "unit_deleted": "Unidade excluída",
     "expense_deleted": "Despesa excluída com sucesso",
     "setting_not_found": "Configuração não encontrada",
+    "no_template_found": "Nenhum modelo encontrado",
     "product_category_not_found": "Categoria de produto não encontrada",
     "product_category_used_by_product": "Categoria de produto usada por produto",
     "product_category_deleted": "Categoria de produto excluída com sucesso"

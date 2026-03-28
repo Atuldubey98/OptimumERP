@@ -3,6 +3,7 @@ const QRCode = require("qrcode");
 const fetch = require("node-fetch");
 const PdfMake = require("pdfmake");
 const path = require("path");
+const i18 = require("../i18");
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(location, data, (err, html) => {
@@ -42,7 +43,8 @@ exports.getPdfBufferUsingHtml = async (html) => {
         source: html,
       }),
     });
-    if (!response.ok) throw new Error("Pdf generation failed");
+    if (!response.ok)
+      throw new Error(i18.t("common:common.pdf_generation_failed"));
     const buffer = await response.buffer();
     return buffer;
   } catch (error) {
@@ -75,7 +77,7 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
     };
     printer.on("end", onEndPdfChunks);
     const onErrorInChunking = () => {
-      reject(new Error("Some error occurred"));
+      reject(new Error(i18.t("common:common.some_error_occurred")));
     };
     printer.on("error", onErrorInChunking);
     printer.end();

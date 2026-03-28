@@ -10,6 +10,7 @@
   },
   "api": {
     "entity_created": "{{entity}} created",
+    "entity_updated": "{{entity}} updated",
     "entity_deleted": "{{entity}} deleted",
     "entity_linked": "{{entity}} is linked",
     "select_at_least_one_recipient": "Select at least one recipient",
@@ -64,6 +65,7 @@
     "unit_deleted": "Unit deleted",
     "expense_deleted": "Expense deleted successfully",
     "setting_not_found": "Setting not found",
+    "no_template_found": "No template found",
     "product_category_not_found": "Product category not found",
     "product_category_used_by_product": "Product category used by product",
     "product_category_deleted": "Product category deleted successfully"

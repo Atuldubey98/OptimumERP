@@ -20,7 +20,7 @@ const update = async (options = {}, req, res) => {
   });
   logger.info(`${Bill.modelName} updated ${bill.id}`);
   const billLabel = billTypes[Bill.modelName] || Bill.modelName;
-  const message = `${billLabel} updated !`;
+  const message = req.t("common:api.entity_updated", { entity: billLabel });
   return res.status(200).json({ message });
 };
 

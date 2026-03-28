@@ -1,6 +1,7 @@
 const xl = require("excel4node");
 const reportDataByType = require("../constants/reportDataByType");
 const exportDataByReceiptType = require("../constants/exportDataByReceiptType");
+const i18 = require("../i18");
 const Invoice = require("../models/invoice.model");
 const {
   INVOICES,
@@ -19,7 +20,7 @@ exports.makeReportExcelBuffer = async ({
 }) => {
   const reportTypes = isReport ? reportDataByType : exportDataByReceiptType;
   const reportMapper = reportTypes[reportType];
-  if (!reportMapper) throw new Error("Report type not found");
+  if (!reportMapper) throw new Error(i18.t("common:common.report_type_not_found"));
   const { bodyMapper, header: headerRow } = reportMapper;
   const header = isReport ? headerRow : selectedHeaderRows;
   const reportItems = reportData.map(bodyMapper);
@@ -73,7 +74,8 @@ exports.getReportForBill = async ({ req, reportType }) => {
     transactions: transactionFilterProps,
   };
   const paginationProps = reportTypes[reportType];
-  if (!paginationProps) throw new Error("Report type not found");
+  if (!paginationProps)
+    throw new Error(i18.t("common:common.report_type_not_found"));
   const Model = paginationProps.model;
   const paginationParams = await getPaginationParams({
     req,

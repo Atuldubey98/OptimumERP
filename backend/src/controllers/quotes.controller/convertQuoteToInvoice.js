@@ -71,7 +71,9 @@ const convertQuoteToInvoice = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.invoices": 1 } }
   );
-  return res.status(201).json({ message: `${req.t('quote:quote:converted_to_invoice')} ${num}` });
+  return res.status(201).json({
+    message: req.t("common:api.invoice_created_with_number", { num }),
+  });
 };
 
 module.exports = convertQuoteToInvoice;
