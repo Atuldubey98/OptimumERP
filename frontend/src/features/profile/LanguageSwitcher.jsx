@@ -30,8 +30,7 @@ const LanguageSwitcher = () => {
         </FormLabel>
 
         <Select
-       
-
+          width={"full"}
           options={options}
           value={currentOption}
           onChange={handleChange}

@@ -8,7 +8,6 @@ i18next
   .use(middleware.LanguageDetector)
   .init({
     fallbackLng: "en",
-
     preload: ["en", "pt"],
     showSupportNotice: false,
     ns: [
@@ -40,6 +39,7 @@ i18next
         __dirname,
         "../public/translations/{{lng}}/{{ns}}.json",
       ),
+      expirationTime: 24 * 60 * 60 * 1000,
     },
 
     detection: {
