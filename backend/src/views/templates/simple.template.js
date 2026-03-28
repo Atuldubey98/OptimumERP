@@ -1,4 +1,6 @@
 const simpleTemplate = (data, color) => {
+  const labels = data?.metaLabels || {};
+  const dateLocale = data?.dateLocale || "en-IN";
   return {
     content: [
       // Title
@@ -21,9 +23,9 @@ const simpleTemplate = (data, color) => {
             stack: [
               { text: data.entity.org.name, style: "header" },
               { text: data.entity.org.address },
-              { text: "GSTIN: ", style: "inline" },
+              { text: `${labels.gstin || "GSTIN"}: `, style: "inline" },
               { text: data.entity.org.gstNo },
-              { text: "PAN: ", style: "inline" },
+              { text: `${labels.pan || "PAN"}: `, style: "inline" },
               { text: data.entity.org.panNo },
             ],
             alignment: "right",
@@ -41,10 +43,10 @@ const simpleTemplate = (data, color) => {
               { text: data.entity.party.name, style: { bold: true } },
               { text: data.entity.billingAddress },
               data.entity.party.gstNo
-                ? { text: ["GSTIN: ", { text: data.entity.party.gstNo }] }
+                ? { text: [`${labels.gstin || "GSTIN"}: `, { text: data.entity.party.gstNo }] }
                 : {},
               data.entity.party.panNo
-                ? { text: ["PAN: ", { text: data.entity.party.panNo }] }
+                ? { text: [`${labels.pan || "PAN"}: `, { text: data.entity.party.panNo }] }
                 : {},
             ],
           },
@@ -52,8 +54,8 @@ const simpleTemplate = (data, color) => {
             stack: [
               { text: data.billMetaHeading, style: "subheader" },
               {
-                text: `Date: ${new Date(data.entity.date).toLocaleDateString(
-                  "en-IN",
+                text: `${labels.date || "Date"}: ${new Date(data.entity.date).toLocaleDateString(
+                  dateLocale,
                   {
                     day: "2-digit",
                     month: "2-digit",
@@ -61,13 +63,13 @@ const simpleTemplate = (data, color) => {
                   },
                 )}`,
               },
-              { text: `Number: ${data.num}`, bold: true },
-              data.entity.poNo ? { text: `PO No: ${data.entity.poNo}` } : {},
+              { text: `${labels.number || "Number"}: ${data.num}`, bold: true },
+              data.entity.poNo ? { text: `${labels.po_no || "PO No"}: ${data.entity.poNo}` } : {},
               data.entity.poDate
                 ? {
-                    text: `PO Date: ${new Date(
+                    text: `${labels.po_date || "PO Date"}: ${new Date(
                       data.entity.poDate,
-                    ).toDateString()}`,
+                    ).toLocaleDateString(dateLocale)}`,
                   }
                 : {},
             ],
@@ -83,14 +85,14 @@ const simpleTemplate = (data, color) => {
           widths: ["auto", "*", "auto", "auto", "auto", "auto", "auto", "auto"],
           body: [
             [
-              { text: "Sno.", style: "tableHeader" },
-              { text: "Item", style: "tableHeader" },
-              { text: "HSN/SAC Code", style: "tableHeader" },
-              { text: "UM", style: "tableHeader" },
-              { text: "Rate", style: "tableHeader" },
-              { text: "Qty", style: "tableHeader" },
-              { text: "Tax", style: "tableHeader" },
-              { text: "Amount", style: "tableHeader" },
+              { text: labels.serial_no || "Sno.", style: "tableHeader" },
+              { text: labels.item || "Item", style: "tableHeader" },
+              { text: labels.hsn_sac_code || "HSN/SAC Code", style: "tableHeader" },
+              { text: labels.um || "UM", style: "tableHeader" },
+              { text: labels.rate || "Rate", style: "tableHeader" },
+              { text: labels.qty || "Qty", style: "tableHeader" },
+              { text: labels.tax || "Tax", style: "tableHeader" },
+              { text: labels.amount || "Amount", style: "tableHeader" },
             ],
             ...data.items.map((item, index) => [
               index + 1,
@@ -112,15 +114,15 @@ const simpleTemplate = (data, color) => {
         table: {
           widths: ["*", "auto"],
           body: [
-            ["Subtotal:", data.total],
+            [`${labels.subtotal || "Subtotal"}:`, data.total],
             ...Object.entries(data.currencyTaxCategories).map(
               ([taxName, taxValue]) => [
                 `${taxName.toLocaleUpperCase()}:`,
                 taxValue,
               ],
             ),
-            ["Grand Total:", data.grandTotal],
-            ["Amount in words:", data.amountToWords],
+            [`${labels.grand_total || "Grand Total"}:`, data.grandTotal],
+            [`${labels.amount_in_words || "Amount in words"}:`, data.amountToWords],
           ],
         },
         margin: [0, 20, 0, 20],
@@ -128,7 +130,7 @@ const simpleTemplate = (data, color) => {
       data.entity.terms
         ? {
             stack: [
-              { text: "Terms and Conditions:", style: "termsHeading" },
+              { text: `${labels.terms_and_conditions || "Terms and Conditions"}:`, style: "termsHeading" },
               { text: data.entity.terms, style: "terms" },
             ],
             margin: [0, 0, 0, 20],
@@ -139,17 +141,17 @@ const simpleTemplate = (data, color) => {
             columns: [
               {
                 stack: [
-                  { text: "Bank Account Details:", style: "subheader" },
-                  { text: `Bank Name: ${data.bank.name}` },
-                  { text: `Account Holder: ${data.bank.accountHolderName}` },
-                  { text: `Account Number: ${data.bank.accountNo}` },
-                  { text: `IFSC Code: ${data.bank.ifscCode}` },
+                  { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
+                  { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}` },
+                  { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}` },
+                  { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}` },
+                  { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}` },
                 ],
               },
               data.upiQr
                 ? {
                     stack: [
-                      { text: "UPI QR Code", style: "subheader" },
+                      { text: labels.upi_qr_code || "UPI QR Code", style: "subheader" },
                       { image: data.upiQr, width: 100 },
                     ],
                     alignment: "right",
@@ -159,7 +161,7 @@ const simpleTemplate = (data, color) => {
           }
         : {},
       {
-        text: "Authorized Signatory",
+        text: labels.authorized_signatory || "Authorized Signatory",
         style: "signatory",
         alignment: "right",
         margin: [0, 50, 0, 0],

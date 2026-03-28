@@ -148,7 +148,7 @@ const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
   );
   return newTaxCategories;
 };
-exports.getBillDetail = async ({ Bill, filter, NotFound, t }) => {
+exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
   const bill = await Bill.findOne(filter)
     .populate("party")
     .populate("createdBy", "name email _id")
@@ -163,10 +163,17 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t }) => {
     currencySymbol
   );
   const localeCode = setting.localeCode;
+  const dateLocale = language
+    ? language.toLowerCase().startsWith("pt")
+      ? "pt-PT"
+      : "en-IN"
+    : localeCode || "en-IN";
   const currencyTaxCategories = addCurrencyToTaxCategories(
     bill.taxCategories,
     currencySymbol
   );
+  const translateTemplateLabel = (key, defaultValue) =>
+    t ? t(`billing:template_labels.${key}`, { defaultValue }) : defaultValue;
   const data = {
     entity: bill,
     num: bill.num,
@@ -178,35 +185,134 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t }) => {
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
     currencyTaxCategories,
+    dateLocale,
+    metaLabels: {
+      tax_invoice: translateTemplateLabel("tax_invoice", "Tax Invoice"),
+      phone: translateTemplateLabel("phone", "Phone"),
+      email: translateTemplateLabel("email", "Email"),
+      state: translateTemplateLabel("state", "State"),
+      gstin: translateTemplateLabel("gstin", "GSTIN"),
+      pan: translateTemplateLabel("pan", "PAN"),
+      invoice_no: translateTemplateLabel("invoice_no", "Invoice No."),
+      invoice_date: translateTemplateLabel("invoice_date", "Invoice Date"),
+      po_number: translateTemplateLabel("po_number", "PO Number"),
+      po_date: translateTemplateLabel("po_date", "PO Date"),
+      date: translateTemplateLabel("date", "Date"),
+      number: translateTemplateLabel("number", "Number"),
+      po_no: translateTemplateLabel("po_no", "PO No"),
+      item_details: translateTemplateLabel("item_details", "Item Details"),
+      serial_no: translateTemplateLabel("serial_no", "Sno."),
+      item: translateTemplateLabel("item", "Item"),
+      items: translateTemplateLabel("items", "Items"),
+      hsn_sac_code: translateTemplateLabel("hsn_sac_code", "HSN/SAC Code"),
+      um: translateTemplateLabel("um", "UM"),
+      rate: translateTemplateLabel("rate", "Rate"),
+      qty: translateTemplateLabel("qty", "Qty"),
+      tax: translateTemplateLabel("tax", "Tax"),
+      amount: translateTemplateLabel("amount", "Amount"),
+      product: translateTemplateLabel("product", "Product"),
+      price: translateTemplateLabel("price", "Price"),
+      total: translateTemplateLabel("total", "Total"),
+      subtotal: translateTemplateLabel("subtotal", "Subtotal"),
+      grand_total: translateTemplateLabel("grand_total", "Grand Total"),
+      amount_in_words: translateTemplateLabel("amount_in_words", "Amount in words"),
+      terms_and_conditions: translateTemplateLabel("terms_and_conditions", "Terms and Conditions"),
+      company_bank_details: translateTemplateLabel("company_bank_details", "Company Bank details"),
+      bank_account_details: translateTemplateLabel("bank_account_details", "Bank Account Details"),
+      bank_name: translateTemplateLabel("bank_name", "Bank Name"),
+      bank_account_no: translateTemplateLabel("bank_account_no", "Bank Account No."),
+      bank_ifsc_code: translateTemplateLabel("bank_ifsc_code", "Bank IFSC code"),
+      account_holder_name: translateTemplateLabel("account_holder_name", "Account holder name"),
+      account_holder: translateTemplateLabel("account_holder", "Account Holder"),
+      account_number: translateTemplateLabel("account_number", "Account Number"),
+      ifsc_code: translateTemplateLabel("ifsc_code", "IFSC Code"),
+      upi_qr_code: translateTemplateLabel("upi_qr_code", "UPI QR Code"),
+      authorized_signatory: translateTemplateLabel("authorized_signatory", "Authorized Signatory"),
+      invoice_hash: translateTemplateLabel("invoice_hash", "Invoice #"),
+      date_issued: translateTemplateLabel("date_issued", "Date Issued"),
+      billing_from: translateTemplateLabel("billing_from", "Billing From"),
+      billing_to: translateTemplateLabel("billing_to", "Billing To"),
+      address: translateTemplateLabel("address", "Address"),
+      tax_upper: translateTemplateLabel("tax_upper", "TAX"),
+      total_upper: translateTemplateLabel("total_upper", "TOTAL"),
+    },
   };
 
   const billMetaMapping = {
     quotes: async () => {
       return {
-        title: t ? t('bill_metadata:bill_metadata:quotation_title') : "Quotation",
-        billMetaHeading: t ? t('bill_metadata:bill_metadata:quotation_meta_heading') : "Estimate Details",
-        partyMetaHeading: t ? t('bill_metadata:bill_metadata:quotation_party_heading') : "Estimate to",
+        title: t
+          ? t("billing:bill_metadata:quotation_title", {
+            defaultValue: "Quotation",
+          })
+          : "Quotation",
+        billMetaHeading: t
+          ? t("billing:bill_metadata:quotation_meta_heading", {
+            defaultValue: "Estimate Details",
+          })
+          : "Estimate Details",
+        partyMetaHeading: t
+          ? t("billing:bill_metadata:quotation_party_heading", {
+            defaultValue: "Estimate to",
+          })
+          : "Estimate to",
       };
     },
     purchase: async () => {
       return {
-        title: t ? t('bill_metadata:bill_metadata:purchase_title') : "Purchase",
-        billMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_meta_heading') : "Purchase Details",
-        partyMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_party_heading') : "Bill From",
+        title: t
+          ? t("billing:bill_metadata:purchase_title", {
+            defaultValue: "Purchase",
+          })
+          : "Purchase",
+        billMetaHeading: t
+          ? t("billing:bill_metadata:purchase_meta_heading", {
+            defaultValue: "Purchase Details",
+          })
+          : "Purchase Details",
+        partyMetaHeading: t
+          ? t("billing:bill_metadata:purchase_party_heading", {
+            defaultValue: "Bill From",
+          })
+          : "Bill From",
       };
     },
     proforma_invoice: async () => {
       return {
-        title: t ? t('bill_metadata:bill_metadata:proforma_invoice_title') : "Proforma Invoice",
-        billMetaHeading: t ? t('bill_metadata:bill_metadata:proforma_invoice_meta_heading') : "Proforma Invoice Details",
-        partyMetaHeading: t ? t('bill_metadata:bill_metadata:proforma_invoice_party_heading') : "Bill To",
+        title: t
+          ? t("billing:bill_metadata:proforma_invoice_title", {
+            defaultValue: "Proforma Invoice",
+          })
+          : "Proforma Invoice",
+        billMetaHeading: t
+          ? t("billing:bill_metadata:proforma_invoice_meta_heading", {
+            defaultValue: "Proforma Invoice Details",
+          })
+          : "Proforma Invoice Details",
+        partyMetaHeading: t
+          ? t("billing:bill_metadata:proforma_invoice_party_heading", {
+            defaultValue: "Bill To",
+          })
+          : "Bill To",
       };
     },
     purchase_order: async () => {
       return {
-        title: t ? t('bill_metadata:bill_metadata:purchase_order_title') : "Purchase Order",
-        billMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_order_meta_heading') : "PO Details",
-        partyMetaHeading: t ? t('bill_metadata:bill_metadata:purchase_order_party_heading') : "PO to",
+        title: t
+          ? t("billing:bill_metadata:purchase_order_title", {
+            defaultValue: "Purchase Order",
+          })
+          : "Purchase Order",
+        billMetaHeading: t
+          ? t("billing:bill_metadata:purchase_order_meta_heading", {
+            defaultValue: "PO Details",
+          })
+          : "PO Details",
+        partyMetaHeading: t
+          ? t("billing:bill_metadata:purchase_order_party_heading", {
+            defaultValue: "PO to",
+          })
+          : "PO to",
       };
     },
     invoice: async () => {
@@ -218,9 +324,21 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t }) => {
       
       const bank = setting?.printSettings?.bank && bill.org.bank ? bill.org.bank : null;      
       return {
-        title: t ? t('bill_metadata:bill_metadata:invoice_title') : "Invoice",
-        billMetaHeading: t ? t('bill_metadata:bill_metadata:invoice_meta_heading') : "Invoice Details",
-        partyMetaHeading: t ? t('bill_metadata:bill_metadata:invoice_party_heading') : "Bill To",
+        title: t
+          ? t("billing:bill_metadata:invoice_title", {
+            defaultValue: "Invoice",
+          })
+          : "Invoice",
+        billMetaHeading: t
+          ? t("billing:bill_metadata:invoice_meta_heading", {
+            defaultValue: "Invoice Details",
+          })
+          : "Invoice Details",
+        partyMetaHeading: t
+          ? t("billing:bill_metadata:invoice_party_heading", {
+            defaultValue: "Bill To",
+          })
+          : "Bill To",
         bank,
         upiQr,
       };
@@ -238,12 +356,14 @@ exports.convertBillToHtmlByTemplate = async ({
   NotFound,
   template,
   t,
+  language,
 }) => {
   const data = await this.getBillDetail({
     Bill,
     filter,
     NotFound,
     t,
+    language,
   });
   const pdfTemplateLocation = path.join(
     __dirname,

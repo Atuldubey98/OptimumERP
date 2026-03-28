@@ -1,6 +1,9 @@
 {
   "billing": {
-    "no_template_found": "Nenhum modelo encontrado"
+    "no_template_found": "Nenhum modelo encontrado",
+    "billing": {
+      "no_template_found": "Nenhum modelo encontrado"
+    }
   },
   "bill_metadata": {
     "quotation_title": "Orçamento",
@@ -17,6 +20,73 @@
     "purchase_order_party_heading": "Pedido para",
     "invoice_title": "Fatura",
     "invoice_meta_heading": "Detalhes da Fatura",
-    "invoice_party_heading": "Faturar para"
+    "invoice_party_heading": "Faturar para",
+    "bill_metadata": {
+      "quotation_title": "Orçamento",
+      "quotation_meta_heading": "Detalhes da Estimativa",
+      "quotation_party_heading": "Estimativa para",
+      "purchase_title": "Compra",
+      "purchase_meta_heading": "Detalhes da Compra",
+      "purchase_party_heading": "Faturado por",
+      "proforma_invoice_title": "Fatura Proforma",
+      "proforma_invoice_meta_heading": "Detalhes da Fatura Proforma",
+      "proforma_invoice_party_heading": "Faturar para",
+      "purchase_order_title": "Pedido de Compra",
+      "purchase_order_meta_heading": "Detalhes do Pedido",
+      "purchase_order_party_heading": "Pedido para",
+      "invoice_title": "Fatura",
+      "invoice_meta_heading": "Detalhes da Fatura",
+      "invoice_party_heading": "Faturar para"
+    }
+  },
+  "template_labels": {
+    "tax_invoice": "Fatura Fiscal",
+    "phone": "Telefone",
+    "email": "Email",
+    "state": "Estado",
+    "gstin": "GSTIN",
+    "pan": "PAN",
+    "invoice_no": "N.º da Fatura",
+    "invoice_date": "Data da Fatura",
+    "po_number": "N.º da PO",
+    "po_date": "Data da PO",
+    "date": "Data",
+    "number": "Número",
+    "po_no": "N.º da PO",
+    "item_details": "Detalhes dos Itens",
+    "serial_no": "N.º",
+    "item": "Item",
+    "items": "Itens",
+    "hsn_sac_code": "Código HSN/SAC",
+    "um": "UM",
+    "rate": "Taxa",
+    "qty": "Qtd",
+    "tax": "Imposto",
+    "amount": "Valor",
+    "product": "Produto",
+    "price": "Preço",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "grand_total": "Total Geral",
+    "amount_in_words": "Valor por extenso",
+    "terms_and_conditions": "Termos e Condições",
+    "company_bank_details": "Dados Bancários da Empresa",
+    "bank_account_details": "Dados da Conta Bancária",
+    "bank_name": "Nome do Banco",
+    "bank_account_no": "N.º da Conta",
+    "bank_ifsc_code": "Código IFSC",
+    "account_holder_name": "Nome do Titular",
+    "account_holder": "Titular da Conta",
+    "account_number": "Número da Conta",
+    "ifsc_code": "Código IFSC",
+    "upi_qr_code": "Código QR UPI",
+    "authorized_signatory": "Assinatura Autorizada",
+    "invoice_hash": "Fatura #",
+    "date_issued": "Data de Emissão",
+    "billing_from": "Cobrança de",
+    "billing_to": "Cobrança para",
+    "address": "Endereço",
+    "tax_upper": "IMPOSTO",
+    "total_upper": "TOTAL"
   }
 }

@@ -1,4 +1,6 @@
 const buzyTemplate = (data, color) => {
+  const labels = data?.metaLabels || {};
+  const dateLocale = data?.dateLocale || "en-IN";
   return {
     pageSize: "A4",
     pageMargins: [20, 20, 20, 20],
@@ -9,7 +11,7 @@ const buzyTemplate = (data, color) => {
         text:
           data && data.title
             ? data.title.toString().toUpperCase()
-            : "TAX INVOICE",
+            : (labels.tax_invoice || "TAX INVOICE").toUpperCase(),
         style: "mainTitle",
         alignment: "center",
         margin: [0, 10, 0, 10],
@@ -35,14 +37,14 @@ const buzyTemplate = (data, color) => {
                 ? { text: data.entity.org.address, style: "inline" }
                 : {},
               data && data.entity && data.entity.org && data.entity.org.phone
-                ? { text: `Phone: ${data.entity.org.phone}`, style: "inline" }
+                ? { text: `${labels.phone || "Phone"}: ${data.entity.org.phone}`, style: "inline" }
                 : {},
               data && data.entity && data.entity.org && data.entity.org.email
-                ? { text: `Email: ${data.entity.org.email}`, style: "inline" }
+                ? { text: `${labels.email || "Email"}: ${data.entity.org.email}`, style: "inline" }
                 : {},
               data && data.entity && data.entity.org && data.entity.org.gstNo
                 ? {
-                    text: `GSTIN: ${data.entity.org.gstNo}`,
+                    text: `${labels.gstin || "GSTIN"}: ${data.entity.org.gstNo}`,
                     style: "inlineBold",
                   }
                 : {},
@@ -51,7 +53,7 @@ const buzyTemplate = (data, color) => {
               data.entity.org &&
               (data.entity.org.stateName || data.entity.org.stateCode)
                 ? {
-                    text: `State: ${data.entity.org.stateName || ""}${data.entity.org.stateCode ? " (" + data.entity.org.stateCode + ")" : ""}`,
+                    text: `${labels.state || "State"}: ${data.entity.org.stateName || ""}${data.entity.org.stateCode ? " (" + data.entity.org.stateCode + ")" : ""}`,
                     style: "inline",
                   }
                 : {},
@@ -61,7 +63,7 @@ const buzyTemplate = (data, color) => {
             width: 220,
             stack: [
               {
-                text: (data && data.title ? data.title : "TAX INVOICE")
+                text: (data && data.title ? data.title : labels.tax_invoice || "TAX INVOICE")
                   .toString()
                   .toUpperCase(),
                 style: "title",
@@ -72,7 +74,7 @@ const buzyTemplate = (data, color) => {
                   widths: ["*", "*"],
                   body: [
                     [
-                      { text: "Invoice No.", style: "metaLabel" },
+                      { text: labels.invoice_no || "Invoice No.", style: "metaLabel" },
                       {
                         text:
                           data && data.num
@@ -84,19 +86,19 @@ const buzyTemplate = (data, color) => {
                       },
                     ],
                     [
-                      { text: "Invoice Date", style: "metaLabel" },
+                      { text: labels.invoice_date || "Invoice Date", style: "metaLabel" },
                       {
                         text:
                           data && data.entity && data.entity.date
                             ? new Date(data.entity.date).toLocaleDateString(
-                                "en-IN",
+                                dateLocale,
                               )
                             : "",
                         style: "metaValue",
                       },
                     ],
                     [
-                      { text: "PO Number", style: "metaLabel" },
+                      { text: labels.po_number || "PO Number", style: "metaLabel" },
                       {
                         text:
                           data && data.entity && data.entity.poNo
@@ -106,12 +108,12 @@ const buzyTemplate = (data, color) => {
                       },
                     ],
                     [
-                      { text: "PO Date", style: "metaLabel" },
+                      { text: labels.po_date || "PO Date", style: "metaLabel" },
                       {
                         text:
                           data && data.entity && data.entity.poDate
                             ? new Date(data.entity.poDate).toLocaleDateString(
-                                "en-IN",
+                                dateLocale,
                               )
                             : "",
                         style: "metaValue",
@@ -154,7 +156,7 @@ const buzyTemplate = (data, color) => {
               data.entity.party &&
               data.entity.party.gstNo
                 ? {
-                    text: `GSTIN: ${data.entity.party.gstNo}`,
+                    text: `${labels.gstin || "GSTIN"}: ${data.entity.party.gstNo}`,
                     style: "inlineBold",
                   }
                 : {},
@@ -162,7 +164,7 @@ const buzyTemplate = (data, color) => {
               data.entity &&
               data.entity.party &&
               data.entity.party.panNo
-                ? { text: `PAN: ${data.entity.party.panNo}`, style: "inline" }
+                ? { text: `${labels.pan || "PAN"}: ${data.entity.party.panNo}`, style: "inline" }
                 : {},
             ],
           },
@@ -178,20 +180,20 @@ const buzyTemplate = (data, color) => {
                 alignment: "right",
               },
               {
-                text: `Date: ${data && data.entity && data.entity.date ? new Date(data.entity.date).toLocaleDateString("en-IN") : ""}`,
+                text: `${labels.date || "Date"}: ${data && data.entity && data.entity.date ? new Date(data.entity.date).toLocaleDateString(dateLocale) : ""}`,
                 alignment: "right",
               },
               {
-                text: `Number: ${data && data.num ? data.num : ""}`,
+                text: `${labels.number || "Number"}: ${data && data.num ? data.num : ""}`,
                 bold: true,
                 alignment: "right",
               },
               data && data.entity && data.entity.poNo
-                ? { text: `PO No: ${data.entity.poNo}`, alignment: "right" }
+                ? { text: `${labels.po_no || "PO No"}: ${data.entity.poNo}`, alignment: "right" }
                 : {},
               data && data.entity && data.entity.poDate
                 ? {
-                    text: `PO Date: ${new Date(data.entity.poDate).toLocaleDateString("en-IN")}`,
+                    text: `${labels.po_date || "PO Date"}: ${new Date(data.entity.poDate).toLocaleDateString(dateLocale)}`,
                     alignment: "right",
                   }
                 : {},
@@ -203,21 +205,21 @@ const buzyTemplate = (data, color) => {
       },
 
       // Items table
-      { text: "Item Details", style: "sectionHeader" },
+      { text: labels.item_details || "Item Details", style: "sectionHeader" },
       {
         table: {
           headerRows: 1,
           widths: [28, "*", 70, 40, 60, 40, 60, 70],
           body: [
             [
-              { text: "Sno.", style: "tableHeader" },
-              { text: "Items", style: "tableHeader" },
-              { text: "HSN/SAC Code", style: "tableHeader" },
-              { text: "UM", style: "tableHeader" },
-              { text: "Rate", style: "tableHeader" },
-              { text: "Qty", style: "tableHeader" },
-              { text: "Tax", style: "tableHeader" },
-              { text: "Amount", style: "tableHeader" },
+              { text: labels.serial_no || "Sno.", style: "tableHeader" },
+              { text: labels.items || "Items", style: "tableHeader" },
+              { text: labels.hsn_sac_code || "HSN/SAC Code", style: "tableHeader" },
+              { text: labels.um || "UM", style: "tableHeader" },
+              { text: labels.rate || "Rate", style: "tableHeader" },
+              { text: labels.qty || "Qty", style: "tableHeader" },
+              { text: labels.tax || "Tax", style: "tableHeader" },
+              { text: labels.amount || "Amount", style: "tableHeader" },
             ],
             ...(data && Array.isArray(data.items) && data.items.length
               ? data.items.map((item, index) => [
@@ -271,7 +273,7 @@ const buzyTemplate = (data, color) => {
               widths: ["*", "auto"],
               body: [
                 [
-                  { text: "Subtotal:", bold: true },
+                  { text: `${labels.subtotal || "Subtotal"}:`, bold: true },
                   {
                     text: data && data.total != null ? data.total : "₹ 0.00",
                     alignment: "right",
@@ -288,7 +290,7 @@ const buzyTemplate = (data, color) => {
                     )
                   : []),
                 [
-                  { text: "Grand Total:", bold: true },
+                  { text: `${labels.grand_total || "Grand Total"}:`, bold: true },
                   {
                     text:
                       data && data.grandTotal != null
@@ -298,7 +300,7 @@ const buzyTemplate = (data, color) => {
                   },
                 ],
                 [
-                  { text: "Amount in words:", bold: true },
+                  { text: `${labels.amount_in_words || "Amount in words"}:`, bold: true },
                   {
                     text: data && data.amountToWords ? data.amountToWords : "",
                     alignment: "right",
@@ -319,7 +321,7 @@ const buzyTemplate = (data, color) => {
             width: "*",
             stack: [
               data && data.entity && data.entity.terms
-                ? { text: "Terms and conditions", style: "sectionHeader" }
+                ? { text: labels.terms_and_conditions || "Terms and conditions", style: "sectionHeader" }
                 : {},
               data && data.entity && data.entity.terms
                 ? { text: data.entity.terms, style: "inline" }
@@ -330,18 +332,18 @@ const buzyTemplate = (data, color) => {
             width: 260,
             stack: [
               data && data.bank
-                ? { text: "Company Bank details", style: "sectionHeader" }
+                ? { text: labels.company_bank_details || "Company Bank details", style: "sectionHeader" }
                 : {},
               data && data.bank
                 ? {
                     table: {
                       widths: ["*", "*"],
                       body: [
-                        ["Bank Name", data.bank.name || ""],
-                        ["Bank Account No.", data.bank.accountNo || ""],
-                        ["Bank IFSC code", data.bank.ifscCode || ""],
+                        [labels.bank_name || "Bank Name", data.bank.name || ""],
+                        [labels.bank_account_no || "Bank Account No.", data.bank.accountNo || ""],
+                        [labels.bank_ifsc_code || "Bank IFSC code", data.bank.ifscCode || ""],
                         [
-                          "Account holder name",
+                          labels.account_holder_name || "Account holder name",
                           data.bank.accountHolderName || "",
                         ],
                       ],
@@ -376,7 +378,7 @@ const buzyTemplate = (data, color) => {
                         margin: [0, 0, 0, 24],
                       },
                       {
-                        text: "Authorized Signatory",
+                        text: labels.authorized_signatory || "Authorized Signatory",
                         style: "inlineBold",
                         alignment: "center",
                       },

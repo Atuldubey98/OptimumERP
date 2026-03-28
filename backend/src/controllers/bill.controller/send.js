@@ -30,12 +30,17 @@ const send = async (options = {}, req, res) => {
   };
   const { toEmails, ccEmails } = await getEmailsFromContactIds(body);
   const template = req.query.template || "simple";
+  const language = req.query.lng || req.language;
+  const t = language && req.i18n
+    ? (key, options = {}) => req.i18n.t(key, { ...options, lng: language })
+    : req.t;
   const { html } = await convertBillToHtmlByTemplate({
     Bill,
     filter,
     NotFound,
     template,
-    t: req.t,
+    t,
+    language,
   });
   const pdfBuffer = await getPdfBufferUsingHtml(html);
 

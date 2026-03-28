@@ -12,6 +12,10 @@ const htmlView = async (options = {}, req, res) => {
       org: req.params.orgId,
     };
     const template = req.query.template || "simple";
+    const language = req.query.lng || req.language;
+    const t = language && req.i18n
+      ? (key, options = {}) => req.i18n.t(key, { ...options, lng: language })
+      : req.t;
     const property = await propertyService.getTemplateConfig({ "value.value" : template });
     if(!property) throw new PropertyNotFound();
     const locationTemplate = `templates/${template}`;
@@ -19,7 +23,8 @@ const htmlView = async (options = {}, req, res) => {
       Bill,
       filter,
       NotFound: NotFound,
-      t: req.t,
+      t,
+      language,
     });
     return res.render(locationTemplate, data);
   } catch (error) {

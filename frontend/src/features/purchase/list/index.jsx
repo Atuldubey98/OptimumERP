@@ -31,7 +31,7 @@ import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
 
 export default function PurchasePage() {
-  const { t } = useTranslation("purchase");
+  const { t, i18n } = useTranslation("purchase");
   const {
     items: purchases,
     dateFilter,
@@ -97,9 +97,10 @@ export default function PurchasePage() {
     const currentPurchase = item || purchase;
 
     if (!currentPurchase) return;
+    const language = i18n.resolvedLanguage || i18n.language || "en";
     const downloadBill = `/api/v1/organizations/${orgId}/purchases/${
       currentPurchase._id
-    }/download?template=${localStorage.getItem("template") || "simple"}`;
+    }/download?template=${localStorage.getItem("template") || "simple"}&lng=${language}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

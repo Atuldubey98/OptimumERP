@@ -28,7 +28,7 @@ import instance from "../../instance";
 import { useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const defaultFields = {
     to: [],
     cc: [],
@@ -39,9 +39,15 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
   const formik = useFormik({
     initialValues: defaultFields,
     onSubmit: async (values, { setSubmitting }) => {
+      const language = i18n.resolvedLanguage || i18n.language || "en";
       await instance.post(
         `/api/v1/organizations/${orgId}/${billType}/${bill._id}/send`,
-        values
+        values,
+        {
+          params: {
+            lng: language,
+          },
+        }
       );
       toast({
         title: t("common_ui.toasts.success"),

@@ -16,11 +16,13 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IoCheckmark } from "react-icons/io5";
 import { CiSaveDown2 } from "react-icons/ci";
 import instance, { baseURL } from "../../../instance";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
+  const { i18n } = useTranslation();
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
   const templateColors = [
@@ -34,6 +36,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const settingContext = useCurrentOrgCurrency();
   const setting = settingContext?.setting;
   const templateName = setting?.printSettings?.defaultTemplate || "simple";
+  const language = i18n.resolvedLanguage || i18n.language || "en";
   const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download`;
   const onSaveBill = async () => {
     setStatus("downloading");
@@ -42,6 +45,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       params: {
         template: templateName,
         color,
+        lng: language,
       },
     });
     const href = URL.createObjectURL(data);
@@ -79,7 +83,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
               src={
                 baseURL +
                 downloadBill +
-                `?template=${templateName}&color=${color}`
+                `?template=${templateName}&color=${color}&lng=${language}`
               }
             />
           </Skeleton>

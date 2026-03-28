@@ -26,7 +26,7 @@ import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
 
 export default function PurchaseOrderPage() {
-  const { t } = useTranslation("purchaseOrder");
+  const { t, i18n } = useTranslation("purchaseOrder");
   const { orgId } = useParams();
   const {
     items: purchaseOrderItems,
@@ -93,11 +93,12 @@ export default function PurchaseOrderPage() {
   const onSaveBill = async (item) => {
     try {
       const currentInvoice = item || invoice;
+      const language = i18n.resolvedLanguage || i18n.language || "en";
       const downloadBill = `/api/v1/organizations/${
         currentInvoice.org._id
       }/purchaseOrders/${currentInvoice._id}/download?template=${
         localStorage.getItem("template") || "simple"
-      }`;
+      }&lng=${language}`;
       const { data } = await instance.get(downloadBill, {
         responseType: "blob",
       });

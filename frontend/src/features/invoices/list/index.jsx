@@ -29,7 +29,7 @@ import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import useAuth from "../../../hooks/useAuth";
 export default function InvoicesPage() {
-  const { t } = useTranslation("invoice");
+  const { t, i18n } = useTranslation("invoice");
   const {
     items: invoices,
     reachedLimit,
@@ -106,9 +106,10 @@ export default function InvoicesPage() {
   const { requestAsyncHandler } = useAsyncCall();
   const onSaveBill = requestAsyncHandler(async (item) => {
     const currentInvoice = item || invoice;
+    const language = i18n.resolvedLanguage || i18n.language || "en";
     const downloadBill = `/api/v1/organizations/${
       currentInvoice.org._id
-    }/invoices/${currentInvoice._id}/download`;
+    }/invoices/${currentInvoice._id}/download?lng=${language}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

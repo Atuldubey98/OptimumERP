@@ -21,7 +21,7 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import ExporterModal from "../../common/ExporterModal";
 
 export default function EstimatesPage() {
-  const { t } = useTranslation("quote");
+  const { t, i18n } = useTranslation("quote");
   const { symbol } = useCurrentOrgCurrency();
 
   const navigate = useNavigate();
@@ -88,9 +88,10 @@ export default function EstimatesPage() {
   };
   const onSaveBill = async (item) => {
     const currentEstimate = quotation || item;
+    const language = i18n.resolvedLanguage || i18n.language || "en";
     const downloadBill = `/api/v1/organizations/${
       currentEstimate.org._id
-    }/quotes/${currentEstimate._id}/download`;
+    }/quotes/${currentEstimate._id}/download?lng=${language}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

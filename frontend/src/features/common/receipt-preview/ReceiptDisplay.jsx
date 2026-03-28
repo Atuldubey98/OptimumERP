@@ -31,13 +31,14 @@ import PartyDisplayReceipt from "./PartyDisplayReceipt";
 import ReceiptMenu from "./ReceiptMenu";
 import ReceiptPayment from "./ReceiptPayment";
 export default function ReceiptDisplay({ receipt, meta }) {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const { type, orgId } = useParams();
   const navigate = useNavigate();
   const onDownloadReceipt = async () => {
     try {
       const templateName = localStorage.getItem("template") || "simple";
-      const downloadBill = `/api/v1/organizations/${orgId}/${type}/${receipt._id}/download?template=${templateName}`;
+      const language = i18n.resolvedLanguage || i18n.language || "en";
+      const downloadBill = `/api/v1/organizations/${orgId}/${type}/${receipt._id}/download?template=${templateName}&lng=${language}`;
       const { data } = await instance.get(downloadBill, {
         responseType: "blob",
       });

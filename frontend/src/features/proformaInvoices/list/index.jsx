@@ -26,7 +26,7 @@ import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
 export default function ProformaInvoicesPage() {
-  const { t } = useTranslation("proformaInvoice");
+  const { t, i18n } = useTranslation("proformaInvoice");
   const {
     items,
     dateFilter,
@@ -84,11 +84,12 @@ export default function ProformaInvoicesPage() {
 
   const onSaveBill = async (item) => {
     const currentInvoice = item || invoice;
+    const language = i18n.resolvedLanguage || i18n.language || "en";
     const downloadBill = `/api/v1/organizations/${
       currentInvoice.org._id
     }/proformaInvoices/${currentInvoice._id}/download?template=${
       localStorage.getItem("template") || "simple"
-    }`;
+    }&lng=${language}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });

@@ -1,4 +1,6 @@
 const borderLandTemplate = (data, color) => {
+  const labels = data?.metaLabels || {};
+  const dateLocale = data?.dateLocale || "en-IN";
   return {
     content: [
       // Header
@@ -23,7 +25,7 @@ const borderLandTemplate = (data, color) => {
                 {
                   columns: [
                     {
-                      text: "Invoice #",
+                      text: labels.invoice_hash || "Invoice #",
                       style: "invoiceSubTitle",
                       width: "*",
                     },
@@ -37,12 +39,12 @@ const borderLandTemplate = (data, color) => {
                 {
                   columns: [
                     {
-                      text: "Date Issued",
+                      text: labels.date_issued || "Date Issued",
                       style: "invoiceSubTitle",
                       width: "*",
                     },
                     {
-                      text: new Date(data.entity.date).toDateString(),
+                      text: new Date(data.entity.date).toLocaleDateString(dateLocale),
                       style: "invoiceSubValue",
                       width: 100,
                     },
@@ -57,11 +59,11 @@ const borderLandTemplate = (data, color) => {
       {
         columns: [
           {
-            text: "Billing From",
+            text: labels.billing_from || "Billing From",
             style: "invoiceBillingTitle",
           },
           {
-            text: "Billing To",
+            text: labels.billing_to || "Billing To",
             style: "invoiceBillingTitle",
           },
         ],
@@ -83,11 +85,11 @@ const borderLandTemplate = (data, color) => {
       {
         columns: [
           {
-            text: "Address",
+            text: labels.address || "Address",
             style: "invoiceBillingAddressTitle",
           },
           {
-            text: "Address",
+            text: labels.address || "Address",
             style: "invoiceBillingAddressTitle",
           },
         ],
@@ -116,27 +118,27 @@ const borderLandTemplate = (data, color) => {
           body: [
             [
               {
-                text: "Product",
+                text: labels.product || "Product",
                 style: "itemsHeader",
               },
               {
-                text: "Qty",
+                text: labels.qty || "Qty",
                 style: ["itemsHeader", "center"],
               },
               {
-                text: "HSN Code",
+                text: labels.hsn_sac_code || "HSN Code",
                 style: ["itemsHeader", "center"],
               },
               {
-                text: "Tax",
+                text: labels.tax || "Tax",
                 style: ["itemsHeader", "center"],
               },
               {
-                text: "Price",
+                text: labels.price || "Price",
                 style: ["itemsHeader", "center"],
               },
               {
-                text: "Total",
+                text: labels.total || "Total",
                 style: ["itemsHeader", "center"],
               },
             ],
@@ -184,7 +186,7 @@ const borderLandTemplate = (data, color) => {
           body: [
             [
               {
-                text: "Subtotal",
+                text: labels.subtotal || "Subtotal",
                 style: "itemsFooterSubTitle",
               },
               {
@@ -194,7 +196,7 @@ const borderLandTemplate = (data, color) => {
             ],
             [
               {
-                text: "TAX",
+                text: labels.tax_upper || "TAX",
                 style: "itemsFooterSubTitle",
               },
               {
@@ -204,7 +206,7 @@ const borderLandTemplate = (data, color) => {
             ],
             [
               {
-                text: "TOTAL",
+                text: labels.total_upper || "TOTAL",
                 style: "itemsFooterTotalTitle",
               },
               {
@@ -220,7 +222,7 @@ const borderLandTemplate = (data, color) => {
       // Signature
      
       {
-        text: "AMOUNT IN WORDS",
+        text: (labels.amount_in_words || "Amount in words").toUpperCase(),
       },
       {
         text: data.amountToWords,
@@ -229,7 +231,7 @@ const borderLandTemplate = (data, color) => {
         },
       },
       {
-        text: "Authorized Signatory",
+        text: labels.authorized_signatory || "Authorized Signatory",
         style: "signatory",
         alignment: "right",
         margin: [0, 50, 0, 0],
@@ -239,17 +241,17 @@ const borderLandTemplate = (data, color) => {
             columns: [
               {
                 stack: [
-                  { text: "Bank Account Details:", style: "subheader" },
-                  { text: `Bank Name: ${data.bank.name}` },
-                  { text: `Account Holder: ${data.bank.accountHolderName}` },
-                  { text: `Account Number: ${data.bank.accountNo}` },
-                  { text: `IFSC Code: ${data.bank.ifscCode}` },
+                  { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
+                  { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}` },
+                  { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}` },
+                  { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}` },
+                  { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}` },
                 ],
               },
               data.upiQr
                 ? {
                     stack: [
-                      { text: "UPI QR Code", style: "subheader" },
+                      { text: labels.upi_qr_code || "UPI QR Code", style: "subheader" },
                       { image: data.upiQr, width: 100 },
                     ],
                     alignment: "right",
@@ -259,7 +261,7 @@ const borderLandTemplate = (data, color) => {
           }
         : {},
       {
-        text: "Terms and Conditions:",
+        text: `${labels.terms_and_conditions || "Terms and Conditions"}:`,
         style: "notesTitle",
       },
       {

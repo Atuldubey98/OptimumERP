@@ -28,11 +28,16 @@ const download = async (options = {}, req, res) => {
     _id: id,
     org: orgId,
   };
+  const language = req.query.lng || req.language;
+  const t = language && req.i18n
+    ? (key, options = {}) => req.i18n.t(key, { ...options, lng: language })
+    : req.t;
   let data = await getBillDetail({
     Bill,
     filter,
     NotFound,
-    t: req.t,
+    t,
+    language,
   });
   const runner = templator(template);
   const orgLogoUrl = data?.entity?.org?.logo;

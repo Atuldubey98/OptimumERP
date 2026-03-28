@@ -9,7 +9,7 @@ i18next
   .init({
     fallbackLng: "en",
 
-    preload: ["en"],
+    preload: ["en", "pt"],
     showSupportNotice: false,
     ns: [
       "health",
