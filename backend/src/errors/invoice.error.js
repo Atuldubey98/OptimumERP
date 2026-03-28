@@ -2,15 +2,13 @@ class InvoiceNotFound extends Error {
   constructor() {
     super();
     this.code = 404;
-    this.message = "Invoice does not exists";
     this.name = "InvoiceNotFound";
   }
 }
 class InvoiceNotDelete extends Error {
-  constructor({ reason = "Invoice not deleted" }) {
+  constructor() {
     super();
     this.code = 400;
-    this.message = reason;
     this.name = "InvoiceNotDelete";
   }
 }
@@ -19,8 +17,8 @@ class InvoiceDuplicate extends Error {
   constructor(invoiceId) {
     super();
     this.code = 400;
-    this.message = `Invoice already exists with invoice id: ${invoiceId}`;
     this.name = "InvoiceDuplicate";
+    this.params = { id: invoiceId };
   }
 }
 module.exports = { InvoiceNotFound, InvoiceDuplicate, InvoiceNotDelete };

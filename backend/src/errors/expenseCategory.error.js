@@ -1,17 +1,16 @@
 class ExpenseCategoryNotDeleted extends Error {
-  constructor({ reason = "Expense category not deleted" }) {
+  constructor({ reason }) {
     super();
     this.code = 400;
-    this.message = reason;
     this.name = "ExpenseCategoryNotDeleted";
+    this.params = { reason };
   }
 }
 
 class ExpenseCategoryNotFound extends Error {
-  constructor({ reason = "Expense category not found" }) {
+  constructor() {
     super();
     this.code = 400;
-    this.message = reason;
     this.name = "ExpenseCategoryNotFound";
   }
 }
