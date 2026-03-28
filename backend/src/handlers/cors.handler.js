@@ -1,8 +1,6 @@
 const { Router } = require("express");
 const cors = require("cors");
 const whitelist = [
-  "http://localhost:9000",
-  "https://app.optimumerp.biz",
   process.env.VITE_APP_URL,
 ];
 
