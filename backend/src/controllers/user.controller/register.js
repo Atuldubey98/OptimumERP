@@ -7,7 +7,7 @@ const {
 const logger = require("../../logger");
 const register = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
-  const isDevelopmentEnv = process.env.NODE_ENV === "development";
+  const isDevelopmentEnv = process.env.NODE_ENV === "development" || !process.env.NODE_MAILER_HOST;
   logger.info(
     "Registering user with email: ",
     body.email,
