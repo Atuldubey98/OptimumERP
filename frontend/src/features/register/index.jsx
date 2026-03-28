@@ -42,14 +42,10 @@ export default function RegisterPage() {
 
       formik.resetForm();
       setSubmitting(false);
-      if (
-        import.meta.env.DEV ||
-        !import.meta.env.VITE_GOOGLE_SSO_ENABLED ||
-        import.meta.env.VITE_GOOGLE_SSO_ENABLED === "false"
-      ) {
+      if (data.render === "dashboard") {
         toast({
-          title: t("user_ui.register.toast_registered_title"),
-          description: t("user_ui.register.toast_registered_description"),
+          title: t(data.title),
+          description: t(data.message),
           status: "success",
           duration: 3000,
           isClosable: true,
@@ -58,8 +54,8 @@ export default function RegisterPage() {
         return;
       }
       toast({
-        title: t("user_ui.register.toast_verify_title"),
-        description: data.message,
+        title: t(data.title),
+        description: t(data.message),
         status: "success",
         duration: 3000,
         isClosable: true,

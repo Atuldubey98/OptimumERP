@@ -7,7 +7,9 @@ const {
 const logger = require("../../logger");
 const register = async (req, res) => {
   const body = await registerUserDto.validateAsync(req.body);
-  const isDevelopmentEnv = process.env.NODE_ENV === "development" || !process.env.NODE_MAILER_HOST;
+  const isDevelopmentEnv = process.env.NODE_ENV === "development";
+  const shouldSendEmail = process.env.NODE_MAILER_HOST;
+  const userActive = isDevelopmentEnv || !shouldSendEmail;
   logger.info(
     "Registering user with email: ",
     body.email,
@@ -16,14 +18,14 @@ const register = async (req, res) => {
   );
   const registeredUser = await registerUser({
     ...body,
-    active: isDevelopmentEnv,
-    verifiedEmail: isDevelopmentEnv,
+    active: userActive,
+    verifiedEmail: userActive,
   });
   await UserActivatedPlan.create({
     user: registeredUser.id,
     purchasedBy: registeredUser.id,
   });
-  if (!isDevelopmentEnv)
+  if (shouldSendEmail && !isDevelopmentEnv)
     await sendOtpEmailToUser({
       user: registeredUser,
       subject: "Verification Mail | OptimumERP",
@@ -35,7 +37,16 @@ const register = async (req, res) => {
       name: registeredUser.name,
       _id: registeredUser.id,
     },
-    message: "Email verification sent",
+    render:
+      shouldSendEmail && !isDevelopmentEnv ? "verification-email" : "dashboard",
+    message:
+      shouldSendEmail && !isDevelopmentEnv
+        ? "user:user_ui:register.toast_verify_title"
+        : "user:user_ui:register.toast_registered_description",
+    title:
+      shouldSendEmail && !isDevelopmentEnv
+        ? "user:user_ui:register.toast_verify_title"
+        : "user:user_ui:register.toast_registered_title",
   });
 };
 

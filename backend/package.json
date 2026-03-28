@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "export NODE_ENV=production && npm run seeder",
     "start": "node .",
-    "cron": "export NODE_ENV=development && node src/cron.js",
+    "cron": "node src/cron.js",
     "seeder": "node src/seeder.js",
     "dev": "export NODE_ENV=development && npm run seeder && nodemon ."
   },

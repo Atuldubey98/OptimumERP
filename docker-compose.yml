@@ -37,6 +37,16 @@ services:
       - mongo
     restart: unless-stopped
 
+  backend-cron:
+    build: ./backend
+    container_name: mern_backend_cron
+    env_file:
+      - .env
+    command: ["npm", "run", "cron"]
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
   frontend:
     build:
       context: ./frontend
