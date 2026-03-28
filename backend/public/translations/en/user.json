@@ -53,7 +53,8 @@
       "toast_registered_title": "Registered",
       "toast_registered_description": "User registered",
       "toast_verify_title": "Verify",
-      "toast_verified_title": "Verified"
+      "toast_verified_title": "Verified",
+      "toast_verified_description": "Login to continue"
     },
     "verify_email": {
       "page_heading": "Verify email",

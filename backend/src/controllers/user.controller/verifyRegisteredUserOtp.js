@@ -16,6 +16,8 @@ const verifyRegisteredUserOtp = async (req, res) => {
   user.verifiedEmail = true;
   user.active = true;
   await user.save();
-  return res.status(200).json({ message: "Login to continue" });
+  return res
+    .status(200)
+    .json({ message: req.t("user_ui.register.toast_verified_description") });
 };
 module.exports = verifyRegisteredUserOtp;
