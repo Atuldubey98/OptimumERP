@@ -10,7 +10,7 @@ const userActivatedPlan = new Schema(
     plan: {
       type: String,
       enum: ["free", "gold", "platinum"],
-      default: "free",
+      default: process.env.DEFAULT_USER_PLAN || "free",
     },
     purchasedBy: {
       type: Types.ObjectId,
