@@ -1,25 +1,36 @@
 import { useFormik } from "formik";
 import useAsyncCall from "./useAsyncCall";
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { useParams } from "react-router-dom";
 import instance from "../instance";
-const productDto = Yup.object({
-  name: Yup.string()
-    .min(2, "Cannot be less than 2")
-    .max(350, "Cannot be greater than 350")
-    .required("Please give party name")
-    .label("Name"),
-  costPrice: Yup.number().min(0).required().label("Cost Price"),
-  sellingPrice: Yup.number().min(0).required().label("Selling Price"),
-  um: Yup.string().optional().label("Unit of Measurement"),
-  description: Yup.string()
-    .min(2, "Cannot be less than 2")
-    .max(80, "Cannot be greater than 80")
-    .label("Description"),
-  type: Yup.string().label("Type of product"),
-  code: Yup.string().label("HSN Code or SAC Code"),
-});
+const createProductDto = (t) =>
+  Yup.object({
+    name: Yup.string()
+      .min(2, t("common_ui.validation.messages.min_2"))
+      .max(350, t("common_ui.validation.messages.max_350"))
+      .required(t("common_ui.validation.messages.product_name_required"))
+      .label(t("common_ui.validation.labels.name")),
+    costPrice: Yup.number()
+      .min(0)
+      .required()
+      .label(t("common_ui.validation.labels.cost_price")),
+    sellingPrice: Yup.number()
+      .min(0)
+      .required()
+      .label(t("common_ui.validation.labels.selling_price")),
+    um: Yup.string()
+      .optional()
+      .label(t("common_ui.validation.labels.unit_of_measurement")),
+    description: Yup.string()
+      .min(2, t("common_ui.validation.messages.min_2"))
+      .max(80, t("common_ui.validation.messages.max_80"))
+      .label(t("common_ui.validation.labels.description")),
+    type: Yup.string().label(t("common_ui.validation.labels.product_type")),
+    code: Yup.string().label(t("common_ui.validation.labels.hsn_or_sac")),
+  });
 export default function useProductForm(onAddedFetch, onCloseDrawer) {
+  const { t } = useTranslation("common");
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId = "" } = useParams();
   const formik = useFormik({
@@ -33,7 +44,7 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
       code: "",
       um: "none",
     },
-    validationSchema: productDto,
+    validationSchema: createProductDto(t),
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const {
         _id: productId,

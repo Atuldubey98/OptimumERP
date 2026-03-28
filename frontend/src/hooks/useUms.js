@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import instance from "../instance";
 import useQuery from "./useQuery";
 import { useToast } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 export default function useUms() {
   const [ums, setUms] = useState([]);
   const [status, setStatus] = useState("idle");
   const query = useQuery();
   const toast = useToast();
+  const { t } = useTranslation("common");
   const search = query.get("query") || "";
   const { orgId } = useParams();
   const [hasReachedLimit, setHasReachedLimit] = useState(true);
@@ -36,7 +38,7 @@ export default function useUms() {
       { ...um, enabled: !selectedUm.enabled }
     );
     toast({
-      title: "Success",
+      title: t("common_ui.toasts.success"),
       description: data.message,
       status: "success",
       duration: 3000,
@@ -49,7 +51,7 @@ export default function useUms() {
         `/api/v1/organizations/${orgId}/ums/${um._id}`
       );
       toast({
-        title: "Success",
+        title: t("common_ui.toasts.success"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -58,8 +60,9 @@ export default function useUms() {
       fetchUms();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error?.response?.data?.message,
+        title: t("common_ui.toasts.error"),
+        description:
+          error?.response?.data?.message || t("common_ui.toasts.network_error"),
         status: "error",
         duration: 3000,
         isClosable: true,

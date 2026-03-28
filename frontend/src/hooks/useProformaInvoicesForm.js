@@ -2,6 +2,7 @@ import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
@@ -9,42 +10,47 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 
 export default function useProformaInvoicesForm() {
   const [status, setStatus] = useState("loading");
+  const { t } = useTranslation("common");
   const { getDefaultReceiptItem, receiptDefaults } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const proformaInvoiceSchema = Yup.object().shape({
     sequence: Yup.number()
-      .required("Invoice number is required")
-      .label("Invoice Number"),
-    party: Yup.string().required("Party is required").label("Party"),
+      .required(t("common_ui.validation.messages.invoice_number_required"))
+      .label(t("common_ui.validation.labels.invoice_number")),
+    party: Yup.string()
+      .required(t("common_ui.validation.messages.party_required"))
+      .label(t("common_ui.validation.labels.party")),
     billingAddress: Yup.string()
-      .min(2, "Billing Address Cannot be less than 2")
-      .max(200, "Billing Address Cannot be greater than 200")
-      .label("Billing address"),
-    date: Yup.date().required("Date is required").label("Date"),
-    status: Yup.string().required("Status is required"),
+      .min(2, t("common_ui.validation.messages.billing_address_min_2"))
+      .max(200, t("common_ui.validation.messages.billing_address_max_200"))
+      .label(t("common_ui.validation.labels.billing_address")),
+    date: Yup.date()
+      .required(t("common_ui.validation.messages.date_required"))
+      .label(t("common_ui.validation.labels.date")),
+    status: Yup.string().required(t("common_ui.validation.messages.status_required")),
     poNo: Yup.string().optional(),
     poDate: Yup.string().optional(),
     items: Yup.array()
       .of(
         Yup.object().shape({
-          name: Yup.string().required("Item name is required"),
+          name: Yup.string().required(t("common_ui.validation.messages.item_name_required")),
           quantity: Yup.number()
-            .required("Quantity is required")
-            .min(1, "Quantity must be at least 1"),
-          um: Yup.string().required("Unit of measure is required"),
-          tax: Yup.string().required("Tax is required"),
+            .required(t("common_ui.validation.messages.quantity_required"))
+            .min(1, t("common_ui.validation.messages.quantity_min_1")),
+          um: Yup.string().required(t("common_ui.validation.messages.unit_of_measure_required")),
+          tax: Yup.string().required(t("common_ui.validation.messages.tax_required")),
           price: Yup.number()
-            .required("Price is required")
-            .min(0, "Price must be a positive number"),
+            .required(t("common_ui.validation.messages.price_required"))
+            .min(0, t("common_ui.validation.messages.price_positive")),
         }),
       )
       .min(1),
     terms: Yup.string()
-      .required("Terms are required")
-      .label("Terms & Conditions"),
+      .required(t("common_ui.validation.messages.terms_required"))
+      .label(t("common_ui.validation.labels.terms_conditions")),
     description: Yup.string()
-      .max(80, "Description cannot be greater than 80")
-      .label("Description"),
+      .max(80, t("common_ui.validation.messages.description_max_80"))
+      .label(t("common_ui.validation.labels.description")),
   });
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, proformaInvoiceId } = useParams();
@@ -77,7 +83,7 @@ export default function useProformaInvoicesForm() {
         },
       );
       toast({
-        title: "Success",
+        title: t("common_ui.toasts.success"),
         description: res?.data?.message,
         status: _id ? "info" : "success",
         duration: 3000,

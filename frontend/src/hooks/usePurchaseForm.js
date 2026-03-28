@@ -3,6 +3,7 @@ import useAsyncCall from "./useAsyncCall";
 import * as Yup from "yup";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
@@ -11,26 +12,27 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 
 export default function usePurchaseForm({ saveAndNew }) {
   const [status, setStatus] = useState("loading");
+  const { t } = useTranslation("common");
   const { getDefaultReceiptItem } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseSchema = Yup.object().shape({
-    num: Yup.string().required("Purchase number is required"),
-    billingAddress: Yup.string().required("Party Address is required"),
-    party: Yup.string().required("Party is required"),
-    date: Yup.date().required("Date is required"),
-    status: Yup.string().required("Status is required"),
+    num: Yup.string().required(t("common_ui.validation.messages.purchase_number_required")),
+    billingAddress: Yup.string().required(t("common_ui.validation.messages.party_address_required")),
+    party: Yup.string().required(t("common_ui.validation.messages.party_required")),
+    date: Yup.date().required(t("common_ui.validation.messages.date_required")),
+    status: Yup.string().required(t("common_ui.validation.messages.status_required")),
     items: Yup.array()
       .of(
         Yup.object().shape({
-          name: Yup.string().required("Item name is required"),
+          name: Yup.string().required(t("common_ui.validation.messages.item_name_required")),
           quantity: Yup.number()
-            .required("Quantity is required")
-            .min(1, "Quantity must be at least 1"),
-          um: Yup.string().required("Unit of measure is required"),
-          tax: Yup.string().required("GST is required"),
+            .required(t("common_ui.validation.messages.quantity_required"))
+            .min(1, t("common_ui.validation.messages.quantity_min_1")),
+          um: Yup.string().required(t("common_ui.validation.messages.unit_of_measure_required")),
+          tax: Yup.string().required(t("common_ui.validation.messages.gst_required")),
           price: Yup.number()
-            .required("Price is required")
-            .min(0, "Price must be a positive number"),
+            .required(t("common_ui.validation.messages.price_required"))
+            .min(0, t("common_ui.validation.messages.price_positive")),
         })
       )
       .min(1),
@@ -79,7 +81,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         }
       );
       toast({
-        title: "Success",
+        title: t("common_ui.toasts.success"),
         description: res?.data?.message,
         status: _id ? "info" : "success",
         duration: 3000,
