@@ -2,7 +2,7 @@ const JobModel = require("../../models/job.model");
 
 const importParties = async (req, res) => {
   const file = req.file;
-  if (!file) throw new Error("No file uploaded");
+  if (!file) throw new Error(req.t("common:api.no_file_uploaded"));
   const buffer = file.buffer;
 
   const job = await JobModel.create({
@@ -16,7 +16,10 @@ const importParties = async (req, res) => {
       mimeType: file.mimetype,
     },
   });
-  return res.status(202).json({ data: job._id, message: "Import job created" });
+  return res.status(202).json({
+    data: job._id,
+    message: req.t("common:api.import_job_created"),
+  });
 };
 
 module.exports = importParties;

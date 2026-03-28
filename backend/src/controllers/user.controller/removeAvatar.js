@@ -5,7 +5,7 @@ const removeLogo = async (req, res) => {
   req.session.user = { ...req.session.user, avatar: null };
   return res
     .status(200)
-    .json({ status: true, message: "Avatar removed" });
+    .json({ status: true, message: req.t("common:api.avatar_removed") });
 };
 
 module.exports = removeLogo;

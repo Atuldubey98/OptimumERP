@@ -20,7 +20,7 @@ const bulkCreate = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.products": insertedProducts.length } }
   );
-  return res.status(201).json({ message: "Products created" });
+  return res.status(201).json({ message: req.t("common:api.products_created") });
 };
 
 module.exports = bulkCreate;

@@ -44,7 +44,7 @@ const create = async (req, res) => {
   })
   return res
     .status(201)
-    .json({ message: "Organization registered", data: org });
+    .json({ message: req.t("common:api.organization_registered"), data: org });
 };
 
 module.exports = create;

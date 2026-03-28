@@ -34,7 +34,7 @@ const closeFinancialYear = async (req, res) => {
   );
   return res
     .status(200)
-    .json({ message: "Financial year updated", data: setting });
+    .json({ message: req.t("common:api.financial_year_updated"), data: setting });
 };
 
 module.exports = closeFinancialYear;

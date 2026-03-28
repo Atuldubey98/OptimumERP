@@ -19,48 +19,48 @@ const remove = async (req, res) => {
     org: req.params.orgId,
     "receiptDefaults.um": umId,
   }).lean();
-  if (setting) throw new Error("Cannot remove default unit");
+  if (setting) throw new Error(req.t("common:api.cannot_remove_default_unit"));
   const product = await Product.findOne({
     um: umId,
     org: req.params.orgId,
   });
-  if (product) throw new Error("Unit linked to product");
+  if (product) throw new Error(req.t("common:api.unit_linked_to_product"));
   const billsLinked = [
     {
       Bill: Invoice,
-      message: "Unit linked to invoice",
+      messageKey: "unit_linked_to_invoice",
     },
     {
       Bill: Quotes,
-      message: "Unit linked to invoice",
+      messageKey: "unit_linked_to_invoice",
     },
     {
       Bill: Purchase,
-      message: "Unit linked to purchase",
+      messageKey: "unit_linked_to_purchase",
     },
     {
       Bill: PurchaseOrder,
-      message: "Unit linked to purchase order",
+      messageKey: "unit_linked_to_purchase_order",
     },
     {
       Bill: ProformaInvoice,
-      message: "Unit linked to proforma invoice",
+      messageKey: "unit_linked_to_proforma_invoice",
     },
   ];
-  for (const { Bill, message } of billsLinked) {
+  for (const { Bill, messageKey } of billsLinked) {
     const bill = await findBillWithUm(Bill, umId);
-    if (bill) throw new Error(message);
+    if (bill) throw new Error(req.t(`common:api.${messageKey}`));
   }
   const um = await Um.softDelete({
     _id: req.params.id,
     org: req.params.orgId,
   });
-  if (!um) throw new Error("Unit not found");
+  if (!um) throw new Error(req.t("common:api.unit_not_found"));
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.ums": -1 } }
   );
-  return res.status(200).json({ message: "Unit deleted" });
+  return res.status(200).json({ message: req.t("common:api.unit_deleted") });
 };
 
 module.exports = remove;

@@ -10,7 +10,9 @@ const update = async (req, res) => {
     { new: true }
   );
   if (!updatedProductCategory) {
-    return res.status(404).json({ message: "Product category not found" });
+    return res
+      .status(404)
+      .json({ message: req.t("common:api.product_category_not_found") });
   }
   return res.status(200).json(updatedProductCategory);
 };

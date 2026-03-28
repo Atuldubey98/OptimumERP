@@ -13,7 +13,7 @@ const updateOrgUser = async (req, res) => {
   );
   return res
     .status(200)
-    .json({ data: organizationUser, message: "User updated" });
+    .json({ data: organizationUser, message: req.t("common:api.user_updated") });
 };
 
 module.exports = updateOrgUser;

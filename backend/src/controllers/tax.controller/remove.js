@@ -23,7 +23,7 @@ const remove = async (req, res) => {
     org: req.params.orgId,
     "receiptDefaults.tax": req.params.id,
   }).lean();
-  if (setting) throw new Error("Cannot remove default tax");
+  if (setting) throw new Error(req.t("common:api.cannot_remove_default_tax"));
   const tax = await Tax.findOne({
     org: req.params.orgId,
     _id: req.params.id,
@@ -31,40 +31,40 @@ const remove = async (req, res) => {
   if (!tax) throw new TaxNotFound();
   if (tax.type === "single") {
     const taxLinked = await findSingleChildTaxPartOfGroup(req.params.id);
-    if (taxLinked) throw new Error("Tax linked to grouped tax");
+    if (taxLinked) throw new Error(req.t("common:api.tax_linked_to_grouped_tax"));
   }
   const billsLinked = [
     {
       Bill: Invoice,
-      message: "Tax linked to invoice",
+      messageKey: "tax_linked_to_invoice",
     },
     {
       Bill: Quotes,
-      message: "Tax linked to invoice",
+      messageKey: "tax_linked_to_invoice",
     },
     {
       Bill: Purchase,
-      message: "Tax linked to purchase",
+      messageKey: "tax_linked_to_purchase",
     },
     {
       Bill: PurchaseOrder,
-      message: "Tax linked to purchase order",
+      messageKey: "tax_linked_to_purchase_order",
     },
     {
       Bill: ProformaInvoice,
-      message: "Tax linked to proforma invoice",
+      messageKey: "tax_linked_to_proforma_invoice",
     },
   ];
   for (const billLinked of billsLinked) {
     const bill = await findBillPartLinkedToTax(billLinked.Bill, req.params.id);
-    if (bill) throw new Error(billLinked.message);
+    if (bill) throw new Error(req.t(`common:api.${billLinked.messageKey}`));
   }
   await tax.deleteOne();
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.taxes": -1 } }
   );
-  return res.status(200).json({ message: "Tax deleted" });
+  return res.status(200).json({ message: req.t("common:api.tax_deleted") });
 };
 
 module.exports = remove;

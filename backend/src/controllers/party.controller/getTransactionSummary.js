@@ -99,7 +99,7 @@ const getTransactionSummary = async (req, res) => {
     purchaseBalance,
     invoicesByStatus,
     total,
-    message: "Transactions retrieved successfully",
+    message: req.t("common:api.transactions_retrieved"),
   });
 };
 

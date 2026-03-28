@@ -7,7 +7,7 @@ const activate = async (req, res) => {
   const user = await User.findById(userId);
   if (!user) throw new UserNotFound();
   await user.activate();
-  return res.status(200).json({ message: "User activated" });
+  return res.status(200).json({ message: req.t("common:api.user_activated") });
 };
 
 module.exports = activate;

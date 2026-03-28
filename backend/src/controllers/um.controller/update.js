@@ -9,8 +9,8 @@ const update = async (req, res) => {
     },
     body
   );
-  if (!um) throw new Error("UM not found");
-  return res.status(200).json({ message: "UM updated" });
+  if (!um) throw new Error(req.t("common:api.um_not_found"));
+  return res.status(200).json({ message: req.t("common:api.um_updated") });
 };
 
 module.exports = update;

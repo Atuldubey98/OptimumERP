@@ -18,7 +18,9 @@ const resetPassword = async (req, res) => {
   if (!isPasswordMatching) throw new PasswordDoesNotMatch();
   user.password = await bcryptjs.hash(newPassword, await bcryptjs.genSalt(10));
   await user.save();
-  return res.status(201).json({ message: "Done password resetting !" });
+  return res.status(201).json({
+    message: req.t("common:api.password_reset_done"),
+  });
 };
 
 module.exports = resetPassword;

@@ -23,7 +23,7 @@ const payment = async (req, res) => {
     userId: req.session?.user?._id,
   });
   if (!purchase) throw new PurchaseNotFound();
-  return res.status(201).json({ message: "Payment added" });
+  return res.status(201).json({ message: req.t("common:api.payment_added") });
 };
 
 module.exports = payment;

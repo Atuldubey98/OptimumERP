@@ -23,7 +23,9 @@ const send = async (options = {}, req, res) => {
   const purchasedBy = req.session?.user?.currentPlan?.purchasedBy;
   const oAuth2Client = await setupAuth2ClientByOrgOwnedBy(purchasedBy);
   if (!body.to.length)
-    return res.status(200).json({ message: "Select atleast one recipent" });
+    return res
+      .status(200)
+      .json({ message: req.t("common:api.select_at_least_one_recipient") });
   const filter = {
     _id: id,
     org: req.params.orgId,
@@ -52,7 +54,7 @@ const send = async (options = {}, req, res) => {
     cc: ccEmails.join(","),
     attachmentBuffer: pdfBuffer,
   });
-  return res.status(201).json({ message: "Sent attachment" });
+  return res.status(201).json({ message: req.t("common:api.attachment_sent") });
 };
 
 module.exports = send;

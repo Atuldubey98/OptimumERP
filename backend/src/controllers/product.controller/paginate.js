@@ -25,7 +25,7 @@ const paginate = async (req, res) => {
     limit,
     totalCount: total,
     totalPages,
-    message: "Products retrieved successfully!",
+    message: req.t("common:api.products_retrieved"),
     reachedLimit: hasUserReachedCreationLimits({
       relatedDocsCount: res.locals.organization.relatedDocsCount,
       userLimits: req.session.user.limits,

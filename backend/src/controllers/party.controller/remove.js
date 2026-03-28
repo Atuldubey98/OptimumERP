@@ -11,12 +11,17 @@ const remove = async (req, res) => {
     party: req.params.partyId,
   });
   if (transaction)
-    throw new PartyNotDelete({ reason: `${transaction.docModel} is linked` });
+    throw new PartyNotDelete({
+      reason: req.t("common:api.entity_linked", { entity: transaction.docModel }),
+    });
   const contact = await Contact.findOne({
     org: req.params.orgId,
     party: req.params.partyId,
   });
-  if (contact) throw new PartyNotDelete({ reason: "contact is linked" });
+  if (contact)
+    throw new PartyNotDelete({
+      reason: req.t("common:api.entity_linked", { entity: "contact" }),
+    });
   const party = await Party.softDelete({
     _id: req.params.partyId,
     org: req.params.orgId,
@@ -26,7 +31,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.parties": -1 } }
   );
-  return res.status(200).json({ message: "Party deleted" });
+  return res.status(200).json({ message: req.t("common:api.party_deleted") });
 };
 
 module.exports = remove;

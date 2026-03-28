@@ -4,6 +4,7 @@ const Quotes = require("../../models/quotes.model");
 const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
 const { deleteBill } = require("../../services/bill.service");
+const billTypes = require("../../constants/billTypes");
 
 const remove = async (options = {}, req, res) => {
   const { NotFound, Bill, relatedDocType } = options;
@@ -30,7 +31,10 @@ const remove = async (options = {}, req, res) => {
     { _id: req.params.orgId },
     { $inc: { [relatedDocTypeKey]: -1 } }
   );
-  return res.status(200).json({ message: `${Bill.modelName} deleted !` });
+  const billLabel = billTypes[Bill.modelName] || Bill.modelName;
+  return res.status(200).json({
+    message: req.t("common:api.entity_deleted", { entity: billLabel }),
+  });
 };
 
 module.exports = remove;

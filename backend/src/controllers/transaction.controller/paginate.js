@@ -22,7 +22,7 @@ const paginate = async (req, res) => {
     limit,
     totalPages,
     total,
-    message: "Transactions retrieved successfully",
+    message: req.t("common:api.transactions_retrieved"),
   };
   return res.status(200).json(response);
 };

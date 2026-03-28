@@ -24,7 +24,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.expenses": -1 } }
   );
-  return res.status(200).json({ message: "Expense deleted successfully" });
+  return res.status(200).json({ message: req.t("common:api.expense_deleted") });
 };
 
 module.exports = remove;

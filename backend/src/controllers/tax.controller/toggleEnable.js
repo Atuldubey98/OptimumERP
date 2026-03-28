@@ -8,7 +8,11 @@ const toggleEnable = async (req, res) => {
   await tax.save();
   return res
     .status(200)
-    .json({ message: tax.enabled ? "Enabled tax" : "Disabled tax" });
+    .json({
+      message: tax.enabled
+        ? req.t("common:api.tax_enabled")
+        : req.t("common:api.tax_disabled"),
+    });
 };
 
 module.exports = toggleEnable;

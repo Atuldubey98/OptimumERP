@@ -5,6 +5,6 @@ const update = async (req, res) => {
   });
   return res
     .status(200)
-    .json({ message: "Details updated !", data: updatedOrg });
+    .json({ message: req.t("common:api.organization_details_updated"), data: updatedOrg });
 };
 module.exports = update;

@@ -18,6 +18,6 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.products": -1 } }
   );
-  return res.status(200).json({ message: "Product deleted successfully!" });
+  return res.status(200).json({ message: req.t("common:api.product_deleted") });
 };
 module.exports = remove;

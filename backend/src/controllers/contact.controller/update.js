@@ -16,7 +16,7 @@ const update = async (req, res) => {
   logger.log("info", `Contact updated with id ${updatedContact.id}`);
   return res
     .status(200)
-    .json({ data: updatedContact, message: "Contact updated" });
+    .json({ data: updatedContact, message: req.t("common:api.contact_updated") });
 };
 
 module.exports = update;

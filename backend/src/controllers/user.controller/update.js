@@ -12,7 +12,9 @@ const update = async (req, res) => {
     { name: body.name }
   );
   req.session.user = { ...req.session.user, name: body.name };
-  return res.status(200).json({ message: "User details updated" });
+  return res.status(200).json({
+    message: req.t("common:api.user_details_updated"),
+  });
 };
 
 module.exports = update;

@@ -71,7 +71,9 @@ const convertProformaToInvoice = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.invoices": 1 } }
   );
-  return res.status(201).json({ message: `Invoice ${num} created` });
+  return res.status(201).json({
+    message: req.t("common:api.invoice_created_with_number", { num }),
+  });
 };
 
 module.exports = convertProformaToInvoice;

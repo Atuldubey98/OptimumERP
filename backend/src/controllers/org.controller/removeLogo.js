@@ -7,7 +7,7 @@ const removeLogo = async (req, res) => {
   );
   return res
     .status(200)
-    .json({ status: true, message: "Logo removed" });
+    .json({ status: true, message: req.t("common:api.logo_removed") });
 };
 
 module.exports = removeLogo;

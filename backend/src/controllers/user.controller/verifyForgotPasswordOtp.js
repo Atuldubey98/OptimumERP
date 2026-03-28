@@ -22,7 +22,9 @@ const verifyForgotPasswordOtp = async (req, res) => {
   const SALT = await bcryptjs.genSalt(10);
   user.password = await bcryptjs.hash(body.password, SALT);
   await user.save();
-  return res.status(200).json({ message: "Password reset successful" });
+  return res.status(200).json({
+    message: req.t("common:api.password_reset_successful"),
+  });
 };
 
 module.exports = verifyForgotPasswordOtp;

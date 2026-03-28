@@ -9,7 +9,7 @@ const resendVerificationLink = async (req, res) => {
   if (user.verifiedEmail)
     return res.status(200).json({
       data: { userId: user.id, status: "verified" },
-      message: "Email already verified",
+      message: req.t("common:api.email_already_verified"),
     });
 
   await sendOtpEmailToUser({

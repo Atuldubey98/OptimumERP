@@ -11,7 +11,7 @@ const update = async (req, res) => {
   );
   if (!updatedParty) throw new PartyNotFound();
 
-  return res.status(200).json({ message: "Party updated !" });
+  return res.status(200).json({ message: req.t("common:api.party_updated") });
 };
 
 module.exports = update;

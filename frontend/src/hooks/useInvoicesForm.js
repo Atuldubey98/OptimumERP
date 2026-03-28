@@ -11,7 +11,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("loading");
   const { getDefaultReceiptItem, receiptDefaults } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
-  
+
   const invoiceSchema = Yup.object().shape({
     sequence: Yup.number()
       .required("Invoice number is required")
@@ -38,7 +38,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
           price: Yup.number()
             .required("Price is required")
             .min(0, "Price must be a positive number"),
-        })
+        }),
       )
       .min(1),
     terms: Yup.string(),
@@ -66,19 +66,19 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     initialValues: defaultInvoice,
     validationSchema: invoiceSchema,
     validateOnChange: false,
-    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {      
+    onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...invoice } = values;
       const items = values.items.map(({ _id, ...item }) => item);
-      await instance[_id ? "patch" : "post"](
+      const response = await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/invoices/${_id || ""}`,
         {
           ...invoice,
           items,
-        }
+        },
       );
       toast({
         title: "Success",
-        description: _id ? "Invoice updated" : "Invoice created",
+        description: response.data.message,
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,
@@ -90,11 +90,11 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       }
       setSubmitting(false);
     }),
-  });  
+  });
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/invoices/nextSequence`
+      `/api/v1/organizations/${orgId}/invoices/nextSequence`,
     );
     formik.setFieldValue("sequence", data.data);
     setStatus("success");
@@ -116,7 +116,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     try {
       setStatus("loading");
       const { data } = await instance.get(
-        `/api/v1/organizations/${orgId}/invoices/${invoiceId}`
+        `/api/v1/organizations/${orgId}/invoices/${invoiceId}`,
       );
       const {
         party,

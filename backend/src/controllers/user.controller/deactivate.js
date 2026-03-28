@@ -8,7 +8,7 @@ const deactivate = async (req, res) => {
   const user = await User.findById(userId);
   if (!user) throw new UserNotFound();
   await user.deactivate();
-  return res.status(200).json({ message: "User deactivated" });
+  return res.status(200).json({ message: req.t("common:api.user_deactivated") });
 };
 
 module.exports = deactivate;

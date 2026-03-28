@@ -41,7 +41,9 @@ const create = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.taxes": 1 } }
   );
-  return res.status(200).json({ data: tax, message: "Tax created" });
+  return res
+    .status(200)
+    .json({ data: tax, message: req.t("common:api.tax_created") });
 };
 
 module.exports = create;

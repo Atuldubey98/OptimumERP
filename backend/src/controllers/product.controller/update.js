@@ -17,9 +17,10 @@ const update = async (req, res) => {
     }
   ).lean();
   if (!updatedProduct) throw new ProductNotFound();
-  return res
-    .status(200)
-    .json({ data: updatedProduct, message: "Product updated successfully!" });
+  return res.status(200).json({
+    data: updatedProduct,
+    message: req.t("common:api.product_updated"),
+  });
 };
 
 module.exports = update;

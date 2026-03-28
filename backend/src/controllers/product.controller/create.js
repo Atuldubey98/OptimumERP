@@ -13,9 +13,10 @@ const create = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.products": 1 } }
   );
-  return res
-    .status(201)
-    .json({ data: newProduct, message: "New product created !" });
+  return res.status(201).json({
+    data: newProduct,
+    message: req.t("common:api.product_created"),
+  });
 };
 
 module.exports = create;

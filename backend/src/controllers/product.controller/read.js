@@ -12,9 +12,10 @@ const read = async (req, res) => {
     _id: productId,
   });
   if (!product) throw new ProductNotFound();
-  return res
-    .status(200)
-    .json({ data: product, message: "Product retrieved successfully!" });
+  return res.status(200).json({
+    data: product,
+    message: req.t("common:api.product_retrieved"),
+  });
 };
 
 module.exports = read;

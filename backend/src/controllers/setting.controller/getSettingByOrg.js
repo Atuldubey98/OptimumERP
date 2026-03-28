@@ -10,7 +10,7 @@ const getSettingByOrg = async (req, res) => {
     .populate("org")
     .populate("receiptDefaults.tax")
     .populate("receiptDefaults.um").lean();
-  if (!setting) throw new Error("Setting not found!");
+  if (!setting) throw new Error(req.t("common:api.setting_not_found"));
   const orgUser = await OrgUser.findOne({
     org: orgId,
     user: req.session.user._id,

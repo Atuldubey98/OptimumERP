@@ -30,7 +30,9 @@ const create = async (options = {}, req, res) => {
   logger.info(`${billLabel} created successfully`);
   return res
     .status(201)
-    .json({ message: `${billLabel} created !` });
+    .json({
+      message: req.t("common:api.entity_created", { entity: billLabel }),
+    });
 };
 
 module.exports = create;

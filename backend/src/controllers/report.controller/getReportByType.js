@@ -16,7 +16,7 @@ const getReportByType = async (req, res) => {
     gstr2: getPurchases,
   };
   const reportHandler = reportMap[reportType];
-  if (!reportHandler) throw new Error("Report type not found");
+  if (!reportHandler) throw new Error(req.t("common:common.report_type_not_found"));
   reportHandler(req, res);
 };
 
