@@ -12,10 +12,12 @@ import { Select } from "chakra-react-select";
 import NumberInputInteger from "../common/NumberInputInteger";
 import ProductCategoryAsyncSelect from "./ProductCategoryAsyncSelect";
 import useUms from "../../hooks/useUms";
+import { useTranslation } from "react-i18next";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
+  const { t } = useTranslation("product");
   const typeOfProducts = [
-    { value: "service", label: "Service" },
-    { value: "goods", label: "Goods" },
+    { value: "service", label: t("product_ui.form.type_service") },
+    { value: "goods", label: t("product_ui.form.type_goods") },
   ];
   const { ums } = useUms();
   const umOptions = ums.map((um) => ({
@@ -26,9 +28,9 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
-      formBtnLabel={formik.values._id ? "Update" : "Add"}
+      formBtnLabel={formik.values._id ? t("product_ui.form.update_button") : t("product_ui.form.add_button")}
       formHeading={
-        formik.values._id ? "Update product form" : "New Product form"
+        formik.values._id ? t("product_ui.form.update_heading") : t("product_ui.form.new_heading")
       }
       handleFormSubmit={formik.handleSubmit}
       isOpen={isOpen}
@@ -39,21 +41,21 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isRequired
           isInvalid={formik.errors.name && formik.touched.name}
         >
-          <FormLabel>Item Name</FormLabel>
+          <FormLabel>{t("product_ui.form.name_label")}</FormLabel>
           <Input
             autoFocus
             onChange={formik.handleChange}
             name="name"
             type="text"
             value={formik.values.name}
-            placeholder="Product Name"
+            placeholder={t("product_ui.form.name_placeholder")}
           />
           <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
         </FormControl>
         <FormControl
           isInvalid={formik.errors.category && formik.errors.category}
         >
-          <FormLabel>Category</FormLabel>
+          <FormLabel>{t("product_ui.form.category_label")}</FormLabel>
           <ProductCategoryAsyncSelect formik={formik} />
           <FormErrorMessage>{formik.errors.category}</FormErrorMessage>
         </FormControl>
@@ -61,7 +63,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isRequired
           isInvalid={formik.errors.type && formik.touched.type}
         >
-          <FormLabel>Type of product</FormLabel>
+          <FormLabel>{t("product_ui.form.type_label")}</FormLabel>
           <Select
             options={typeOfProducts}
             onChange={({ value }) => {
@@ -78,7 +80,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
           isRequired
           isInvalid={formik.errors.um && formik.touched.um}
         >
-          <FormLabel>Unit of Measurement</FormLabel>
+          <FormLabel>{t("product_ui.form.um_label")}</FormLabel>
           <Select
             name={`um`}
             value={selectedUm}
@@ -94,7 +96,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
             isRequired
             isInvalid={formik.errors.costPrice && formik.touched.costPrice}
           >
-            <FormLabel>Cost Price</FormLabel>
+            <FormLabel>{t("product_ui.form.cost_price_label")}</FormLabel>
             <NumberInputInteger name={"costPrice"} formik={formik} />
             <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
           </FormControl>
@@ -104,33 +106,33 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
               formik.errors.sellingPrice && formik.touched.sellingPrice
             }
           >
-            <FormLabel>Selling Price</FormLabel>
+            <FormLabel>{t("product_ui.form.selling_price_label")}</FormLabel>
             <NumberInputInteger name={"sellingPrice"} formik={formik} />
             <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
           </FormControl>
         </SimpleGrid>
 
         <FormControl isInvalid={formik.errors.code && formik.touched.code}>
-          <FormLabel>HSN Code or SAC Code</FormLabel>
+          <FormLabel>{t("product_ui.form.code_label")}</FormLabel>
           <Input
             onChange={formik.handleChange}
             name="code"
             type="text"
             value={formik.values.code}
-            placeholder="Code"
+            placeholder={t("product_ui.form.code_placeholder")}
           />
           <FormErrorMessage>{formik.errors.code}</FormErrorMessage>
         </FormControl>
         <FormControl
           isInvalid={formik.errors.description && formik.touched.description}
         >
-          <FormLabel>Description</FormLabel>
+          <FormLabel>{t("product_ui.form.description_label")}</FormLabel>
           <Textarea
             onChange={formik.handleChange}
             name="description"
             type="text"
             value={formik.values.description}
-            placeholder="Product Description"
+            placeholder={t("product_ui.form.description_placeholder")}
           />
           <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
         </FormControl>

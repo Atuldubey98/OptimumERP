@@ -1,17 +1,19 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Select } from "chakra-react-select";
 export default function PeriodSelect({ currentPeriod, onChangePeriod }) {
+  const { t } = useTranslation("dashboard");
   const periods = [
     {
-      label: "This week",
+      label: t("dashboard_ui.periods.this_week"),
       value: "thisWeek",
     },
     {
-      label: "This month",
+      label: t("dashboard_ui.periods.this_month"),
       value: "thisMonth",
     },
     {
-      label: "This year",
+      label: t("dashboard_ui.periods.this_year"),
       value: "thisYear",
     },
   ];

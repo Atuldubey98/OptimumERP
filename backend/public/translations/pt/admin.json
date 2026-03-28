@@ -1,0 +1,126 @@
+{
+  "validation": {
+    "invalid_email": "E-mail inválido",
+    "email_required": "E-mail é obrigatório",
+    "password_required": "Senha é obrigatória",
+    "password_min": "O comprimento mínimo deve ser 8",
+    "name_required": "Nome é obrigatório",
+    "name_min": "O comprimento mínimo deve ser 3",
+    "name_max": "O comprimento não pode ser superior a 20"
+  },
+  "actions": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "register": "Cadastrar"
+  },
+  "toasts": {
+    "success_title": "Sucesso",
+    "error_title": "Erro",
+    "registered_title": "Cadastrado",
+    "organization_updated": "Organização atualizada",
+    "bank_title": "Banco",
+    "financial_year_closed": "Ano fiscal encerrado",
+    "terms_default_set": "Termos padrão definidos",
+    "error_occurred": "Ocorreu um erro"
+  },
+  "organization": {
+    "label": "Organização",
+    "select_prompt": "Selecionar Organização",
+    "information_heading": "Informações da organização",
+    "details": "Detalhes",
+    "change_logo": "Alterar logo",
+    "help_title": "Organização",
+    "help_description": "Coleta informações essenciais sobre uma organização, incluindo nome, endereço, número do PAN e outros detalhes",
+    "fields": {
+      "name": "Nome",
+      "address": "Endereço",
+      "gst_no": "Nº GST",
+      "pan_no": "Nº PAN",
+      "website": "Website",
+      "telephone": "Telefone",
+      "email": "E-mail"
+    }
+  },
+  "tabs": {
+    "organization": "Organização",
+    "users": "Usuários"
+  },
+  "users": {
+    "registered_heading": "Usuários Cadastrados",
+    "help_title": "Usuários",
+    "help_description": "Aqui você pode criar usuários que podem usar a aplicação. O usuário pode ter duas permissões: Admin e Usuário.",
+    "add_new": "Adicionar novo",
+    "deactivate": "Desativar",
+    "this_is_your_account": "Esta é a sua conta",
+    "table": {
+      "active": "Ativo",
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Função"
+    }
+  },
+  "drawer": {
+    "register_user": "Cadastrar Usuário",
+    "user_role": "Função do usuário",
+    "is_user_active": "O usuário está ativo?",
+    "can_use_my_smtp": "Pode usar meu SMTP?",
+    "roles": {
+      "user": "Usuário",
+      "admin": "Admin"
+    }
+  },
+  "bank": {
+    "heading": "Banco",
+    "help_title": "Dados Bancários",
+    "help_description": "Coleta os dados bancários. Para imprimi-los na fatura, você pode alterar as configurações da aplicação",
+    "account_holder_name": "Nome do Titular da Conta",
+    "bank_name": "Nome do Banco",
+    "account_number": "Número da Conta",
+    "ifsc_code": "Código IFSC",
+    "account_no": "Nº da Conta Bancária",
+    "upi": "UPI",
+    "upi_details": "Detalhes do UPI"
+  },
+  "tasks": {
+    "heading": "Tarefas de Admin",
+    "financial_year": {
+      "close": "Fechar ano fiscal",
+      "invoice_prefix": "Prefixo da Fatura",
+      "quotation_prefix": "Prefixo do Orçamento",
+      "proforma_invoice_prefix": "Prefixo da Fatura Proforma",
+      "purchase_order_prefix": "Prefixo do Pedido de Compra",
+      "next": "Próximo ano fiscal",
+      "start_date": "Data de início",
+      "end_date": "Data de término",
+      "closing": "Fechamento",
+      "done": "Concluído"
+    },
+    "smtp": {
+      "title": "Configuração SMTP",
+      "info": "O SMTP atualmente suporta apenas o Google. O botão abaixo pode ser usado para conectar a conta do Google e enviar recibos pelo painel.",
+      "reconnect": "Reconectar",
+      "connect": "Conectar"
+    },
+    "default_terms": {
+      "title": "Termos e Condições Padrão",
+      "invoice": "Fatura",
+      "quotations": "Orçamentos",
+      "purchase_order": "Pedido de Compra",
+      "proforma_invoice": "Fatura Proforma"
+    },
+    "import": {
+      "title": "Importar",
+      "party": "Cliente/Fornecedor",
+      "download_started": "Download iniciado",
+      "no_file_selected": "Nenhum arquivo selecionado",
+      "select_csv_prompt": "Por favor, selecione um arquivo CSV para enviar.",
+      "success_title": "Importação Bem-sucedida",
+      "modal_title": "Importar Partes",
+      "download_help": "Use o botão abaixo para baixar o CSV de exemplo",
+      "download_sample": "Baixar CSV de Exemplo",
+      "upload_help": "Envie um arquivo CSV para importar partes para o seu sistema.",
+      "select_csv_placeholder": "Selecionar arquivo CSV",
+      "submit": "Importar"
+    }
+  }
+}

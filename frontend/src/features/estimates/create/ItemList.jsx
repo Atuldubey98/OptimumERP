@@ -6,11 +6,24 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { FieldArray } from "formik";
+import { useTranslation } from "react-i18next";
 import { MdAdd } from "react-icons/md";
 import QuoteItem from "./QuoteItem";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useUmForm from "../../../hooks/useUmForm";
-export default function ItemsList({ formik, taxes, ums }) {
+export default function ItemsList({
+  formik,
+  taxes,
+  ums,
+  namespace = "quote",
+  addItemLabelKey,
+}) {
+  const { t } = useTranslation(namespace);
+  const resolvedAddItemLabelKey =
+    addItemLabelKey ||
+    (namespace === "invoice"
+      ? "invoice_ui.actions.add_item"
+      : "quote_ui.actions.add_item");
   const errorsQuoteItems = formik.errors.items;
   const { getDefaultReceiptItem } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
@@ -42,7 +55,7 @@ export default function ItemsList({ formik, taxes, ums }) {
             colorScheme="blue"
             variant="outline"
           >
-            Add Item
+            {t(resolvedAddItemLabelKey)}
           </Button>
         </Box>
       )}

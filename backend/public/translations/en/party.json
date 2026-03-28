@@ -1,11 +1,84 @@
 {
   "party": {
-    "party": {
-      "not_found": "Party does not exists",
-      "not_deleted": "Party not deleted",
-      "created": "Party created successfully",
-      "updated": "Party updated successfully",
-      "deleted": "Party deleted successfully"
+    "not_found": "Party does not exists",
+    "not_deleted": "Party not deleted",
+    "created": "Party created successfully",
+    "updated": "Party updated successfully",
+    "deleted": "Party deleted successfully"
+  },
+  "party_ui": {
+    "page": {
+      "heading": "Parties",
+      "total_found": "Total parties found"
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "billing_address": "Billing address",
+        "tax_no": "TAX No."
+      }
+    },
+    "modal": {
+      "delete_header": "Delete party",
+      "delete_body": "Do you want to delete the party ?"
+    },
+    "drawer": {
+      "heading": "Party",
+      "create_button": "Create New",
+      "columns": {
+        "name": "Name",
+        "shipping_address": "Shipping address",
+        "billing_address": "Billing address",
+        "gst_no": "GST No",
+        "pan_no": "PAN No",
+        "updated_by": "Updated By",
+        "created_by": "Created By"
+      }
+    },
+    "form": {
+      "add_button": "Add",
+      "update_button": "Update",
+      "new_heading": "New Party form",
+      "update_heading": "Update party form",
+      "name_label": "Party Name",
+      "name_placeholder": "Party Name",
+      "billing_address_label": "Billing address",
+      "billing_address_placeholder": "Billing Address",
+      "shipping_address_label": "Shipping address",
+      "shipping_address_placeholder": "Shipping Address",
+      "gst_label": "GST No.",
+      "gst_placeholder": "GST No.",
+      "pan_label": "PAN No.",
+      "pan_placeholder": "PAN No."
+    }
+  },
+  "pricing_ui": {
+    "page": {
+      "heading": "Plans",
+      "subtitle": "Our pricing structure is build to be affordable for everyone from indivisuals to organizations",
+      "contact_text": "To upgrade to any of the below given plans you can contact at"
+    },
+    "plans": {
+      "free": { "price": "Free", "period": "lifetime" },
+      "gold": { "price": "Rs. 999", "period": "per Year" },
+      "platinum": { "price": "Rs. 1999", "period": "per Year" }
+    },
+    "offerings": {
+      "manage_contacts": "Manage your customers, vendors and contacts at one place",
+      "advanced_reporting": "Advanced reporting features.",
+      "invoicing_expense": "Advance invoicing and expense tracking",
+      "product_management": "Product management capabilities",
+      "dashboard_projections": "Dashboard and financial projections",
+      "proforma_invoicing": "Proforma Invoicing enabled",
+      "mail_receipts": "Mail receipts from dashboard",
+      "qr_code": "QR Code enabled on invoices",
+      "on_premise": "On-Premise deployment of application"
+    },
+    "card": {
+      "active": "Active",
+      "coming_soon": "Coming Soon",
+      "upgrade": "Upgrade",
+      "mailto_body": "Please write down your business name, business address and reason for upgrading your plan"
     }
   }
 }

@@ -1,9 +1,88 @@
 {
   "purchase": {
-    "not_found": "A compra não existe",
-    "already_exists": "Já existe uma compra com este número",
-    "created": "Compra criada com sucesso",
-    "updated": "Compra atualizada com sucesso",
-    "deleted": "Compra excluída com sucesso"
+    "purchase": {
+      "not_found": "A compra não existe",
+      "already_exists": "Já existe uma compra com este número",
+      "created": "Compra criada com sucesso",
+      "updated": "Compra atualizada com sucesso",
+      "deleted": "Compra excluída com sucesso"
+    }
+  },
+  "purchase_ui": {
+    "page": {
+      "heading": "Compras",
+      "total_found": "Total de compras encontradas"
+    },
+    "table": {
+      "columns": {
+        "num": "Nº da Compra",
+        "date": "Data da Compra",
+        "party_name": "Nome do contato",
+        "status": "Status",
+        "total": "Total"
+      }
+    },
+    "bill_modal": {
+      "heading": "Compra"
+    },
+    "modal": {
+      "delete_button": "Excluir",
+      "delete_body": "Deseja excluir a compra?",
+      "delete_header": "Excluir Compra"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Nome do Contato",
+        "billing_address": "Endereço de Cobrança",
+        "total": "Total",
+        "total_tax": "Imposto Total",
+        "num": "Número",
+        "status": "Status",
+        "grand_total": "Total Geral"
+      },
+      "selectable_fields": {
+        "created_by_email": "Criado por (E-mail)",
+        "created_by_name": "Criado por (Nome)",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "IVA (VAT)",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Outros impostos"
+      }
+    },
+    "form": {
+      "not_found": "Fatura de compra não encontrada",
+      "save_new": "Salvar e Novo",
+      "save": "Salvar",
+      "party_section": "Contato",
+      "bill_from": "Faturado por",
+      "billing_address": "Endereço de Cobrança",
+      "purchase_details": "Detalhes da Compra",
+      "purchase_no": "Nº da Compra",
+      "items_section": "Itens",
+      "auto_create_items": "Criar itens automaticamente",
+      "status_label": "Status"
+    },
+    "status": {
+      "unpaid": "Não pago",
+      "paid": "Pago"
+    },
+    "payout": {
+      "title": "Pagamento",
+      "grand_total": "Total Geral",
+      "vendor_name": "Nome do Fornecedor",
+      "sub_total": "Subtotal",
+      "total_tax": "Imposto Total",
+      "amount": "Valor",
+      "settle": "Liquidar",
+      "description": "Descrição",
+      "payment_mode": "Modo de Pagamento",
+      "date": "Data",
+      "close": "Fechar",
+      "record": "Registrar",
+      "success_title": "Sucesso"
+    }
   }
 }

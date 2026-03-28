@@ -11,9 +11,11 @@ import {
 import React, { useContext } from "react";
 import { FaRegCircle } from "react-icons/fa6";
 import { MdCheckCircle } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 import AuthContext from "../../contexts/AuthContext";
 
 export default function PricingCard({ plan, planOfferings, price }) {
+  const { t } = useTranslation("party");
   const auth = useContext(AuthContext);
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
@@ -55,15 +57,15 @@ export default function PricingCard({ plan, planOfferings, price }) {
         <Button
           colorScheme="blue"
           as={"a"}
-          href={`mailto:optimum.erp2024@gmail.com?subject=Upgrade to ${plan}&body=Please write down your business name, business address and reason for upgrading your plan`}
-          title={plan === "platinum" ? "Coming soon" : undefined}
+          href={`mailto:optimum.erp2024@gmail.com?subject=Upgrade to ${plan}&body=${t("pricing_ui.card.mailto_body")}`}
+          title={plan === "platinum" ? t("pricing_ui.card.coming_soon") : undefined}
           isDisabled={currentPlan === plan || plan === "platinum"}
         >
           {currentPlan === plan
-            ? "Active"
+            ? t("pricing_ui.card.active")
             : plan === "platinum"
-            ? "Coming Soon"
-            : "Upgrade"}
+            ? t("pricing_ui.card.coming_soon")
+            : t("pricing_ui.card.upgrade")}
         </Button>
       </Stack>
     </Box>

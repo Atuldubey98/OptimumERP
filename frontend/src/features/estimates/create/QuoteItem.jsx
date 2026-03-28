@@ -16,6 +16,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
+import { useTranslation } from "react-i18next";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TbEyeSearch } from "react-icons/tb";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
@@ -29,6 +30,7 @@ export default function QuoteItem({
   ums,
   deleteQuote,
 }) {
+  const { t } = useTranslation("quote");
   const { symbol } = useCurrentOrgCurrency();
   const { handleChange: handleQuoteItemChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -83,7 +85,7 @@ export default function QuoteItem({
               <Input
                 onChange={handleQuoteItemChange}
                 name={`items[${index}].name`}
-                placeholder="Item name"
+                placeholder={t("quote_ui.form.item_name_placeholder")}
                 value={quoteItem.name}
               />
               <InputRightElement>
@@ -109,7 +111,7 @@ export default function QuoteItem({
                 formik.setFieldValue(`items[${index}].quantity`, value);
               }}
             >
-              <NumberInputField placeholder="Quantity" />
+              <NumberInputField placeholder={t("quote_ui.form.quantity_placeholder")} />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -121,7 +123,7 @@ export default function QuoteItem({
         <GridItem colSpan={1}>
           <FormControl>
             <Input
-              placeholder="HSN Code/SAC Code"
+              placeholder={t("quote_ui.form.hsn_code_placeholder")}
               name={`items[${index}].code`}
               value={quoteItem.code}
               onChange={handleQuoteItemChange}
@@ -165,7 +167,7 @@ export default function QuoteItem({
                 formik.setFieldValue(`items[${index}].price`, value);
               }}
             >
-              <NumberInputField placeholder="Price" />
+              <NumberInputField placeholder={t("common_ui.receipt.price")} />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -187,7 +189,7 @@ export default function QuoteItem({
                 name="total"
                 readOnly
                 value={total}
-                placeholder="Enter total"
+                placeholder={t("common_ui.receipt.total")}
               />
               <InputRightElement>{symbol}</InputRightElement>
             </InputGroup>

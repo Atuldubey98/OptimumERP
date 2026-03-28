@@ -10,7 +10,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { PiDiscordLogo } from "react-icons/pi";
+import { useTranslation } from "react-i18next";
 export default function AboutPage() {
+  const { t } = useTranslation("common");
   return (
     <MainLayout>
       <Box p={4}>
@@ -23,10 +25,10 @@ export default function AboutPage() {
         >
           <Image w={"xs"} src="/favicon.svg" />
           <Heading fontSize={20} textAlign={"center"}>
-            Unlock the Power of Seamless Business Operations
+            {t("about.heading")}
           </Heading>
           <Text>
-            Distributed by{" "}
+            {t("about.distributed_by")}{" "}
             <Link href="https://github.com/Atuldubey98">Atul Dubey</Link>
           </Text>
           <Button
@@ -36,7 +38,7 @@ export default function AboutPage() {
             href="https://discord.com/invite/SHvSnXYvQF"
             as={"a"}
           >
-            Join Discord
+            {t("about.join_discord")}
           </Button>
         </Flex>
       </Box>

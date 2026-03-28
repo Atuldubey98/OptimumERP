@@ -27,6 +27,7 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import instance from "../../../instance";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import useProperty from "../../../hooks/useProperty";
+import { useTranslation } from "react-i18next";
 
 export default function PayoutModal({
   purchase,
@@ -34,6 +35,7 @@ export default function PayoutModal({
   onClose,
   fetchPurchases,
 }) {
+  const { t } = useTranslation("purchase");
   const { requestAsyncHandler } = useAsyncCall();
   const toast = useToast();
   const { orgId } = useParams();
@@ -53,7 +55,7 @@ export default function PayoutModal({
         data
       );
       toast({
-        title: "Success",
+        title: t("purchase_ui.payout.success_title"),
         description: responseData.message,
         status: "info",
         duration: 3000,
@@ -81,33 +83,33 @@ export default function PayoutModal({
       <ModalOverlay />
       <form onSubmit={formik.handleSubmit}>
         <ModalContent>
-          <ModalHeader>Payment</ModalHeader>
+          <ModalHeader>{t("purchase_ui.payout.title")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing={2}>
               <Divider />
               <Text fontSize={"xl"}>
-                <strong>Grand Total : </strong>
+                <strong>{t("purchase_ui.payout.grand_total")} : </strong>
                 {symbol} {grandTotal.toFixed(2)}
               </Text>
               <Divider />
               <Text>
-                <strong>Vendor Name : </strong>
+                <strong>{t("purchase_ui.payout.vendor_name")} : </strong>
                 {purchase.party.name}
               </Text>
               <Text>
-                <strong>Sub Total : </strong>
+                <strong>{t("purchase_ui.payout.sub_total")} : </strong>
                 {symbol} {purchase.total.toFixed(2)}
               </Text>
               <Text>
-                <strong> Total Tax: </strong>
+                <strong> {t("purchase_ui.payout.total_tax")}: </strong>
                 {symbol} {purchase.totalTax.toFixed(2)}
               </Text>
               <Divider />
               <FormControl
                 isInvalid={formik.errors.amount && formik.touched.amount}
               >
-                <FormLabel>Amount</FormLabel>
+                <FormLabel>{t("purchase_ui.payout.amount")}</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
                   <NumberInputInteger
                     formik={formik}
@@ -125,7 +127,7 @@ export default function PayoutModal({
                     }
                     type="button"
                   >
-                    Settle
+                    {t("purchase_ui.payout.settle")}
                   </Button>
                 </Grid>
                 <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
@@ -135,7 +137,7 @@ export default function PayoutModal({
                   formik.errors.description && formik.touched.description
                 }
               >
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("purchase_ui.payout.description")}</FormLabel>
                 <Textarea
                   onChange={formik.handleChange}
                   value={formik.values.description}
@@ -147,7 +149,7 @@ export default function PayoutModal({
                   formik.errors.paymentMode && formik.touched.paymentMode
                 }
               >
-                <FormLabel>Payment Mode</FormLabel>
+                <FormLabel>{t("purchase_ui.payout.payment_mode")}</FormLabel>
                 <Select
                   onChange={({ value }) => {
                     formik.setFieldValue("paymentMode", value);
@@ -163,7 +165,7 @@ export default function PayoutModal({
               <FormControl
                 isInvalid={formik.errors.date && formik.touched.date}
               >
-                <FormLabel>Date</FormLabel>
+                <FormLabel>{t("purchase_ui.payout.date")}</FormLabel>
                 <Input
                   type="date"
                   name="date"
@@ -177,14 +179,14 @@ export default function PayoutModal({
 
           <ModalFooter>
             <Button mr={3} type="button" onClick={onClose}>
-              Close
+              {t("purchase_ui.payout.close")}
             </Button>
             <Button
               isLoading={formik.isSubmitting}
               type="submit"
               colorScheme="blue"
             >
-              Record
+              {t("purchase_ui.payout.record")}
             </Button>
           </ModalFooter>
         </ModalContent>

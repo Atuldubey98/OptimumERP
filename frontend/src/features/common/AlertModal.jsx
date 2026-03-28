@@ -7,6 +7,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 export default function AlertModal({
   isOpen,
@@ -15,8 +16,11 @@ export default function AlertModal({
   header,
   body,
   onConfirm,
-  buttonLabel = "Delete",
+  buttonLabel,
 }) {
+  const { t } = useTranslation("common");
+  const resolvedButtonLabel = buttonLabel || t("common_ui.actions.delete");
+
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialogOverlay>
@@ -28,14 +32,16 @@ export default function AlertModal({
           <AlertDialogBody>{body}</AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose}>{t("common_ui.actions.cancel")}</Button>
             <Button
               isLoading={confirmDisable}
-              colorScheme={buttonLabel === "Delete" ? "red" : "blue"}
+              colorScheme={
+                resolvedButtonLabel === t("common_ui.actions.delete") ? "red" : "blue"
+              }
               onClick={onConfirm}
               ml={3}
             >
-              {buttonLabel}
+              {resolvedButtonLabel}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

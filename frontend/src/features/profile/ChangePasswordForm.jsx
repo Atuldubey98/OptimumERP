@@ -12,7 +12,9 @@ import {
 import { useFormik } from "formik";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import instance from "../../instance";
+import { useTranslation } from "react-i18next";
 export default function ChangePasswordForm() {
+  const { t } = useTranslation("user");
   const { requestAsyncHandler } = useAsyncCall();
   const toast = useToast();
   const {
@@ -33,7 +35,7 @@ export default function ChangePasswordForm() {
       if (data.confirmNewPassword !== data.newPassword) {
         setFieldError(
           "confirmNewPassword",
-          "Confirm password is not equal to new password"
+          t("user_ui.change_password.confirm_mismatch")
         );
         setSubmitting(false);
         return;
@@ -43,7 +45,7 @@ export default function ChangePasswordForm() {
         newPassword: data.newPassword,
       });
       toast({
-        title: "Password",
+        title: t("user_ui.change_password.toast_title"),
         description: response.data.message,
         status: "success",
         duration: 3000,
@@ -60,12 +62,12 @@ export default function ChangePasswordForm() {
           isRequired
           isInvalid={errors.currentPassword && errors.currentPassword}
         >
-          <FormLabel>Current password</FormLabel>
+          <FormLabel>{t("user_ui.change_password.current_password_label")}</FormLabel>
           <Input
             value={values.currentPassword}
             onChange={handleChange}
             name="currentPassword"
-            placeholder="Current Password"
+            placeholder={t("user_ui.change_password.current_password_placeholder")}
           />
           <FormErrorMessage>{errors.currentPassword}</FormErrorMessage>
         </FormControl>
@@ -73,12 +75,12 @@ export default function ChangePasswordForm() {
           isRequired
           isInvalid={errors.newPassword && errors.newPassword}
         >
-          <FormLabel>New password</FormLabel>
+          <FormLabel>{t("user_ui.change_password.new_password_label")}</FormLabel>
           <Input
             value={values.newPassword}
             onChange={handleChange}
             name="newPassword"
-            placeholder="New password"
+            placeholder={t("user_ui.change_password.new_password_placeholder")}
           />
           <FormErrorMessage>{errors.newPassword}</FormErrorMessage>
         </FormControl>
@@ -86,19 +88,19 @@ export default function ChangePasswordForm() {
           isRequired
           isInvalid={errors.confirmNewPassword && errors.confirmNewPassword}
         >
-          <FormLabel>Confirm password</FormLabel>
+          <FormLabel>{t("user_ui.change_password.confirm_password_label")}</FormLabel>
           <Input
             value={values.confirmNewPassword}
             onChange={handleChange}
             name="confirmNewPassword"
-            placeholder="Confirm Password"
+            placeholder={t("user_ui.change_password.confirm_password_placeholder")}
           />
           <FormErrorMessage>{errors.confirmNewPassword}</FormErrorMessage>
         </FormControl>
       </Stack>
       <Flex justifyContent={"center"} alignItems={"center"}>
         <Button size={"sm"} type="submit" colorScheme="blue" isLoading={isSubmitting}>
-          Update password
+          {t("user_ui.change_password.submit_button")}
         </Button>
       </Flex>
     </form>

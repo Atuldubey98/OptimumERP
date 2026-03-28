@@ -1,9 +1,239 @@
 {
   "common": {
-    "report_type_not_found": "Tipo de relatório não encontrado",
-    "pdf_generation_failed": "Falha na geração do PDF",
-    "error_occurred": "Ocorreu um erro ao processar sua solicitação",
-    "db_connection_error": "Ocorreu um erro ao conectar ao MongoDB",
-    "some_error_occurred": "Ocorreu um erro"
+    "common": {
+      "report_type_not_found": "Tipo de relatório não encontrado",
+      "pdf_generation_failed": "Falha ao gerar PDF",
+      "error_occurred": "Ocorreu um erro ao processar sua solicitação",
+      "db_connection_error": "Ocorreu um erro ao conectar ao MongoDB",
+      "some_error_occurred": "Ocorreu algum erro"
+    }
+  },
+  "about": {
+    "heading": "Desbloqueie o poder de operações de negócios integradas",
+    "distributed_by": "Distribuído por",
+    "join_discord": "Juntar-se ao Discord"
+  },
+  "auth_layout": {
+    "admin_rights_required": "Direitos de administrador necessários",
+    "manage_company_with": "Gerencie sua empresa com:",
+    "all_in_one_tool": "Ferramenta tudo-em-um",
+    "invoice_clients_estimates": "Reúne suas faturas, clientes e orçamentos"
+  },
+  "common_ui": {
+    "actions": {
+      "add": "Adicionar",
+      "add_new": "Adicionar novo",
+      "cancel": "Cancelar",
+      "close": "Fechar",
+      "delete": "Excluir",
+      "download": "Baixar",
+      "edit": "Editar",
+      "export": "Exportar",
+      "logout": "Sair",
+      "mail": "E-mail",
+      "next": "Próximo",
+      "open": "Abrir",
+      "options": "Opções",
+      "previous": "Anterior",
+      "save": "Salvar",
+      "share": "Compartilhar",
+      "show": "Mostrar"
+    },
+    "toasts": {
+      "success": "Sucesso",
+      "error": "Erro",
+      "network_error": "Ocorreu um erro de rede",
+      "setting_updated": "Configuração atualizada"
+    },
+    "organization": "Organização",
+    "select_organization": "Selecionar Organização",
+    "search": {
+      "placeholder": "Buscar",
+      "by_description": "Buscar por descrição",
+      "parties": "Buscar contatos"
+    },
+    "date_filter": {
+      "start_date": "Data de início",
+      "end_date": "Data de término",
+      "placeholder": "dd-mm-aaaa"
+    },
+    "main_layout": {
+      "something_went_wrong": "Algo deu errado",
+      "back_to_home": "Voltar ao Início"
+    },
+    "pagination": {
+      "pages_of": "Páginas {{currentPage}} de {{total}}"
+    },
+    "table": {
+      "upgrade_your_plan": "Atualize seu plano"
+    },
+    "navigation": {
+      "dashboard": "Painel"
+    },
+    "sidebar": {
+      "categories": "Categorias",
+      "reports": "Relatórios",
+      "settings": "Configurações",
+      "plans": "Planos",
+      "about": "Sobre",
+      "links": {
+        "dashboard": "Painel",
+        "stats": "Estatísticas",
+        "parties": "Contatos",
+        "contacts": "Contatos",
+        "invoices": "Faturas",
+        "proforma_invoices": "Faturas Proforma",
+        "purchase_orders": "Pedidos de Compra",
+        "quotations": "Orçamentos",
+        "expenses": "Despesas",
+        "purchase": "Compra",
+        "items": "Itens"
+      },
+      "settings_links": {
+        "admin": "Admin",
+        "application": "Aplicação",
+        "taxes": "Impostos",
+        "unit_of_measurement": "Unidade de medida",
+        "profile": "Perfil"
+      }
+    },
+    "profile": {
+      "profile_group": "Perfil",
+      "account_group": "Conta",
+      "me": "Eu",
+      "profile_settings": "Configurações do Perfil",
+      "app_settings": "Configurações do App",
+      "change_password": "Alterar senha",
+      "switch_organization": "Trocar Organização",
+      "logout_confirm_body": "Deseja sair?"
+    },
+    "exporter": {
+      "filename": "Faturas.xlsx",
+      "select_columns": "Selecionar colunas"
+    },
+    "print_options": {
+      "title": "Opções de Impressão",
+      "fields": {
+        "name": "Nome",
+        "billing_address": "Endereço de cobrança",
+        "shipping_address": "Endereço de entrega",
+        "gst_no": "Nº GST",
+        "pan_no": "Nº PAN",
+        "created_by": "Criado por",
+        "created_at": "Criado em",
+        "updated_at": "Atualizado em"
+      }
+    },
+    "not_found": {
+      "page_not_found": "Página não encontrada",
+      "back_to_organizations": "Voltar para organizações"
+    },
+    "quick_access": {
+      "title": "Acesso Rápido",
+      "labels": {
+        "parties": "Contatos",
+        "create_party": "Criar Contato",
+        "invoices": "Faturas",
+        "create_invoice": "Criar Fatura",
+        "estimates": "Orçamentos",
+        "purchase": "Compra",
+        "create_purchase": "Criar Compra",
+        "create_estimate": "Criar Orçamento",
+        "reports": "Relatórios",
+        "products": "Produtos",
+        "create_product": "Criar Produto",
+        "expenses": "Despesas",
+        "proforma_invoices": "Faturas Proforma",
+        "purchase_orders": "Pedidos de Compra",
+        "create_po": "Criar Pedido",
+        "create_pro_invoice": "Criar Fatura Proforma",
+        "contacts": "Contatos"
+      }
+    },
+    "menu": {
+      "expenses": "Despesas",
+      "payment_out": "Pagamento efetuado",
+      "convert_to_invoice": "Converter para Fatura",
+      "products": "Produtos",
+      "contacts": "Contatos",
+      "payment_in": "Pagamento recebido",
+      "transactions": "Transações"
+    },
+    "fields": {
+      "description": "Descrição",
+      "status": "Status",
+      "party": "Contato",
+      "address": "Endereço"
+    },
+    "selectors": {
+      "select_party": "Selecionar contato",
+      "select_a_party": "Selecione um contato"
+    },
+    "share_mail": {
+      "title": "Compartilhar via e-mail",
+      "to": "Para",
+      "cc": "CC",
+      "subject": "Assunto",
+      "body": "Corpo",
+      "subject_help": "Assunto do e-mail",
+      "body_help": "Corpo do e-mail",
+      "contacts_with_email_only": "Somente contatos com e-mail serão mostrados aqui.",
+      "sent_to_party": "Enviado ao contato",
+      "upgrade_description": "Atualize seu plano para usar este serviço. Entre em contato com o admin para configurar o SMTP da organização."
+    },
+    "receipt": {
+      "amount": "Valor",
+      "invoice_number": "Fatura nº",
+      "date": "Data",
+      "po_number": "Nº do Pedido",
+      "po_date": "Data do Pedido",
+      "items_list": "Lista de Itens",
+      "add_line_item": "Adicionar item",
+      "description_placeholder": "Escreva algo para buscar depois, como e-mail ou identificador.",
+      "edit_party": "Editar contato",
+      "billing_address": "Endereço de cobrança",
+      "shipping_address": "Endereço de entrega",
+      "quantity": "Quantidade",
+      "rate": "Taxa",
+      "tax": "Imposto",
+      "product": "Produto",
+      "price": "Preço",
+      "total": "Total",
+      "total_tax": "Imposto Total",
+      "grand_total": "Total Geral",
+      "paid": "Pago",
+      "not_found": "Não encontrado",
+      "invalid_type": "Tipo inválido",
+      "payment": "Pagamento",
+      "paid_on_through": "Pago {{amount}} em {{date}} via {{method}}",
+      "gst": "GST",
+      "pan": "PAN",
+      "converted_to_invoice_on": "Convertido para fatura em: ",
+      "invoice_label": "Fatura: ",
+      "deleted": "{{label}} Excluído",
+      "delete_body": "Deseja excluir {{label}}?",
+      "delete_header": "Excluir {{label}}"
+    },
+    "transaction_settings": {
+      "configuration": "Configuração",
+      "transaction": "Transação",
+      "invoice_prefix": "Prefixo da Fatura",
+      "quotation_prefix": "Prefixo do Orçamento",
+      "proforma_invoice_prefix": "Prefixo da Fatura Proforma",
+      "purchase_order": "Pedido de Compra",
+      "currency": "Moeda",
+      "prefix_list": "Lista de prefixos",
+      "prefix": "Prefixo",
+      "already_exists": "Já existe",
+      "default": "Padrão",
+      "current_used": "Usado atualmente",
+      "none": "NENHUM"
+    },
+    "print_settings": {
+      "title": "Configurações de Impressão",
+      "default_template": "Modelo Padrão",
+      "print_bank_details": "Imprimir dados bancários na fatura",
+      "print_upi_qr": "Imprimir QR do UPI na fatura"
+    }
   }
 }

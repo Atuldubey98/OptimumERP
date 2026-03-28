@@ -1,0 +1,38 @@
+{
+  "transactions_ui": {
+    "types": {
+      "invoice": "Invoice",
+      "purchase": "Purchase",
+      "quotation": "Quotation",
+      "proforma_invoice": "Proforma Invoice",
+      "purchase_order": "Purchase order"
+    },
+    "stats": {
+      "invoices": "Invoices",
+      "purchase": "Purchase",
+      "balance": "Balance",
+      "owe": "You owe {{symbol}} {{amount}}.",
+      "receive": "You will receive {{symbol}} {{amount}}",
+      "all_settled": "All settled",
+      "bill_label": "{{count}} Bill {{status}}"
+    },
+    "page": {
+      "heading": "Transactions-{{partyName}}",
+      "total_found": "Total Transactions found : {{count}}"
+    },
+    "table": {
+      "columns": {
+        "date": "Transactions Date",
+        "num": "Transaction Number",
+        "total_items": "Total Items",
+        "type": "Type of Transaction",
+        "status": "Status",
+        "grand_total": "Grand Total"
+      }
+    },
+    "toast": {
+      "error_title": "Error",
+      "error_fallback": "Some error occured"
+    }
+  }
+}

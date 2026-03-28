@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink } from "react-router-dom";
 import PrivateRoute from "../PrivateRoute";
 import Sidebar from "../sidebar";
@@ -16,15 +17,16 @@ import NavDrawer from "./NavDrawer";
 import SettingContextProvider from "../../../contexts/SettingContextProvider";
 export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { t } = useTranslation("common");
   return (
     <ErrorBoundary
       fallbackRender={({ error }) => {
         return (
           <Box p={5}>
-            <Heading>Something went wrong</Heading>
+            <Heading>{t("common_ui.main_layout.something_went_wrong")}</Heading>
             <pre>{error.message}</pre>
             <Link as={ReactRouterLink} to="/organizations">
-              Back to Home
+              {t("common_ui.main_layout.back_to_home")}
             </Link>
           </Box>
         );

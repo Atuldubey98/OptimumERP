@@ -1,0 +1,72 @@
+{
+  "report_ui": {
+    "report_names": {
+      "sale": "Venda",
+      "transactions": "Transações",
+      "purchase": "Compra",
+      "gstr1": "GSTR1",
+      "gstr2": "GSTR2"
+    },
+    "page": {
+      "not_found": "Relatório não encontrado"
+    },
+    "tabs": {
+      "transaction_report": "Relatório de Transações",
+      "gst_reports": "Relatórios de Impostos (GST)"
+    },
+    "transaction_types": {
+      "invoice": "Fatura",
+      "purchase": "Compra",
+      "expense": "Despesa",
+      "quotes": "Orçamentos",
+      "proforma_invoice": "Fatura Proforma",
+      "purchase_order": "Pedido de Compra"
+    },
+    "filters": {
+      "custom": "Personalizado",
+      "select": "Selecionar",
+      "last_30_days": "Últimos 30 Dias",
+      "last_6_months": "Últimos 6 Meses",
+      "last_365_days": "Últimos 365 Dias"
+    },
+    "table": {
+      "total_found": "Total de {{reportType}} Encontrados: {{count}}",
+      "headers": {
+        "sale": {
+          "num": "Número da Fatura",
+          "date": "Data",
+          "party_name": "Nome do Contato",
+          "grand_total": "Total Geral",
+          "total_tax": "Imposto Total",
+          "status": "Status"
+        },
+        "purchase": {
+          "num": "Número da Compra",
+          "date": "Data",
+          "party_name": "Nome do Contato",
+          "grand_total": "Total Geral",
+          "total_tax": "Imposto Total",
+          "status": "Status"
+        },
+        "transactions": {
+          "num": "Nº",
+          "type": "Tipo",
+          "amount": "Valor",
+          "created_at": "Realizado em",
+          "related_to": "Faturar Para/De"
+        },
+        "gstr": {
+          "gst_no": "Nº GST do Contato",
+          "party_name": "Nome do Contato",
+          "grand_total": "Total Geral",
+          "cgst": "CGST",
+          "sgst": "SGST",
+          "igst": "IGST"
+        }
+      }
+    },
+    "actions": {
+      "export": "Exportar"
+    }
+  }
+}

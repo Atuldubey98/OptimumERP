@@ -7,5 +7,79 @@
     "updated": "Fatura atualizada com sucesso",
     "deleted": "Fatura excluída com sucesso",
     "payment_added": "Pagamento adicionado"
+  },
+  "invoice_ui": {
+    "page": {
+      "heading": "Faturas",
+      "total_found": "Total de faturas encontradas",
+      "not_found": "Fatura não encontrada"
+    },
+    "table": {
+      "columns": {
+        "invoice_no": "Nº da Fatura",
+        "invoice_date": "Data da Fatura",
+        "recipient": "Destinatário",
+        "status": "Status",
+        "total": "Total",
+        "party_name": "Nome do Contato",
+        "billing_address": "Endereço de Cobrança",
+        "total_tax": "Imposto Total",
+        "date": "Data",
+        "number": "Número",
+        "grand_total": "Total Geral"
+      }
+    },
+    "actions": {
+      "add_item": "Adicionar Item"
+    },
+    "form": {
+      "party_section": "Contato",
+      "bill_to": "Faturar para",
+      "billing_address": "Endereço de Cobrança",
+      "invoice_details_section": "Detalhes da Fatura",
+      "invoice_no": "Nº da Fatura",
+      "status": "Status",
+      "po_number": "Nº do Pedido (PO)",
+      "po_date": "Data do Pedido (PO)",
+      "due_date": "Data de Vencimento",
+      "items_section": "Itens",
+      "save_and_new_label": "Salvar e Novo",
+      "save_button": "Salvar"
+    },
+    "modal": {
+      "heading": "Fatura",
+      "delete_header": "Excluir Fatura",
+      "delete_body": "Deseja excluir a fatura?"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "sent": "Enviado",
+      "pending": "Pendente"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Nome do Contato",
+        "billing_address": "Endereço de Cobrança",
+        "total": "Total",
+        "total_tax": "Imposto Total",
+        "date": "Data",
+        "number": "Número",
+        "status": "Status",
+        "grand_total": "Total Geral"
+      },
+      "selectable_fields": {
+        "created_by_email": "Criado por (E-mail)",
+        "created_by_name": "Criado por (Nome)",
+        "po_number": "Nº do Pedido (PO)",
+        "po_date": "Data do Pedido (PO)",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "IVA (VAT)",
+        "cess": "Cess",
+        "sal": "SAL",
+        "other_taxes": "Outros impostos"
+      }
+    }
   }
 }

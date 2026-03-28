@@ -1,9 +1,72 @@
 {
   "purchase_order": {
-    "not_found": "O pedido de compra não existe",
-    "already_exists": "Já existe um pedido de compra com este ID de orçamento",
-    "created": "Pedido de compra criado com sucesso",
-    "updated": "Pedido de compra atualizado com sucesso",
-    "deleted": "Pedido de compra excluído com sucesso"
+    "purchase_order": {
+      "not_found": "O pedido de compra não existe",
+      "already_exists": "Já existe um pedido de compra com este ID",
+      "created": "Pedido de compra criado com sucesso",
+      "updated": "Pedido de compra atualizado com sucesso",
+      "deleted": "Pedido de compra excluído com sucesso"
+    }
+  },
+  "purchase_order_ui": {
+    "page": {
+      "heading": "Pedidos de Compra",
+      "total_found": "Total de pedidos de compra"
+    },
+    "table": {
+      "columns": {
+        "po_no": "Nº do Pedido",
+        "po_date": "Data do Pedido",
+        "recipient": "Destinatário",
+        "status": "Status",
+        "total": "Total"
+      }
+    },
+    "modal": {
+      "delete_body": "Deseja excluir o pedido de compra?",
+      "delete_header": "Excluir Pedido"
+    },
+    "bill_modal": {
+      "heading": "Pedido de Compra"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Nome do Contato",
+        "billing_address": "Endereço de Cobrança",
+        "total": "Total",
+        "total_tax": "Imposto Total",
+        "num": "Número",
+        "status": "Status",
+        "grand_total": "Total Geral"
+      },
+      "selectable_fields": {
+        "created_by_email": "Criado por (E-mail)",
+        "created_by_name": "Criado por (Nome)",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "IVA (VAT)",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Outros impostos"
+      }
+    },
+    "form": {
+      "not_found": "Pedido de compra não encontrado",
+      "save_new": "Salvar e Novo",
+      "save": "Salvar",
+      "party_section": "Contato",
+      "bill_to": "Faturar para",
+      "billing_address": "Endereço de Cobrança",
+      "invoice_details": "Detalhes da Fatura",
+      "po_no": "Nº do Pedido",
+      "po_date": "Data do Pedido",
+      "items_section": "Itens"
+    },
+    "toast": {
+      "success_title": "Sucesso",
+      "error_title": "Erro",
+      "error_fallback": "Ocorreu algum erro"
+    }
   }
 }

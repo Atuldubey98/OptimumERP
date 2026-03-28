@@ -1,8 +1,54 @@
 {
   "contact": {
-    "not_found": "O contato não existe",
-    "created": "Contato criado com sucesso",
-    "updated": "Contato atualizado com sucesso",
-    "deleted": "Contato excluído com sucesso"
+    "contact": {
+      "not_found": "O contato não existe",
+      "created": "Contato criado com sucesso",
+      "updated": "Contato atualizado com sucesso",
+      "deleted": "Contato excluído com sucesso"
+    }
+  },
+  "contact_ui": {
+    "actions": {
+      "edit": "Editar",
+      "delete": "Excluir",
+      "save": "Salvar",
+      "update": "Atualizar"
+    },
+    "toasts": {
+      "success": "Sucesso",
+      "error": "Erro",
+      "created": "Contato criado",
+      "updated": "Contato atualizado",
+      "deleted": "Contato excluído",
+      "error_occurred": "Ocorreu um erro"
+    },
+    "page": {
+      "heading": "Contatos",
+      "search_contacts": "Buscar contatos",
+      "contact_type": "Tipo de contato",
+      "no_contacts": "Nenhum contato"
+    },
+    "filters": {
+      "all": "Todos",
+      "all_contacts": "Todos os contatos"
+    },
+    "form": {
+      "heading": "Formulário de Contato",
+      "name": "Nome",
+      "telephone": "Telefone",
+      "email": "E-mail",
+      "party": "Contato (Parte)",
+      "type": "Tipo"
+    },
+    "card": {
+      "email": "E-mail",
+      "company_name": "Nome da Empresa",
+      "not_set": "-Não-definido-",
+      "unknown": "Desconhecido"
+    },
+    "delete": {
+      "header": "Excluir contato",
+      "body": "Deseja excluir o contato?"
+    }
   }
 }

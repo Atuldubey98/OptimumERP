@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useItemCategoryForm from "../../hooks/useItemCategoryForm";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
@@ -20,6 +21,7 @@ import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ItemCategoryForm from "./ItemCategoryForm";
 
 export default function ItemCategories() {
+  const { t } = useTranslation("categories");
   const { orgId } = useParams();
   const { data, status, fetchFn, onSetItems } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/productCategories`,
@@ -52,8 +54,8 @@ export default function ItemCategories() {
         `/api/v1/organizations/${orgId}/productCategories/${selectedItemCategory._id}`
       );
       toast({
-        title: "Success",
-        description: "Item category deleted",
+        title: t("toasts.success_title"),
+        description: t("toasts.item_category_deleted"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -62,10 +64,10 @@ export default function ItemCategories() {
       fetchFn();
     } catch (error) {
       toast({
-        title: "Error",
+        title: t("toasts.error_title"),
         description: isAxiosError(error)
-          ? error.response.data.message || "Some error occured"
-          : "Some error occured",
+          ? error.response.data.message || t("toasts.some_error_occurred")
+          : t("toasts.some_error_occurred"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -73,7 +75,7 @@ export default function ItemCategories() {
     } finally {
       setCategoryStatus("idle");
     }
-  }, [selectedItemCategory]);
+  }, [selectedItemCategory, t, closeItemCategoryDeleteModal, fetchFn, orgId, toast]);
   const selectAndOpenDeleteCategoryModal = (itemCategory) => {
     setSelectedItemCategory(itemCategory);
     openItemCategoryDeleteModal();
@@ -96,7 +98,7 @@ export default function ItemCategories() {
             </Box>
           }
           limitKey={"productCategories"}
-          caption={`Total item types : ${data.totalCount}`}
+          caption={t("item.total_count", { count: data.totalCount })}
           tableData={data.items.map((item) => ({
             ...item,
 
@@ -142,11 +144,11 @@ export default function ItemCategories() {
             openItemCategoryForm();
           }}
           selectedKeys={{
-            name: "Name",
-            description: "Description",
-            enabled: "Enabled",
+            name: t("fields.name"),
+            description: t("fields.description"),
+            enabled: t("fields.enabled"),
           }}
-          heading={"Product Categories"}
+          heading={t("item.heading")}
         />
       )}
       {loading ? null : (
@@ -159,8 +161,8 @@ export default function ItemCategories() {
       />
       <AlertModal
         confirmDisable={deleting}
-        body={"Do you want to delete the item category ?"}
-        header={"Delete category"}
+        body={t("item.delete_body")}
+        header={t("item.delete_header")}
         isOpen={isItemCategoryDeleteModal}
         onClose={closeItemCategoryDeleteModal}
         onConfirm={deleteProductCategory}

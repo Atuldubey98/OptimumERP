@@ -7,5 +7,82 @@
       "updated": "Purchase updated successfully",
       "deleted": "Purchase deleted successfully"
     }
+  },
+  "purchase_ui": {
+    "page": {
+      "heading": "Purchase",
+      "total_found": "Total purchases found"
+    },
+    "table": {
+      "columns": {
+        "num": "Purchase No.",
+        "date": "Purchase Date",
+        "party_name": "Party name",
+        "status": "Status",
+        "total": "Total"
+      }
+    },
+    "bill_modal": {
+      "heading": "Purchase"
+    },
+    "modal": {
+      "delete_button": "Delete",
+      "delete_body": "Do you want to delete the purchase ?",
+      "delete_header": "Delete Purchase"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Party Name",
+        "billing_address": "Billing Address",
+        "total": "Total",
+        "total_tax": "Total Tax",
+        "num": "Number",
+        "status": "Status",
+        "grand_total": "Grand Total"
+      },
+      "selectable_fields": {
+        "created_by_email": "Created By Email",
+        "created_by_name": "Created By Name",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "VAT",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Other taxes"
+      }
+    },
+    "form": {
+      "not_found": "Purchase invoice not found",
+      "save_new": "Save & New",
+      "save": "Save",
+      "party_section": "Party",
+      "bill_from": "Bill from",
+      "billing_address": "Billing Address",
+      "purchase_details": "Purchase Details",
+      "purchase_no": "Purchase No.",
+      "items_section": "Items",
+      "auto_create_items": "Auto create items",
+      "status_label": "Status"
+    },
+    "status": {
+      "unpaid": "Unpaid",
+      "paid": "Paid"
+    },
+    "payout": {
+      "title": "Payment",
+      "grand_total": "Grand Total",
+      "vendor_name": "Vendor Name",
+      "sub_total": "Sub Total",
+      "total_tax": "Total Tax",
+      "amount": "Amount",
+      "settle": "Settle",
+      "description": "Description",
+      "payment_mode": "Payment Mode",
+      "date": "Date",
+      "close": "Close",
+      "record": "Record",
+      "success_title": "Success"
+    }
   }
 }

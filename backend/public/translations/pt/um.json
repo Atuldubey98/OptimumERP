@@ -1,0 +1,36 @@
+{
+  "um_ui": {
+    "page": {
+      "heading": "Unidades de medida",
+      "heading_single": "Unidade de medida",
+      "total": "Total de unidades de medida {{count}}"
+    },
+    "table": {
+      "columns": {
+        "name": "Nome",
+        "unit": "Unidade",
+        "enabled": "Ativado",
+        "description": "Descrição"
+      }
+    },
+    "modal": {
+      "add_title": "Adicionar unidade",
+      "edit_title": "Editar unidade",
+      "add_new": "Adicionar novo",
+      "close": "Fechar",
+      "save": "Salvar"
+    },
+    "form": {
+      "name": "Nome",
+      "short_form": "Forma abreviada",
+      "description": "Descrição",
+      "enabled": "Ativado"
+    },
+    "toast": {
+      "success_title": "Sucesso",
+      "error_title": "Erro",
+      "error_fallback": "Ocorreu um erro",
+      "default_updated": "Unidade padrão atualizada"
+    }
+  }
+}

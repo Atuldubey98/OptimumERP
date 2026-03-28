@@ -1,8 +1,10 @@
 import { Button, Code, Flex, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import useQuery from "../../../hooks/useQuery";
 
 export default function Pagination({ total, currentPage }) {
+  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const query = useQuery();
   const onClick = (pageNumber) => {
@@ -27,18 +29,20 @@ export default function Pagination({ total, currentPage }) {
         onClick={() => onClick(--currentPage)}
         isDisabled={currentPage === 1}
       >
-        Previous
+        {t("common_ui.actions.previous")}
       </Button>
       <Text
         fontSize={"sm"}
         borderRadius={"md"}
-      >{`Pages ${currentPage} of ${total} `}</Text>
+      >
+        {t("common_ui.pagination.pages_of", { currentPage, total })}
+      </Text>
       <Button
         size={"sm"}
         onClick={() => onClick(++currentPage)}
         isDisabled={currentPage >= total}
       >
-        Next
+        {t("common_ui.actions.next")}
       </Button>
     </Flex>
   );

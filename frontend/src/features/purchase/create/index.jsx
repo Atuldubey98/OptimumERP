@@ -31,7 +31,9 @@ import SelectStatus from "../../estimates/create/SelectStatus";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
+import { useTranslation } from "react-i18next";
 export default function CreatePurchasePage() {
+  const { t } = useTranslation("purchase");
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:purchase");
   const { taxes } = useTaxes();
@@ -54,7 +56,7 @@ export default function CreatePurchasePage() {
             </Flex>
           ) : hasError ? (
             <BannerWithLabel
-              label={"Purchase invoice not found"}
+              label={t("purchase_ui.form.not_found")}
               Icon={FaMoneyBillTrendUp}
             />
           ) : (
@@ -67,7 +69,7 @@ export default function CreatePurchasePage() {
                     alignItems="center"
                   >
                     <FormLabel htmlFor="save-and-new" mb="0">
-                      Save & New
+                      {t("purchase_ui.form.save_new")}
                     </FormLabel>
                     <Switch
                       onChange={(e) => {
@@ -86,19 +88,19 @@ export default function CreatePurchasePage() {
                   colorScheme="teal"
                   variant="solid"
                 >
-                  Save
+                  {t("purchase_ui.form.save")}
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Party</Heading>
+                <Heading fontSize={"xl"}>{t("purchase_ui.form.party_section")}</Heading>
                 <FormControl isRequired>
-                  <FormLabel>Bill from</FormLabel>
+                  <FormLabel>{t("purchase_ui.form.bill_from")}</FormLabel>
                   <PartySelectBill formik={formik} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
                 {formik.values.party ? (
                   <FormControl isRequired>
-                    <FormLabel>Billing Address</FormLabel>
+                    <FormLabel>{t("purchase_ui.form.billing_address")}</FormLabel>
                     <Textarea
                       name="billingAddress"
                       onChange={formik.handleChange}
@@ -106,12 +108,12 @@ export default function CreatePurchasePage() {
                     />
                   </FormControl>
                 ) : null}
-                <Heading fontSize={"xl"}>Purchase Details</Heading>
+                <Heading fontSize={"xl"}>{t("purchase_ui.form.purchase_details")}</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isInvalid={formik.errors.num && formik.touched.num}
                   >
-                    <FormLabel>Purchase No.</FormLabel>
+                    <FormLabel>{t("purchase_ui.form.purchase_no")}</FormLabel>
                     <Input
                       type="text"
                       name="num"
@@ -124,9 +126,10 @@ export default function CreatePurchasePage() {
                   <SelectStatus
                     formik={formik}
                     statusList={purchaseStatusList}
+                    namespace="purchase"
                   />
                 </SimpleGrid>
-                <Heading fontSize={"xl"}>Items</Heading>
+                <Heading fontSize={"xl"}>{t("purchase_ui.form.items_section")}</Heading>
 
                 <ItemsList
                   formik={formik}
@@ -137,7 +140,7 @@ export default function CreatePurchasePage() {
                 {formik.values._id ? null : (
                   <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="autoItems" mb="0">
-                      Auto create items
+                      {t("purchase_ui.form.auto_create_items")}
                     </FormLabel>
                     <Switch
                       id="autoItems"

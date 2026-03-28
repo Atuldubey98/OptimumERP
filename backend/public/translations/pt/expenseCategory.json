@@ -1,9 +1,11 @@
 {
   "expense_category": {
-    "not_found": "Categoria de despesa não encontrada",
-    "not_deleted": "Categoria de despesa não excluída",
-    "created": "Categoria de despesa criada com sucesso",
-    "updated": "Categoria de despesa atualizada com sucesso",
-    "deleted": "Categoria de despesa excluída com sucesso"
+    "expense_category": {
+      "not_found": "Categoria de despesa não encontrada",
+      "not_deleted": "Categoria de despesa não excluída",
+      "created": "Categoria de despesa criada com sucesso",
+      "updated": "Categoria de despesa atualizada com sucesso",
+      "deleted": "Categoria de despesa excluída com sucesso"
+    }
   }
 }

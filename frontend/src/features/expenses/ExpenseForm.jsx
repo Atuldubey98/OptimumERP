@@ -7,6 +7,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import React, { useCallback, useEffect, useState } from "react";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import FormDrawerLayout from "../common/form-drawer-layout";
@@ -15,6 +16,7 @@ import { Select } from "chakra-react-select";
 import { useParams } from "react-router-dom";
 import NumberInputInteger from "../common/NumberInputInteger";
 export default function ExpenseForm({ formik, isOpen, onClose }) {
+  const { t } = useTranslation("expense");
   const { requestAsyncHandler } = useAsyncCall();
   const [expenseCategories, setExpenseCategories] = useState([]);
   const [status, setStatus] = useState("idle");
@@ -41,8 +43,8 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
-      formBtnLabel={formik.values._id ? "Update" : "Add"}
-      formHeading={"Expense"}
+      formBtnLabel={formik.values._id ? t("expense_ui.form.buttons.update") : t("expense_ui.form.buttons.add")}
+      formHeading={t("expense_ui.form.heading")}
       handleFormSubmit={formik.handleSubmit}
       isOpen={isOpen}
       onClose={onClose}
@@ -52,7 +54,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           isInvalid={formik.errors.amount && formik.touched.amount}
           isRequired
         >
-          <FormLabel>Amount</FormLabel>
+          <FormLabel>{t("expense_ui.form.labels.amount")}</FormLabel>
           <NumberInputInteger formik={formik} name={"amount"} />
           <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
         </FormControl>
@@ -60,7 +62,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           isInvalid={formik.errors.description && formik.touched.description}
           isRequired
         >
-          <FormLabel>Description</FormLabel>
+          <FormLabel>{t("expense_ui.form.labels.description")}</FormLabel>
           <Textarea
             value={formik.values.description}
             name="description"
@@ -72,7 +74,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           <FormControl
             isInvalid={formik.errors.category && formik.touched.category}
           >
-            <FormLabel>Expense Category</FormLabel>
+            <FormLabel>{t("expense_ui.form.labels.category")}</FormLabel>
             <Select
               isClearable
               onChange={(option) => {
@@ -93,14 +95,14 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
         )}
         {formik.values.category ? null : (
           <Text fontSize={"sm"}>
-            Note : Expense without category will be counted as Miscellenous
+            {t("expense_ui.messages.category_note")}
           </Text>
         )}
         <FormControl
           isInvalid={formik.errors.date && formik.touched.date}
           isRequired
         >
-          <FormLabel>Date</FormLabel>
+          <FormLabel>{t("expense_ui.form.labels.date")}</FormLabel>
           <Input
             name="date"
             type="date"

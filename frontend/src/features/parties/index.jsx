@@ -1,5 +1,6 @@
 import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useParties from "../../hooks/useParties";
@@ -17,6 +18,7 @@ import DisplayPartyDrawer from "./PartyDisplayDrawer";
 
 
 export default function PartysPage() {
+  const { t } = useTranslation("party");
   const {
     isOpen: isDeleteModalOpen,
     onOpen: openDeleteModal,
@@ -116,10 +118,10 @@ export default function PartysPage() {
                 <SearchItem />
               </Box>
             }
-            heading={"Parties"}
+            heading={t("party_ui.page.heading")}
             limitKey={"parties"}
             tableData={parties}
-            caption={`Total parties found : ${totalPartys}`}
+            caption={`${t("party_ui.page.total_found")} : ${totalPartys}`}
             operations={parties.map((party) => (
               <PartyMenu
                 onOpenTransactionsForParty={() => {
@@ -133,17 +135,17 @@ export default function PartysPage() {
               />
             ))}
             selectedKeys={{
-              name: "Name",
-              billingAddress: "Billing address",
-              gstNo: "TAX No.",
+              name: t("party_ui.table.columns.name"),
+              billingAddress: t("party_ui.table.columns.billing_address"),
+              gstNo: t("party_ui.table.columns.tax_no"),
             }}
             onAddNewItem={onOpenDrawerForAddingNewParty}
           />
         )}
         <AlertModal
           confirmDisable={deleting}
-          body={"Do you want to delete the party ?"}
-          header={"Delete party"}
+          body={t("party_ui.modal.delete_body")}
+          header={t("party_ui.modal.delete_header")}
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           onConfirm={onDeleteParty}

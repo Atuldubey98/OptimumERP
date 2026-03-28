@@ -4,7 +4,9 @@ import {
     Text
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 export default function ReceiptItemsHeading(props) {
+  const { t } = useTranslation("common");
   return (
     <Grid
       fontWeight={"bold"}
@@ -14,19 +16,19 @@ export default function ReceiptItemsHeading(props) {
       templateColumns={"4fr 1fr 1fr 1fr 1fr"}
     >
       <GridItem>
-        <Text textAlign={"center"}>Product</Text>
+        <Text textAlign={"center"}>{t("common_ui.receipt.product")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>Quantity</Text>
+        <Text textAlign={"center"}>{t("common_ui.receipt.quantity")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>Price</Text>
+        <Text textAlign={"center"}>{t("common_ui.receipt.price")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>Tax</Text>
+        <Text textAlign={"center"}>{t("common_ui.receipt.tax")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>Total</Text>
+        <Text textAlign={"center"}>{t("common_ui.receipt.total")}</Text>
       </GridItem>
     </Grid>
   );

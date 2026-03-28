@@ -1,9 +1,11 @@
 import { Button, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import useQuery from "../../../hooks/useQuery";
-export default function SearchItem({ placeholder = "Search" }) {
+export default function SearchItem({ placeholder }) {
+  const { t } = useTranslation("common");
   const query = useQuery();
   const [search, setSearch] = useState(query.get("query") || "");
   const onChangeSearch = (e) => setSearch(e.currentTarget.value);
@@ -28,7 +30,7 @@ export default function SearchItem({ placeholder = "Search" }) {
           type="search"
           value={search}
           onChange={onChangeSearch}
-          placeholder={placeholder}
+          placeholder={placeholder || t("common_ui.search.placeholder")}
         />
       </InputGroup>
       <Button display={"none"}/>

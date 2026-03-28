@@ -1,0 +1,95 @@
+{
+  "dashboard_ui": {
+    "greeting": "Hi,",
+    "overview_subtitle": "Here's is overview of your business !",
+    "periods": {
+      "this_week": "This week",
+      "this_month": "This month",
+      "this_year": "This year"
+    },
+    "entities": {
+      "invoices": "Invoices",
+      "parties": "Parties",
+      "expenses": "Expenses",
+      "purchases": "Purchase",
+      "quotes": "Quotation"
+    },
+    "tables": {
+      "recent_sales": "Recent Sales",
+      "recent_purchase": "Recent Purchase",
+      "recent_estimates": "Recent Estimates",
+      "view_more": "More",
+      "nothing_to_show": "Nothing to show",
+      "headers": {
+        "num": "NUM",
+        "party_name": "Party name",
+        "total": "Total",
+        "status": "Status",
+        "date": "Date"
+      }
+    },
+    "actions": {
+      "previous": "Previous",
+      "next": "Next",
+      "finish": "Finish"
+    },
+    "tour": {
+      "welcome_title": "Welcome to OptimumERP!",
+      "image_alt": "Dashboard guide preview",
+      "tabs": {
+        "dashboard": {
+          "label": "Dashboard",
+          "description": "Get an overview of your business metrics."
+        },
+        "stats": {
+          "label": "Stats",
+          "description": "View detailed analytics and performance insights."
+        },
+        "parties": {
+          "label": "Parties",
+          "description": "Manage your business contacts and suppliers."
+        },
+        "contacts": {
+          "label": "Contacts",
+          "description": "Organize your contacts for better communication."
+        },
+        "invoices": {
+          "label": "Invoices",
+          "description": "Create and manage invoices efficiently."
+        },
+        "proforma_invoices": {
+          "label": "Proforma Invoices",
+          "description": "Create and manage proforma invoices."
+        },
+        "purchase_orders": {
+          "label": "Purchase Orders",
+          "description": "Create and track purchase orders."
+        },
+        "quotations": {
+          "label": "Quotations",
+          "description": "Generate and manage quotations."
+        },
+        "purchases": {
+          "label": "Purchases",
+          "description": "Simplify procurement and vendor management."
+        },
+        "expenses": {
+          "label": "Expenses",
+          "description": "Track and control business expenses."
+        },
+        "items": {
+          "label": "Items",
+          "description": "Organize and categorize your inventory."
+        },
+        "reports": {
+          "label": "Reports",
+          "description": "Generate reports for data-driven decisions."
+        },
+        "admin": {
+          "label": "Admin",
+          "description": "Configure advanced settings and user permissions."
+        }
+      }
+    }
+  }
+}

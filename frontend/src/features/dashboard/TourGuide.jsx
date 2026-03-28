@@ -7,13 +7,15 @@ import {
   Text
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function TourGuide({ imgSrc, label, description }) {
+  const { t } = useTranslation("dashboard");
   return (
     <Box h={"50svh"} overflowY={"auto"}>
       <Image
         src={imgSrc}
-        alt="Green double couch with wooden legs"
+        alt={t("dashboard_ui.tour.image_alt")}
         borderRadius="lg"
       />
       <Stack mt="6" spacing="3">

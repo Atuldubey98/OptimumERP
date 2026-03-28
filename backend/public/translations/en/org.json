@@ -1,0 +1,58 @@
+{
+  "organization": {
+    "organization": {
+      "not_found": "Organization does not exists",
+      "created": "Organization created successfully",
+      "updated": "Organization updated successfully",
+      "deleted": "Organization deleted successfully"
+    },
+    "not_found": "Organization does not exists",
+    "created": "Organization created successfully",
+    "updated": "Organization updated successfully",
+    "deleted": "Organization deleted successfully"
+  },
+  "org_ui": {
+    "page": {
+      "heading": "Your organizations",
+      "current_plan_button": "Current Plan",
+      "logout_button": "Logout"
+    },
+    "plan_popup": {
+      "free_plan_name": "Free Plan",
+      "free_plan_description": "Free plan allows only one organization with limited benefits.",
+      "gold_plan_name": "Gold Plan",
+      "gold_plan_description": "Gold Plan allows you to have 3 organizations",
+      "platinum_plan_name": "Platinum Plan",
+      "platinum_plan_description": "This is platinum plan"
+    },
+    "logout_modal": {
+      "header": "Logout",
+      "body": "Do you want to logout ?",
+      "cancel_button": "Cancel",
+      "confirm_button": "Logout"
+    },
+    "new_org_modal": {
+      "header": "New Organization",
+      "name_label": "Name",
+      "name_placeholder": "Name",
+      "name_helper": "Name of your organization",
+      "address_label": "Address",
+      "address_placeholder": "Address",
+      "address_helper": "Address of your organization",
+      "gst_label": "GST No./ Tax Reg. No.",
+      "gst_placeholder": "GST No.",
+      "gst_helper": "GST registeration no or tax registeration no. of organization",
+      "pan_label": "PAN No.",
+      "pan_placeholder": "PAN No.",
+      "pan_helper": "PAN No/ TAN no. of the organization",
+      "rest_details_note": "Rest organization details can be filled in settings",
+      "fiscal_year_heading": "Fiscal Year",
+      "start_date_label": "Start Date",
+      "end_date_label": "End Date",
+      "date_placeholder": "dd-mm-yyyy",
+      "fiscal_year_note": "Select current fiscal year you are following",
+      "close_button": "Close",
+      "submit_button": "Save"
+    }
+  }
+}

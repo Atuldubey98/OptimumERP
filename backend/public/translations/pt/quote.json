@@ -1,10 +1,92 @@
 {
   "quote": {
-    "not_found": "O orçamento não existe",
-    "already_exists": "Já existe um orçamento com este ID",
-    "created": "Orçamento criado com sucesso",
-    "updated": "Orçamento atualizado com sucesso",
-    "deleted": "Orçamento excluído com sucesso",
-    "converted_to_invoice": "Fatura criada"
+    "quote": {
+      "not_found": "O orçamento não existe",
+      "already_exists": "Já existe um orçamento com este ID",
+      "created": "Orçamento criado com sucesso",
+      "updated": "Orçamento atualizado com sucesso",
+      "deleted": "Orçamento excluído com sucesso",
+      "converted_to_invoice": "Fatura criada"
+    }
+  },
+  "quote_ui": {
+    "toasts": {
+      "success": "Sucesso",
+      "error": "Erro",
+      "some_error_occurred": "Ocorreu algum erro"
+    },
+    "page": {
+      "heading": "Orçamentos",
+      "total_estimates_found": "Total de estimativas encontradas: {{count}}",
+      "delete_estimate": "Deseja excluir a estimativa?",
+      "delete_quotation": "Excluir Orçamento"
+    },
+    "table": {
+      "columns": {
+        "quote_no": "Nº do Orçamento",
+        "quotation_date": "Data do Orçamento",
+        "party_name": "Nome do contato",
+        "status": "Status",
+        "total": "Total"
+      }
+    },
+    "actions": {
+      "save": "Salvar",
+      "add_item": "Adicionar Item",
+      "add_new_quote": "Adicionar novo"
+    },
+    "form": {
+      "party_section": "Contato",
+      "bill_to": "Faturar Para",
+      "billing_address": "Endereço de Cobrança",
+      "estimate_details": "Detalhes da Estimativa",
+      "quotation_no": "Nº do Orçamento",
+      "items_section": "Itens",
+      "status_label": "Status",
+      "item_name_placeholder": "Nome do item",
+      "hsn_code_placeholder": "Código HSN/SAC",
+      "quantity_placeholder": "Quantidade",
+      "terms_and_conditions": "Termos e condições",
+      "terms_placeholder": "Seus termos e condições para o trabalho."
+    },
+    "status": {
+      "draft": "Rascunho",
+      "pending": "Pendente",
+      "sent": "Enviado",
+      "accepted": "Aceito",
+      "declined": "Recusado"
+    },
+    "totals": {
+      "sub_total": "Subtotal",
+      "total_tax": "Imposto total",
+      "grand_total": "Total Geral"
+    },
+    "banner": {
+      "quotation_not_found": "Orçamento não encontrado"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Nome do Contato",
+        "billing_address": "Endereço de Cobrança",
+        "total": "Total",
+        "total_tax": "Imposto Total",
+        "num": "Número",
+        "status": "Status",
+        "grand_total": "Total Geral"
+      },
+      "optional_fields": {
+        "created_by_email": "Criado por (E-mail)",
+        "created_by_name": "Criado por (Nome)",
+        "po_no": "Número do Pedido",
+        "po_date": "Data do Pedido",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "IVA (VAT)",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Outros impostos"
+      }
+    }
   }
 }

@@ -12,18 +12,21 @@ import { Select } from "chakra-react-select";
 import { SiMicrosoftexcel } from "react-icons/si";
 
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 export default function PrintOptionsModal({ isOpen, onClose, entity, url }) {
+  const { t } = useTranslation("common");
+
   const printOptions = {
     party: {
       fields: {
-        name: "Name",
-        billingAddress: "Billing address",
-        shippingAddress: "Shipping Address",
-        gstNo: "GST No.",
-        panNo: "PAN No.",
-        createdBy: "Created By",
-        createdAt: "Created At",
-        updatedAt: "Updated At",
+        name: t("common_ui.print_options.fields.name"),
+        billingAddress: t("common_ui.print_options.fields.billing_address"),
+        shippingAddress: t("common_ui.print_options.fields.shipping_address"),
+        gstNo: t("common_ui.print_options.fields.gst_no"),
+        panNo: t("common_ui.print_options.fields.pan_no"),
+        createdBy: t("common_ui.print_options.fields.created_by"),
+        createdAt: t("common_ui.print_options.fields.created_at"),
+        updatedAt: t("common_ui.print_options.fields.updated_at"),
       },
       default: ["name", "billingAddress", "gstNo", "panNo"],
     },
@@ -44,7 +47,7 @@ export default function PrintOptionsModal({ isOpen, onClose, entity, url }) {
       <ModalOverlay />
       <form>
         <ModalContent>
-          <ModalHeader>Print Options</ModalHeader>
+          <ModalHeader>{t("common_ui.print_options.title")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Select
@@ -57,7 +60,7 @@ export default function PrintOptionsModal({ isOpen, onClose, entity, url }) {
 
           <ModalFooter>
             <Button mr={3} size={"sm"} onClick={onClose}>
-              Close
+              {t("common_ui.actions.close")}
             </Button>
             <Button
               size={"sm"}
@@ -65,7 +68,7 @@ export default function PrintOptionsModal({ isOpen, onClose, entity, url }) {
               isDisabled={!selectedOptions.length}
               leftIcon={<SiMicrosoftexcel />}
             >
-              Export
+              {t("common_ui.actions.export")}
             </Button>
           </ModalFooter>
         </ModalContent>

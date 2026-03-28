@@ -5,7 +5,9 @@ import {
 import useProperty from "../../../hooks/useProperty";
 import moment from "moment";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import { useTranslation } from "react-i18next";
 export default function ReceiptPayment(props) {
+  const { t } = useTranslation("common");
   const { symbol } = useCurrentOrgCurrency();
   const {value : paymentMethods = []} = useProperty("PAYMENT_METHODS");
   const label = paymentMethods.find(
@@ -14,8 +16,14 @@ export default function ReceiptPayment(props) {
   return (
     <Box>
       <Text>
-        <strong>Payment</strong> : Paid {`${symbol} ${props.payment.amount}`} on{" "}
-        {moment(props.payment.date).format("LL")} through {label}
+        <strong>{t("common_ui.receipt.payment")}</strong> : {t(
+          "common_ui.receipt.paid_on_through",
+          {
+            amount: `${symbol} ${props.payment.amount}`,
+            date: moment(props.payment.date).format("LL"),
+            method: label,
+          }
+        )}
       </Text>
     </Box>
   );

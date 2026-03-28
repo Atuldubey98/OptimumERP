@@ -3,12 +3,14 @@ import React from "react";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function DefaultSwitchSetting({
   selectedItem,
   receiptDefaultKey,
   successMessage,
 }) {
+  const { t } = useTranslation("tax");
   const { receiptDefaults, setting, onSetNewSetting } = useCurrentOrgCurrency();
   const { orgId } = useParams();
   const receiptDefaultValue = receiptDefaults[receiptDefaultKey];
@@ -21,7 +23,7 @@ export default function DefaultSwitchSetting({
       alignItems={"center"}
       gap={4}
     >
-      <FormLabel fontWeight={"bold"}>Is Default ?</FormLabel>
+      <FormLabel fontWeight={"bold"}>{t("tax_ui.form.is_default")}</FormLabel>
       <Switch
         isChecked={receiptDefaultValue._id === selectedItem._id}
         isDisabled={receiptDefaultValue._id === selectedItem._id}
@@ -40,7 +42,7 @@ export default function DefaultSwitchSetting({
           });
           
           toast({
-            title: "Success",
+            title: t("tax_ui.toast.success_title"),
             description: successMessage,
             status: "success",
             duration: 3000,

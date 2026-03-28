@@ -2,6 +2,7 @@ import { Box, Flex, Spinner, useDisclosure, useToast } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import moment from "moment";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
@@ -20,6 +21,7 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import ExporterModal from "../../common/ExporterModal";
 
 export default function EstimatesPage() {
+  const { t } = useTranslation("quote");
   const { symbol } = useCurrentOrgCurrency();
 
   const navigate = useNavigate();
@@ -106,7 +108,7 @@ export default function EstimatesPage() {
         `/api/v1/organizations/${orgId}/quotes/${quote._id}/convertToInvoice`,
       );
       toast({
-        title: "Success",
+        title: t("quote_ui.toasts.success"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -148,9 +150,9 @@ export default function EstimatesPage() {
               onExport: toggleExportModal,
               status: "idle",
             }}
-            heading={"Quotations"}
+            heading={t("quote_ui.page.heading")}
             tableData={estimates.map(estimateTableMapper)}
-            caption={`Total estimates found : ${totalCount}`}
+            caption={t("quote_ui.page.total_estimates_found", { count: totalCount })}
             operations={estimates.map((estimate) => (
               <VertIconMenu
                 convertToInvoice={() => {
@@ -173,11 +175,11 @@ export default function EstimatesPage() {
               />
             ))}
             selectedKeys={{
-              num: "Quote No.",
-              date: "Quotation Date",
-              partyName: "Party name",
-              status: "Status",
-              grandTotal: "Total",
+              num: t("quote_ui.table.columns.quote_no"),
+              date: t("quote_ui.table.columns.quotation_date"),
+              partyName: t("quote_ui.table.columns.party_name"),
+              status: t("quote_ui.table.columns.status"),
+              grandTotal: t("quote_ui.table.columns.total"),
             }}
             onAddNewItem={onClickAddNewQuote}
           />
@@ -194,8 +196,8 @@ export default function EstimatesPage() {
         ) : null}
         <AlertModal
           confirmDisable={deleting}
-          body={"Do you want to delete the estimate"}
-          header={"Delete Quotation"}
+          body={t("quote_ui.page.delete_estimate")}
+          header={t("quote_ui.page.delete_quotation")}
           isOpen={isDeleteModalOpen}
           onClose={onCloseDeleteModal}
           onConfirm={() => deleteQuote(quotation)}
@@ -209,26 +211,26 @@ export default function EstimatesPage() {
             onClose={toggleExportModal}
             downloadUrl={`/api/v1/organizations/${orgId}/quotes/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
             defaultSelectedFields={{
-              partyName: "Party Name",
-              billingAddress: "Billing Address",
-              total: "Total",
-              totalTax: "Total Tax",
-              num: "Number",
-              status: "Status",
-              grandTotal: "Grand Total",
+              partyName: t("quote_ui.export.default_fields.party_name"),
+              billingAddress: t("quote_ui.export.default_fields.billing_address"),
+              total: t("quote_ui.export.default_fields.total"),
+              totalTax: t("quote_ui.export.default_fields.total_tax"),
+              num: t("quote_ui.export.default_fields.num"),
+              status: t("quote_ui.export.default_fields.status"),
+              grandTotal: t("quote_ui.export.default_fields.grand_total"),
             }}
             selectableFields={{
-              createdByEmail: "Created By Email",
-              createdByName: "Created By Name",
-              poNo: "PO Number",
-              poDate: "PO Date",
-              cgst: "CGST",
-              igst: "IGST",
-              sgst: "SGST",
-              vat: "VAT",
-              cess: "Cess",
-              sal: "SAL",
-              others: "Other taxes",
+              createdByEmail: t("quote_ui.export.optional_fields.created_by_email"),
+              createdByName: t("quote_ui.export.optional_fields.created_by_name"),
+              poNo: t("quote_ui.export.optional_fields.po_no"),
+              poDate: t("quote_ui.export.optional_fields.po_date"),
+              cgst: t("quote_ui.export.optional_fields.cgst"),
+              igst: t("quote_ui.export.optional_fields.igst"),
+              sgst: t("quote_ui.export.optional_fields.sgst"),
+              vat: t("quote_ui.export.optional_fields.vat"),
+              cess: t("quote_ui.export.optional_fields.cess"),
+              sal: t("quote_ui.export.optional_fields.sal"),
+              others: t("quote_ui.export.optional_fields.others"),
             }}
           />
         ) : null}

@@ -1,10 +1,77 @@
 {
   "proforma_invoice": {
-    "not_found": "A fatura proforma não existe",
-    "not_deleted": "A fatura proforma não foi excluída",
-    "already_exists": "Já existe uma fatura com este ID",
-    "created": "Fatura proforma criada com sucesso",
-    "updated": "Fatura proforma atualizada com sucesso",
-    "deleted": "Fatura proforma excluída com sucesso"
+    "proforma_invoice": {
+      "not_found": "A Fatura Proforma não existe",
+      "not_deleted": "Fatura Proforma não excluída",
+      "already_exists": "Já existe uma fatura com este ID",
+      "created": "Fatura Proforma criada com sucesso",
+      "updated": "Fatura Proforma atualizada com sucesso",
+      "deleted": "Fatura Proforma excluída com sucesso"
+    }
+  },
+  "proforma_invoice_ui": {
+    "page": {
+      "heading": "Faturas Proforma",
+      "total_found": "Total de faturas proforma encontradas"
+    },
+    "table": {
+      "columns": {
+        "num": "Número",
+        "date": "Data",
+        "recipient": "Destinatário",
+        "status": "Status",
+        "grand_total": "Total Geral"
+      }
+    },
+    "modal": {
+      "delete_header": "Excluir fatura proforma",
+      "delete_body": "Deseja excluir a Fatura Proforma?",
+      "convert_header": "Converter para Fatura",
+      "convert_body": "Deseja converter a proforma em fatura?",
+      "convert_button": "Converter"
+    },
+    "bill_modal": {
+      "heading": "Fatura Proforma"
+    },
+    "toast": {
+      "success_title": "Sucesso",
+      "error_title": "Erro",
+      "error_fallback": "Ocorreu algum erro"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Nome do Contato",
+        "billing_address": "Endereço de Cobrança",
+        "total": "Total",
+        "total_tax": "Imposto Total",
+        "num": "Número",
+        "status": "Status"
+      },
+      "selectable_fields": {
+        "created_by_email": "Criado por (E-mail)",
+        "created_by_name": "Criado por (Nome)",
+        "po_no": "Número do Pedido",
+        "po_date": "Data do Pedido",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "IVA (VAT)",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Outros impostos"
+      }
+    },
+    "form": {
+      "save_button": "Salvar",
+      "not_found": "Fatura proforma não encontrada",
+      "party_section": "Contato",
+      "bill_to_label": "Faturar para",
+      "billing_address_label": "Endereço de Cobrança",
+      "invoice_details_section": "Detalhes da Fatura",
+      "sequence_label": "Nº da Fatura Proforma",
+      "po_number_label": "Número do Pedido",
+      "po_date_label": "Data do Pedido",
+      "items_section": "Itens"
+    }
   }
 }

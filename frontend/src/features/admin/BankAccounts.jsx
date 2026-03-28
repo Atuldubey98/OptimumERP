@@ -12,24 +12,24 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import HelpPopover from "../common/HelpPopover";
 
 export default function BankAccounts({ bankFormik }) {
   const bg = useColorModeValue("gray.100", "gray.700");
+  const { t } = useTranslation("admin");
 
   return (
     <form onSubmit={bankFormik.handleSubmit}>
       <Stack>
         <Box bg={bg} p={3}>
-          <Heading fontSize={"lg"}>Bank</Heading>
+          <Heading fontSize={"lg"}>{t("bank.heading")}</Heading>
         </Box>
         <Box>
           <Flex justifyContent="space-between" alignItems={"center"}>
             <HelpPopover
-              title={"Bank Details"}
-              description={
-                "It collects the bank details. To print it on invoice you can change application settings"
-              }
+              title={t("bank.help_title")}
+              description={t("bank.help_description")}
             />
             <Button
               size={"sm"}
@@ -37,7 +37,7 @@ export default function BankAccounts({ bankFormik }) {
               isLoading={bankFormik.isSubmitting}
               colorScheme="blue"
             >
-              Save
+              {t("actions.save")}
             </Button>
           </Flex>
           <SimpleGrid gap={3} minChildWidth={300}>
@@ -45,7 +45,7 @@ export default function BankAccounts({ bankFormik }) {
               isRequired
               isInvalid={bankFormik.errors.accountHolderName}
             >
-              <FormLabel>Account Holder Name</FormLabel>
+              <FormLabel>{t("bank.account_holder_name")}</FormLabel>
               <Input
                 name="accountHolderName"
                 onChange={bankFormik.handleChange}
@@ -56,7 +56,7 @@ export default function BankAccounts({ bankFormik }) {
               </FormErrorMessage>
             </FormControl>
             <FormControl isRequired isInvalid={bankFormik.errors.name}>
-              <FormLabel>Bank Name</FormLabel>
+              <FormLabel>{t("bank.bank_name")}</FormLabel>
               <Input
                 name="name"
                 onChange={bankFormik.handleChange}
@@ -65,7 +65,7 @@ export default function BankAccounts({ bankFormik }) {
               <FormErrorMessage>{bankFormik.errors.name}</FormErrorMessage>
             </FormControl>
             <FormControl isRequired isInvalid={bankFormik.errors.ifscCode}>
-              <FormLabel>IFSC Code</FormLabel>
+              <FormLabel>{t("bank.ifsc_code")}</FormLabel>
               <Input
                 name="ifscCode"
                 onChange={bankFormik.handleChange}
@@ -74,7 +74,7 @@ export default function BankAccounts({ bankFormik }) {
               <FormErrorMessage>{bankFormik.errors.ifscCode}</FormErrorMessage>
             </FormControl>
             <FormControl isRequired isInvalid={bankFormik.errors.accountNo}>
-              <FormLabel>Bank Account no</FormLabel>
+              <FormLabel>{t("bank.account_no")}</FormLabel>
               <Input
                 type="number"
                 name="accountNo"
@@ -84,7 +84,7 @@ export default function BankAccounts({ bankFormik }) {
               <FormErrorMessage>{bankFormik.errors.accountNo}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={bankFormik.errors.upi}>
-              <FormLabel>UPI</FormLabel>
+              <FormLabel>{t("bank.upi")}</FormLabel>
               <Input
                 name="upi"
                 onChange={bankFormik.handleChange}

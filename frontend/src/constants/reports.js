@@ -1,18 +1,18 @@
 export const reportTypes = [
   {
-    type: "Transaction Report",
+    type: "report_ui.tabs.transaction_report",
     children: [
       {
         tab: "sale",
-        label: "Sale",
+        label: "report_ui.report_names.sale",
       },
       {
         tab: "purchase",
-        label: "Purchase",
+        label: "report_ui.report_names.purchase",
       },
       {
         tab: "transactions",
-        label: "Transactions",
+        label: "report_ui.report_names.transactions",
       },
     ],
   },
@@ -26,15 +26,15 @@ export const reportTypes = [
   //   ],
   // },
   {
-    type: "GST reports",
+    type: "report_ui.tabs.gst_reports",
     children: [
       {
         tab: "gstr1",
-        label: "GSTR1",
+        label: "report_ui.report_names.gstr1",
       },
       {
         tab: "gstr2",
-        label: "GSTR2",
+        label: "report_ui.report_names.gstr2",
       },
     ],
   },

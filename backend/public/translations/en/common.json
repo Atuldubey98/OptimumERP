@@ -7,5 +7,233 @@
       "db_connection_error": "Some error occurred in connecting to mongodb",
       "some_error_occurred": "Some error occurred"
     }
+  },
+  "about": {
+    "heading": "Unlock the Power of Seamless Business Operations",
+    "distributed_by": "Distributed by",
+    "join_discord": "Join Discord"
+  },
+  "auth_layout": {
+    "admin_rights_required": "Admin rights required",
+    "manage_company_with": "Manage your company with :",
+    "all_in_one_tool": "All in one tool",
+    "invoice_clients_estimates": "It Brings Together Your Invoice, Clients And Estimates"
+  },
+  "common_ui": {
+    "actions": {
+      "add": "Add",
+      "add_new": "Add new",
+      "cancel": "Cancel",
+      "close": "Close",
+      "delete": "Delete",
+      "download": "Download",
+      "edit": "Edit",
+      "export": "Export",
+      "logout": "Logout",
+      "mail": "Mail",
+      "next": "Next",
+      "open": "Open",
+      "options": "Options",
+      "previous": "Previous",
+      "save": "Save",
+      "share": "Share",
+      "show": "Show"
+    },
+    "toasts": {
+      "success": "Success",
+      "error": "Error",
+      "network_error": "Network error occured",
+      "setting_updated": "Setting updated"
+    },
+    "organization": "Organization",
+    "select_organization": "Select Organization",
+    "search": {
+      "placeholder": "Search",
+      "by_description": "Search by description",
+      "parties": "Search parties"
+    },
+    "date_filter": {
+      "start_date": "Start Date",
+      "end_date": "End Date",
+      "placeholder": "dd-mm-yyyy"
+    },
+    "main_layout": {
+      "something_went_wrong": "Something went wrong",
+      "back_to_home": "Back to Home"
+    },
+    "pagination": {
+      "pages_of": "Pages {{currentPage}} of {{total}}"
+    },
+    "table": {
+      "upgrade_your_plan": "Upgrade your plan"
+    },
+    "navigation": {
+      "dashboard": "Dashboard"
+    },
+    "sidebar": {
+      "categories": "Categories",
+      "reports": "Reports",
+      "settings": "Settings",
+      "plans": "Plans",
+      "about": "About",
+      "links": {
+        "dashboard": "Dashboard",
+        "stats": "Stats",
+        "parties": "Parties",
+        "contacts": "Contacts",
+        "invoices": "Invoices",
+        "proforma_invoices": "Proforma Invoices",
+        "purchase_orders": "Purchase Orders",
+        "quotations": "Quotations",
+        "expenses": "Expenses",
+        "purchase": "Purchase",
+        "items": "Items"
+      },
+      "settings_links": {
+        "admin": "Admin",
+        "application": "Application",
+        "taxes": "Taxes",
+        "unit_of_measurement": "Unit of measurement",
+        "profile": "Profile"
+      }
+    },
+    "profile": {
+      "profile_group": "Profile",
+      "account_group": "Acccount",
+      "me": "Me",
+      "profile_settings": "Profile Settings",
+      "app_settings": "App Settings",
+      "change_password": "Change password",
+      "switch_organization": "Switch Organization",
+      "logout_confirm_body": "Do you want to logout ?"
+    },
+    "exporter": {
+      "filename": "Invoices.xlsx",
+      "select_columns": "Select columns"
+    },
+    "print_options": {
+      "title": "Print Options",
+      "fields": {
+        "name": "Name",
+        "billing_address": "Billing address",
+        "shipping_address": "Shipping Address",
+        "gst_no": "GST No.",
+        "pan_no": "PAN No.",
+        "created_by": "Created By",
+        "created_at": "Created At",
+        "updated_at": "Updated At"
+      }
+    },
+    "not_found": {
+      "page_not_found": "Page not found",
+      "back_to_organizations": "Back to organizations"
+    },
+    "quick_access": {
+      "title": "Quick Access",
+      "labels": {
+        "parties": "Parties",
+        "create_party": "Create Party",
+        "invoices": "Invoices",
+        "create_invoice": "Create Invoice",
+        "estimates": "Estimates",
+        "purchase": "Purchase",
+        "create_purchase": "Create Purchase",
+        "create_estimate": "Create Estimate",
+        "reports": "Reports",
+        "products": "Products",
+        "create_product": "Create Product",
+        "expenses": "Expenses",
+        "proforma_invoices": "Proforma Invoices",
+        "purchase_orders": "Purchase Orders",
+        "create_po": "Create PO",
+        "create_pro_invoice": "Create Pro Invoice",
+        "contacts": "Contacts"
+      }
+    },
+    "menu": {
+      "expenses": "Expenses",
+      "payment_out": "Payment out",
+      "convert_to_invoice": "Convert to Invoice",
+      "products": "Products",
+      "contacts": "Contacts",
+      "payment_in": "Payment In",
+      "transactions": "Transactions"
+    },
+    "fields": {
+      "description": "Description",
+      "status": "Status",
+      "party": "Party",
+      "address": "Address"
+    },
+    "selectors": {
+      "select_party": "Select Party",
+      "select_a_party": "Select a party"
+    },
+    "share_mail": {
+      "title": "Share via mail",
+      "to": "To",
+      "cc": "CC",
+      "subject": "Subject",
+      "body": "Body",
+      "subject_help": "Subject for the mail",
+      "body_help": "Body for the mail",
+      "contacts_with_email_only": "Only contacts of customer with email will be shown here.",
+      "sent_to_party": "Sent to party",
+      "upgrade_description": "Upgrade your plan to use this service. Contact admin to setup the SMTP for organization."
+    },
+    "receipt": {
+      "amount": "Amount",
+      "invoice_number": "Invoice #",
+      "date": "Date",
+      "po_number": "PO Number",
+      "po_date": "PO Date",
+      "items_list": "Items List",
+      "add_line_item": "Add Line item",
+      "description_placeholder": "Write any thing to search it later like email address or something to identify it.",
+      "edit_party": "Edit party",
+      "billing_address": "Billing address",
+      "shipping_address": "Shipping address",
+      "quantity": "Quantity",
+      "rate": "Rate",
+      "tax": "Tax",
+      "product": "Product",
+      "price": "Price",
+      "total": "Total",
+      "total_tax": "Total Tax",
+      "grand_total": "GrandTotal",
+      "paid": "Paid",
+      "not_found": "Not found",
+      "invalid_type": "Invalid Type",
+      "payment": "Payment",
+      "paid_on_through": "Paid {{amount}} on {{date}} through {{method}}",
+      "gst": "GST",
+      "pan": "PAN",
+      "converted_to_invoice_on": "Converted to invoice on : ",
+      "invoice_label": "Invoice : ",
+      "deleted": "{{label}} Deleted",
+      "delete_body": "Do you want to delete {{label}} ?",
+      "delete_header": "Delete {{label}}"
+    },
+    "transaction_settings": {
+      "configuration": "Configuration",
+      "transaction": "Transaction",
+      "invoice_prefix": "Invoice Prefix",
+      "quotation_prefix": "Quotation Prefix",
+      "proforma_invoice_prefix": "Proforma Invoice Prefix",
+      "purchase_order": "Purchase Order",
+      "currency": "Currency",
+      "prefix_list": "Prefix list",
+      "prefix": "Prefix",
+      "already_exists": "Already exists",
+      "default": "Default",
+      "current_used": "Current used",
+      "none": "NONE"
+    },
+    "print_settings": {
+      "title": "Print Settings",
+      "default_template": "Default Template",
+      "print_bank_details": "Print Bank Details on Invoice",
+      "print_upi_qr": "Print UPI QR on Invoice"
+    }
   }
 }

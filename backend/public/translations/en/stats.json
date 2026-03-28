@@ -1,0 +1,25 @@
+{
+  "stats_ui": {
+    "page": {
+      "title": "Stats",
+      "no_records": "No Records"
+    },
+    "periods": {
+      "this_week": "This week",
+      "this_month": "This month",
+      "this_year": "This year"
+    },
+    "cards": {
+      "sales": "Sales",
+      "purchase": "Purchase",
+      "expenses": "Expenses"
+    },
+    "sections": {
+      "top_clients": "Top 5 Clients",
+      "expenses": "Expenses"
+    },
+    "labels": {
+      "miscellaneous": "Miscellenous"
+    }
+  }
+}

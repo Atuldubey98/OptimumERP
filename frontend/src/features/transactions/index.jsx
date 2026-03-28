@@ -21,7 +21,9 @@ import DateFilter from "../estimates/list/DateFilter";
 import BalanceStats from "./BalanceStats";
 import BillStatsByStatus from "./BillStatsByStatus";
 import { isAxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 export default function TransactionsPage() {
+  const { t } = useTranslation("transactions");
   const { partyId, orgId } = useParams();
   const query = useQuery();
   const currentPage = query.get("page") || 1;
@@ -51,27 +53,27 @@ export default function TransactionsPage() {
   const typeOfTransactions = [
     {
       value: "invoice",
-      label: "Invoice",
+      label: t("transactions_ui.types.invoice"),
       colorScheme: "green",
     },
     {
       value: "purchase",
-      label: "Purchase",
+      label: t("transactions_ui.types.purchase"),
       colorScheme: "red",
     },
     {
       value: "quotes",
-      label: "Quotation",
+      label: t("transactions_ui.types.quotation"),
       colorScheme: "yellow",
     },
     {
       value: "proforma_invoice",
-      label: "Proforma Invoice",
+      label: t("transactions_ui.types.proforma_invoice"),
       colorScheme: "purple",
     },
     {
       value: "purchase_order",
-      label: "Purchase order",
+      label: t("transactions_ui.types.purchase_order"),
       colorScheme: "cyan",
     },
   ];
@@ -142,10 +144,12 @@ export default function TransactionsPage() {
       URL.revokeObjectURL(href);
     } catch (error) {
       toast({
-        title: isAxiosError(error) ? error.response.data.name : "Error",
+        title: isAxiosError(error)
+          ? error.response.data.name
+          : t("transactions_ui.toast.error_title"),
         description: isAxiosError(error)
           ? error.response.data.message
-          : "Some error occured",
+          : t("transactions_ui.toast.error_fallback"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -176,13 +180,13 @@ export default function TransactionsPage() {
                   {invoicesByStatus.length ? (
                     <BillStatsByStatus
                       invoicesByStatus={invoicesByStatus}
-                      label={"Invoices"}
+                      label={t("transactions_ui.stats.invoices")}
                     />
                   ) : null}
                   {purchasesByStatus.length ? (
                     <BillStatsByStatus
                       invoicesByStatus={purchasesByStatus}
-                      label={"Purchase"}
+                      label={t("transactions_ui.stats.purchase")}
                     />
                   ) : null}
                   <BalanceStats
@@ -207,7 +211,7 @@ export default function TransactionsPage() {
                 </Grid>
               </Stack>
             }
-            heading={`Transactions-${partyName}`}
+            heading={t("transactions_ui.page.heading", { partyName })}
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
               date: new Date(item.doc.date).toLocaleDateString(),
@@ -229,15 +233,17 @@ export default function TransactionsPage() {
                 </Tag>
               ),
             }))}
-            caption={`Total Transactions found : ${transactionsResponse.total}`}
+            caption={t("transactions_ui.page.total_found", {
+              count: transactionsResponse.total,
+            })}
             operations={[]}
             selectedKeys={{
-              date: "Transactions Date",
-              num: "Transaction Number",
-              totalItems: "Total Items",
-              type: "Type of Transaction",
-              status: "Status",
-              grandTotal: "Grand Total",
+              date: t("transactions_ui.table.columns.date"),
+              num: t("transactions_ui.table.columns.num"),
+              totalItems: t("transactions_ui.table.columns.total_items"),
+              type: t("transactions_ui.table.columns.type"),
+              status: t("transactions_ui.table.columns.status"),
+              grandTotal: t("transactions_ui.table.columns.grand_total"),
             }}
           />
         )}

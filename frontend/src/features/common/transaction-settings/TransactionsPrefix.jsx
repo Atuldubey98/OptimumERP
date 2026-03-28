@@ -16,10 +16,12 @@ import {
 import { Select } from "chakra-react-select";
 import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 import instance from "../../../instance";
 import PrefixForm from "./PrefixForm";
 import useProperty from '../../../hooks/useProperty'
 export default function TransactionPrefix({ formik, loading, printFormik }) {
+  const { t } = useTranslation("common");
   const { value: currencies = {} } = useProperty("CURRENCIES_CONFIG");
   useEffect(() => {
     (async () => {
@@ -69,7 +71,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   const getPrefixOptions = (prefixType) =>
     formik.values.prefixes[prefixType].map((prefix) => ({
       value: prefix,
-      label: prefix || "NONE",
+      label: prefix || t("common_ui.transaction_settings.none"),
     }));
   const invoicePrefixOptions = getPrefixOptions("invoice");
   const quotationPrefixOptions = getPrefixOptions("quotation");
@@ -86,7 +88,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   return (
     <Stack spacing={6}>
       <Box p={3} bg={bg}>
-        <Heading fontSize={"lg"}>Transaction</Heading>
+        <Heading fontSize={"lg"}>{t("common_ui.transaction_settings.transaction")}</Heading>
       </Box>
       <Skeleton isLoaded={!loading}>
         <form onSubmit={formik.handleSubmit}>
@@ -99,14 +101,14 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 type="submit"
                 colorScheme="blue"
               >
-                Save
+                {t("common_ui.actions.save")}
               </Button>
             </Flex>
 
             <SimpleGrid minChildWidth={300} gap={4}>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
-                  Invoice Prefix{" "}
+                  {t("common_ui.transaction_settings.invoice_prefix")}{" "}
                   <IconButton
                     icon={<IoAdd />}
                     size={"xs"}
@@ -127,7 +129,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               </FormControl>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
-                  Quotation Prefix{" "}
+                  {t("common_ui.transaction_settings.quotation_prefix")}{" "}
                   <IconButton
                     icon={<IoAdd />}
                     size={"xs"}
@@ -148,7 +150,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               </FormControl>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
-                  Proforma Invoice Prefix{" "}
+                  {t("common_ui.transaction_settings.proforma_invoice_prefix")}{" "}
                   <IconButton
                     icon={<IoAdd />}
                     size={"xs"}
@@ -170,7 +172,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               </FormControl>
               <FormControl isDisabled={!formik.values.organization}>
                 <FormLabel>
-                  Purchase Order{" "}
+                  {t("common_ui.transaction_settings.purchase_order")}{" "}
                   <IconButton
                     icon={<IoAdd />}
                     size={"xs"}
@@ -193,7 +195,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
             </SimpleGrid>
             <Divider />
             <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>Currency</FormLabel>
+              <FormLabel>{t("common_ui.transaction_settings.currency")}</FormLabel>
               <Select
                 name="currency"
                 value={currencyOptions.find(

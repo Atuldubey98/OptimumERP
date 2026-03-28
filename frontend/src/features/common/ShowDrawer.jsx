@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Button,
@@ -26,6 +27,8 @@ export default function ShowDrawer({
   disable,
   children,
 }) {
+  const { t } = useTranslation("common");
+
   const getFieldsToShow = () => {
     const fields = [];
     Object.entries(item).forEach(([key, value]) => {
@@ -68,7 +71,7 @@ export default function ShowDrawer({
         </DrawerBody>
         <DrawerFooter>
           <Button variant="outline" mr={3} onClick={onClose}>
-            Close
+            {t("common_ui.actions.close")}
           </Button>
           {onClickNewItem ? (
             <Button

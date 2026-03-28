@@ -1,13 +1,85 @@
 {
   "invoice": {
-    "invoice": {
-      "not_found": "Invoice does not exists",
-      "not_deleted": "Invoice not deleted",
-      "already_exists": "Invoice already exists with invoice id",
-      "created": "Invoice created successfully",
-      "updated": "Invoice updated successfully",
-      "deleted": "Invoice deleted successfully",
-      "payment_added": "Payment added"
+    "not_found": "Invoice does not exists",
+    "not_deleted": "Invoice not deleted",
+    "already_exists": "Invoice already exists with invoice id",
+    "created": "Invoice created successfully",
+    "updated": "Invoice updated successfully",
+    "deleted": "Invoice deleted successfully",
+    "payment_added": "Payment added"
+  },
+  "invoice_ui": {
+    "page": {
+      "heading": "Invoices",
+      "total_found": "Total invoices found",
+      "not_found": "Invoice not found"
+    },
+    "table": {
+      "columns": {
+        "invoice_no": "Invoice No.",
+        "invoice_date": "Invoice Date",
+        "recipient": "Recipient",
+        "status": "Status",
+        "total": "Total",
+        "party_name": "Party Name",
+        "billing_address": "Billing Address",
+        "total_tax": "Total Tax",
+        "date": "Date",
+        "number": "Number",
+        "grand_total": "Grand Total"
+      }
+    },
+    "actions": {
+      "add_item": "Add Item"
+    },
+    "form": {
+      "party_section": "Party",
+      "bill_to": "Bill to",
+      "billing_address": "Billing Address",
+      "invoice_details_section": "Invoice Details",
+      "invoice_no": "Invoice No.",
+      "status": "Status",
+      "po_number": "PO Number",
+      "po_date": "PO Date",
+      "due_date": "Due Date",
+      "items_section": "Items",
+      "save_and_new_label": "Save & New",
+      "save_button": "Save"
+    },
+    "modal": {
+      "heading": "Invoice",
+      "delete_header": "Delete Invoice",
+      "delete_body": "Do you want to delete the invoice ?"
+    },
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "pending": "Pending"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Party Name",
+        "billing_address": "Billing Address",
+        "total": "Total",
+        "total_tax": "Total Tax",
+        "date": "Date",
+        "number": "Number",
+        "status": "Status",
+        "grand_total": "Grand Total"
+      },
+      "selectable_fields": {
+        "created_by_email": "Created By Email",
+        "created_by_name": "Created By Name",
+        "po_number": "PO Number",
+        "po_date": "PO Date",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "VAT",
+        "cess": "Cess",
+        "sal": "SAL",
+        "other_taxes": "Other taxes"
+      }
     }
   }
 }

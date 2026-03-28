@@ -24,7 +24,9 @@ import { invoiceStatusList } from "../../../constants/invoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
+import { useTranslation } from "react-i18next";
 export default function ProformaInvoicesPage() {
+  const { t } = useTranslation("proformaInvoice");
   const {
     items,
     dateFilter,
@@ -117,7 +119,7 @@ export default function ProformaInvoicesPage() {
         `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceSelected._id}/convertToInvoice`
       );
       toast({
-        title: "Success",
+        title: t("proforma_invoice_ui.toast.success_title"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -126,10 +128,10 @@ export default function ProformaInvoicesPage() {
       onCloseConvertToInvoiceConfirmationModal();
     } catch (error) {
       toast({
-        title: isAxiosError(error) ? error.response.data.name : "Error",
+        title: isAxiosError(error) ? error.response.data.name : t("proforma_invoice_ui.toast.error_title"),
         description: isAxiosError(error)
           ? error.response.data.message
-          : "Some error occured",
+          : t("proforma_invoice_ui.toast.error_fallback"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -169,8 +171,8 @@ export default function ProformaInvoicesPage() {
             }}
             isAddDisabled={reachedLimit}
             limitKey={"proformaInvoices"}
-            caption={`Total proforma invoices found : ${totalCount}`}
-            heading={"Proforma Invoices"}
+            caption={`${t("proforma_invoice_ui.page.total_found")} : ${totalCount}`}
+            heading={t("proforma_invoice_ui.page.heading")}
             operations={items.map((item) => (
               <VertIconMenu
                 key={item._id}
@@ -201,11 +203,11 @@ export default function ProformaInvoicesPage() {
               />
             }
             selectedKeys={{
-              num: "Number",
-              date: "Date",
-              recipient: "Recipient",
-              status: "Status",
-              grandTotal: "Grand Total",
+              num: t("proforma_invoice_ui.table.columns.num"),
+              date: t("proforma_invoice_ui.table.columns.date"),
+              recipient: t("proforma_invoice_ui.table.columns.recipient"),
+              status: t("proforma_invoice_ui.table.columns.status"),
+              grandTotal: t("proforma_invoice_ui.table.columns.grand_total"),
             }}
           />
         )}
@@ -215,17 +217,17 @@ export default function ProformaInvoicesPage() {
       </Box>
       <AlertModal
         confirmDisable={proformaInvoiceStatus === "deleting"}
-        body={"Do you want to delete the proforma Invoice ?"}
-        header={"Delete proforma invoice"}
+        body={t("proforma_invoice_ui.modal.delete_body")}
+        header={t("proforma_invoice_ui.modal.delete_header")}
         isOpen={isAlertModalOpen}
         onClose={closeAlertModal}
         onConfirm={deleteProformaInvoice}
       />
       <AlertModal
-        buttonLabel="Convert"
+        buttonLabel={t("proforma_invoice_ui.modal.convert_button")}
         confirmDisable={proformaInvoiceStatus === "converting"}
-        body={"Do you want to convert the proforma to invoice?"}
-        header={"Convert to Invoice"}
+        body={t("proforma_invoice_ui.modal.convert_body")}
+        header={t("proforma_invoice_ui.modal.convert_header")}
         isOpen={isConvertToInvoiceModalOpen}
         onClose={closeConvertToInvoiceConfirmationModal}
         onConfirm={convertToInvoice}
@@ -234,7 +236,7 @@ export default function ProformaInvoicesPage() {
         <BillModal
           bill={proformaInvoiceSelected}
           entity={"proformaInvoices"}
-          heading={"Proforma Invoice"}
+          heading={t("proforma_invoice_ui.bill_modal.heading")}
           isOpen={IsBillModalOpen}
           onClose={closeBillModal}
         />
@@ -245,25 +247,25 @@ export default function ProformaInvoicesPage() {
           onClose={toggleExportModal}
           downloadUrl={`/api/v1/organizations/${orgId}/proformaInvoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
           defaultSelectedFields={{
-            partyName: "Party Name",
-            billingAddress: "Billing Address",
-            total: "Total",
-            totalTax: "Total Tax",
-            num: "Number",
-            status: "Status",
+            partyName: t("proforma_invoice_ui.export.default_fields.party_name"),
+            billingAddress: t("proforma_invoice_ui.export.default_fields.billing_address"),
+            total: t("proforma_invoice_ui.export.default_fields.total"),
+            totalTax: t("proforma_invoice_ui.export.default_fields.total_tax"),
+            num: t("proforma_invoice_ui.export.default_fields.num"),
+            status: t("proforma_invoice_ui.export.default_fields.status"),
           }}
           selectableFields={{
-            createdByEmail: "Created By Email",
-            createdByName: "Created By Name",
-            poNo: "PO Number",
-            poDate: "PO Date",
-            cgst: "CGST",
-            igst: "IGST",
-            sgst: "SGST",
-            vat: "VAT",
-            cess: "Cess",
-            sal: "SAL",
-            others: "Other taxes",
+            createdByEmail: t("proforma_invoice_ui.export.selectable_fields.created_by_email"),
+            createdByName: t("proforma_invoice_ui.export.selectable_fields.created_by_name"),
+            poNo: t("proforma_invoice_ui.export.selectable_fields.po_no"),
+            poDate: t("proforma_invoice_ui.export.selectable_fields.po_date"),
+            cgst: t("proforma_invoice_ui.export.selectable_fields.cgst"),
+            igst: t("proforma_invoice_ui.export.selectable_fields.igst"),
+            sgst: t("proforma_invoice_ui.export.selectable_fields.sgst"),
+            vat: t("proforma_invoice_ui.export.selectable_fields.vat"),
+            cess: t("proforma_invoice_ui.export.selectable_fields.cess"),
+            sal: t("proforma_invoice_ui.export.selectable_fields.sal"),
+            others: t("proforma_invoice_ui.export.selectable_fields.others"),
           }}
         />
       ) : null}

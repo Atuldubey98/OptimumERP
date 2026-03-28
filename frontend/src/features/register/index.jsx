@@ -2,6 +2,7 @@ import { Button, Link as ChakraLink, Grid, useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useVerificationEmail from "../../hooks/useVerificationEmail";
@@ -11,19 +12,22 @@ import RegisterUserFields from "./RegisterUserFields";
 import VerficationEmailForm from "./VerificationEmailForm";
 
 export default function RegisterPage() {
+  const { t } = useTranslation("user");
   const { requestAsyncHandler } = useAsyncCall();
 
   const toast = useToast();
   const registerSchema = Yup.object({
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    email: Yup.string()
+      .email(t("user_ui.register.email_validation"))
+      .required(t("user_ui.register.email_required")),
     password: Yup.string()
-      .min(8, "Minimum length should be 8")
-      .max(20, "Maximum length can be 20")
-      .required("Password is required"),
+      .min(8, t("user_ui.register.password_min_length"))
+      .max(20, t("user_ui.register.password_max_length"))
+      .required(t("user_ui.register.password_required")),
     name: Yup.string()
-      .required("Name is required")
-      .min(3, "Minimum length should be 3")
-      .max(30, "Maximum length cannot be greater than 20"),
+      .required(t("user_ui.register.name_required"))
+      .min(3, t("user_ui.register.name_min_length"))
+      .max(30, t("user_ui.register.name_max_length")),
   });
   const navigate = useNavigate();
   const formik = useFormik({
@@ -44,8 +48,8 @@ export default function RegisterPage() {
         import.meta.env.VITE_GOOGLE_SSO_ENABLED === "false"
       ) {
         toast({
-          title: "Registered",
-          description: "User registered",
+          title: t("user_ui.register.toast_registered_title"),
+          description: t("user_ui.register.toast_registered_description"),
           status: "success",
           duration: 3000,
           isClosable: true,
@@ -54,7 +58,7 @@ export default function RegisterPage() {
         return;
       }
       toast({
-        title: "Verify",
+        title: t("user_ui.register.toast_verify_title"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -65,7 +69,7 @@ export default function RegisterPage() {
   });
   const { verifyRegisteredUserFormik } = useVerificationEmail();
   return (
-    <AuthLayout formHeading={"Sign up"}>
+    <AuthLayout formHeading={t("user_ui.register.page_heading")}>
       {verifyRegisteredUserFormik.values.userId ? (
         <form onSubmit={verifyRegisteredUserFormik.handleSubmit}>
           <VerficationEmailForm
@@ -82,20 +86,20 @@ export default function RegisterPage() {
               colorScheme="blue"
               type="submit"
             >
-              Register
+              {t("user_ui.register.register_button")}
             </Button>
           </Grid>
 
           <Grid gap={4}>
             <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
-              Login Now ?
+              {t("user_ui.register.login_link")}
             </ChakraLink>
             <ChakraLink
               color="blue.500"
               as={ReactRouterLink}
               to={"/verify-email"}
             >
-              Resend OTP to verify?
+              {t("user_ui.register.resend_otp_link")}
             </ChakraLink>
           </Grid>
         </form>

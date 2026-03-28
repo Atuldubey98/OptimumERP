@@ -17,6 +17,7 @@ import {
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../../contexts/SettingContext";
 import useOrganizations from "../../../hooks/useOrganizations";
@@ -26,6 +27,7 @@ import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
 import AdminLayout from "../auth-layout/AdminLayout";
 export default function TransactionSettingsPage() {
+  const { t } = useTranslation("common");
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
   const toast = useToast();
@@ -42,8 +44,8 @@ export default function TransactionSettingsPage() {
       });
       settingContext.fetchSetting()
       toast({
-        title: "Success",
-        description: "Setting updated",
+        title: t("common_ui.toasts.success"),
+        description: t("common_ui.toasts.setting_updated"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -96,8 +98,8 @@ export default function TransactionSettingsPage() {
         settingContext.fetchSetting();
 
       toast({
-        title: "Success",
-        description: "Setting updated",
+        title: t("common_ui.toasts.success"),
+        description: t("common_ui.toasts.setting_updated"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -116,7 +118,7 @@ export default function TransactionSettingsPage() {
           ) : (
             <Box p={3}>
               <FormControl>
-                <FormLabel fontWeight={"bold"}>Organization</FormLabel>
+                <FormLabel fontWeight={"bold"}>{t("common_ui.organization")}</FormLabel>
                 <Select
                   value={organizationOptions.find(
                     (org) => org.value === formik.values.organization
@@ -135,8 +137,8 @@ export default function TransactionSettingsPage() {
             {formik.values.organization ? (
               <Tabs size={"sm"}>
                 <TabList>
-                  <Tab>Configuration</Tab>
-                  <Tab>Transaction</Tab>
+                  <Tab>{t("common_ui.transaction_settings.configuration")}</Tab>
+                  <Tab>{t("common_ui.transaction_settings.transaction")}</Tab>
                 </TabList>
 
                 <TabPanels>
@@ -169,7 +171,7 @@ export default function TransactionSettingsPage() {
               >
                 <GoOrganization size={80} color="lightgray" />
                 <Heading color={"gray.300"} fontSize={"2xl"}>
-                  Select Organization
+                  {t("common_ui.select_organization")}
                 </Heading>
               </Flex>
             )}

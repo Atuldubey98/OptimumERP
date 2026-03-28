@@ -16,12 +16,14 @@ import { Select } from "chakra-react-select";
 import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { RiDraggable } from "react-icons/ri";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import useProductForm from "../../../hooks/useProductForm";
 import ProductFormDrawer from "../../products/ProductFormDrawer";
 import AsyncSearchableSelect from "./AsyncSearchableSelect";
 import useTaxes from "../../../hooks/useTaxes";
 export default function ReceiptItemsList({ formik, itemsHelper }) {
+  const { t } = useTranslation("common");
   const { orgId } = useParams();
   const { taxes } = useTaxes();
   const taxOptions = taxes.map((tax) => ({
@@ -97,7 +99,7 @@ export default function ReceiptItemsList({ formik, itemsHelper }) {
                     formik.setFieldValue(`items[${index}].quantity`, value);
                   }}
                 >
-                  <NumberInputField placeholder={"Quantity"} />
+                  <NumberInputField placeholder={t("common_ui.receipt.quantity")} />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -113,7 +115,7 @@ export default function ReceiptItemsList({ formik, itemsHelper }) {
                     formik.setFieldValue(`items[${index}].price`, value);
                   }}
                 >
-                  <NumberInputField placeholder={"Rate"} />
+                  <NumberInputField placeholder={t("common_ui.receipt.rate")} />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -129,7 +131,7 @@ export default function ReceiptItemsList({ formik, itemsHelper }) {
                   value={taxOptions.find(
                     (taxOption) => taxOption.value._id === item.tax?._id
                   )}
-                  placeholder="Tax"
+                  placeholder={t("common_ui.receipt.tax")}
                 />
               </GridItem>
               <GridItem>

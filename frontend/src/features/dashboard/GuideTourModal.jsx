@@ -11,66 +11,68 @@ import {
   ModalOverlay
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LiaCaretLeftSolid, LiaCaretRightSolid } from "react-icons/lia";
 import dashboard from "../../assets/dashboard.png";
 import TourGuide from "./TourGuide";
 export default function GuideTourModal({ isOpen, onClose }) {
+  const { t } = useTranslation("dashboard");
   const [currentIndex, setCurrentIndex] = useState(0);
   const onNextTab = () => setCurrentIndex((prev) => ++prev);
   const onPreviousTab = () => setCurrentIndex((prev) => --prev);
 
   const tabs = [
     {
-      label: "Dashboard",
-      description: "Get an overview of your business metrics.",
+      label: t("dashboard_ui.tour.tabs.dashboard.label"),
+      description: t("dashboard_ui.tour.tabs.dashboard.description"),
     },
     {
-      label: "Stats",
-      description: "View detailed analytics and performance insights.",
+      label: t("dashboard_ui.tour.tabs.stats.label"),
+      description: t("dashboard_ui.tour.tabs.stats.description"),
     },
     {
-      label: "Parties",
-      description: "Manage your business contacts and suppliers.",
+      label: t("dashboard_ui.tour.tabs.parties.label"),
+      description: t("dashboard_ui.tour.tabs.parties.description"),
     },
     {
-      label: "Contacts",
-      description: "Organize your contacts for better communication.",
+      label: t("dashboard_ui.tour.tabs.contacts.label"),
+      description: t("dashboard_ui.tour.tabs.contacts.description"),
     },
     {
-      label: "Invoices",
-      description: "Create and manage invoices efficiently.",
+      label: t("dashboard_ui.tour.tabs.invoices.label"),
+      description: t("dashboard_ui.tour.tabs.invoices.description"),
     },
     {
-      label: "Proforma Invoices",
-      description: "Create and manage proforma invoices.",
+      label: t("dashboard_ui.tour.tabs.proforma_invoices.label"),
+      description: t("dashboard_ui.tour.tabs.proforma_invoices.description"),
     },
     {
-      label: "Purchase Orders",
-      description: "Create and track purchase orders.",
+      label: t("dashboard_ui.tour.tabs.purchase_orders.label"),
+      description: t("dashboard_ui.tour.tabs.purchase_orders.description"),
     },
     {
-      label: "Quotations",
-      description: "Generate and manage quotations.",
+      label: t("dashboard_ui.tour.tabs.quotations.label"),
+      description: t("dashboard_ui.tour.tabs.quotations.description"),
     },
     {
-      label: "Purchases",
-      description: "Simplify procurement and vendor management.",
+      label: t("dashboard_ui.tour.tabs.purchases.label"),
+      description: t("dashboard_ui.tour.tabs.purchases.description"),
     },
     {
-      label: "Expenses",
-      description: "Track and control business expenses.",
+      label: t("dashboard_ui.tour.tabs.expenses.label"),
+      description: t("dashboard_ui.tour.tabs.expenses.description"),
     },
     {
-      label: "Items",
-      description: "Organize and categorize your inventory.",
+      label: t("dashboard_ui.tour.tabs.items.label"),
+      description: t("dashboard_ui.tour.tabs.items.description"),
     },
     {
-      label: "Reports",
-      description: "Generate reports for data-driven decisions.",
+      label: t("dashboard_ui.tour.tabs.reports.label"),
+      description: t("dashboard_ui.tour.tabs.reports.description"),
     },
     {
-      label: "Admin",
-      description: "Configure advanced settings and user permissions.",
+      label: t("dashboard_ui.tour.tabs.admin.label"),
+      description: t("dashboard_ui.tour.tabs.admin.description"),
     },
   ];
   const guide = tabs[currentIndex];
@@ -83,7 +85,7 @@ export default function GuideTourModal({ isOpen, onClose }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Welcome to OptimumERP!</ModalHeader>
+        <ModalHeader>{t("dashboard_ui.tour.welcome_title")}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <TourGuide
@@ -101,17 +103,17 @@ export default function GuideTourModal({ isOpen, onClose }) {
                 onClick={onPreviousTab}
                 mr={3}
               >
-                Previous
+                {t("dashboard_ui.actions.previous")}
               </Button>
             )}
             {tabs.length - 1 === currentIndex ? null : (
               <Button rightIcon={<LiaCaretRightSolid />} onClick={onNextTab}>
-                Next
+                {t("dashboard_ui.actions.next")}
               </Button>
             )}
             {tabs.length - 1 === currentIndex ? (
               <Button onClick={onClose} colorScheme="blue">
-                Finish
+                {t("dashboard_ui.actions.finish")}
               </Button>
             ) : null}
           </ButtonGroup>

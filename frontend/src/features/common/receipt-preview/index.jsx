@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { HiOutlineNewspaper } from "react-icons/hi";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import instance from "../../../instance";
 import MainLayout from "../main-layout";
@@ -34,6 +35,7 @@ function ReceiptLoader() {
 }
 
 export default function ReceiptPreview() {
+  const { t } = useTranslation("common");
   const { type } = useParams();
   const currentReceiptMeta = receiptMetas[type];
   const { receipt, isReceiptNotFound, isLoading } = useReceipt();
@@ -45,13 +47,13 @@ export default function ReceiptPreview() {
         ) : currentReceiptMeta ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             {isReceiptNotFound ? (
-              <InvalidReceipt heading={"Not found"} />
+              <InvalidReceipt heading={t("common_ui.receipt.not_found")} />
             ) : receipt ? (
               <ReceiptDisplay receipt={receipt} meta={currentReceiptMeta} />
             ) : null}
           </Flex>
         ) : (
-          <InvalidReceipt heading={"Invalid Type"} />
+          <InvalidReceipt heading={t("common_ui.receipt.invalid_type")} />
         )}
       </Box>
     </MainLayout>

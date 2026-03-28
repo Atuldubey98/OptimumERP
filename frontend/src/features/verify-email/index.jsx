@@ -19,10 +19,14 @@ import instance from "../../instance";
 import useVerificationEmail from "../../hooks/useVerificationEmail";
 import VerficationEmailForm from "../register/VerificationEmailForm";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function VerifyEmailPage() {
+  const { t } = useTranslation("user");
   const { requestAsyncHandler } = useAsyncCall();
-  const { verifyRegisteredUserFormik } = useVerificationEmail();
+  const { verifyRegisteredUserFormik } = useVerificationEmail({
+    scope: "verify_email",
+  });
   const emailFormik = useFormik({
     initialValues: {
       email: "",
@@ -47,7 +51,7 @@ export default function VerifyEmailPage() {
     verifyRegisteredUserFormik.values?.verficationStatus === "verified";
 
   return (
-    <AuthLayout formHeading={"Verify email"}>
+    <AuthLayout formHeading={t("user_ui.verify_email.page_heading")}>
       {isUserVerified ? (
         <Alert
           status="success"
@@ -60,23 +64,24 @@ export default function VerifyEmailPage() {
         >
           <AlertIcon boxSize="40px" mr={0} />
           <AlertTitle mt={4} mb={1} fontSize="lg">
-            User already verified
+            {t("user_ui.verify_email.verified_title")}
           </AlertTitle>
           <AlertDescription maxWidth="sm">
-            User is already verified you can proceed to login
+            {t("user_ui.verify_email.verified_description")}
           </AlertDescription>
         </Alert>
       ) : isUserUnverfied ? (
         <form onSubmit={verifyRegisteredUserFormik.handleSubmit}>
           <VerficationEmailForm
             verifyRegisteredUserFormik={verifyRegisteredUserFormik}
+            scope="verify_email"
           />
         </form>
       ) : (
         <form onSubmit={emailFormik.handleSubmit}>
           <Stack spacing={3}>
             <FormControl isInvalid={emailFormik.errors.email}>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("user_ui.verify_email.email_label")}</FormLabel>
               <Input
                 type="email"
                 name="email"
@@ -91,10 +96,10 @@ export default function VerifyEmailPage() {
               isLoading={emailFormik.isSubmitting}
               colorScheme="blue"
             >
-              Send
+              {t("user_ui.verify_email.send_button")}
             </Button>
             <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
-              Login Now ?
+              {t("user_ui.verify_email.login_link")}
             </ChakraLink>
           </Stack>
         </form>

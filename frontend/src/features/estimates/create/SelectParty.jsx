@@ -16,7 +16,9 @@ import usePartyForm from "../../../hooks/usePartyForm";
 import instance from "../../../instance";
 import PartyModal from "./PartyModal";
 import useDebouncedInput from "../../../hooks/useDeboucedInput";
+import { useTranslation } from "react-i18next";
 export default function SelectParty({ formik }) {
+  const { t } = useTranslation("common");
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [response, setResponse] = useState({
     items: [],
@@ -94,12 +96,12 @@ export default function SelectParty({ formik }) {
         isReadOnly
         isRequired
       >
-        <FormLabel>Party</FormLabel>
+        <FormLabel>{t("common_ui.fields.party")}</FormLabel>
         <InputGroup>
           <Input
             required
-            placeholder="Select Party"
-            value={party ? party.name : "Select a party"}
+            placeholder={t("common_ui.selectors.select_party")}
+            value={party ? party.name : t("common_ui.selectors.select_a_party")}
             readOnly={true}
           />
           <InputRightElement>
@@ -110,7 +112,7 @@ export default function SelectParty({ formik }) {
       </FormControl>
       {party ? (
         <FormControl isRequired>
-          <FormLabel>Address</FormLabel>
+          <FormLabel>{t("common_ui.fields.address")}</FormLabel>
           <Textarea readOnly value={party.billingAddress} />
         </FormControl>
       ) : null}

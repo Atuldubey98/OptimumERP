@@ -10,6 +10,7 @@ import {
   DrawerOverlay,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 export default function FormDrawerLayout({
   children,
   formHeading,
@@ -19,6 +20,8 @@ export default function FormDrawerLayout({
   handleFormSubmit,
   isSubmitting = false,
 }) {
+  const { t } = useTranslation("common");
+
   return (
     <Drawer blockScrollOnMount={false} size={"md"} isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
@@ -30,7 +33,7 @@ export default function FormDrawerLayout({
           <DrawerBody>{children}</DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
+              {t("common_ui.actions.cancel")}
             </Button>
             <Button isLoading={isSubmitting} type="submit" colorScheme="blue">
               {formBtnLabel}

@@ -23,8 +23,10 @@ import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import ExporterModal from "../../common/ExporterModal";
+import { useTranslation } from "react-i18next";
 
 export default function PurchaseOrderPage() {
+  const { t } = useTranslation("purchaseOrder");
   const { orgId } = useParams();
   const {
     items: purchaseOrderItems,
@@ -58,7 +60,7 @@ export default function PurchaseOrderPage() {
         `/api/v1/organizations/${orgId}/purchaseOrders/${selectedPo._id}`
       );
       toast({
-        title: "Success",
+        title: t("purchase_order_ui.toast.success_title"),
         description: data.message,
         duration: 3000,
         isClosable: true,
@@ -68,10 +70,12 @@ export default function PurchaseOrderPage() {
       onCloseDeleteModal();
     } catch (error) {
       toast({
-        title: isAxiosError(error) ? error.response.data.name : "Error",
+        title: isAxiosError(error)
+          ? error.response.data.name
+          : t("purchase_order_ui.toast.error_title"),
         description: isAxiosError(error)
           ? error.response.data.message
-          : "Some error occured",
+          : t("purchase_order_ui.toast.error_fallback"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -106,9 +110,11 @@ export default function PurchaseOrderPage() {
     } catch (error) {
       const description = isAxiosError(error)
         ? error.response.data.message
-        : "Some error occured";
+        : t("purchase_order_ui.toast.error_fallback");
       toast({
-        title: isAxiosError(error) ? error.response.data.name : "Error",
+        title: isAxiosError(error)
+          ? error.response.data.name
+          : t("purchase_order_ui.toast.error_title"),
         description,
         status: "error",
         duration: 3000,
@@ -162,15 +168,15 @@ export default function PurchaseOrderPage() {
                   }}
                 />
               ))}
-              caption={`Total purchase orders : ${totalCount}`}
+              caption={`${t("purchase_order_ui.page.total_found")} : ${totalCount}`}
               selectedKeys={{
-                num: "PO No",
-                date: "PO Date",
-                partyName: "Recipient",
-                status: "Status",
-                grandTotal: "Total",
+                num: t("purchase_order_ui.table.columns.po_no"),
+                date: t("purchase_order_ui.table.columns.po_date"),
+                partyName: t("purchase_order_ui.table.columns.recipient"),
+                status: t("purchase_order_ui.table.columns.status"),
+                grandTotal: t("purchase_order_ui.table.columns.total"),
               }}
-              heading={"Purchase Orders"}
+              heading={t("purchase_order_ui.page.heading")}
               tableData={purchaseOrderItems.map((item) => ({
                 ...item,
                 grandTotal: `${symbol} ${(item.total + item.totalTax).toFixed(
@@ -195,8 +201,8 @@ export default function PurchaseOrderPage() {
         )}
         <AlertModal
           confirmDisable={deleting}
-          body={"Do you want to delete the purchase order ?"}
-          header={"Delete PO"}
+          body={t("purchase_order_ui.modal.delete_body")}
+          header={t("purchase_order_ui.modal.delete_header")}
           isOpen={isDeleteModalOpen}
           onClose={onCloseDeleteModal}
           onConfirm={() => deletePurchaseOrder()}
@@ -207,7 +213,7 @@ export default function PurchaseOrderPage() {
             onClose={closeBillModal}
             bill={selectedPo}
             entity={"purchaseOrders"}
-            heading={"Purchase Order"}
+            heading={t("purchase_order_ui.bill_modal.heading")}
           />
         ) : null}
         {isExportModalOpen ? (
@@ -216,24 +222,24 @@ export default function PurchaseOrderPage() {
             onClose={toggleExportModal}
             downloadUrl={`/api/v1/organizations/${orgId}/purchaseOrders/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
             defaultSelectedFields={{
-              partyName: "Party Name",
-              billingAddress: "Billing Address",
-              total: "Total",
-              totalTax: "Total Tax",
-              num: "Number",
-              status: "Status",
-              grandTotal: "Grand Total",
+              partyName: t("purchase_order_ui.export.default_fields.party_name"),
+              billingAddress: t("purchase_order_ui.export.default_fields.billing_address"),
+              total: t("purchase_order_ui.export.default_fields.total"),
+              totalTax: t("purchase_order_ui.export.default_fields.total_tax"),
+              num: t("purchase_order_ui.export.default_fields.num"),
+              status: t("purchase_order_ui.export.default_fields.status"),
+              grandTotal: t("purchase_order_ui.export.default_fields.grand_total"),
             }}
             selectableFields={{
-              createdByEmail: "Created By Email",
-              createdByName: "Created By Name",
-              cgst: "CGST",
-              igst: "IGST",
-              sgst: "SGST",
-              vat: "VAT",
-              cess: "Cess",
-              sal: "SAL",
-              others: "Other taxes",
+              createdByEmail: t("purchase_order_ui.export.selectable_fields.created_by_email"),
+              createdByName: t("purchase_order_ui.export.selectable_fields.created_by_name"),
+              cgst: t("purchase_order_ui.export.selectable_fields.cgst"),
+              igst: t("purchase_order_ui.export.selectable_fields.igst"),
+              sgst: t("purchase_order_ui.export.selectable_fields.sgst"),
+              vat: t("purchase_order_ui.export.selectable_fields.vat"),
+              cess: t("purchase_order_ui.export.selectable_fields.cess"),
+              sal: t("purchase_order_ui.export.selectable_fields.sal"),
+              others: t("purchase_order_ui.export.selectable_fields.others"),
             }}
           />
         ) : null}

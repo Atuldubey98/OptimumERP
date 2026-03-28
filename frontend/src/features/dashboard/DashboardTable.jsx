@@ -12,6 +12,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import { Link, useParams } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa6";
@@ -21,6 +22,7 @@ export default function DashboardTable({
   tableRows,
   onViewMore,
 }) {
+  const { t } = useTranslation("dashboard");
   const { symbol } = useCurrentOrgCurrency();
   const { orgId } = useParams();
   return (
@@ -37,13 +39,13 @@ export default function DashboardTable({
           variant={"ghost"}
           onClick={onViewMore}
         >
-          More
+          {t("dashboard_ui.tables.view_more")}
         </Button>
       </Flex>
       <TableContainer>
         <Table size={"sm"} variant="simple">
           {tableRows.length ? null : (
-            <TableCaption>Nothing to show</TableCaption>
+            <TableCaption>{t("dashboard_ui.tables.nothing_to_show")}</TableCaption>
           )}
           <Thead>
             <Tr>

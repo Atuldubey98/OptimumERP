@@ -5,7 +5,9 @@ import MainLayout from "../common/main-layout";
 import ReportItem from "./ReportItem";
 import SideReportDrawer from "./SideReportDrawer";
 import { HiOutlineDocumentReport } from "react-icons/hi";
+import { useTranslation } from "react-i18next";
 export default function Reportspage() {
+  const { t } = useTranslation("report");
   const {
     isOpen: isMenuOpen,
     onClose: closeMenu,
@@ -15,11 +17,11 @@ export default function Reportspage() {
   });
   const { reportType } = useParams();
   const reportTypes = {
-    sale: "Sale",
-    transactions: "Transactions",
-    purchase: "Purchase",
-    gstr1: "GSTR1",
-    gstr2: "GSTR2",
+    sale: t("report_ui.report_names.sale"),
+    transactions: t("report_ui.report_names.transactions"),
+    purchase: t("report_ui.report_names.purchase"),
+    gstr1: t("report_ui.report_names.gstr1"),
+    gstr2: t("report_ui.report_names.gstr2"),
   };
   const reportName = reportTypes[reportType];
   return (
@@ -43,7 +45,7 @@ export default function Reportspage() {
             flexDir={"column"}
           >
             <HiOutlineDocumentReport size={65} />
-            <Heading fontSize={"xl"}>Report not found</Heading>
+            <Heading fontSize={"xl"}>{t("report_ui.page.not_found")}</Heading>
           </Flex>
         )}
       </Box>

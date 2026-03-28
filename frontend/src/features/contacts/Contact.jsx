@@ -12,11 +12,13 @@ import {
   IconButton,
   Text,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { RiDeleteBin2Line } from "react-icons/ri";
 export default function Contact({ item, onDeleteContact, onEditContact }) {
   const { orgId } = useParams();
+  const { t } = useTranslation("contact");
   return (
     <Card key={item._id}>
       <CardHeader>
@@ -33,15 +35,15 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
       <Divider />
       <CardBody fontSize={"sm"}>
         <Text>
-          <strong>Email : </strong>
+          <strong>{t("contact_ui.card.email")} : </strong>
           {item.email ? (
             <Link href={`mailto:${item.email}`}>{item.email}</Link>
           ) : (
-            "-Not-set-"
+            t("contact_ui.card.not_set")
           )}
         </Text>
         <Text noOfLines={1}>
-          <strong>Company Name :</strong>{" "}
+          <strong>{t("contact_ui.card.company_name")} :</strong>{" "}
           {item.party ? (
             <Link
               as={RouterLink}
@@ -50,7 +52,7 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
               {item.party.name}
             </Link>
           ) : (
-            "-Not-set-"
+            t("contact_ui.card.not_set")
           )}
         </Text>
         <Text noOfLines={1}>
@@ -59,11 +61,18 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
       </CardBody>
       <CardFooter>
         <ButtonGroup justifyContent={"flex-end"} alignItems={"center"}>
-          <IconButton isRound size={"sm"} icon={<CiEdit />} onClick={onEditContact} />
+          <IconButton
+            isRound
+            size={"sm"}
+            icon={<CiEdit />}
+            aria-label={t("contact_ui.actions.edit")}
+            onClick={onEditContact}
+          />
           <IconButton
             size={"sm"}
             isRound
             icon={<RiDeleteBin2Line color="red" />}
+            aria-label={t("contact_ui.actions.delete")}
             onClick={onDeleteContact}
           />
         </ButtonGroup>

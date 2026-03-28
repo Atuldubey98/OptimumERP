@@ -36,7 +36,9 @@ import useTaxes from "../../../hooks/useTaxes";
 import useUms from "../../../hooks/useUms";
 import BannerWithLabel from "../../common/BannerWithLabel";
 import { IoCartOutline } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 export default function PurchaseOrderEditPage() {
+  const { t } = useTranslation("purchaseOrder");
   const { saveAndNew, onToggleSaveAndNew } = useSaveAndNewForm(
     "save-new:purchaseOrders"
   );
@@ -61,7 +63,7 @@ export default function PurchaseOrderEditPage() {
           ) : hasError ? (
             <BannerWithLabel
               Icon={IoCartOutline}
-              label={"Purchase order not found"}
+              label={t("purchase_order_ui.form.not_found")}
             />
           ) : (
             <form onSubmit={formik.handleSubmit}>
@@ -73,7 +75,7 @@ export default function PurchaseOrderEditPage() {
                     alignItems="center"
                   >
                     <FormLabel htmlFor="save-and-new" mb="0">
-                      Save & New
+                      {t("purchase_order_ui.form.save_new")}
                     </FormLabel>
                     <Switch
                       onChange={(e) => {
@@ -92,16 +94,16 @@ export default function PurchaseOrderEditPage() {
                   colorScheme="teal"
                   variant="solid"
                 >
-                  Save
+                  {t("purchase_order_ui.form.save")}
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Party</Heading>
+                <Heading fontSize={"xl"}>{t("purchase_order_ui.form.party_section")}</Heading>
                 <FormControl
                   isInvalid={formik.errors.party && formik.touched.party}
                   isRequired
                 >
-                  <FormLabel>Bill to</FormLabel>
+                  <FormLabel>{t("purchase_order_ui.form.bill_to")}</FormLabel>
                   <PartySelectBill formik={formik} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
@@ -113,7 +115,7 @@ export default function PurchaseOrderEditPage() {
                     }
                     isRequired
                   >
-                    <FormLabel>Billing Address</FormLabel>
+                    <FormLabel>{t("purchase_order_ui.form.billing_address")}</FormLabel>
                     <Textarea
                       name="billingAddress"
                       onChange={formik.handleChange}
@@ -124,12 +126,12 @@ export default function PurchaseOrderEditPage() {
                     </FormErrorMessage>
                   </FormControl>
                 ) : null}
-                <Heading fontSize={"xl"}>Invoice Details</Heading>
+                <Heading fontSize={"xl"}>{t("purchase_order_ui.form.invoice_details")}</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isInvalid={formik.errors.poNo && formik.touched.poNo}
                   >
-                    <FormLabel>PO No.</FormLabel>
+                    <FormLabel>{t("purchase_order_ui.form.po_no")}</FormLabel>
                     <InputGroup>
                       <PrefixFormField
                         formik={formik}
@@ -149,9 +151,10 @@ export default function PurchaseOrderEditPage() {
                   <SelectStatus
                     formik={formik}
                     statusList={invoiceStatusList}
+                    namespace="invoice"
                   />
                   <FormControl>
-                    <FormLabel>PO Date</FormLabel>
+                    <FormLabel>{t("purchase_order_ui.form.po_date")}</FormLabel>
                     <Input
                       value={formik.values.date}
                       onChange={formik.handleChange}
@@ -160,7 +163,7 @@ export default function PurchaseOrderEditPage() {
                     />
                   </FormControl>
                 </SimpleGrid>
-                <Heading fontSize={"xl"}>Items</Heading>
+                <Heading fontSize={"xl"}>{t("purchase_order_ui.form.items_section")}</Heading>
                 <ItemsList
                   formik={formik}
                   defaultItem={defaultInvoiceItem}

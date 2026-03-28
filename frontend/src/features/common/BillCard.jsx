@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Card,
   CardBody,
@@ -18,6 +19,8 @@ export default function BillCard({
   payment,
   status,
 }) {
+  const { t } = useTranslation("common");
+
   return (
     <Card maxW="sm">
       <CardHeader>
@@ -26,7 +29,7 @@ export default function BillCard({
         <Text>{date}</Text>
       </CardHeader>
       <CardBody>
-        <Heading fontSize={"xl"}>Amount</Heading>
+        <Heading fontSize={"xl"}>{t("common_ui.receipt.amount")}</Heading>
         <Heading>{amount}</Heading>
       </CardBody>
       <CardFooter>

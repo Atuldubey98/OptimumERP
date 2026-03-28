@@ -1,0 +1,72 @@
+{
+  "report_ui": {
+    "report_names": {
+      "sale": "Sale",
+      "transactions": "Transactions",
+      "purchase": "Purchase",
+      "gstr1": "GSTR1",
+      "gstr2": "GSTR2"
+    },
+    "page": {
+      "not_found": "Report not found"
+    },
+    "tabs": {
+      "transaction_report": "Transaction Report",
+      "gst_reports": "GST reports"
+    },
+    "transaction_types": {
+      "invoice": "Invoice",
+      "purchase": "Purchase",
+      "expense": "Expense",
+      "quotes": "Quotes",
+      "proforma_invoice": "Proforma Invoice",
+      "purchase_order": "Purchase Order"
+    },
+    "filters": {
+      "custom": "Custom",
+      "select": "Select",
+      "last_30_days": "Last 30 Days",
+      "last_6_months": "Last 6 Months",
+      "last_365_days": "Last 365 Days"
+    },
+    "table": {
+      "total_found": "Total {{reportType}} Found : {{count}}",
+      "headers": {
+        "sale": {
+          "num": "Invoice Number",
+          "date": "Date",
+          "party_name": "Party Name",
+          "grand_total": "Grand Total",
+          "total_tax": "Total Tax",
+          "status": "Status"
+        },
+        "purchase": {
+          "num": "Purchase Number",
+          "date": "Date",
+          "party_name": "Party Name",
+          "grand_total": "Grand Total",
+          "total_tax": "Total Tax",
+          "status": "Status"
+        },
+        "transactions": {
+          "num": "Num",
+          "type": "Type",
+          "amount": "Amount",
+          "created_at": "Done on",
+          "related_to": "Bill To/From"
+        },
+        "gstr": {
+          "gst_no": "Party GST No",
+          "party_name": "Party Name",
+          "grand_total": "Grand Total",
+          "cgst": "CGST",
+          "sgst": "SGST",
+          "igst": "IGST"
+        }
+      }
+    },
+    "actions": {
+      "export": "Export"
+    }
+  }
+}

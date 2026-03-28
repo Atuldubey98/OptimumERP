@@ -8,8 +8,99 @@
     "not_verified": "Usuário não verificado",
     "upgrade_plan": "Atualize seu plano",
     "invalid_otp": "OTP inválido",
-    "otp_sent": "OTP enviado! Verifique seu e-mail",
+    "otp_sent": "OTP Enviado! Por favor, verifique seu e-mail",
     "registered": "Usuário registrado com sucesso para a organização",
-    "smtp_setup_success": "Configuração SMTP concluída com sucesso"
+    "smtp_setup_success": "Configuração SMTP bem-sucedida"
+  },
+  "user_ui": {
+    "login": {
+      "page_heading": "Entrar",
+      "email_label": "E-mail",
+      "email_placeholder": "E-mail",
+      "email_validation": "E-mail inválido",
+      "email_required": "O e-mail é obrigatório",
+      "password_label": "Senha",
+      "password_placeholder": "Senha",
+      "password_min_length": "O comprimento mínimo pode ser 8",
+      "password_max_length": "O comprimento máximo pode ser 20",
+      "password_required": "A senha é obrigatória",
+      "login_button": "Login",
+      "continue_google": "Continuar com Google",
+      "register_link": "Cadastrar agora?",
+      "forgot_password_link": "Esqueceu a senha?",
+      "network_error": "Ocorreu um erro de rede"
+    },
+    "register": {
+      "page_heading": "Cadastrar-se",
+      "email_label": "E-mail",
+      "email_placeholder": "E-mail",
+      "email_validation": "E-mail inválido",
+      "email_required": "O e-mail é obrigatório",
+      "password_label": "Senha",
+      "password_placeholder": "Senha",
+      "password_min_length": "O comprimento mínimo deve ser 8",
+      "password_max_length": "O comprimento máximo pode ser 20",
+      "password_required": "A senha é obrigatória",
+      "name_label": "Nome",
+      "name_placeholder": "Nome",
+      "name_required": "O nome é obrigatório",
+      "name_min_length": "O comprimento mínimo deve ser 3",
+      "name_max_length": "O comprimento não pode ser superior a 20",
+      "register_button": "Cadastrar",
+      "login_link": "Fazer login agora?",
+      "resend_otp_link": "Reenviar OTP para verificar?",
+      "verify_button": "Verificar",
+      "toast_registered_title": "Cadastrado",
+      "toast_registered_description": "Usuário cadastrado",
+      "toast_verify_title": "Verificar",
+      "toast_verified_title": "Verificado"
+    },
+    "verify_email": {
+      "page_heading": "Verificar e-mail",
+      "verified_title": "Usuário já verificado",
+      "verified_description": "O usuário já está verificado, você pode prosseguir para o login",
+      "email_label": "E-mail",
+      "send_button": "Enviar",
+      "login_link": "Fazer login agora?",
+      "verify_button": "Verificar",
+      "toast_verified_title": "Verificado"
+    },
+    "profile": {
+      "page_heading": "Bem-vindo, {{name}}",
+      "page_subtitle": "Aqui você pode gerenciar suas informações pessoais.",
+      "profile_info_title": "Informações do perfil",
+      "profile_info_subtitle": "Gerencie suas informações pessoais abaixo.",
+      "field_name": "Nome",
+      "field_email": "E-mail",
+      "field_role": "Função",
+      "field_plan": "Plano",
+      "language_title": "Idioma",
+      "language_subtitle": "Aqui você pode alterar suas preferências de idioma",
+      "password_title": "Senha",
+      "password_subtitle": "Aqui você pode alterar sua senha",
+      "modal_heading": "Perfil",
+      "toast_upload_title": "Sucesso",
+      "toast_upload_description": "Perfil atualizado",
+      "toast_error_title": "Erro",
+      "toast_error_fallback": "Ocorreu algum erro"
+    },
+    "change_password": {
+      "current_password_label": "Senha atual",
+      "current_password_placeholder": "Senha Atual",
+      "new_password_label": "Nova senha",
+      "new_password_placeholder": "Nova senha",
+      "confirm_password_label": "Confirmar senha",
+      "confirm_password_placeholder": "Confirmar Senha",
+      "confirm_mismatch": "A confirmação de senha não é igual à nova senha",
+      "submit_button": "Atualizar senha",
+      "toast_title": "Senha"
+    },
+    "profile_form": {
+      "name_label": "Nome"
+    },
+    "form_modal": {
+      "close_button": "Fechar",
+      "submit_button": "Enviar"
+    }
   }
 }

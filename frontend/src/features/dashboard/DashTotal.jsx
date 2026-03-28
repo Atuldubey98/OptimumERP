@@ -1,9 +1,11 @@
 import { Highlight, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 export default function DashTotal({ dashTotal, dashType }) {
+  const { t } = useTranslation("dashboard");
   return (
     <Text padding={2} textAlign={"center"} fontWeight={"bold"}>
-      This month |
+      {t("dashboard_ui.periods.this_month")} |
       <Highlight
         styles={
           dashType === "invoice"

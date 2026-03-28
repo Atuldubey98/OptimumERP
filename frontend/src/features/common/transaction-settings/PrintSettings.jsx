@@ -12,9 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import AuthContext from "../../../contexts/AuthContext";
 import useProperty from "../../../hooks/useProperty";
 export default function PrintSettings({ printFormik, formik, loading }) {
+  const { t } = useTranslation("common");
   const auth = useContext(AuthContext);
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
@@ -30,7 +32,7 @@ export default function PrintSettings({ printFormik, formik, loading }) {
     <form onSubmit={printFormik.handleSubmit}>
       <Stack>
         <Box bg={bg} p={3}>
-          <Heading fontSize={"lg"}>Print Settings</Heading>
+          <Heading fontSize={"lg"}>{t("common_ui.print_settings.title")}</Heading>
         </Box>
         <Skeleton isLoaded={!loading}>
           <Stack spacing={2}>
@@ -41,11 +43,11 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 size={"sm"}
                 colorScheme="blue"
               >
-                Save
+                {t("common_ui.actions.save")}
               </Button>
             </Flex>
             <FormControl>
-              <FormLabel>Default Template</FormLabel>
+              <FormLabel>{t("common_ui.print_settings.default_template")}</FormLabel>
               <Select
                 options={templateOptions}
                 onChange={({ value }) =>
@@ -68,18 +70,22 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                 onChange={printFormik.handleChange}
                 isChecked={printFormik.values?.bank}
               >
-                Print Bank Details on Invoice
+                {t("common_ui.print_settings.print_bank_details")}
               </Checkbox>
             </Box>
 
             <Checkbox
-              title={currentPlan === "free" ? "Upgrade your plan" : null}
+              title={
+                currentPlan === "free"
+                  ? t("common_ui.table.upgrade_your_plan")
+                  : null
+              }
               isDisabled={!formik.values?.organization || currentPlan === "free"}
               name="upiQr"
               onChange={printFormik.handleChange}
               isChecked={printFormik.values?.upiQr}
             >
-              Print UPI QR on Invoice
+              {t("common_ui.print_settings.print_upi_qr")}
             </Checkbox>
           </Stack>
         </Skeleton>

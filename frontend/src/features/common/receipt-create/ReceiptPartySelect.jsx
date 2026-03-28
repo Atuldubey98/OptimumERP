@@ -11,6 +11,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import usePartyForm from "../../../hooks/usePartyForm";
 import AsyncSearchableSelect from "./AsyncSearchableSelect";
 import PartyFormDrawer from "../../parties/PartyFormDrawer";
@@ -18,6 +19,7 @@ import { useParams } from "react-router-dom";
 
 export default function ReceiptPartySelect({ formik, partyNameLabel }) {
   const addressHeadColor = useColorModeValue("gray.500", "gray.300");
+  const { t } = useTranslation("common");
 
   const { isOpen: isPartyFormOpen, onToggle: onTogglePartyFormDrawer } =
     useDisclosure();
@@ -71,7 +73,7 @@ export default function ReceiptPartySelect({ formik, partyNameLabel }) {
             }}
             variant={"link"}
           >
-            Edit party
+            {t("common_ui.receipt.edit_party")}
           </Button>
         ) : null}
         <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
@@ -80,13 +82,13 @@ export default function ReceiptPartySelect({ formik, partyNameLabel }) {
         <SimpleGrid gap={2} minChildWidth={300}>
           <Box>
             <Text color={addressHeadColor} textTransform={"uppercase"}>
-              Billing address
+              {t("common_ui.receipt.billing_address")}
             </Text>
             <Text>{formik.values.party?.billingAddress}</Text>
           </Box>
           <Box>
             <Text color={addressHeadColor} textTransform={"uppercase"}>
-              Shipping Address
+              {t("common_ui.receipt.shipping_address")}
             </Text>
             <Text>{formik.values.party?.shippingAddress}</Text>
           </Box>

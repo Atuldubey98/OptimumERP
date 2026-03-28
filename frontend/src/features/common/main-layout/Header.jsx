@@ -9,6 +9,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { SiQuicktime } from "react-icons/si";
 import { CiDark } from "react-icons/ci";
@@ -17,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import AvatarProfileWithOptions from "../sidebar/AvatarProfileWithOptions";
 import QuickAccessModal from "../QuickAccessModal";
 export default function Header({ onSideNavOpen }) {
+  const { t } = useTranslation("common");
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
   const {
@@ -48,7 +50,7 @@ export default function Header({ onSideNavOpen }) {
               onClick={openQuickAccess}
               variant="outline"
             >
-              Quick Access
+              {t("common_ui.quick_access.title")}
             </Button>
           </Show>
           <Show above="xl">
@@ -59,7 +61,7 @@ export default function Header({ onSideNavOpen }) {
               onClick={onClickDashboard}
               variant="outline"
             >
-              Dashboard
+              {t("common_ui.navigation.dashboard")}
             </Button>
           </Show>
           <Show below="xl">

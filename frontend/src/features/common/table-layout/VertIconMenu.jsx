@@ -8,6 +8,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
 import { FaMoneyCheck } from "react-icons/fa";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
@@ -37,12 +38,14 @@ export default function VertIconMenu({
   onOverviewItem,
   openItem,
 }) {
+  const { t } = useTranslation("common");
+
   return (
     <Menu>
       <MenuButton
         size={"sm"}
         as={IconButton}
-        aria-label="Options"
+        aria-label={t("common_ui.actions.options")}
         icon={<RxDotsVertical />}
         variant="outline"
       />
@@ -53,7 +56,7 @@ export default function VertIconMenu({
             onClick={showExpenses}
             command="⌘X"
           >
-            Expenses
+            {t("common_ui.menu.expenses")}
           </MenuItem>
         ) : null}
 
@@ -70,7 +73,7 @@ export default function VertIconMenu({
             onClick={showItem}
             command="⌘S"
           >
-            Show
+            {t("common_ui.actions.show")}
           </MenuItem>
         ) : null}
         {openItem ? (
@@ -79,7 +82,7 @@ export default function VertIconMenu({
             onClick={openItem}
             command="⌘O"
           >
-            Open
+            {t("common_ui.actions.open")}
           </MenuItem>
         ) : null}
         {payoutPurchase ? (
@@ -88,7 +91,7 @@ export default function VertIconMenu({
             onClick={payoutPurchase}
             command="⌘P"
           >
-            Payment out
+            {t("common_ui.menu.payment_out")}
           </MenuItem>
         ) : null}
 
@@ -98,7 +101,7 @@ export default function VertIconMenu({
             onClick={convertToInvoice}
             command="⌘I"
           >
-            Convert to Invoice
+            {t("common_ui.menu.convert_to_invoice")}
           </MenuItem>
         ) : null}
         {showProducts ? (
@@ -107,7 +110,7 @@ export default function VertIconMenu({
             onClick={showProducts}
             command="⌘L"
           >
-            Products
+            {t("common_ui.menu.products")}
           </MenuItem>
         ) : null}
         {showContacts ? (
@@ -116,7 +119,7 @@ export default function VertIconMenu({
             onClick={showContacts}
             command="⌘C"
           >
-            Contacts
+            {t("common_ui.menu.contacts")}
           </MenuItem>
         ) : null}
         {recordPayment ? (
@@ -125,7 +128,7 @@ export default function VertIconMenu({
             icon={<FaMoneyCheck size={20} />}
             command="⌘M"
           >
-            Payment In
+            {t("common_ui.menu.payment_in")}
           </MenuItem>
         ) : null}
 
@@ -135,12 +138,12 @@ export default function VertIconMenu({
             icon={<CiMoneyBill size={20} />}
             onClick={showTransactions}
           >
-            Transactions
+            {t("common_ui.menu.transactions")}
           </MenuItem>
         ) : null}
         {editItem ? (
           <MenuItem icon={<CiEdit size={20} />} onClick={editItem} command="⌘E">
-            Edit
+            {t("common_ui.actions.edit")}
           </MenuItem>
         ) : null}
         {onDownloadItem ? (
@@ -149,7 +152,7 @@ export default function VertIconMenu({
             icon={downloading ? <Spinner /> : <CiSaveDown2 size={20} />}
             command="⌘J"
           >
-            Download
+            {t("common_ui.actions.download")}
           </MenuItem>
         ) : null}
         <Divider />
@@ -159,7 +162,7 @@ export default function VertIconMenu({
             onClick={shareItem}
             command="⌘H"
           >
-            Share
+            {t("common_ui.actions.share")}
           </MenuItem>
         ) : null}
         {deleteItem ? (
@@ -168,7 +171,7 @@ export default function VertIconMenu({
             onClick={deleteItem}
             command="⌘D"
           >
-            Delete
+            {t("common_ui.actions.delete")}
           </MenuItem>
         ) : null}
       </MenuList>

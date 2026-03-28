@@ -18,6 +18,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import React, { useContext, useState } from "react";
 import { CiDollar } from "react-icons/ci";
 import { FaRegCircleDot } from "react-icons/fa6";
@@ -35,6 +36,7 @@ import OrgItem from "./OrgItem";
 import SettingContextProvider from "../../contexts/SettingContextProvider";
 import AuthContextProvider from "../../contexts/AuthContextProvider";
 export default function OrgPage() {
+  const { t } = useTranslation("org");
   const {
     isOpen,
     onOpen: onOpenNewOrganizationModal,
@@ -74,17 +76,16 @@ export default function OrgPage() {
   });
   const plansPopup = {
     free: {
-      description:
-        "Free plan allows only one organization with limited benefits.",
-      name: "Free Plan",
+      description: t("org_ui.plan_popup.free_plan_description"),
+      name: t("org_ui.plan_popup.free_plan_name"),
     },
     gold: {
-      description: "Gold Plan allows you to have 3 organizations",
-      name: "Gold Plan",
+      description: t("org_ui.plan_popup.gold_plan_description"),
+      name: t("org_ui.plan_popup.gold_plan_name"),
     },
     platinum: {
-      description: "This is platinum plan",
-      name: "Gold Plan",
+      description: t("org_ui.plan_popup.platinum_plan_description"),
+      name: t("org_ui.plan_popup.platinum_plan_name"),
     },
   };
   const popup = plansPopup[currentPlan];
@@ -104,7 +105,7 @@ export default function OrgPage() {
               <Flex alignItems={"center"} justifyContent={"space-between"}>
                 <Popover>
                   <PopoverTrigger>
-                    <Button leftIcon={<CiDollar />}>Current Plan</Button>
+                    <Button leftIcon={<CiDollar />}>{t("org_ui.page.current_plan_button")}</Button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent>
@@ -114,9 +115,6 @@ export default function OrgPage() {
                       </PopoverHeader>
                       <PopoverCloseButton />
                       <PopoverBody>{popup.description}</PopoverBody>
-                      {/* <PopoverFooter>
-                      <Button onClick={()=>{}} colorScheme="blue"> Change Plan</Button>
-                    </PopoverFooter> */}
                     </PopoverContent>
                   </Portal>
                 </Popover>
@@ -125,7 +123,7 @@ export default function OrgPage() {
                   leftIcon={<IoIosLogOut />}
                   colorScheme="red"
                 >
-                  Logout
+                  {t("org_ui.page.logout_button")}
                 </Button>
               </Flex>
               <Flex
@@ -140,7 +138,7 @@ export default function OrgPage() {
                   fontWeight={"bold"}
                   textAlign={"center"}
                 >
-                  Your organizations
+                  {t("org_ui.page.heading")}
                 </Heading>
                 <FaRegCircleDot color="green" size={24} />
               </Flex>
@@ -192,9 +190,9 @@ export default function OrgPage() {
             isOpen={isLogoutModalOpen}
             onClose={closeLogoutModal}
             onConfirm={onClickLogout}
-            body={"Do you want to logout ?"}
-            header={"Logout"}
-            buttonLabel="Logout"
+            body={t("org_ui.logout_modal.body")}
+            header={t("org_ui.logout_modal.header")}
+            buttonLabel={t("org_ui.logout_modal.confirm_button")}
           />
         </PrivateRoute>
       </AuthContextProvider>

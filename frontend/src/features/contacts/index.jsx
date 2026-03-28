@@ -13,6 +13,7 @@ import {
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuContact2 } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
@@ -30,15 +31,9 @@ import FilterPopoverWrapper from "../common/FilterPopoverWrapper";
 import { Select } from "chakra-react-select";
 import useQuery from "../../hooks/useQuery";
 import useProperty from "../../hooks/useProperty";
-const contactDto = Yup.object({
-  name: Yup.string().label("Name").required().min(2).max(40),
-  email: Yup.string().email().max(40).optional(),
-  party: Yup.string().optional(),
-  telephone: Yup.string().required(),
-  description: Yup.string().optional().max(80),
-  type: Yup.string().required(),
-});
+
 export default function ContactsPage() {
+  const { t } = useTranslation("contact");
   const { orgId } = useParams();
   const query = useQuery();
   const type = query.get("type") || "";
@@ -68,6 +63,18 @@ export default function ContactsPage() {
   };
   const toast = useToast();
   const { requestAsyncHandler } = useAsyncCall();
+  const contactDto = Yup.object({
+    name: Yup.string()
+      .label(t("contact_ui.form.name"))
+      .required()
+      .min(2)
+      .max(40),
+    email: Yup.string().email().max(40).optional(),
+    party: Yup.string().optional(),
+    telephone: Yup.string().required(),
+    description: Yup.string().optional().max(80),
+    type: Yup.string().required(),
+  });
 
   const formik = useFormik({
     initialValues: defaultContact,
@@ -87,8 +94,10 @@ export default function ContactsPage() {
         { ...restContact, party: restContact.party || null }
       );
       toast({
-        title: "Success",
-        description: _id ? "Contact updated" : "Contact created",
+        title: t("contact_ui.toasts.success"),
+        description: _id
+          ? t("contact_ui.toasts.updated")
+          : t("contact_ui.toasts.created"),
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,
@@ -108,8 +117,8 @@ export default function ContactsPage() {
         `/api/v1/organizations/${orgId}/contacts/${selectedContact._id}`
       );
       toast({
-        title: "Success",
-        description: "Contact deleted",
+        title: t("contact_ui.toasts.success"),
+        description: t("contact_ui.toasts.deleted"),
         status: "info",
         duration: 3000,
         isClosable: true,
@@ -118,11 +127,11 @@ export default function ContactsPage() {
       closeContactDeleteModal();
     } catch (error) {
       toast({
-        title: "Error",
+        title: t("contact_ui.toasts.error"),
         description: isAxiosError(error)
           ? error.response?.data.message
-          : "Error occured",
-        status: _id ? "info" : "success",
+          : t("contact_ui.toasts.error_occurred"),
+        status: "error",
         duration: 3000,
         isClosable: true,
       });
@@ -134,8 +143,8 @@ export default function ContactsPage() {
   const allContactTypes = [
     {
       value: "",
-      label: "All",
-      description: "All contacts",
+      label: t("contact_ui.filters.all"),
+      description: t("contact_ui.filters.all_contacts"),
     },
     ...contactTypes,
   ];
@@ -148,7 +157,7 @@ export default function ContactsPage() {
       <Box p={4}>
         <HeadingButtons
           isAddDisabled={data.reachedLimit}
-          heading={"Contacts"}
+          heading={t("contact_ui.page.heading")}
           onAddNewItem={() => {
             formik.resetForm(defaultContact);
             openContactForm();
@@ -162,11 +171,11 @@ export default function ContactsPage() {
           <Stack spacing={3} marginBlock={3}>
             <Flex justifyContent={"flex-start"} gap={2} alignItems={"center"}>
               <Box maxW={"md"} flex={1}>
-                <SearchItem placeholder="Search Contacts" />
+                <SearchItem placeholder={t("contact_ui.page.search_contacts")} />
               </Box>
               <FilterPopoverWrapper>
                 <FormControl>
-                  <FormLabel>Contact type</FormLabel>
+                  <FormLabel>{t("contact_ui.page.contact_type")}</FormLabel>
                   <Select
                     options={allContactTypes}
                     onChange={({ value }) => navigate(`?type=${value}`)}
@@ -190,7 +199,12 @@ export default function ContactsPage() {
                   {data.items.map((item) => (
                     <Contact
                       key={item._id}
-                      item={{...item, type : mapContactTypes[item.type]?.label || "Unknown"}}
+                      item={{
+                        ...item,
+                        type:
+                          mapContactTypes[item.type]?.label ||
+                          t("contact_ui.card.unknown"),
+                      }}
                       onDeleteContact={() => {
                         setSelectedContact(item);
                         openContactDeleteModal();
@@ -222,7 +236,7 @@ export default function ContactsPage() {
                 >
                   <LuContact2 size={80} color="lightgray" />
                   <Heading color={"gray.300"} fontSize={"2xl"}>
-                    No Contacts
+                    {t("contact_ui.page.no_contacts")}
                   </Heading>
                 </Flex>
               )}
@@ -244,8 +258,8 @@ export default function ContactsPage() {
       />
       <AlertModal
         confirmDisable={deleting}
-        body={"Do you want to delete the contact ?"}
-        header={"Delete contact"}
+        body={t("contact_ui.delete.body")}
+        header={t("contact_ui.delete.header")}
         isOpen={isContacDeleteModalOpen}
         onClose={closeContactDeleteModal}
         onConfirm={deleteContact}

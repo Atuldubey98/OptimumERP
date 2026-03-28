@@ -1,0 +1,51 @@
+{
+  "tabs": {
+    "expense": "Expense",
+    "product": "Product"
+  },
+  "actions": {
+    "save": "Save",
+    "update": "Update",
+    "delete": "Delete"
+  },
+  "fields": {
+    "name": "Name",
+    "description": "Description",
+    "enabled": "Enabled"
+  },
+  "validation": {
+    "name_required": "Name is required",
+    "item_name": "Item Name",
+    "min_2": "Cannot be less than 2",
+    "max_20": "Cannot be greater than 20",
+    "max_40": "Cannot be greater than 40",
+    "max_80": "Cannot be greater than 80 characters",
+    "max_150": "Cannot be greater than 150 characters"
+  },
+  "toasts": {
+    "success_title": "Success",
+    "error_title": "Error",
+    "some_error_occurred": "Some error occured",
+    "network_error": "Network error occured",
+    "item_category_created": "Item Category created",
+    "item_category_updated": "Item Category updated",
+    "item_category_deleted": "Item category deleted",
+    "expense_category_created": "Expense category created",
+    "expense_category_updated": "Expense category updated",
+    "expense_category_deleted": "Expense category deleted"
+  },
+  "item": {
+    "form_heading": "Product Category",
+    "heading": "Product Categories",
+    "total_count": "Total item types : {{count}}",
+    "delete_body": "Do you want to delete the item category ?",
+    "delete_header": "Delete category"
+  },
+  "expense": {
+    "form_heading": "Expense Category",
+    "type": "Expense Type",
+    "heading": "Expense Categories",
+    "total_count": "Total expense categories : {{count}}",
+    "delete_body": "Do you want to delete the expense category ?"
+  }
+}

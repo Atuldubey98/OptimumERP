@@ -1,13 +1,16 @@
 import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 export default function DescriptionField({ formik }) {
+  const { t } = useTranslation("common");
+
   return (
     <FormControl
       isInvalid={formik.errors.description && formik.touched.description}
     >
-      <FormLabel>Description</FormLabel>
+      <FormLabel>{t("common_ui.fields.description")}</FormLabel>
       <Input
-        placeholder="Write any thing to search it later like email address or something to identify it."
+        placeholder={t("common_ui.receipt.description_placeholder")}
         name="description"
         onChange={formik.handleChange}
         value={formik.values.description}

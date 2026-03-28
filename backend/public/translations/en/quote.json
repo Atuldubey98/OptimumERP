@@ -1,12 +1,92 @@
 {
   "quote": {
     "quote": {
-      "not_found": "Quote does not exists",
-      "already_exists": "Quotation already exists with quotation id",
-      "created": "Quote created successfully",
-      "updated": "Quote updated successfully",
-      "deleted": "Quote deleted successfully",
+      "not_found": "Quotation does not exist",
+      "already_exists": "Quotation already exists with this ID",
+      "created": "Quotation created successfully",
+      "updated": "Quotation updated successfully",
+      "deleted": "Quotation deleted successfully",
       "converted_to_invoice": "Invoice created"
+    }
+  },
+  "quote_ui": {
+    "toasts": {
+      "success": "Success",
+      "error": "Error",
+      "some_error_occurred": "Some error occurred"
+    },
+    "page": {
+      "heading": "Quotations",
+      "total_estimates_found": "Total estimates found: {{count}}",
+      "delete_estimate": "Do you want to delete the estimate?",
+      "delete_quotation": "Delete Quotation"
+    },
+    "table": {
+      "columns": {
+        "quote_no": "Quotation No.",
+        "quotation_date": "Quotation Date",
+        "party_name": "Party Name",
+        "status": "Status",
+        "total": "Total"
+      }
+    },
+    "actions": {
+      "save": "Save",
+      "add_item": "Add Item",
+      "add_new_quote": "Add new"
+    },
+    "form": {
+      "party_section": "Party",
+      "bill_to": "Bill to",
+      "billing_address": "Billing Address",
+      "estimate_details": "Estimate Details",
+      "quotation_no": "Quotation No.",
+      "items_section": "Items",
+      "status_label": "Status",
+      "item_name_placeholder": "Item name",
+      "hsn_code_placeholder": "HSN/SAC Code",
+      "quantity_placeholder": "Quantity",
+      "terms_and_conditions": "Terms and conditions",
+      "terms_placeholder": "Your terms and conditions for the work."
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "declined": "Declined"
+    },
+    "totals": {
+      "sub_total": "Sub Total",
+      "total_tax": "Total Tax",
+      "grand_total": "Grand Total"
+    },
+    "banner": {
+      "quotation_not_found": "Quotation not found"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Party Name",
+        "billing_address": "Billing Address",
+        "total": "Total",
+        "total_tax": "Total Tax",
+        "num": "Number",
+        "status": "Status",
+        "grand_total": "Grand Total"
+      },
+      "optional_fields": {
+        "created_by_email": "Created By Email",
+        "created_by_name": "Created By Name",
+        "po_no": "PO Number",
+        "po_date": "PO Date",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "VAT",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Other taxes"
+      }
     }
   }
 }

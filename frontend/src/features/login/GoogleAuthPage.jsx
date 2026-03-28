@@ -1,5 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -7,7 +8,7 @@ import useQuery from "../../hooks/useQuery";
 import instance from "../../instance";
 import FullLoader from "../common/FullLoader";
 import PrivateRoute from "../common/PrivateRoute";
-function GoogleAuth({ authenticated = false }) {
+function GoogleAuth({ authenticated = false, t }) {
   const query = useQuery();
   const organization = localStorage.getItem("organization");
   const toast = useToast();
@@ -46,8 +47,8 @@ function GoogleAuth({ authenticated = false }) {
       toast({
         title: "Error",
         description: isAxiosError(error)
-          ? error?.response?.data.message || "Network error occured"
-          : "Network error occured",
+          ? error?.response?.data.message || t("user_ui.login.network_error")
+          : t("user_ui.login.network_error"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -57,11 +58,12 @@ function GoogleAuth({ authenticated = false }) {
 }
 
 export default function GoogleAuthPage({ authenticated = false }) {
+  const { t } = useTranslation("user");
   return authenticated ? (
     <PrivateRoute>
-      <GoogleAuth authenticated={authenticated} />
+      <GoogleAuth authenticated={authenticated} t={t} />
     </PrivateRoute>
   ) : (
-    <GoogleAuth authenticated={authenticated} />
+    <GoogleAuth authenticated={authenticated} t={t} />
   );
 }

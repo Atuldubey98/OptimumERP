@@ -18,116 +18,118 @@ import {
 import { Select } from "chakra-react-select";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import DateFilter from "../../features/estimates/list/DateFilter";
 import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 import moment from "moment";
-const reportTypes = {
-  invoice : "Invoice  ",
-  purchase : "Purchase",
-  expense : "Expense",
-  quotes : "Quotes",
-  proforma_invoice : "Proforma Invoice",
-  purchase_order : "Purchase Order",
-}
-const reportDataByType = {
-  sale: {
-    header: {
-      num: "Invoice Number",
-      date: "Date",
-      partyName: "Party Name",
-      grandTotal: "Grand Total",
-      totalTax: "Total Tax",
-      status: "Status",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      num: item.num,
-      date: item.date ? moment(item.date).format("LL") : "",
-      totalTax: item.totalTax.toFixed(2),
-      grandTotal: (item.totalTax + item.total).toFixed(2),
-      status: (item?.status || "").toLocaleUpperCase(),
-    }),
-  },
-  purchase: {
-    header: {
-      num: "Purchase Number",
-      date: "Date",
-      partyName: "Party Name",
-      grandTotal: "Grand Total",
-      totalTax: "Total Tax",
-      status: "Status",
-    },
-
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      num: item.num,
-      date: item.date ? moment(item.date).format("LL") : "",
-      totalTax: item.totalTax.toFixed(2),
-      grandTotal: (item.totalTax + item.total).toFixed(2),
-      status: (item?.status || "").toLocaleUpperCase(),
-    }),
-  },
-  transactions: {
-    header: {
-      num: "Num",
-      type: "Type",
-      amount: "Amount",
-      createdAt: "Done on",
-      relatedTo: "Bill To/From",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      num: item.doc?.num,
-      type: reportTypes[item?.docModel],
-      amount: (item.total + item.totalTax).toFixed(2),
-      relatedTo: item?.party?.name || item.doc?.description || "",
-      createdAt: new Date(item.createdAt).toLocaleDateString(),
-    }),
-  },
-  gstr1: {
-    header: {
-      gstNo: "Party GST No",
-      partyName: "Party Name",
-      grandTotal: "Grand Total",
-      cgst: "CGST",
-      sgst: "SGST",
-      igst: "IGST",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      gstNo: item.party?.gstNo,
-      cgst: item.taxCategories.cgst?.toFixed(2),
-      sgst: item.taxCategories.sgst?.toFixed(2),
-      igst: item.taxCategories.igst?.toFixed(2),
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
-    }),
-  },
-  gstr2: {
-    header: {
-      gstNo: "Party GST No",
-      partyName: "Party Name",
-      grandTotal: "Grand Total",
-      cgst: "CGST",
-      sgst: "SGST",
-      igst: "IGST",
-    },
-    bodyMapper: (item) => ({
-      _id: item._id,
-      partyName: item.party?.name,
-      gstNo: item.party?.gstNo,
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
-      cgst: item.taxCategories.cgst?.toFixed(2),
-      sgst: item.taxCategories.sgst?.toFixed(2),
-      igst: item.taxCategories.igst?.toFixed(2),
-    }),
-  },
-};
 export default function ReportItem() {
+  const { t } = useTranslation("report");
+  const transactionTypes = {
+    invoice: t("report_ui.transaction_types.invoice"),
+    purchase: t("report_ui.transaction_types.purchase"),
+    expense: t("report_ui.transaction_types.expense"),
+    quotes: t("report_ui.transaction_types.quotes"),
+    proforma_invoice: t("report_ui.transaction_types.proforma_invoice"),
+    purchase_order: t("report_ui.transaction_types.purchase_order"),
+  };
+  const reportDataByType = {
+    sale: {
+      header: {
+        num: t("report_ui.table.headers.sale.num"),
+        date: t("report_ui.table.headers.sale.date"),
+        partyName: t("report_ui.table.headers.sale.party_name"),
+        grandTotal: t("report_ui.table.headers.sale.grand_total"),
+        totalTax: t("report_ui.table.headers.sale.total_tax"),
+        status: t("report_ui.table.headers.sale.status"),
+      },
+      bodyMapper: (item) => ({
+        _id: item._id,
+        partyName: item.party?.name,
+        num: item.num,
+        date: item.date ? moment(item.date).format("LL") : "",
+        totalTax: item.totalTax.toFixed(2),
+        grandTotal: (item.totalTax + item.total).toFixed(2),
+        status: (item?.status || "").toLocaleUpperCase(),
+      }),
+    },
+    purchase: {
+      header: {
+        num: t("report_ui.table.headers.purchase.num"),
+        date: t("report_ui.table.headers.purchase.date"),
+        partyName: t("report_ui.table.headers.purchase.party_name"),
+        grandTotal: t("report_ui.table.headers.purchase.grand_total"),
+        totalTax: t("report_ui.table.headers.purchase.total_tax"),
+        status: t("report_ui.table.headers.purchase.status"),
+      },
+
+      bodyMapper: (item) => ({
+        _id: item._id,
+        partyName: item.party?.name,
+        num: item.num,
+        date: item.date ? moment(item.date).format("LL") : "",
+        totalTax: item.totalTax.toFixed(2),
+        grandTotal: (item.totalTax + item.total).toFixed(2),
+        status: (item?.status || "").toLocaleUpperCase(),
+      }),
+    },
+    transactions: {
+      header: {
+        num: t("report_ui.table.headers.transactions.num"),
+        type: t("report_ui.table.headers.transactions.type"),
+        amount: t("report_ui.table.headers.transactions.amount"),
+        createdAt: t("report_ui.table.headers.transactions.created_at"),
+        relatedTo: t("report_ui.table.headers.transactions.related_to"),
+      },
+      bodyMapper: (item) => ({
+        _id: item._id,
+        num: item.doc?.num,
+        type: transactionTypes[item?.docModel],
+        amount: (item.total + item.totalTax).toFixed(2),
+        relatedTo: item?.party?.name || item.doc?.description || "",
+        createdAt: new Date(item.createdAt).toLocaleDateString(),
+      }),
+    },
+    gstr1: {
+      header: {
+        gstNo: t("report_ui.table.headers.gstr.gst_no"),
+        partyName: t("report_ui.table.headers.gstr.party_name"),
+        grandTotal: t("report_ui.table.headers.gstr.grand_total"),
+        cgst: t("report_ui.table.headers.gstr.cgst"),
+        sgst: t("report_ui.table.headers.gstr.sgst"),
+        igst: t("report_ui.table.headers.gstr.igst"),
+      },
+      bodyMapper: (item) => ({
+        _id: item._id,
+        partyName: item.party?.name,
+        gstNo: item.party?.gstNo,
+        cgst: item.taxCategories.cgst?.toFixed(2),
+        sgst: item.taxCategories.sgst?.toFixed(2),
+        igst: item.taxCategories.igst?.toFixed(2),
+        grandTotal: (item?.total + item?.totalTax).toFixed(2),
+      }),
+    },
+    gstr2: {
+      header: {
+        gstNo: t("report_ui.table.headers.gstr.gst_no"),
+        partyName: t("report_ui.table.headers.gstr.party_name"),
+        grandTotal: t("report_ui.table.headers.gstr.grand_total"),
+        cgst: t("report_ui.table.headers.gstr.cgst"),
+        sgst: t("report_ui.table.headers.gstr.sgst"),
+        igst: t("report_ui.table.headers.gstr.igst"),
+      },
+      bodyMapper: (item) => ({
+        _id: item._id,
+        partyName: item.party?.name,
+        gstNo: item.party?.gstNo,
+        grandTotal: (item?.total + item?.totalTax).toFixed(2),
+        cgst: item.taxCategories.cgst?.toFixed(2),
+        sgst: item.taxCategories.sgst?.toFixed(2),
+        igst: item.taxCategories.igst?.toFixed(2),
+      }),
+    },
+  };
   const { reportType } = useParams();
   const { onSetDateFilter, ...response } = useDateFilterFetch({
     entity: `reports/${reportType}`,
@@ -138,19 +140,19 @@ export default function ReportItem() {
   const lastDaysOptions = [
     {
       value: 0,
-      label: "Select",
+      label: t("report_ui.filters.select"),
     },
     {
       value: 30,
-      label: "Last 30 Days",
+      label: t("report_ui.filters.last_30_days"),
     },
     {
       value: 180,
-      label: "Last 6 Months",
+      label: t("report_ui.filters.last_6_months"),
     },
     {
       value: 360,
-      label: "Last 365 Days",
+      label: t("report_ui.filters.last_365_days"),
     },
   ];
   return (
@@ -158,7 +160,7 @@ export default function ReportItem() {
       <Stack spacing={1} boxShadow={"md"} p={5}>
         <SimpleGrid minChildWidth={300} gap={3} width={"100%"}>
           <FormControl>
-            <FormLabel fontWeight={"bold"}>Custom</FormLabel>
+            <FormLabel fontWeight={"bold"}>{t("report_ui.filters.custom")}</FormLabel>
             <Select
               value={lastDaysOptions.find(
                 (option) => option.value === partyFilter.lastDays
@@ -194,7 +196,12 @@ export default function ReportItem() {
           {reportType && currentReport ? (
             <TableContainer>
               <Table size={"sm"} variant="simple">
-                <TableCaption>{`Total ${reportType.toLocaleUpperCase()} Found : ${totalCount}`}</TableCaption>
+                <TableCaption>
+                  {t("report_ui.table.total_found", {
+                    reportType: t(`report_ui.report_names.${reportType}`).toUpperCase(),
+                    count: totalCount,
+                  })}
+                </TableCaption>
                 <Thead>
                   <Tr>
                     {Object.entries(currentReport.header).map(

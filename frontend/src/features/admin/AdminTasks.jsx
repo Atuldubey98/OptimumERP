@@ -32,6 +32,7 @@ import { useFormik } from "formik";
 import moment from "moment";
 import React, { useContext, useState } from "react";
 import { FaGoogle } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import SettingContext from "../../contexts/SettingContext";
 import useAuth from "../../hooks/useAuth";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
@@ -39,11 +40,13 @@ import instance from "../../instance";
 import GoogleIcon from "../common/GoogleIcon";
 import { GoPeople } from "react-icons/go";
 function FinancialYearCloseForm(props) {
+  const { t } = useTranslation("admin");
+
   return (
     <AccordionItem>
       <AccordionButton>
         <Box fontWeight={"bold"} flex="1" textAlign="left">
-          Close financial year
+          {t("tasks.financial_year.close")}
         </Box>
         <AccordionIcon />
       </AccordionButton>
@@ -52,7 +55,7 @@ function FinancialYearCloseForm(props) {
           <Stack spacing={2}>
             <SimpleGrid gap={3} minChildWidth={300}>
               <FormControl>
-                <FormLabel>Invoice Prefix</FormLabel>
+                <FormLabel>{t("tasks.financial_year.invoice_prefix")}</FormLabel>
                 <Input
                   value={props.formik.values.transactionPrefix.invoice}
                   name="transactionPrefix.invoice"
@@ -60,7 +63,7 @@ function FinancialYearCloseForm(props) {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Quotation Prefix</FormLabel>
+                <FormLabel>{t("tasks.financial_year.quotation_prefix")}</FormLabel>
                 <Input
                   value={props.formik.values.transactionPrefix.quotation}
                   name="transactionPrefix.quotation"
@@ -68,7 +71,9 @@ function FinancialYearCloseForm(props) {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Proforma Invoice Prefix</FormLabel>
+                <FormLabel>
+                  {t("tasks.financial_year.proforma_invoice_prefix")}
+                </FormLabel>
                 <Input
                   value={props.formik.values.transactionPrefix.proformaInvoice}
                   name="transactionPrefix.proformaInvoice"
@@ -76,7 +81,9 @@ function FinancialYearCloseForm(props) {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Purchase Order Prefix</FormLabel>
+                <FormLabel>
+                  {t("tasks.financial_year.purchase_order_prefix")}
+                </FormLabel>
                 <Input
                   value={props.formik.values.transactionPrefix.purchaseOrder}
                   name="transactionPrefix.purchaseOrder"
@@ -84,10 +91,10 @@ function FinancialYearCloseForm(props) {
                 />
               </FormControl>
             </SimpleGrid>
-            <Text fontSize={"sm"}>Next Financial year</Text>
+            <Text fontSize={"sm"}>{t("tasks.financial_year.next")}</Text>
             <SimpleGrid gap={3} minChildWidth={300}>
               <FormControl isRequired>
-                <FormLabel>Start date</FormLabel>
+                <FormLabel>{t("tasks.financial_year.start_date")}</FormLabel>
                 <Input
                   min={props.formik.values.financialYear.start}
                   value={props.formik.values.financialYear.start}
@@ -97,7 +104,7 @@ function FinancialYearCloseForm(props) {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>End date</FormLabel>
+                <FormLabel>{t("tasks.financial_year.end_date")}</FormLabel>
                 <Input
                   min={props.formik.values.financialYear.start}
                   value={props.formik.values.financialYear.end}
@@ -110,10 +117,10 @@ function FinancialYearCloseForm(props) {
             <Button
               size={"sm"}
               type="submit"
-              loadingText="Closing"
+              loadingText={t("tasks.financial_year.closing")}
               isLoading={props.formik.isSubmitting}
             >
-              Done
+              {t("tasks.financial_year.done")}
             </Button>
           </Stack>
         </form>
@@ -123,6 +130,7 @@ function FinancialYearCloseForm(props) {
 }
 
 function SMTPSetup() {
+  const { t } = useTranslation("admin");
   const auth = useAuth();
   const redirectUri = `${window.origin}/auth/google/admin`;
   const [status, setStatus] = useState("idle");
@@ -137,7 +145,7 @@ function SMTPSetup() {
       <h2>
         <AccordionButton>
           <Box fontWeight={"bold"} flex="1" textAlign="left">
-            SMTP Setup
+            {t("tasks.smtp.title")}
           </Box>
           <AccordionIcon />
         </AccordionButton>
@@ -146,8 +154,7 @@ function SMTPSetup() {
         <Box marginBottom={2}>
           <Alert status="info">
             <AlertIcon />
-            SMTP currently supports only Google. Button below can be used to
-            connect the google account to send receipts from the dashboard.
+            {t("tasks.smtp.info")}
           </Alert>
         </Box>
         <Button
@@ -155,18 +162,22 @@ function SMTPSetup() {
           onClick={onConnectToGoogle}
           leftIcon={<GoogleIcon />}
         >
-          {auth?.user?.googleId ? "Re-Connect" : "Connect"}
+          {auth?.user?.googleId
+            ? t("tasks.smtp.reconnect")
+            : t("tasks.smtp.connect")}
         </Button>
       </AccordionPanel>
     </AccordionItem>
   );
 }
 function DefaultTermsForReceiptsForm({ formik }) {
+  const { t } = useTranslation("admin");
+
   return (
     <AccordionItem>
       <AccordionButton>
         <Box fontWeight={"bold"} flex="1" textAlign="left">
-          Default Terms & Conditions
+          {t("tasks.default_terms.title")}
         </Box>
         <AccordionIcon />
       </AccordionButton>
@@ -174,7 +185,7 @@ function DefaultTermsForReceiptsForm({ formik }) {
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={1}>
             <FormControl>
-              <FormLabel>Invoice</FormLabel>
+              <FormLabel>{t("tasks.default_terms.invoice")}</FormLabel>
               <Textarea
                 value={formik.values.terms?.invoice}
                 onChange={formik.handleChange}
@@ -182,7 +193,7 @@ function DefaultTermsForReceiptsForm({ formik }) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel>Quotations</FormLabel>
+              <FormLabel>{t("tasks.default_terms.quotations")}</FormLabel>
               <Textarea
                 value={formik.values.terms?.quote}
                 onChange={formik.handleChange}
@@ -190,7 +201,7 @@ function DefaultTermsForReceiptsForm({ formik }) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel>Purchase Order</FormLabel>
+              <FormLabel>{t("tasks.default_terms.purchase_order")}</FormLabel>
               <Textarea
                 value={formik.values.terms?.purchaseOrder}
                 onChange={formik.handleChange}
@@ -198,7 +209,7 @@ function DefaultTermsForReceiptsForm({ formik }) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel>Proforma Invoice</FormLabel>
+              <FormLabel>{t("tasks.default_terms.proforma_invoice")}</FormLabel>
               <Textarea
                 value={formik.values.terms?.proformaInvoice}
                 onChange={formik.handleChange}
@@ -206,7 +217,7 @@ function DefaultTermsForReceiptsForm({ formik }) {
               />
             </FormControl>
             <Button isLoading={formik.isSubmitting} type="submit" size={"sm"}>
-              Save
+              {t("actions.save")}
             </Button>
           </Stack>
         </form>
@@ -216,20 +227,21 @@ function DefaultTermsForReceiptsForm({ formik }) {
 }
 
 function MigrateFromOtherSoftware({ organization }) {
+  const { t } = useTranslation("admin");
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <AccordionItem>
       <h2>
         <AccordionButton>
           <Box fontWeight={"bold"} flex="1" textAlign="left">
-            Import
+            {t("tasks.import.title")}
           </Box>
           <AccordionIcon />
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
         <Button onClick={onOpen} leftIcon={<GoPeople />} variant={"primary"}>
-          Party
+          {t("tasks.import.party")}
         </Button>
         <PartyImportModal
           organization={organization}
@@ -241,6 +253,7 @@ function MigrateFromOtherSoftware({ organization }) {
   );
 }
 function PartyImportModal({ organization, isOpen, onClose }) {
+  const { t } = useTranslation("admin");
   const toast = useToast();
   const [file, setFile] = useState(null);
   const handleDownloadSample = () => {
@@ -254,7 +267,7 @@ function PartyImportModal({ organization, isOpen, onClose }) {
     link.setAttribute("download", "party_sample.csv");
     link.click();
     toast({
-      title: "Download started",
+      title: t("tasks.import.download_started"),
       status: "success",
       duration: 2000,
       isClosable: true,
@@ -264,8 +277,8 @@ function PartyImportModal({ organization, isOpen, onClose }) {
     e.preventDefault();
     if (!file) {
       toast({
-        title: "No file selected",
-        description: "Please select a CSV file to upload.",
+        title: t("tasks.import.no_file_selected"),
+        description: t("tasks.import.select_csv_prompt"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -284,7 +297,7 @@ function PartyImportModal({ organization, isOpen, onClose }) {
       },
     );
     toast({
-      title: "Import Successful",
+      title: t("tasks.import.success_title"),
       description: response.data.message,
       status: "success",
       duration: 3000,
@@ -297,31 +310,31 @@ function PartyImportModal({ organization, isOpen, onClose }) {
       <ModalOverlay />
       <form onSubmit={onUpload}>
         <ModalContent>
-          <ModalHeader>Import Parties</ModalHeader>
+          <ModalHeader>{t("tasks.import.modal_title")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing={4}>
-              <Text>Using the below button download the sample csv</Text>
+              <Text>{t("tasks.import.download_help")}</Text>
               <Button onClick={handleDownloadSample} variant="outline">
-                Download Sample CSV
+                {t("tasks.import.download_sample")}
               </Button>
-              <Text>Upload a CSV file to import parties into your system.</Text>
+              <Text>{t("tasks.import.upload_help")}</Text>
               <Input
                 onChange={(e) => {
                   setFile(e.currentTarget.files[0]);
                 }}
                 type="file"
                 accept=".csv"
-                placeholder="Select CSV file"
+                placeholder={t("tasks.import.select_csv_placeholder")}
               />
             </Stack>
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
-              Cancel
+              {t("actions.cancel")}
             </Button>
             <Button type="submit" colorScheme="blue">
-              Import
+              {t("tasks.import.submit")}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -330,6 +343,7 @@ function PartyImportModal({ organization, isOpen, onClose }) {
   );
 }
 export default function AdminTasks({ organization }) {
+  const { t } = useTranslation("admin");
   const bg = useColorModeValue("gray.100", "gray.700");
   const { financialYear } = useCurrentOrgCurrency();
   const settingContext = useContext(SettingContext);
@@ -359,8 +373,8 @@ export default function AdminTasks({ organization }) {
         data,
       );
       toast({
-        title: "Success",
-        description: "Financial year closed",
+        title: t("toasts.success_title"),
+        description: t("toasts.financial_year_closed"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -380,8 +394,8 @@ export default function AdminTasks({ organization }) {
       });
       await settingContext.fetchSetting();
       toast({
-        title: "Success",
-        description: "Terms default set",
+        title: t("toasts.success_title"),
+        description: t("toasts.terms_default_set"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -396,7 +410,7 @@ export default function AdminTasks({ organization }) {
   return (
     <Box>
       <Box bg={bg} p={3}>
-        <Heading fontSize={"lg"}>Admin tasks</Heading>
+        <Heading fontSize={"lg"}>{t("tasks.heading")}</Heading>
       </Box>
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />

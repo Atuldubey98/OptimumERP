@@ -13,6 +13,7 @@ import {
 import { isAxiosError } from "axios";
 import moment from "moment";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CiEdit, CiMail, CiSaveDown2 } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { LiaEyeSolid } from "react-icons/lia";
@@ -30,6 +31,7 @@ import PartyDisplayReceipt from "./PartyDisplayReceipt";
 import ReceiptMenu from "./ReceiptMenu";
 import ReceiptPayment from "./ReceiptPayment";
 export default function ReceiptDisplay({ receipt, meta }) {
+  const { t } = useTranslation("common");
   const { type, orgId } = useParams();
   const navigate = useNavigate();
   const onDownloadReceipt = async () => {
@@ -67,8 +69,8 @@ export default function ReceiptDisplay({ receipt, meta }) {
         `/api/v1/organizations/${orgId}/${type}/${receipt._id}`
       );
       toast({
-        title: "Success",
-        description: `${meta.label} Deleted`,
+        title: t("common_ui.toasts.success"),
+        description: t("common_ui.receipt.deleted", { label: meta.label }),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -77,10 +79,10 @@ export default function ReceiptDisplay({ receipt, meta }) {
       navigateToReceiptList();
     } catch (error) {
       toast({
-        title: isAxiosError(err) ? err.response?.data?.name : "Error",
-        description: isAxiosError(err)
-          ? err?.response?.data.message || "Network error occured"
-          : "Network error occured",
+        title: isAxiosError(error) ? error.response?.data?.name : t("common_ui.toasts.error"),
+        description: isAxiosError(error)
+          ? error?.response?.data.message || t("common_ui.toasts.network_error")
+          : t("common_ui.toasts.network_error"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -92,28 +94,28 @@ export default function ReceiptDisplay({ receipt, meta }) {
     {
       colorScheme: "blue",
       icon: <LiaEyeSolid />,
-      label: "Show",
+      label: t("common_ui.actions.show"),
       onClick: toggleReceiptModal,
       showForReceipts: [],
     },
     {
       colorScheme: "blue",
       icon: <CiSaveDown2 />,
-      label: "Download",
+      label: t("common_ui.actions.download"),
       onClick: onDownloadReceipt,
       showForReceipts: [],
     },
     {
       colorScheme: "blue",
       icon: <CiMail />,
-      label: "Mail",
+      label: t("common_ui.actions.mail"),
       onClick: onOpen,
       showForReceipts: ["invoices"],
     },
     {
       colorScheme: "blue",
       icon: <CiEdit />,
-      label: "Edit",
+      label: t("common_ui.actions.edit"),
       onClick: () => {
         navigate(`/${orgId}${meta.receiptHomeAppUrl}/${receipt._id}/edit`);
       },
@@ -122,7 +124,7 @@ export default function ReceiptDisplay({ receipt, meta }) {
     {
       colorScheme: "blue",
       icon: <MdDeleteOutline />,
-      label: "Delete",
+      label: t("common_ui.actions.delete"),
       onClick: toggleDeleteModal,
       showForReceipts: [],
     },
@@ -180,12 +182,14 @@ export default function ReceiptDisplay({ receipt, meta }) {
       {receipt.payment ? <ReceiptPayment payment={receipt.payment} /> : null}
       {isDeleteModalOpen ? (
         <AlertModal
-          body={`Do you want to delete ${meta.label.toLowerCase()} ?`}
-          header={`Delete ${meta.label}`}
+          body={t("common_ui.receipt.delete_body", {
+            label: meta.label.toLowerCase(),
+          })}
+          header={t("common_ui.receipt.delete_header", { label: meta.label })}
           isOpen={isDeleteModalOpen}
           onClose={toggleDeleteModal}
           onConfirm={onDeleteReceipt}
-          buttonLabel="Delete"
+          buttonLabel={t("common_ui.actions.delete")}
           confirmDisable={status === "deleting"}
         />
       ) : null}
@@ -199,11 +203,11 @@ export default function ReceiptDisplay({ receipt, meta }) {
       {receipt.converted ? (
         <Box>
           <Text>
-            <strong>Converted to invoice on : </strong>
+            <strong>{t("common_ui.receipt.converted_to_invoice_on")}</strong>
             {moment(receipt.converted.date).format("LL")}
           </Text>
           <Text>
-            <strong>Invoice : </strong>
+            <strong>{t("common_ui.receipt.invoice_label")}</strong>
             <Link to={`/${orgId}/receipt/invoices/${receipt.converted._id}`}>
               {receipt.converted.num}
             </Link>

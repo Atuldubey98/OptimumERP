@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { useTranslation } from "react-i18next";
 import { AiOutlineSave } from "react-icons/ai";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useEstimateForm from "../../../hooks/useEstimateForm";
@@ -33,6 +34,7 @@ import useUms from "../../../hooks/useUms";
 import BannerWithLabel from "../../common/BannerWithLabel";
 import { FaFileInvoice } from "react-icons/fa6";
 export default function CreateEstimatePage() {
+  const { t } = useTranslation("quote");
   const { formik, status } = useEstimateForm();
   const { taxes } = useTaxes();
   const { ums } = useUms();
@@ -51,7 +53,7 @@ export default function CreateEstimatePage() {
               <Spinner />
             </Flex>
           ) : hasError ? (
-            <BannerWithLabel label="Quotation not found" Icon={FaFileInvoice} />
+            <BannerWithLabel label={t("quote_ui.banner.quotation_not_found")} Icon={FaFileInvoice} />
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
@@ -63,13 +65,13 @@ export default function CreateEstimatePage() {
                   colorScheme="teal"
                   variant="solid"
                 >
-                  Save
+                  {t("quote_ui.actions.save")}
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Party</Heading>
+                <Heading fontSize={"xl"}>{t("quote_ui.form.party_section")}</Heading>
                 <FormControl isRequired>
-                  <FormLabel>Bill To</FormLabel>
+                  <FormLabel>{t("quote_ui.form.bill_to")}</FormLabel>
                   <PartySelectBill formik={formik} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
@@ -81,7 +83,7 @@ export default function CreateEstimatePage() {
                     }
                     isRequired
                   >
-                    <FormLabel>Billing Address</FormLabel>
+                    <FormLabel>{t("quote_ui.form.billing_address")}</FormLabel>
                     <Textarea
                       name="billingAddress"
                       onChange={formik.handleChange}
@@ -92,14 +94,14 @@ export default function CreateEstimatePage() {
                     </FormErrorMessage>
                   </FormControl>
                 ) : null}
-                <Heading fontSize={"xl"}>Estimate Details</Heading>
+                <Heading fontSize={"xl"}>{t("quote_ui.form.estimate_details")}</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isInvalid={
                       formik.errors.sequence && formik.touched.sequence
                     }
                   >
-                    <FormLabel>Quotation No.</FormLabel>
+                    <FormLabel>{t("quote_ui.form.quotation_no")}</FormLabel>
                     <InputGroup>
                       <PrefixFormField formik={formik} prefixType="quotation" />
                       <Input
@@ -116,7 +118,7 @@ export default function CreateEstimatePage() {
                   <DateField formik={formik} />
                   <SelectStatus formik={formik} statusList={statusList} />
                 </SimpleGrid>
-                <Heading fontSize={"xl"}>Items</Heading>
+                <Heading fontSize={"xl"}>{t("quote_ui.form.items_section")}</Heading>
                 <ItemsList
                   formik={formik}
                   ums={ums}

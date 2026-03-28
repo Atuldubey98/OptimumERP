@@ -1,6 +1,4 @@
 import {
-  Button,
-  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -8,8 +6,10 @@ import {
   Input,
 } from "@chakra-ui/react";
 import AuthFields from "../login/AuthFields";
+import { useTranslation } from "react-i18next";
 
 export default function RegisterUserFields({ formik }) {
+  const { t } = useTranslation("user");
   return (
     <Grid gap={4}>
       <AuthFields
@@ -17,22 +17,23 @@ export default function RegisterUserFields({ formik }) {
         formikTouched={formik.touched}
         formikHandleChange={formik.handleChange}
         formikValues={formik.values}
+        scope="register"
       />
       <FormControl
         isRequired
         isInvalid={formik.errors.name && formik.touched.name}
       >
-        <FormLabel>Name</FormLabel>
+        <FormLabel>{t("user_ui.register.name_label")}</FormLabel>
         <Input
           onChange={formik.handleChange}
           name="name"
           type="text"
           value={formik.values.name}
-          placeholder="Name"
+          placeholder={t("user_ui.register.name_placeholder")}
         />
         <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
       </FormControl>
-      
+
     </Grid>
   );
 }

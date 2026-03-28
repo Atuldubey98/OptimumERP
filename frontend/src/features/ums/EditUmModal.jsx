@@ -16,8 +16,10 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import useUmForm from "../../hooks/useUmForm";
+import { useTranslation } from "react-i18next";
 
 export default function EditUmModal({ isOpen, onClose, fetchUms }) {
+  const { t } = useTranslation("um");
   const { formik } = useUmForm({
     fetchUms,
     onClose,
@@ -31,13 +33,17 @@ export default function EditUmModal({ isOpen, onClose, fetchUms }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{formik.values._id ? "Edit tax" : "Add tax"}</ModalHeader>
+        <ModalHeader>
+          {formik.values._id
+            ? t("um_ui.modal.edit_title")
+            : t("um_ui.modal.add_title")}
+        </ModalHeader>
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
             <Stack spacing={2}>
               <FormControl isRequired>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("um_ui.form.name")}</FormLabel>
                 <Input
                   required
                   name="name"
@@ -46,7 +52,7 @@ export default function EditUmModal({ isOpen, onClose, fetchUms }) {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Short form</FormLabel>
+                <FormLabel>{t("um_ui.form.short_form")}</FormLabel>
                 <Input
                   required
                   name="unit"
@@ -55,7 +61,7 @@ export default function EditUmModal({ isOpen, onClose, fetchUms }) {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("um_ui.form.description")}</FormLabel>
                 <Textarea
                   onChange={formik.handleChange}
                   name="description"
@@ -68,20 +74,20 @@ export default function EditUmModal({ isOpen, onClose, fetchUms }) {
                   name="enabled"
                   isChecked={formik.values.enabled}
                 />
-                <FormLabel>Enabled</FormLabel>
+                <FormLabel>{t("um_ui.form.enabled")}</FormLabel>
               </FormControl>
             </Stack>
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
-              Close
+              {t("um_ui.modal.close")}
             </Button>
             <Button
               isLoading={formik.isSubmitting}
               type="submit"
               colorScheme="blue"
             >
-              Save
+              {t("um_ui.modal.save")}
             </Button>
           </ModalFooter>
         </form>

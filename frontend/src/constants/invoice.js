@@ -1,17 +1,17 @@
 export const invoiceStatusList = [
   {
     type: "draft",
-    label: "Draft",
+    label: "invoice_ui.status.draft",
     colorScheme: "blue",
   },
   {
     type: "sent",
-    label: "Sent",
+    label: "invoice_ui.status.sent",
     colorScheme: "teal",
   },
   {
     type: "pending",
-    label: "Pending",
+    label: "invoice_ui.status.pending",
     colorScheme: "yellow",
   },
 ];

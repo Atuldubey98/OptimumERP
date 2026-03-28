@@ -30,6 +30,7 @@ import {
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useCallback, useContext, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { GoOrganization } from "react-icons/go";
 import { IoAdd } from "react-icons/io5";
 import * as Yup from "yup";
@@ -56,15 +57,19 @@ import {
 import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 import useStorageUtil from "../../hooks/useStorageUtil";
 export default function AdminPage() {
+  const { t } = useTranslation("admin");
+
   const registerSchema = Yup.object({
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    email: Yup.string()
+      .email(t("validation.invalid_email"))
+      .required(t("validation.email_required")),
     password: Yup.string()
-      .required("Password is required")
-      .min(8, "Min length should be 8"),
+      .required(t("validation.password_required"))
+      .min(8, t("validation.password_min")),
     name: Yup.string()
-      .required("Name is required")
-      .min(3, "Min length should be 3")
-      .max(30, "Max length cannot be greater than 20"),
+      .required(t("validation.name_required"))
+      .min(3, t("validation.name_min"))
+      .max(30, t("validation.name_max")),
   });
   const { authorizedOrgs, loading, fetchOrgs } = useOrganizations();
   const setting = useContext(SettingContext);
@@ -89,7 +94,7 @@ export default function AdminPage() {
         values,
       );
       toast({
-        title: "Registered",
+        title: t("toasts.registered_title"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -136,8 +141,8 @@ export default function AdminPage() {
       await instance.patch(`/api/v1/organizations/${organization}`, restOrg);
       setSubmitting(false);
       toast({
-        title: "Success",
-        description: "Organization updated",
+        title: t("toasts.success_title"),
+        description: t("toasts.organization_updated"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -154,11 +159,11 @@ export default function AdminPage() {
       accountHolderName: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().label("Bank Name"),
-      accountNo: Yup.number().label("Account Number"),
-      ifscCode: Yup.string().label("IFSC Code"),
-      upi: Yup.string().label("UPI Details"),
-      accountHolderName: Yup.string().label("Account Holder Name"),
+      name: Yup.string().label(t("bank.bank_name")),
+      accountNo: Yup.number().label(t("bank.account_number")),
+      ifscCode: Yup.string().label(t("bank.ifsc_code")),
+      upi: Yup.string().label(t("bank.upi_details")),
+      accountHolderName: Yup.string().label(t("bank.account_holder_name")),
     }),
     onSubmit: async (data, { setSubmitting }) => {
       const { data: responseData } = await instance.patch(
@@ -168,7 +173,7 @@ export default function AdminPage() {
         },
       );
       toast({
-        title: "Bank",
+        title: t("toasts.bank_title"),
         description: responseData.message,
         status: "success",
         duration: 3000,
@@ -210,7 +215,9 @@ export default function AdminPage() {
           ) : (
             <Box p={3}>
               <FormControl>
-                <FormLabel fontWeight={"bold"}>Organization</FormLabel>
+                <FormLabel fontWeight={"bold"}>
+                  {t("organization.label")}
+                </FormLabel>
                 <Select
                   options={organizationsOptions}
                   isOptionDisabled={({ disabled }) => disabled}
@@ -242,7 +249,7 @@ export default function AdminPage() {
             >
               <GoOrganization size={80} color="lightgray" />
               <Heading color={"gray.300"} fontSize={"2xl"}>
-                Select Organization
+                {t("organization.select_prompt")}
               </Heading>
             </Flex>
           ) : (
@@ -250,8 +257,8 @@ export default function AdminPage() {
               <Stack spacing={1}>
                 <Tabs size={"sm"} isLazy>
                   <TabList>
-                    <Tab>Organization</Tab>
-                    <Tab>Users</Tab>
+                    <Tab>{t("tabs.organization")}</Tab>
+                    <Tab>{t("tabs.users")}</Tab>
                   </TabList>
 
                   <TabPanels>
@@ -260,7 +267,7 @@ export default function AdminPage() {
                         <Stack spacing={2}>
                           <Box bg={bg} p={2}>
                             <Heading fontSize={"lg"}>
-                              Organization information
+                              {t("organization.information_heading")}
                             </Heading>
                           </Box>
                           <Accordion allowToggle>
@@ -272,7 +279,7 @@ export default function AdminPage() {
                                     flex="1"
                                     textAlign="left"
                                   >
-                                    Details
+                                    {t("organization.details")}
                                   </Box>
                                   <AccordionIcon />
                                 </AccordionButton>
@@ -297,7 +304,7 @@ export default function AdminPage() {
                                     fontWeight={"bold"}
                                     textAlign="left"
                                   >
-                                    Change logo
+                                    {t("organization.change_logo")}
                                   </Box>
                                   <AccordionIcon />
                                 </AccordionButton>
@@ -392,7 +399,9 @@ export default function AdminPage() {
 
                     <TabPanel>
                       <Box p={3} bg={bg}>
-                        <Heading fontSize={"lg"}>Registered Users</Heading>
+                        <Heading fontSize={"lg"}>
+                          {t("users.registered_heading")}
+                        </Heading>
                       </Box>
 
                       <Box pt={2}>
@@ -401,9 +410,9 @@ export default function AdminPage() {
                           alignItems={"center"}
                         >
                           <HelpPopover
-                            title={"Users"}
+                            title={t("users.help_title")}
                             description={
-                              "Here you can create users who can use the application. User can have two permissions Admin and User."
+                              t("users.help_description")
                             }
                           />
                           {organization ? (
@@ -426,7 +435,7 @@ export default function AdminPage() {
                               }}
                               size={"sm"}
                             >
-                              Add new
+                              {t("users.add_new")}
                             </Button>
                           ) : null}
                         </Flex>
@@ -435,10 +444,10 @@ export default function AdminPage() {
                             <TableCaption></TableCaption>
                             <Thead>
                               <Tr>
-                                <Th>Active</Th>
-                                <Th>Name</Th>
-                                <Th>Email</Th>
-                                <Th>Role</Th>
+                                <Th>{t("users.table.active")}</Th>
+                                <Th>{t("users.table.name")}</Th>
+                                <Th>{t("users.table.email")}</Th>
+                                <Th>{t("users.table.role")}</Th>
                               </Tr>
                             </Thead>
                             <Tbody>

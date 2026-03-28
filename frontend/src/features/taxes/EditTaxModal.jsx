@@ -22,64 +22,72 @@ import NumberInputInteger from "../common/NumberInputInteger";
 import instance from "../../instance";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
-const taxSchema = Yup.object({
-  name: Yup.string().required("Field is required").label("Name"),
-  type: Yup.string().required("Field is required").label("Type"),
-  category: Yup.string().required("Field is required").label("Category"),
-  percentage: Yup.number()
-    .min(0, "Minimum allowed is 0")
-    .max(100, "Maximum allowed is 100")
-    .label("Percentage"),
-  description: Yup.string().label("Description"),
-  children: Yup.array().of(Yup.string()).label("Group")
-});
-const typeOfTaxes = [
-  {
-    value: "single",
-    label: "Single",
-  },
-  {
-    value: "grouped",
-    label: "Grouped",
-  },
-];
-const taxCategories = [
-  {
-    value: "sgst",
-    label: "SGST",
-  },
-  {
-    value: "cgst",
-    label: "CGST",
-  },
-  {
-    value: "igst",
-    label: "IGST",
-  },
-  {
-    value: "vat",
-    label: "VAT",
-  },
-  {
-    value: "sal",
-    label: "SAL",
-  },
-  {
-    value: "cess",
-    label: "CESS",
-  },
-  {
-    value: "none",
-    label: "NONE",
-  },
-  {
-    value: "others",
-    label: "Others",
-  },
-];
+import { useTranslation } from "react-i18next";
 export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
+  const { t } = useTranslation("tax");
   const { orgId } = useParams();
   const toast = useToast();
+  const taxSchema = Yup.object({
+    name: Yup.string()
+      .required(t("tax_ui.validation.field_required"))
+      .label(t("tax_ui.form.name")),
+    type: Yup.string()
+      .required(t("tax_ui.validation.field_required"))
+      .label(t("tax_ui.form.type")),
+    category: Yup.string()
+      .required(t("tax_ui.validation.field_required"))
+      .label(t("tax_ui.form.category")),
+    percentage: Yup.number()
+      .min(0, t("tax_ui.validation.min_allowed"))
+      .max(100, t("tax_ui.validation.max_allowed"))
+      .label(t("tax_ui.form.percentage")),
+    description: Yup.string().label(t("tax_ui.form.description")),
+    children: Yup.array().of(Yup.string()).label(t("tax_ui.form.group")),
+  });
+  const typeOfTaxes = [
+    {
+      value: "single",
+      label: t("tax_ui.type_options.single"),
+    },
+    {
+      value: "grouped",
+      label: t("tax_ui.type_options.grouped"),
+    },
+  ];
+  const taxCategories = [
+    {
+      value: "sgst",
+      label: t("tax_ui.category_options.sgst"),
+    },
+    {
+      value: "cgst",
+      label: t("tax_ui.category_options.cgst"),
+    },
+    {
+      value: "igst",
+      label: t("tax_ui.category_options.igst"),
+    },
+    {
+      value: "vat",
+      label: t("tax_ui.category_options.vat"),
+    },
+    {
+      value: "sal",
+      label: t("tax_ui.category_options.sal"),
+    },
+    {
+      value: "cess",
+      label: t("tax_ui.category_options.cess"),
+    },
+    {
+      value: "none",
+      label: t("tax_ui.category_options.none"),
+    },
+    {
+      value: "others",
+      label: t("tax_ui.category_options.others"),
+    },
+  ];
   const defaultForm = {
     type: "single",
     category: "sgst",
@@ -98,7 +106,7 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
           values
         );
         toast({
-          title: "Success",
+          title: t("tax_ui.toast.success_title"),
           description: data.message,
           status: "success",
           duration: 3000,
@@ -110,8 +118,9 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
         fetchTaxes();
       } catch (error) {
         toast({
-          title: "Error",
-          description: error?.response?.data?.message || "Error occured",
+          title: t("tax_ui.toast.error_title"),
+          description:
+            error?.response?.data?.message || t("tax_ui.toast.error_fallback"),
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -139,13 +148,17 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{formik.values._id ? "Edit tax" : "Add tax"}</ModalHeader>
+        <ModalHeader>
+          {formik.values._id
+            ? t("tax_ui.modal.edit_title")
+            : t("tax_ui.modal.add_title")}
+        </ModalHeader>
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
             <Stack spacing={2}>
               <FormControl isInvalid={formik.errors.name} isRequired>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("tax_ui.form.name")}</FormLabel>
                 <Input
                   required
                   name="name"
@@ -155,7 +168,7 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
                 <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={formik.errors.type} isRequired>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>{t("tax_ui.form.type")}</FormLabel>
                 <Select
                   required
                   value={typeOfTaxes.find(
@@ -171,7 +184,7 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
               </FormControl>
               {formik.values.type === "single" ? (
                 <FormControl isInvalid={formik.errors.category}>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>{t("tax_ui.form.category")}</FormLabel>
                   <Select
                     required
                     value={taxCategories.find(
@@ -189,7 +202,7 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
               ) : null}
               {formik.values.type === "grouped" ? (
                 <FormControl isRequired>
-                  <FormLabel>Group</FormLabel>
+                  <FormLabel>{t("tax_ui.form.group")}</FormLabel>
                   <Select
                     isMulti
                     required
@@ -209,7 +222,7 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
               {formik.values.type === "single" ? (
                 formik.values.category === "none" ? null : (
                   <FormControl isInvalid={formik.errors.percentage} isRequired>
-                    <FormLabel>Percentage</FormLabel>
+                    <FormLabel>{t("tax_ui.form.percentage")}</FormLabel>
                     <NumberInputInteger
                       formik={formik}
                       name={"percentage"}
@@ -222,7 +235,7 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
                 )
               ) : null}
               <FormControl isInvalid={formik.errors.description}>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("tax_ui.form.description")}</FormLabel>
                 <Textarea
                   onChange={formik.handleChange}
                   name="description"
@@ -234,14 +247,14 @@ export default function EditTaxModal({ isOpen, onClose, taxes, fetchTaxes }) {
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
-              Close
+              {t("tax_ui.modal.close_button")}
             </Button>
             <Button
               isLoading={formik.isSubmitting}
               type="submit"
               colorScheme="blue"
             >
-              Save
+              {t("tax_ui.modal.save_button")}
             </Button>
           </ModalFooter>
         </form>

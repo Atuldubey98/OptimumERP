@@ -23,10 +23,12 @@ import {
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import instance from "../../instance";
 import { useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
+  const { t } = useTranslation("common");
   const defaultFields = {
     to: [],
     cc: [],
@@ -42,8 +44,8 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
         values
       );
       toast({
-        title: "Success",
-        description: "Sent to party",
+        title: t("common_ui.toasts.success"),
+        description: t("common_ui.share_mail.sent_to_party"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -98,14 +100,14 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Share via mail</ModalHeader>
+        <ModalHeader>{t("common_ui.share_mail.title")}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
             {isNotFree ? (
               <Stack spacing={1}>
                 <FormControl isRequired>
-                  <FormLabel>To</FormLabel>
+                  <FormLabel>{t("common_ui.share_mail.to")}</FormLabel>
                   <Select
                     isMulti
                     onChange={(toOptions) =>
@@ -118,11 +120,11 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                     options={contactOptions}
                   />
                   <FormHelperText>
-                    Only contacts of customer with email will be shown here.
+                    {t("common_ui.share_mail.contacts_with_email_only")}
                   </FormHelperText>
                 </FormControl>
                 <FormControl>
-                  <FormLabel>CC</FormLabel>
+                  <FormLabel>{t("common_ui.share_mail.cc")}</FormLabel>
                   <Select
                     isMulti
                     onChange={(toOptions) =>
@@ -135,26 +137,26 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                     options={contactOptions}
                   />
                   <FormHelperText>
-                    Only contacts of customer with email will be shown here.
+                    {t("common_ui.share_mail.contacts_with_email_only")}
                   </FormHelperText>
                 </FormControl>
                 <FormControl isRequired>
-                  <FormLabel>Subject</FormLabel>
+                  <FormLabel>{t("common_ui.share_mail.subject")}</FormLabel>
                   <Input
                     onChange={formik.handleChange}
                     name="subject"
                     value={formik.values.subject}
                   />
-                  <FormHelperText>Subject for the mail</FormHelperText>
+                  <FormHelperText>{t("common_ui.share_mail.subject_help")}</FormHelperText>
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Body</FormLabel>
+                  <FormLabel>{t("common_ui.share_mail.body")}</FormLabel>
                   <Textarea
                     onChange={formik.handleChange}
                     name="body"
                     value={formik.values.body}
                   />
-                  <FormHelperText>Body for the mail</FormHelperText>
+                  <FormHelperText>{t("common_ui.share_mail.body_help")}</FormHelperText>
                 </FormControl>
               </Stack>
             ) : (
@@ -169,11 +171,10 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
               >
                 <AlertIcon boxSize="40px" mr={0} />
                 <AlertTitle mt={4} mb={1} fontSize="lg">
-                  Upgrade your plan
+                  {t("common_ui.table.upgrade_your_plan")}
                 </AlertTitle>
                 <AlertDescription maxWidth="sm">
-                  Upgrade your plan to use this service. Contact admin to setup
-                  the SMTP for organization.
+                  {t("common_ui.share_mail.upgrade_description")}
                 </AlertDescription>
               </Alert>
             )}
@@ -181,7 +182,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
 
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
-              Close
+              {t("common_ui.actions.close")}
             </Button>
             {isNotFree ? (
               <Button
@@ -189,7 +190,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                 type="submit"
                 colorScheme="blue"
               >
-                Share
+                {t("common_ui.actions.share")}
               </Button>
             ) : null}
           </ModalFooter>

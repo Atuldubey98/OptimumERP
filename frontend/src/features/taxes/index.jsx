@@ -22,7 +22,9 @@ import VertIconMenu from "../common/table-layout/VertIconMenu";
 import EditTaxModal from "./EditTaxModal";
 import DefaultSwitchSetting from "./DefaultSwitchSetting";
 import SettingContext from "../../contexts/SettingContext";
+import { useTranslation } from "react-i18next";
 export default function TaxesPage() {
+  const { t } = useTranslation("tax");
   const { status, taxes, getAll, onToggleEnabled, hasReachedLimit } =
     useTaxes();
   const { receiptDefaults } = useSetting();
@@ -45,7 +47,7 @@ export default function TaxesPage() {
       );
       setSelectedTaxStatus("idle");
       toast({
-        title: "Success",
+        title: t("tax_ui.toast.success_title"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -54,8 +56,9 @@ export default function TaxesPage() {
       getAll();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error?.response?.data?.message || "Error occured",
+        title: t("tax_ui.toast.error_title"),
+        description:
+          error?.response?.data?.message || t("tax_ui.toast.error_fallback"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -96,19 +99,19 @@ export default function TaxesPage() {
         ) : (
           <TableLayout
             isAddDisabled={isAddDisabled}
-            caption={`Total taxes ${taxes.length}`}
+            caption={t("tax_ui.page.total", { count: taxes.length })}
             onAddNewItem={toggleTaxOpen}
             filter={
               <Box maxW={"md"}>
                 <SearchItem />
               </Box>
             }
-            heading={"Taxes"}
+            heading={t("tax_ui.page.heading")}
             selectedKeys={{
-              name: "Name",
-              category: "Category",
-              percentage: "Percentage",
-              enabled: "Enabled",
+              name: t("tax_ui.table.columns.name"),
+              category: t("tax_ui.table.columns.category"),
+              percentage: t("tax_ui.table.columns.percentage"),
+              enabled: t("tax_ui.table.columns.enabled"),
             }}
             tableData={taxes.map(makeTaxesDisplayMapper)}
             operations={taxes.map((tax) => (
@@ -138,9 +141,9 @@ export default function TaxesPage() {
       />
       {selectedTax ? (
         <AlertModal
-          body={"Do you want to delete tax ?"}
-          header={"Delete tax"}
-          buttonLabel="Delete"
+          body={t("tax_ui.modal.delete_body")}
+          header={t("tax_ui.modal.delete_header")}
+          buttonLabel={t("tax_ui.modal.delete_button")}
           confirmDisable={selectedTaxStatus === "deleting"}
           isOpen={isAlertOpen}
           onClose={toggleAlert}
@@ -150,8 +153,8 @@ export default function TaxesPage() {
       {selectedTax ? (
         <ShowDrawer
           disable={isAddDisabled}
-          formBtnLabel={"Add"}
-          heading={"Tax"}
+          formBtnLabel={t("tax_ui.modal.show_add_button")}
+          heading={t("tax_ui.modal.show_heading")}
           isOpen={isTaxModalOpen}
           item={{
             ...selectedTax,
@@ -166,18 +169,18 @@ export default function TaxesPage() {
           onClickNewItem={toggleTaxOpen}
           onClose={toggleTaxModal}
           selectedKeys={{
-            name: "Name",
-            type: "Type",
-            category: "Category",
-            percentage: "Percentage",
-            description: "Description",
+            name: t("tax_ui.table.columns.name"),
+            type: t("tax_ui.table.columns.type"),
+            category: t("tax_ui.table.columns.category"),
+            percentage: t("tax_ui.table.columns.percentage"),
+            description: t("tax_ui.table.columns.description"),
           }}
         >
           {role === "admin" ? (
             <DefaultSwitchSetting
               receiptDefaultKey={"tax"}
               selectedItem={selectedTax}
-              successMessage={"Default tax updated"}
+              successMessage={t("tax_ui.toast.default_updated")}
             />
           ) : null}
         </ShowDrawer>

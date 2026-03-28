@@ -12,6 +12,7 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import AuthLayout from "../common/auth-layout";
 import instance from "../../instance";
@@ -19,6 +20,7 @@ import { isAxiosError } from "axios";
 import { useNavigate, Link as ReactRouterLink } from "react-router-dom";
 import OTPAlert from "./OTPAlert";
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation("forgot-password");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [sent, setSent] = useState(false);
@@ -37,7 +39,7 @@ export default function ForgotPasswordPage() {
       toast({
         status: "success",
         duration: 3000,
-        title: "OTP",
+        title: t("forgot_password_ui.toasts.otp_title"),
         description: data.message,
       });
       setSent(true);
@@ -64,8 +66,8 @@ export default function ForgotPasswordPage() {
         toast({
           status: "info",
           duration: 3000,
-          title: "Password",
-          description: "Password and confirm password do not match",
+          title: t("forgot_password_ui.toasts.password_title"),
+          description: t("forgot_password_ui.validation.password_mismatch"),
         });
         return;
       }
@@ -80,7 +82,7 @@ export default function ForgotPasswordPage() {
       toast({
         status: "success",
         duration: 3000,
-        title: "Password",
+        title: t("forgot_password_ui.toasts.password_title"),
         description: data.message,
       });
       setConfirmNewPassword("");
@@ -103,25 +105,25 @@ export default function ForgotPasswordPage() {
     }
   };
   return (
-    <AuthLayout formHeading={"Forgot password"}>
+    <AuthLayout formHeading={t("forgot_password_ui.page.heading")}>
       <form onSubmit={sent ? onSendOtp : onSendEmailForgotPassword}>
         <Stack spacing={4}>
           <FormControl isRequired>
-            <FormLabel>Email</FormLabel>
+            <FormLabel>{t("forgot_password_ui.form.email_label")}</FormLabel>
             <Input
               isDisabled={sent}
               value={email}
               onChange={(e) => setEmail(e.currentTarget.value)}
               name="email"
               type="email"
-              placeholder="Email"
+              placeholder={t("forgot_password_ui.form.email_placeholder")}
             />
           </FormControl>
           {sent ? (
             <>
               <OTPAlert />
               <FormControl isRequired>
-                <FormLabel>OTP</FormLabel>
+                <FormLabel>{t("forgot_password_ui.form.otp_label")}</FormLabel>
                 <HStack>
                   <PinInput value={otp} onChange={(value) => setOtp(value)} otp>
                     <PinInputField />
@@ -132,23 +134,23 @@ export default function ForgotPasswordPage() {
                 </HStack>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>New password</FormLabel>
+                <FormLabel>{t("forgot_password_ui.form.new_password_label")}</FormLabel>
                 <Input
                   value={password}
                   type="password"
                   onChange={(e) => setPassword(e.currentTarget.value)}
                   name="password"
-                  placeholder="New password"
+                  placeholder={t("forgot_password_ui.form.new_password_placeholder")}
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Confirm new password</FormLabel>
+                <FormLabel>{t("forgot_password_ui.form.confirm_password_label")}</FormLabel>
                 <Input
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.currentTarget.value)}
                   name="confirmNewPassword"
                   type="text"
-                  placeholder="Confirm Password"
+                  placeholder={t("forgot_password_ui.form.confirm_password_placeholder")}
                 />
               </FormControl>
             </>
@@ -159,12 +161,12 @@ export default function ForgotPasswordPage() {
             type="submit"
             colorScheme="blue"
           >
-            {sent ? "Reset" : "Send OTP"}
+            {sent ? t("forgot_password_ui.buttons.reset") : t("forgot_password_ui.buttons.send_otp")}
           </Button>
 
           <Grid>
             <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
-              Login Now ?
+              {t("forgot_password_ui.links.login_now")}
             </ChakraLink>
           </Grid>
         </Stack>

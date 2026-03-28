@@ -18,9 +18,10 @@ export default function SettingLinks() {
             headerLink={{
               icon: setting.icon,
               label: setting.label,
+              labelKey: setting.labelKey,
               link: setting.link,
             }}
-            key={setting.label}
+            key={setting.link}
           />
         ))}
     </List>

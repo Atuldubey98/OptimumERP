@@ -1,0 +1,58 @@
+{
+  "organization": {
+    "organization": {
+      "not_found": "A organização não existe",
+      "created": "Organização criada com sucesso",
+      "updated": "Organização atualizada com sucesso",
+      "deleted": "Organização excluída com sucesso"
+    },
+    "not_found": "A organização não existe",
+    "created": "Organização criada com sucesso",
+    "updated": "Organização atualizada com sucesso",
+    "deleted": "Organização excluída com sucesso"
+  },
+  "org_ui": {
+    "page": {
+      "heading": "Suas organizações",
+      "current_plan_button": "Plano Atual",
+      "logout_button": "Sair"
+    },
+    "plan_popup": {
+      "free_plan_name": "Plano Gratuito",
+      "free_plan_description": "O plano gratuito permite apenas uma organização com benefícios limitados.",
+      "gold_plan_name": "Plano Gold",
+      "gold_plan_description": "O Plano Gold permite que você tenha 3 organizações",
+      "platinum_plan_name": "Plano Platinum",
+      "platinum_plan_description": "Este é o plano platinum"
+    },
+    "logout_modal": {
+      "header": "Sair",
+      "body": "Deseja sair?",
+      "cancel_button": "Cancelar",
+      "confirm_button": "Sair"
+    },
+    "new_org_modal": {
+      "header": "Nova Organização",
+      "name_label": "Nome",
+      "name_placeholder": "Nome",
+      "name_helper": "Nome da sua organização",
+      "address_label": "Endereço",
+      "address_placeholder": "Endereço",
+      "address_helper": "Endereço da sua organização",
+      "gst_label": "Nº GST / Nº Reg. Fiscal",
+      "gst_placeholder": "Nº GST",
+      "gst_helper": "Número de registro GST ou registro fiscal da organização",
+      "pan_label": "Nº PAN",
+      "pan_placeholder": "Nº PAN",
+      "pan_helper": "Nº PAN / Nº TAN da organização",
+      "rest_details_note": "O restante dos detalhes da organização pode ser preenchido nas configurações",
+      "fiscal_year_heading": "Ano Fiscal",
+      "start_date_label": "Data de Início",
+      "end_date_label": "Data de Término",
+      "date_placeholder": "dd-mm-aaaa",
+      "fiscal_year_note": "Selecione o ano fiscal atual que você está seguindo",
+      "close_button": "Fechar",
+      "submit_button": "Salvar"
+    }
+  }
+}

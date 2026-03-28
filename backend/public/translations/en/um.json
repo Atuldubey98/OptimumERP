@@ -1,0 +1,36 @@
+{
+  "um_ui": {
+    "page": {
+      "heading": "Unit of measurements",
+      "heading_single": "Unit of measurement",
+      "total": "Total Unit of measurements {{count}}"
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "unit": "Unit",
+        "enabled": "Enabled",
+        "description": "Description"
+      }
+    },
+    "modal": {
+      "add_title": "Add unit",
+      "edit_title": "Edit unit",
+      "add_new": "Add new",
+      "close": "Close",
+      "save": "Save"
+    },
+    "form": {
+      "name": "Name",
+      "short_form": "Short form",
+      "description": "Description",
+      "enabled": "Enabled"
+    },
+    "toast": {
+      "success_title": "Success",
+      "error_title": "Error",
+      "error_fallback": "Error occured",
+      "default_updated": "Default unit updated"
+    }
+  }
+}

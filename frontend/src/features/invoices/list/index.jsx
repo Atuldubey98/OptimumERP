@@ -6,6 +6,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import moment from "moment";
 import { useState } from "react";
@@ -28,6 +29,7 @@ import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import useAuth from "../../../hooks/useAuth";
 export default function InvoicesPage() {
+  const { t } = useTranslation("invoice");
   const {
     items: invoices,
     reachedLimit,
@@ -149,9 +151,9 @@ export default function InvoicesPage() {
               status: "idle",
             }}
             isAddDisabled={reachedLimit}
-            heading={"Invoices"}
+            heading={t("invoice_ui.page.heading")}
             tableData={invoices.map(invoiceTableMapper)}
-            caption={`Total invoices found : ${totalCount}`}
+            caption={`${t("invoice_ui.page.total_found")} : ${totalCount}`}
             operations={invoices.map((invoice) => (
               <VertIconMenu
                 recordPayment={() => {
@@ -180,11 +182,11 @@ export default function InvoicesPage() {
               />
             ))}
             selectedKeys={{
-              num: "Invoice No.",
-              date: "Invoice Date",
-              partyName: "Recipient",
-              status: "Status",
-              grandTotal: "Total",
+              num: t("invoice_ui.table.columns.invoice_no"),
+              date: t("invoice_ui.table.columns.invoice_date"),
+              partyName: t("invoice_ui.table.columns.recipient"),
+              status: t("invoice_ui.table.columns.status"),
+              grandTotal: t("invoice_ui.table.columns.total"),
             }}
             onAddNewItem={onClickAddNewInvoice}
           />
@@ -193,7 +195,7 @@ export default function InvoicesPage() {
           <BillModal
             bill={invoice}
             entity={"invoices"}
-            heading={"Invoice"}
+            heading={t("invoice_ui.modal.heading")}
             isOpen={isOpen}
             onSaveBill={onSaveBill}
             onClose={onClose}
@@ -209,8 +211,8 @@ export default function InvoicesPage() {
         ) : null}
         <AlertModal
           confirmDisable={deleting}
-          body={"Do you want to delete the invoice ?"}
-          header={"Delete Invoice"}
+          body={t("invoice_ui.modal.delete_body")}
+          header={t("invoice_ui.modal.delete_header")}
           isOpen={isDeleteModalOpen}
           onClose={onCloseDeleteModal}
           onConfirm={() => deleteInvoice(invoice)}
@@ -233,27 +235,27 @@ export default function InvoicesPage() {
             onClose={toggleExportModal}
             downloadUrl={`/api/v1/organizations/${orgId}/invoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
             defaultSelectedFields={{
-              partyName: "Party Name",
-              billingAddress: "Billing Address",
-              total: "Total",
-              totalTax: "Total Tax",
-              date: "Date",
-              num: "Number",
-              status: "Status",
-              grandTotal: "Grand Total",
+              partyName: t("invoice_ui.export.default_fields.party_name"),
+              billingAddress: t("invoice_ui.export.default_fields.billing_address"),
+              total: t("invoice_ui.export.default_fields.total"),
+              totalTax: t("invoice_ui.export.default_fields.total_tax"),
+              date: t("invoice_ui.export.default_fields.date"),
+              num: t("invoice_ui.export.default_fields.number"),
+              status: t("invoice_ui.export.default_fields.status"),
+              grandTotal: t("invoice_ui.export.default_fields.grand_total"),
             }}
             selectableFields={{
-              createdByEmail: "Created By Email",
-              createdByName: "Created By Name",
-              poNo: "PO Number",
-              poDate: "PO Date",
-              cgst: "CGST",
-              igst: "IGST",
-              sgst: "SGST",
-              vat: "VAT",
-              cess: "Cess",
-              sal: "SAL",
-              others: "Other taxes",
+              createdByEmail: t("invoice_ui.export.selectable_fields.created_by_email"),
+              createdByName: t("invoice_ui.export.selectable_fields.created_by_name"),
+              poNo: t("invoice_ui.export.selectable_fields.po_number"),
+              poDate: t("invoice_ui.export.selectable_fields.po_date"),
+              cgst: t("invoice_ui.export.selectable_fields.cgst"),
+              igst: t("invoice_ui.export.selectable_fields.igst"),
+              sgst: t("invoice_ui.export.selectable_fields.sgst"),
+              vat: t("invoice_ui.export.selectable_fields.vat"),
+              cess: t("invoice_ui.export.selectable_fields.cess"),
+              sal: t("invoice_ui.export.selectable_fields.sal"),
+              others: t("invoice_ui.export.selectable_fields.other_taxes"),
             }}
           />
         ) : null}

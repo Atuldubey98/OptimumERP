@@ -3,9 +3,11 @@ import { Tr, Td, Switch, useToast, Spinner, Tooltip } from "@chakra-ui/react";
 import instance from "../../instance";
 import { isAxiosError } from "axios";
 import useAuth from "../../hooks/useAuth";
+import { useTranslation } from "react-i18next";
 export default function OrgUserRow({ orgUser, fetchUsers, organization }) {
   const [status, setStatus] = useState("idle");
   const toast = useToast();
+  const { t } = useTranslation("admin");
   async function onChangeActiveUser(active) {
     try {
       setStatus("changing");
@@ -16,7 +18,7 @@ export default function OrgUserRow({ orgUser, fetchUsers, organization }) {
         userId: orgUser._id,
       });
       toast({
-        title: "Success",
+        title: t("toasts.success_title"),
         description: data.message,
         status: "success",
         duration: 3000,
@@ -25,10 +27,10 @@ export default function OrgUserRow({ orgUser, fetchUsers, organization }) {
       fetchUsers(organization);
     } catch (error) {
       toast({
-        title: "Error",
+        title: t("toasts.error_title"),
         description: isAxiosError(error)
           ? error.response.data.message
-          : "Error occured",
+          : t("toasts.error_occurred"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -47,8 +49,8 @@ export default function OrgUserRow({ orgUser, fetchUsers, organization }) {
           <Switch
             title={
               auth.user._id === orgUser._id
-                ? "This is your account"
-                : "Deactivate"
+                ? t("users.this_is_your_account")
+                : t("users.deactivate")
             }
             isDisabled={auth.user._id === orgUser._id}
             onChange={(e) => {

@@ -24,9 +24,11 @@ import MainLayout from "../common/main-layout";
 import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
 import SearchItem from "../common/table-layout/SearchItem";
+import { useTranslation } from "react-i18next";
 import ProductFormDrawer from "./ProductFormDrawer";
 import ProductMenu from "./ProductMenu";
 export default function ProductsPage() {
+  const { t } = useTranslation("product");
   const {
     isOpen: isProductFormOpen,
     onClose: onCloseProductFormDrawer,
@@ -57,9 +59,9 @@ export default function ProductsPage() {
       const { data } = await instance.get(
         `/api/v1/organizations/${orgId}/productCategories/${productCategoryId}?select=name`
       );
-      setHeading(`Items (${data.data.name})`);
+      setHeading(t("product_ui.page.heading_with_category", { category: data.data.name }));
     } else {
-      setHeading("Items");
+      setHeading(t("product_ui.page.heading"));
     }
   };
 
@@ -159,7 +161,7 @@ export default function ProductsPage() {
             limitKey={"products"}
             heading={heading}
             tableData={products.map(productsMapper)}
-            caption={`Total items found : ${totalCount}`}
+            caption={`${t("product_ui.page.total_found")} : ${totalCount}`}
             operations={products.map((product) => (
               <ProductMenu
                 onDeleteProduct={() => {
@@ -172,11 +174,11 @@ export default function ProductsPage() {
               />
             ))}
             selectedKeys={{
-              name: "Name",
-              costPrice: "Cost Price",
-              sellingPrice: "Selling Price",
-              type: "Item Type",
-              um: "Unit of measurement",
+              name: t("product_ui.table.columns.name"),
+              costPrice: t("product_ui.table.columns.cost_price"),
+              sellingPrice: t("product_ui.table.columns.selling_price"),
+              type: t("product_ui.table.columns.type"),
+              um: t("product_ui.table.columns.um"),
             }}
             onAddNewItem={onOpenDrawerForAddingNewProduct}
           />
@@ -188,8 +190,8 @@ export default function ProductsPage() {
           <ShowDrawer
             disable={reachedLimit}
             onClickNewItem={onOpenDrawerForAddingNewProduct}
-            heading={"Product"}
-            formBtnLabel={"Add new"}
+            heading={t("product_ui.drawer.heading")}
+            formBtnLabel={t("product_ui.drawer.add_button")}
             isOpen={isProductDrawerOpen}
             item={{
               ...selectedToShowProduct,
@@ -201,20 +203,20 @@ export default function ProductsPage() {
             }}
             onClose={closeProductDrawer}
             selectedKeys={{
-              name: "Name",
-              costPrice: "Cost Price",
-              type: "Type of Product",
-              sellingPrice: "Selling Price",
-              createdAt: "Created At",
-              description: "Description",
-              um: "Unit",
+              name: t("product_ui.drawer.columns.name"),
+              costPrice: t("product_ui.drawer.columns.cost_price"),
+              type: t("product_ui.drawer.columns.type"),
+              sellingPrice: t("product_ui.drawer.columns.selling_price"),
+              createdAt: t("product_ui.drawer.columns.created_at"),
+              description: t("product_ui.drawer.columns.description"),
+              um: t("product_ui.drawer.columns.um"),
             }}
           />
         ) : null}
         <AlertModal
           confirmDisable={deleting}
-          body={"Do you want to delete the product ?"}
-          header={"Delete product"}
+          body={t("product_ui.modal.delete_body")}
+          header={t("product_ui.modal.delete_header")}
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           onConfirm={onDeleteProduct}

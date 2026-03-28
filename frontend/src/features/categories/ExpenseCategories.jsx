@@ -9,6 +9,7 @@ import {
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import useExpenseCategories from "../../hooks/useExpenseCategories";
@@ -20,14 +21,18 @@ import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseCategoryForm from "./ExpenseCategoryForm";
 
 import useAsyncCall from "../../hooks/useAsyncCall";
-const expenseCategorySchema = Yup.object({
-  name: Yup.string().required().max(80, "Cannot be greater than 80 characters"),
-  enabled: Yup.boolean().optional().default(true),
-  description: Yup.string()
-    .optional()
-    .max(150, "Cannot be greater than 150 characters"),
-});
+
+const createExpenseCategorySchema = (t) =>
+  Yup.object({
+    name: Yup.string()
+      .required(t("validation.name_required"))
+      .max(80, t("validation.max_80")),
+    enabled: Yup.boolean().optional().default(true),
+    description: Yup.string().optional().max(150, t("validation.max_150")),
+  });
+
 export default function ExpenseCategories() {
+  const { t } = useTranslation("categories");
   const {
     fetchExpenseCategories,
     expenseCategories,
@@ -70,9 +75,11 @@ export default function ExpenseCategories() {
       );
       fetchExpenseCategories();
       toast({
-        title: "Success",
+        title: t("toasts.success_title"),
         size: "sm",
-        description: `Expense category ${_id ? "updated" : "created"}`,
+        description: _id
+          ? t("toasts.expense_category_updated")
+          : t("toasts.expense_category_created"),
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,
@@ -80,7 +87,7 @@ export default function ExpenseCategories() {
       closeExpenseCategoryForm();
       setSubmitting(false);
     }),
-    validationSchema: expenseCategorySchema,
+    validationSchema: createExpenseCategorySchema(t),
     validateOnChange: false,
   });
   const onAddNewExpenseCategory = () => {
@@ -105,8 +112,8 @@ export default function ExpenseCategories() {
         `/api/v1/organizations/${orgId}/expenseCategories/${expenseCategory._id}`
       );
       toast({
-        title: "Success",
-        description: "Expense category deleted",
+        title: t("toasts.success_title"),
+        description: t("toasts.expense_category_deleted"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -114,10 +121,12 @@ export default function ExpenseCategories() {
       fetchExpenseCategories();
     } catch (err) {
       toast({
-        title: isAxiosError(err) ? err.response?.data?.name : "Error",
+        title: isAxiosError(err)
+          ? err.response?.data?.name
+          : t("toasts.error_title"),
         description: isAxiosError(err)
-          ? err?.response?.data.message || "Network error occured"
-          : "Network error occured",
+          ? err?.response?.data.message || t("toasts.network_error")
+          : t("toasts.network_error"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -139,7 +148,9 @@ export default function ExpenseCategories() {
       ) : (
         <TableLayout
           isAddDisabled={reachedLimit}
-          caption={`Total expense categories : ${expenseCategories.length}`}
+          caption={t("expense.total_count", {
+            count: expenseCategories.length,
+          })}
           filter={
             <Box maxW={"md"}>
               <SearchItem />
@@ -161,7 +172,7 @@ export default function ExpenseCategories() {
               }}
             />
           ))}
-          heading={"Expense Categories"}
+          heading={t("expense.heading")}
           tableData={expenseCategories.map((item) => ({
             ...item,
             enabled: (
@@ -188,9 +199,9 @@ export default function ExpenseCategories() {
             ),
           }))}
           selectedKeys={{
-            name: "Name",
-            description: "Description",
-            enabled: "Enabled",
+            name: t("fields.name"),
+            description: t("fields.description"),
+            enabled: t("fields.enabled"),
           }}
         />
       )}
@@ -201,8 +212,8 @@ export default function ExpenseCategories() {
       />
       <AlertModal
         confirmDisable={deleting}
-        body={"Do you want to delete the expense category ?"}
-        header={"Delete"}
+        body={t("expense.delete_body")}
+        header={t("actions.delete")}
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={deleteExpenseCategory}

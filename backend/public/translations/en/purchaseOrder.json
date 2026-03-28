@@ -7,5 +7,66 @@
       "updated": "Purchase order updated successfully",
       "deleted": "Purchase order deleted successfully"
     }
+  },
+  "purchase_order_ui": {
+    "page": {
+      "heading": "Purchase Orders",
+      "total_found": "Total purchase orders"
+    },
+    "table": {
+      "columns": {
+        "po_no": "PO No",
+        "po_date": "PO Date",
+        "recipient": "Recipient",
+        "status": "Status",
+        "total": "Total"
+      }
+    },
+    "modal": {
+      "delete_body": "Do you want to delete the purchase order ?",
+      "delete_header": "Delete PO"
+    },
+    "bill_modal": {
+      "heading": "Purchase Order"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Party Name",
+        "billing_address": "Billing Address",
+        "total": "Total",
+        "total_tax": "Total Tax",
+        "num": "Number",
+        "status": "Status",
+        "grand_total": "Grand Total"
+      },
+      "selectable_fields": {
+        "created_by_email": "Created By Email",
+        "created_by_name": "Created By Name",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "VAT",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Other taxes"
+      }
+    },
+    "form": {
+      "not_found": "Purchase order not found",
+      "save_new": "Save & New",
+      "save": "Save",
+      "party_section": "Party",
+      "bill_to": "Bill to",
+      "billing_address": "Billing Address",
+      "invoice_details": "Invoice Details",
+      "po_no": "PO No.",
+      "po_date": "PO Date",
+      "items_section": "Items"
+    },
+    "toast": {
+      "success_title": "Success",
+      "error_title": "Error",
+      "error_fallback": "Some error occured"
+    }
   }
 }

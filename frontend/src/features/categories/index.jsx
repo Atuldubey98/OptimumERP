@@ -2,13 +2,23 @@ import React from "react";
 import MainLayout from "../common/main-layout";
 import ExpenseCategories from "./ExpenseCategories";
 import ItemCategories from "./ItemCategories";
+import { useTranslation } from "react-i18next";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function CategoriesPage() {
+  const { t } = useTranslation("categories");
   const tabs = [
-    { label: "Expense", value: "expense", children: <ExpenseCategories /> },
-    { label: "Product", value: "product", children: <ItemCategories /> },
+    {
+      label: t("tabs.expense"),
+      value: "expense",
+      children: <ExpenseCategories />,
+    },
+    {
+      label: t("tabs.product"),
+      value: "product",
+      children: <ItemCategories />,
+    },
   ];
   const navigate = useNavigate();
   const { orgId, type } = useParams();

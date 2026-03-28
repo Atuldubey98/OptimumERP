@@ -6,5 +6,49 @@
       "updated": "Contact updated successfully",
       "deleted": "Contact deleted successfully"
     }
+  },
+  "contact_ui": {
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "update": "Update"
+    },
+    "toasts": {
+      "success": "Success",
+      "error": "Error",
+      "created": "Contact created",
+      "updated": "Contact updated",
+      "deleted": "Contact deleted",
+      "error_occurred": "Error occured"
+    },
+    "page": {
+      "heading": "Contacts",
+      "search_contacts": "Search Contacts",
+      "contact_type": "Contact type",
+      "no_contacts": "No Contacts"
+    },
+    "filters": {
+      "all": "All",
+      "all_contacts": "All contacts"
+    },
+    "form": {
+      "heading": "Contact Form",
+      "name": "Name",
+      "telephone": "Telephone",
+      "email": "Email",
+      "party": "Party",
+      "type": "Type"
+    },
+    "card": {
+      "email": "Email",
+      "company_name": "Company Name",
+      "not_set": "-Not-set-",
+      "unknown": "Unknown"
+    },
+    "delete": {
+      "header": "Delete contact",
+      "body": "Do you want to delete the contact ?"
+    }
   }
 }

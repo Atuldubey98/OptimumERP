@@ -1,8 +1,0 @@
-{
-  "organization": {
-    "not_found": "A organização não existe",
-    "created": "Organização criada com sucesso",
-    "updated": "Organização atualizada com sucesso",
-    "deleted": "Organização excluída com sucesso"
-  }
-}

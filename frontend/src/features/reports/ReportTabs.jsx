@@ -1,19 +1,21 @@
 import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 import { reportTypes } from "../../constants/reports";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function ReportTabs({ onClose }) {
-  const hoverBg = useColorModeValue("gray.200", "gray.700");
+  useColorModeValue("gray.200", "gray.700");
   const selectedBg = useColorModeValue("gray.300", "gray.600");
   const { reportType: tab, orgId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("report");
 
   return (
     <Box fontSize={"lg"} width={"100%"}>
       {reportTypes.map((reportType) => (
         <Box key={reportType.type}>
           <Box fontWeight={"bold"} p={3} color={"gray"}>
-            <Text>{reportType.type}</Text>
+            <Text>{t(reportType.type)}</Text>
           </Box>
           <Box>
             {reportType.children.map((reportTypeChild) => (
@@ -27,7 +29,7 @@ export default function ReportTabs({ onClose }) {
                 p={3}
                 key={reportTypeChild.tab}
               >
-                <Text>{reportTypeChild.label}</Text>
+                <Text>{t(reportTypeChild.label)}</Text>
               </Box>
             ))}
           </Box>

@@ -33,8 +33,10 @@ import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import PrefixFormField from "../../common/PrefixFormField";
 import BannerWithLabel from "../../common/BannerWithLabel";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
+import { useTranslation } from "react-i18next";
 
 export default function ProformaInvoiceFormPage() {
+  const { t } = useTranslation("proformaInvoice");
   const { formik, status } = useProformaInvoicesForm();
   const { taxes } = useTaxes();
   const { ums } = useUms();
@@ -54,7 +56,7 @@ export default function ProformaInvoiceFormPage() {
           ) : error ? (
             <BannerWithLabel
               Icon={LiaFileInvoiceDollarSolid}
-              label={"Proforma invoice not found"}
+              label={t("proforma_invoice_ui.form.not_found")}
             />
           ) : (
             <form onSubmit={formik.handleSubmit}>
@@ -67,16 +69,16 @@ export default function ProformaInvoiceFormPage() {
                   colorScheme="teal"
                   variant="solid"
                 >
-                  Save
+                  {t("proforma_invoice_ui.form.save_button")}
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Party</Heading>
+                <Heading fontSize={"xl"}>{t("proforma_invoice_ui.form.party_section")}</Heading>
                 <FormControl
                   isInvalid={formik.errors.party && formik.touched.party}
                   isRequired
                 >
-                  <FormLabel>Bill to</FormLabel>
+                  <FormLabel>{t("proforma_invoice_ui.form.bill_to_label")}</FormLabel>
                   <PartySelectBill formik={formik} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
@@ -88,7 +90,7 @@ export default function ProformaInvoiceFormPage() {
                     }
                     isRequired
                   >
-                    <FormLabel>Billing Address</FormLabel>
+                    <FormLabel>{t("proforma_invoice_ui.form.billing_address_label")}</FormLabel>
                     <Textarea
                       name="billingAddress"
                       onChange={formik.handleChange}
@@ -99,14 +101,14 @@ export default function ProformaInvoiceFormPage() {
                     </FormErrorMessage>
                   </FormControl>
                 ) : null}
-                <Heading fontSize={"xl"}>Invoice Details</Heading>
+                <Heading fontSize={"xl"}>{t("proforma_invoice_ui.form.invoice_details_section")}</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isInvalid={
                       formik.errors.sequence && formik.touched.sequence
                     }
                   >
-                    <FormLabel>Proforma Invoice No.</FormLabel>
+                    <FormLabel>{t("proforma_invoice_ui.form.sequence_label")}</FormLabel>
                     <InputGroup>
                       <PrefixFormField
                         formik={formik}
@@ -128,9 +130,10 @@ export default function ProformaInvoiceFormPage() {
                   <SelectStatus
                     formik={formik}
                     statusList={invoiceStatusList}
+                    namespace="invoice"
                   />
                   <FormControl>
-                    <FormLabel>PO Number</FormLabel>
+                    <FormLabel>{t("proforma_invoice_ui.form.po_number_label")}</FormLabel>
                     <Input
                       value={formik.values.poNo}
                       onChange={formik.handleChange}
@@ -138,7 +141,7 @@ export default function ProformaInvoiceFormPage() {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>PO Date</FormLabel>
+                    <FormLabel>{t("proforma_invoice_ui.form.po_date_label")}</FormLabel>
                     <Input
                       value={formik.values.poDate}
                       onChange={formik.handleChange}
@@ -147,7 +150,7 @@ export default function ProformaInvoiceFormPage() {
                     />
                   </FormControl>
                 </SimpleGrid>
-                <Heading fontSize={"xl"}>Items</Heading>
+                <Heading fontSize={"xl"}>{t("proforma_invoice_ui.form.items_section")}</Heading>
                 <ItemsList
                   formik={formik}
                   defaultItem={defaultInvoiceItem}

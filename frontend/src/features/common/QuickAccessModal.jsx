@@ -20,6 +20,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaFileInvoice, FaFileInvoiceDollar } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
 import { GoPeople, GoTag } from "react-icons/go";
@@ -33,117 +34,118 @@ import ProductFormDrawer from "../products/ProductFormDrawer";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { TiContacts } from "react-icons/ti";
 export default function QuickAccessModal({ isOpen, onClose }) {
+  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const { orgId = localStorage.getItem("organization") } = useParams();
   const quickAccessLabels = [
     {
-      label: "Parties",
+      label: t("common_ui.quick_access.labels.parties"),
       onClick: () => navigate(`/${orgId}/parties`),
       icon: <GoPeople size={50} />,
     },
     {
-      label: "Create Party",
+      label: t("common_ui.quick_access.labels.create_party"),
       onClick: () => openPartyFormDrawer(),
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Invoices",
+      label: t("common_ui.quick_access.labels.invoices"),
       onClick: () => {
         navigate(`/${orgId}/invoices`);
       },
       icon: <FaFileInvoiceDollar size={50} />,
     },
     {
-      label: "Create Invoice",
+      label: t("common_ui.quick_access.labels.create_invoice"),
       onClick: () => {
         navigate(`/${orgId}/invoices/create`);
       },
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Estimates",
+      label: t("common_ui.quick_access.labels.estimates"),
       onClick: () => {
         navigate(`/${orgId}/estimates`);
       },
       icon: <FaFileInvoice size={50} />,
     },
     {
-      label: "Purchase",
+      label: t("common_ui.quick_access.labels.purchase"),
       onClick: () => {
         navigate(`/${orgId}/purchases`);
       },
       icon: <FaFileInvoice size={50} />,
     },
     {
-      label: "Create Purchase",
+      label: t("common_ui.quick_access.labels.create_purchase"),
       onClick: () => {
         navigate(`/${orgId}/purchases/create`);
       },
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Create Estimate",
+      label: t("common_ui.quick_access.labels.create_estimate"),
       onClick: () => {
         navigate(`/${orgId}/estimates/create`);
       },
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Reports",
+      label: t("common_ui.quick_access.labels.reports"),
       onClick: () => {
         navigate(`/${orgId}/reports/sale`);
       },
       icon: <HiOutlineDocumentReport size={50} />,
     },
     {
-      label: "Products",
+      label: t("common_ui.quick_access.labels.products"),
       onClick: () => {
         navigate(`/${orgId}/products`);
       },
       icon: <GoTag size={50} />,
     },
     {
-      label: "Create Product",
+      label: t("common_ui.quick_access.labels.create_product"),
       onClick: () => {
         openProductForm();
       },
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Expenses",
+      label: t("common_ui.quick_access.labels.expenses"),
       onClick: () => navigate(`/${orgId}/expenses`),
       icon: <GiExpense size={50} />,
     },
     {
-      label: "Proforma Invoices",
+      label: t("common_ui.quick_access.labels.proforma_invoices"),
       onClick: () => {
         navigate(`/${orgId}/proformaInvoices`);
       },
       icon: <LiaFileInvoiceDollarSolid size={50} />,
     },
     {
-      label: "Purchase Orders",
+      label: t("common_ui.quick_access.labels.purchase_orders"),
       onClick: () => {
         navigate(`/${orgId}/purchaseOrders`);
       },
       icon: <IoCartOutline size={50} />,
     },
     {
-      label: "Create PO",
+      label: t("common_ui.quick_access.labels.create_po"),
       onClick: () => {
         navigate(`/${orgId}/purchaseOrders/create`);
       },
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Create Pro Invoice",
+      label: t("common_ui.quick_access.labels.create_pro_invoice"),
       onClick: () => {
         navigate(`/${orgId}/proformaInvoices/create`);
       },
       icon: <IoCreateOutline size={50} />,
     },
     {
-      label: "Contacts",
+      label: t("common_ui.quick_access.labels.contacts"),
       onClick: () => {
         navigate(`/${orgId}/contacts`);
       },
@@ -176,7 +178,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       <ModalContent>
         <ModalHeader>
           <Stack spacing={3}>
-            <Text>Quick Access</Text>
+            <Text>{t("common_ui.quick_access.title")}</Text>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
                 <IoSearchOutline color="blue.300" />
@@ -186,7 +188,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
                 autoFocus
                 onChange={(e) => setSearch(e.currentTarget.value)}
                 type="search"
-                placeholder="Search"
+                placeholder={t("common_ui.search.placeholder")}
               />
             </InputGroup>
           </Stack>
@@ -237,7 +239,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
 
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
+            {t("common_ui.actions.close")}
           </Button>
         </ModalFooter>
       </ModalContent>

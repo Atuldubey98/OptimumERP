@@ -1,9 +1,84 @@
 {
   "party": {
-    "not_found": "A parte não existe",
-    "not_deleted": "A parte não foi excluída",
-    "created": "Parte criada com sucesso",
-    "updated": "Parte atualizada com sucesso",
-    "deleted": "Parte excluída com sucesso"
+    "not_found": "O contato não existe",
+    "not_deleted": "Contato não excluído",
+    "created": "Contato criado com sucesso",
+    "updated": "Contato atualizado com sucesso",
+    "deleted": "Contato excluído com sucesso"
+  },
+  "party_ui": {
+    "page": {
+      "heading": "Contatos (Partes)",
+      "total_found": "Total de contatos encontrados"
+    },
+    "table": {
+      "columns": {
+        "name": "Nome",
+        "billing_address": "Endereço de cobrança",
+        "tax_no": "Nº de Identificação Fiscal"
+      }
+    },
+    "modal": {
+      "delete_header": "Excluir contato",
+      "delete_body": "Deseja excluir o contato?"
+    },
+    "drawer": {
+      "heading": "Contato",
+      "create_button": "Criar Novo",
+      "columns": {
+        "name": "Nome",
+        "shipping_address": "Endereço de entrega",
+        "billing_address": "Endereço de cobrança",
+        "gst_no": "Nº GST",
+        "pan_no": "Nº PAN",
+        "updated_by": "Atualizado por",
+        "created_by": "Criado por"
+      }
+    },
+    "form": {
+      "add_button": "Adicionar",
+      "update_button": "Atualizar",
+      "new_heading": "Formulário de Novo Contato",
+      "update_heading": "Formulário de Atualização de Contato",
+      "name_label": "Nome do Contato",
+      "name_placeholder": "Nome do Contato",
+      "billing_address_label": "Endereço de cobrança",
+      "billing_address_placeholder": "Endereço de Cobrança",
+      "shipping_address_label": "Endereço de entrega",
+      "shipping_address_placeholder": "Endereço de Entrega",
+      "gst_label": "Nº GST",
+      "gst_placeholder": "Nº GST",
+      "pan_label": "Nº PAN",
+      "pan_placeholder": "Nº PAN"
+    }
+  },
+  "pricing_ui": {
+    "page": {
+      "heading": "Planos",
+      "subtitle": "Nossa estrutura de preços foi construída para ser acessível a todos, desde indivíduos até organizações",
+      "contact_text": "Para atualizar para qualquer um dos planos abaixo, você pode entrar em contato em"
+    },
+    "plans": {
+      "free": { "price": "Grátis", "period": "vitalício" },
+      "gold": { "price": "R$ 999", "period": "por Ano" },
+      "platinum": { "price": "R$ 1999", "period": "por Ano" }
+    },
+    "offerings": {
+      "manage_contacts": "Gerencie seus clientes, fornecedores e contatos em um só lugar",
+      "advanced_reporting": "Recursos avançados de relatórios.",
+      "invoicing_expense": "Faturamento avançado e controle de despesas",
+      "product_management": "Capacidades de gestão de produtos",
+      "dashboard_projections": "Painel e projeções financeiras",
+      "proforma_invoicing": "Faturamento Proforma ativado",
+      "mail_receipts": "Envio de recibos por e-mail pelo painel",
+      "qr_code": "Código QR ativado nas faturas",
+      "on_premise": "Implantação local (On-Premise) da aplicação"
+    },
+    "card": {
+      "active": "Ativo",
+      "coming_soon": "Em breve",
+      "upgrade": "Atualizar",
+      "mailto_body": "Por favor, escreva o nome da sua empresa, endereço comercial e o motivo para atualizar seu plano"
+    }
   }
 }

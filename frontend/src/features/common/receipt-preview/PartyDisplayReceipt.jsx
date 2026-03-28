@@ -3,8 +3,11 @@ import {
     Text
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 export default function PartyDisplayReceipt(props) {
+  const { t } = useTranslation("common");
+
   return (
     <Box marginBlock={3}>
       <Text>
@@ -16,17 +19,17 @@ export default function PartyDisplayReceipt(props) {
         </Link>
       </Text>
       <Text>
-        <strong>Billing address</strong> : {props.receipt.party?.billingAddress}
+        <strong>{t("common_ui.receipt.billing_address")}</strong> : {props.receipt.party?.billingAddress}
       </Text>
       <Text>
-        <strong>Shipping address</strong> :{" "}
+        <strong>{t("common_ui.receipt.shipping_address")}</strong> :{" "}
         {props.receipt.party?.shippingAddress}
       </Text>
       <Text>
-        <strong>GST</strong> : {props.receipt.party?.gstNo}
+        <strong>{t("common_ui.receipt.gst")}</strong> : {props.receipt.party?.gstNo}
       </Text>
       <Text>
-        <strong>PAN</strong> : {props.receipt.party?.panNo}
+        <strong>{t("common_ui.receipt.pan")}</strong> : {props.receipt.party?.panNo}
       </Text>
     </Box>
   );

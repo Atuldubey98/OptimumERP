@@ -1,5 +1,6 @@
 import { Box, Flex, Spinner, useDisclosure } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -17,18 +18,19 @@ import SearchItem from "../common/table-layout/SearchItem";
 import VertIconMenu from "../common/table-layout/VertIconMenu";
 import ExpenseForm from "./ExpenseForm";
 export default function ExpensesPage() {
+  const { t } = useTranslation("expense");
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, expenseCategoryId } = useParams();
 
   const { data, status, fetchFn } = usePaginatedFetch({
     url: `/api/v1/organizations/${orgId}/expenses`,
   });
-  const [heading, setHeading] = useState("Expenses");
+  const [heading, setHeading] = useState(t("expense_ui.page.heading"));
   const fetchExpenseCategoryById = async () => {
     const { data } = await instance.get(
       `/api/v1/organizations/${orgId}/expenseCategories/${expenseCategoryId}`
     );
-    setHeading(`Expenses (${data.data.name})`);
+    setHeading(t("expense_ui.page.heading_with_category", { category: data.data.name }));
   };
   useEffect(() => {
     if (expenseCategoryId) fetchExpenseCategoryById();
@@ -65,13 +67,13 @@ export default function ExpensesPage() {
     },
     validationSchema: Yup.object({
       description: Yup.string()
-        .required("Description is required")
+        .required(t("expense_ui.validation.description_required"))
         .label("Description"),
       amount: Yup.number()
-        .min(0, "Amount should be mininum 0")
-        .required("Amount is required")
+        .min(0, t("expense_ui.validation.amount_minimum"))
+        .required(t("expense_ui.validation.amount_required"))
         .label("Amount"),
-      date: Yup.string().required("Date is required").label("Date"),
+      date: Yup.string().required(t("expense_ui.validation.date_required")).label("Date"),
     }),
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...expense } = values;
@@ -135,10 +137,10 @@ export default function ExpensesPage() {
               amount: `${symbol} ${expense.amount}`,
               category: expense.category
                 ? expense.category.name
-                : "Miscellenous",
+                : t("expense_ui.messages.miscellaneous"),
               date: moment(expense.date).format("LL"),
             }))}
-            caption={`Total expenses found : ${totalCount}`}
+            caption={`${t("expense_ui.messages.total_found")} : ${totalCount}`}
             operations={expenses.map((expense) => (
               <VertIconMenu
                 editItem={() => {
@@ -161,10 +163,10 @@ export default function ExpensesPage() {
               />
             ))}
             selectedKeys={{
-              date: "Date",
-              category: "Category",
-              description: "Description",
-              amount: "Amount",
+              date: t("expense_ui.table.columns.date"),
+              category: t("expense_ui.table.columns.category"),
+              description: t("expense_ui.table.columns.description"),
+              amount: t("expense_ui.table.columns.amount"),
             }}
           />
         )}
@@ -178,8 +180,8 @@ export default function ExpensesPage() {
         {expenseSelected ? (
           <ShowDrawer
             onClickNewItem={onAddNewExpense}
-            heading={"Expense"}
-            formBtnLabel={"Create New"}
+            heading={t("expense_ui.drawer.heading")}
+            formBtnLabel={t("expense_ui.drawer.button_label")}
             isOpen={isExpenseOpen}
             disable={data.reachedLimit}
             item={{
@@ -188,14 +190,14 @@ export default function ExpensesPage() {
               amount: `${symbol} ${expenseSelected.amount}`,
               category: expenseSelected.category
                 ? expenseSelected.category.name
-                : "Miscellenous",
+                : t("expense_ui.messages.miscellaneous"),
             }}
             onClose={closeExpense}
             selectedKeys={{
-              date: "Date",
-              category: "Category",
-              description: "Description",
-              amount: "Amount",
+              date: t("expense_ui.table.columns.date"),
+              category: t("expense_ui.table.columns.category"),
+              description: t("expense_ui.table.columns.description"),
+              amount: t("expense_ui.table.columns.amount"),
             }}
           />
         ) : null}

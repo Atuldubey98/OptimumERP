@@ -1,0 +1,51 @@
+{
+  "tabs": {
+    "expense": "Despesa",
+    "product": "Produto"
+  },
+  "actions": {
+    "save": "Salvar",
+    "update": "Atualizar",
+    "delete": "Excluir"
+  },
+  "fields": {
+    "name": "Nome",
+    "description": "Descrição",
+    "enabled": "Ativado"
+  },
+  "validation": {
+    "name_required": "Nome é obrigatório",
+    "item_name": "Nome do item",
+    "min_2": "Não pode ser inferior a 2",
+    "max_20": "Não pode ser superior a 20",
+    "max_40": "Não pode ser superior a 40",
+    "max_80": "Não pode ser superior a 80 caracteres",
+    "max_150": "Não pode ser superior a 150 caracteres"
+  },
+  "toasts": {
+    "success_title": "Sucesso",
+    "error_title": "Erro",
+    "some_error_occurred": "Ocorreu algum erro",
+    "network_error": "Ocorreu um erro de rede",
+    "item_category_created": "Categoria de item criada",
+    "item_category_updated": "Categoria de item atualizada",
+    "item_category_deleted": "Categoria de item excluída",
+    "expense_category_created": "Categoria de despesa criada",
+    "expense_category_updated": "Categoria de despesa atualizada",
+    "expense_category_deleted": "Categoria de despesa excluída"
+  },
+  "item": {
+    "form_heading": "Categoria de Produto",
+    "heading": "Categorias de Produtos",
+    "total_count": "Total de tipos de itens: {{count}}",
+    "delete_body": "Deseja excluir a categoria do item?",
+    "delete_header": "Excluir categoria"
+  },
+  "expense": {
+    "form_heading": "Categoria de Despesa",
+    "type": "Tipo de Despesa",
+    "heading": "Categorias de Despesas",
+    "total_count": "Total de categorias de despesas: {{count}}",
+    "delete_body": "Deseja excluir a categoria de despesa?"
+  }
+}

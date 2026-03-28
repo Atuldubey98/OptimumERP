@@ -1,5 +1,6 @@
 import { Button, Link as ChakraLink, Flex, Grid, Show } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import useAsyncCall from "../../hooks/useAsyncCall";
@@ -10,15 +11,16 @@ import AuthFields from "./AuthFields";
 import GoogleIcon from "../common/GoogleIcon";
 import { useState } from "react";
 export default function LoginPage() {
+  const { t } = useTranslation("user");
   const { requestAsyncHandler } = useAsyncCall();
   const navigate = useNavigate();
   const auth = useAuth();
   const loginSchema = Yup.object({
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    email: Yup.string().email(t("user_ui.login.email_validation")).required(t("user_ui.login.email_required")),
     password: Yup.string()
-      .min(8, "Minimum length can be 8")
-      .max(20, "Maximum length can be 20")
-      .required("Password is required"),
+      .min(8, t("user_ui.login.password_min_length"))
+      .max(20, t("user_ui.login.password_max_length"))
+      .required(t("user_ui.login.password_required")),
   });
   const formik = useFormik({
     initialValues: {
@@ -47,7 +49,7 @@ export default function LoginPage() {
   };
   const isLoading = status === "connecting";
   return (
-    <AuthLayout formHeading={"Sign in"}>
+    <AuthLayout formHeading={t("user_ui.login.page_heading")}>
       <form onSubmit={formik.handleSubmit}>
         <Grid gap={4}>
           <AuthFields
@@ -63,7 +65,7 @@ export default function LoginPage() {
             colorScheme="blue"
             type="submit"
           >
-            Login
+            {t("user_ui.login.login_button")}
           </Button>
           {import.meta.env.VITE_GOOGLE_SSO_ENABLED === "true" ? (
             <Button
@@ -71,18 +73,18 @@ export default function LoginPage() {
               isLoading={isLoading}
               leftIcon={<GoogleIcon />}
             >
-              Continue with Google
+              {t("user_ui.login.continue_google")}
             </Button>
           ) : null}
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
-            Register Now ?
+            {t("user_ui.login.register_link")}
           </ChakraLink>
           <ChakraLink
             color="blue.500"
             as={ReactRouterLink}
             to={"/forgot-password"}
           >
-            Forgot Password ?
+            {t("user_ui.login.forgot_password_link")}
           </ChakraLink>
         </Grid>
       </form>

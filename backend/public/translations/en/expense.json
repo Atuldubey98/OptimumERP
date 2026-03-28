@@ -1,10 +1,51 @@
 {
   "expense": {
-    "expense": {
-      "not_found": "Expense not found",
-      "created": "Expense created successfully",
-      "updated": "Expense updated successfully",
-      "deleted": "Expense deleted successfully"
+    "not_found": "Expense not found",
+    "created": "Expense created successfully",
+    "updated": "Expense updated successfully",
+    "deleted": "Expense deleted successfully"
+  },
+  "expense_ui": {
+    "page": {
+      "heading": "Expenses",
+      "heading_with_category": "Expenses ({{category}})"
+    },
+    "table": {
+      "columns": {
+        "date": "Date",
+        "category": "Category",
+        "description": "Description",
+        "amount": "Amount"
+      }
+    },
+    "form": {
+      "heading": "Expense",
+      "labels": {
+        "amount": "Amount",
+        "description": "Description",
+        "category": "Expense Category",
+        "date": "Date"
+      },
+      "buttons": {
+        "add": "Add",
+        "update": "Update",
+        "create_new": "Create New"
+      }
+    },
+    "drawer": {
+      "heading": "Expense",
+      "button_label": "Create New"
+    },
+    "messages": {
+      "miscellaneous": "Miscellenous",
+      "category_note": "Note : Expense without category will be counted as Miscellenous",
+      "total_found": "Total expenses found"
+    },
+    "validation": {
+      "description_required": "Description is required",
+      "amount_minimum": "Amount should be mininum 0",
+      "amount_required": "Amount is required",
+      "date_required": "Date is required"
     }
   }
 }

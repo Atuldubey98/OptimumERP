@@ -13,6 +13,7 @@ import {
 import { useFormik } from "formik";
 import React from "react";
 import { GoDownload } from "react-icons/go";
+import { useTranslation } from "react-i18next";
 import instance from "../../instance";
 export default function ExporterModal({
   isOpen,
@@ -21,6 +22,7 @@ export default function ExporterModal({
   defaultSelectedFields = {},
   selectableFields = {},
 }) {
+  const { t } = useTranslation("common");
   const defaultSelectedFieldsMap = Object.keys(defaultSelectedFields).reduce(
     (prev, current) => {
       prev[current] = true;
@@ -55,7 +57,7 @@ export default function ExporterModal({
       const href = URL.createObjectURL(data);
       const link = document.createElement("a");
 
-      link.setAttribute("download", `Invoices.xlsx`);
+      link.setAttribute("download", t("common_ui.exporter.filename"));
       link.href = href;
       link.click();
       URL.revokeObjectURL(href);
@@ -67,7 +69,7 @@ export default function ExporterModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Select columns</ModalHeader>
+        <ModalHeader>{t("common_ui.exporter.select_columns")}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
@@ -86,7 +88,7 @@ export default function ExporterModal({
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
-              Close
+              {t("common_ui.actions.close")}
             </Button>
             <Button
               isLoading={formik.isSubmitting}
@@ -94,7 +96,7 @@ export default function ExporterModal({
               type="submit"
               colorScheme="green"
             >
-              Download
+              {t("common_ui.actions.download")}
             </Button>
           </ModalFooter>
         </form>

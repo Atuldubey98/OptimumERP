@@ -1,8 +1,71 @@
 {
   "tax": {
-    "not_found": "Imposto não encontrado",
-    "created": "Imposto criado com sucesso",
-    "updated": "Imposto atualizado com sucesso",
-    "deleted": "Imposto excluído com sucesso"
+    "tax": {
+      "not_found": "Imposto não encontrado",
+      "created": "Imposto criado com sucesso",
+      "updated": "Imposto atualizado com sucesso",
+      "deleted": "Imposto excluído com sucesso"
+    }
+  },
+  "tax_ui": {
+    "page": {
+      "heading": "Impostos",
+      "total": "Total de impostos {{count}}"
+    },
+    "table": {
+      "columns": {
+        "name": "Nome",
+        "category": "Categoria",
+        "percentage": "Porcentagem",
+        "enabled": "Ativado",
+        "type": "Tipo",
+        "description": "Descrição"
+      }
+    },
+    "modal": {
+      "delete_body": "Deseja excluir o imposto?",
+      "delete_header": "Excluir imposto",
+      "delete_button": "Excluir",
+      "show_heading": "Imposto",
+      "show_add_button": "Adicionar",
+      "add_title": "Adicionar imposto",
+      "edit_title": "Editar imposto",
+      "close_button": "Fechar",
+      "save_button": "Salvar"
+    },
+    "form": {
+      "name": "Nome",
+      "type": "Tipo",
+      "category": "Categoria",
+      "group": "Grupo",
+      "percentage": "Porcentagem",
+      "description": "Descrição",
+      "is_default": "É padrão?"
+    },
+    "type_options": {
+      "single": "Individual",
+      "grouped": "Agrupado"
+    },
+    "category_options": {
+      "sgst": "SGST",
+      "cgst": "CGST",
+      "igst": "IGST",
+      "vat": "IVA (VAT)",
+      "sal": "SAL",
+      "cess": "CESS",
+      "none": "NENHUM",
+      "others": "Outros"
+    },
+    "toast": {
+      "success_title": "Sucesso",
+      "error_title": "Erro",
+      "error_fallback": "Ocorreu um erro",
+      "default_updated": "Imposto padrão atualizado"
+    },
+    "validation": {
+      "field_required": "Campo obrigatório",
+      "min_allowed": "O mínimo permitido é 0",
+      "max_allowed": "O máximo permitido é 100"
+    }
   }
 }

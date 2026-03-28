@@ -10,11 +10,13 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { MdCheckCircle } from "react-icons/md";
 
 import Banner from "../sidebar/Banner";
 export default function AuthLayout({ children, formHeading }) {
   const {colorMode} = useColorMode();
+  const { t } = useTranslation("common");
   
    return (
     <Flex justifyContent={"center"} alignItems={"center"} height={"100svh"}>
@@ -30,16 +32,16 @@ export default function AuthLayout({ children, formHeading }) {
             <Banner />
             <Grid marginBlock={3}>
               <Text fontSize={"xl"} color={"GrayText"}>
-                Manage your company with :
+                {t("auth_layout.manage_company_with")}
               </Text>
               <List marginBlock={3} spacing={3}>
                 <ListItem>
                   <ListIcon as={MdCheckCircle} color="green.500" />
-                  All in one tool
+                  {t("auth_layout.all_in_one_tool")}
                 </ListItem>
                 <ListItem>
                   <ListIcon as={MdCheckCircle} color="green.500" />
-                  It Brings Together Your Invoice, Clients And Estimates
+                  {t("auth_layout.invoice_clients_estimates")}
                 </ListItem>
               </List>
             </Grid>

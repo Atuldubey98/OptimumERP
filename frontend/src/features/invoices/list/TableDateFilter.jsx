@@ -11,7 +11,7 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
   return (
     <Flex justifyContent={"flex-start"} alignItems={"center"} gap={2}>
       <Box flex={1}>
-        <SearchItem placeholder="Search" />
+        <SearchItem />
       </Box>
       <FilterPopoverWrapper>
         <DateFilter

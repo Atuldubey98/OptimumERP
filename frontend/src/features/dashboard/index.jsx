@@ -10,6 +10,7 @@ import {
 import { Select } from "chakra-react-select";
 import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FaFileInvoice,
   FaFileInvoiceDollar,
@@ -30,34 +31,35 @@ import GuideTourModal from "./GuideTourModal";
 import { GoPeople } from "react-icons/go";
 import { GiExpense } from "react-icons/gi";
 export default function DashboardPage() {
+  const { t } = useTranslation("dashboard");
   const dashboardEntityConfiguration = {
     invoices: {
-      label: "Invoices",
+      label: t("dashboard_ui.entities.invoices"),
       Icon: FaFileInvoiceDollar,
-      tableHeading: "Recent Sales",
+      tableHeading: t("dashboard_ui.tables.recent_sales"),
       route : "invoices",
       statusConfig: invoiceStatusList,
     },
     parties: {
-      label: "Parties",
+      label: t("dashboard_ui.entities.parties"),
       Icon: GoPeople,
     },
     expenses: {
-      label: "Expenses",
+      label: t("dashboard_ui.entities.expenses"),
       Icon: GiExpense,
     },
     purchases: {
-      label: "Purchase",
+      label: t("dashboard_ui.entities.purchases"),
       route : "purchases",
       Icon: FaMoneyBillTrendUp,
-      tableHeading: "Recent Purchase",
+      tableHeading: t("dashboard_ui.tables.recent_purchase"),
       statusConfig: purchaseStatusList,
     },
     quotes: {
-      label: "Quotation",
+      label: t("dashboard_ui.entities.quotes"),
       route : "estimates",
       Icon: FaFileInvoice,
-      tableHeading: "Recent Estimates ",
+      tableHeading: t("dashboard_ui.tables.recent_estimates"),
       statusConfig: statusList,
     },
   };
@@ -110,17 +112,17 @@ export default function DashboardPage() {
   };
   const periods = [
     {
-      label: "This week",
+      label: t("dashboard_ui.periods.this_week"),
       value: "lastWeek",
       params: [7, "D"],
     },
     {
-      label: "This month",
+      label: t("dashboard_ui.periods.this_month"),
       value: "lastMonth",
       params: [1, "M"],
     },
     {
-      label: "This year",
+      label: t("dashboard_ui.periods.this_year"),
       value: "lastYear",
       params: [1, "Y"],
     },
@@ -143,9 +145,9 @@ export default function DashboardPage() {
     <MainLayout>
       <Box p={5}>
         <Heading fontSize={"xl"}>
-          Hi, <strong>{auth?.user?.name}</strong>
+          {t("dashboard_ui.greeting")} <strong>{auth?.user?.name}</strong>
         </Heading>
-        <Text>Here's is overview of your business !</Text>
+        <Text>{t("dashboard_ui.overview_subtitle")}</Text>
         <Stack marginBlock={2} spacing={3}>
           <Flex justifyContent={"flex-end"} alignItems={"center"}>
             <Select
@@ -195,11 +197,11 @@ export default function DashboardPage() {
                       dashboardReceiptTableMapper(statusConfig)
                     )}
                     tableHeads={[
-                      "NUM",
-                      "Party name",
-                      "Total",
-                      "Status",
-                      "Date",
+                      t("dashboard_ui.tables.headers.num"),
+                      t("dashboard_ui.tables.headers.party_name"),
+                      t("dashboard_ui.tables.headers.total"),
+                      t("dashboard_ui.tables.headers.status"),
+                      t("dashboard_ui.tables.headers.date"),
                     ]}
                     onViewMore={() => navigate(`/${orgId}/${route}`)}
                   />

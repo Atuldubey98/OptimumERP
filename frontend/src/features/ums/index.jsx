@@ -9,8 +9,10 @@ import EditUmModal from "./EditUmModal";
 import ShowDrawer from "../common/ShowDrawer";
 import DefaultSwitchSetting from "../taxes/DefaultSwitchSetting";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import { useTranslation } from "react-i18next";
 
 export default function UmsPage() {
+  const { t } = useTranslation("um");
   const { ums, status, toggleStatus, fetchUms, onDeleteUm, hasReachedLimit } =
     useUms();
   const { receiptDefaults } = useCurrentOrgCurrency();
@@ -40,18 +42,18 @@ export default function UmsPage() {
         ) : (
           <TableLayout
             isAddDisabled={hasReachedLimit}
-            caption={`Total Unit of measurements ${ums.length}`}
+            caption={t("um_ui.page.total", { count: ums.length })}
             onAddNewItem={toggleUmEditModal}
             filter={
               <Box maxW={"md"}>
                 <SearchItem />
               </Box>
             }
-            heading={"Unit of measurements"}
+            heading={t("um_ui.page.heading")}
             selectedKeys={{
-              name: "Name",
-              unit: "Unit",
-              enabled: "Enabled",
+              name: t("um_ui.table.columns.name"),
+              unit: t("um_ui.table.columns.unit"),
+              enabled: t("um_ui.table.columns.enabled"),
             }}
             tableData={ums.map(umDisplayMapper)}
             operations={ums.map((um) => (
@@ -76,14 +78,14 @@ export default function UmsPage() {
       {selectedUm ? (
         <ShowDrawer
           disable={hasReachedLimit}
-          formBtnLabel={"Add new"}
+          formBtnLabel={t("um_ui.modal.add_new")}
           selectedKeys={{
-            name: "Name",
-            unit: "Unit",
-            enabled: "Enabled",
-            description: "Description",
+            name: t("um_ui.table.columns.name"),
+            unit: t("um_ui.table.columns.unit"),
+            enabled: t("um_ui.table.columns.enabled"),
+            description: t("um_ui.table.columns.description"),
           }}
-          heading={"Unit of measurement"}
+          heading={t("um_ui.page.heading_single")}
           isOpen={isUmOpen}
           onClose={toggleUmShow}
           item={{ ...selectedUm, enabled: selectedUm.enabled ? "YES" : "NO" }}
@@ -92,7 +94,7 @@ export default function UmsPage() {
           <DefaultSwitchSetting
             receiptDefaultKey={"um"}
             selectedItem={selectedUm}
-            successMessage={"Default unit updated"}
+            successMessage={t("um_ui.toast.default_updated")}
           />
         </ShowDrawer>
       ) : null}

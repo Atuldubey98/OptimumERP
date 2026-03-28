@@ -6,5 +6,57 @@
       "updated": "Product updated successfully",
       "deleted": "Product deleted successfully"
     }
+  },
+  "product_ui": {
+    "page": {
+      "heading": "Items",
+      "heading_with_category": "Items ({{category}})",
+      "total_found": "Total items found"
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "cost_price": "Cost Price",
+        "selling_price": "Selling Price",
+        "type": "Item Type",
+        "um": "Unit of measurement"
+      }
+    },
+    "modal": {
+      "delete_header": "Delete product",
+      "delete_body": "Do you want to delete the product ?"
+    },
+    "drawer": {
+      "heading": "Product",
+      "add_button": "Add new",
+      "columns": {
+        "name": "Name",
+        "cost_price": "Cost Price",
+        "type": "Type of Product",
+        "selling_price": "Selling Price",
+        "created_at": "Created At",
+        "description": "Description",
+        "um": "Unit"
+      }
+    },
+    "form": {
+      "add_button": "Add",
+      "update_button": "Update",
+      "new_heading": "New Product form",
+      "update_heading": "Update product form",
+      "name_label": "Item Name",
+      "name_placeholder": "Product Name",
+      "category_label": "Category",
+      "type_label": "Type of product",
+      "type_service": "Service",
+      "type_goods": "Goods",
+      "um_label": "Unit of Measurement",
+      "cost_price_label": "Cost Price",
+      "selling_price_label": "Selling Price",
+      "code_label": "HSN Code or SAC Code",
+      "code_placeholder": "Code",
+      "description_label": "Description",
+      "description_placeholder": "Product Description"
+    }
   }
 }

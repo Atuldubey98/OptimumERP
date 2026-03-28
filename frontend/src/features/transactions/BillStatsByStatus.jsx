@@ -2,8 +2,10 @@ import { Box, Flex, Grid, Progress, Text, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import StatProgress from "./StatProgress";
+import { useTranslation } from "react-i18next";
 
 export default function BillStatsByStatus({ invoicesByStatus, label }) {
+  const { t } = useTranslation("transactions");
   const numberOfInvoices = invoicesByStatus.reduce(
     (prev, currentInvoiceStatus) => prev + currentInvoiceStatus.count,
     0
@@ -23,7 +25,10 @@ export default function BillStatsByStatus({ invoicesByStatus, label }) {
             )})`}
             key={invByStatus._id}
             progress={(invByStatus.count / numberOfInvoices) * 100}
-            label={`${invByStatus.count} Bill ${invByStatus._id}`}
+            label={t("transactions_ui.stats.bill_label", {
+              count: invByStatus.count,
+              status: invByStatus._id,
+            })}
           />
         ))}
       </Grid>

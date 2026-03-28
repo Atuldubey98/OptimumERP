@@ -4,5 +4,48 @@
     "created": "Despesa criada com sucesso",
     "updated": "Despesa atualizada com sucesso",
     "deleted": "Despesa excluída com sucesso"
+  },
+  "expense_ui": {
+    "page": {
+      "heading": "Despesas",
+      "heading_with_category": "Despesas ({{category}})"
+    },
+    "table": {
+      "columns": {
+        "date": "Data",
+        "category": "Categoria",
+        "description": "Descrição",
+        "amount": "Valor"
+      }
+    },
+    "form": {
+      "heading": "Despesa",
+      "labels": {
+        "amount": "Valor",
+        "description": "Descrição",
+        "category": "Categoria de Despesa",
+        "date": "Data"
+      },
+      "buttons": {
+        "add": "Adicionar",
+        "update": "Atualizar",
+        "create_new": "Criar Novo"
+      }
+    },
+    "drawer": {
+      "heading": "Despesa",
+      "button_label": "Criar Novo"
+    },
+    "messages": {
+      "miscellaneous": "Diversos",
+      "category_note": "Nota: Despesas sem categoria serão contadas como Diversos",
+      "total_found": "Total de despesas encontradas"
+    },
+    "validation": {
+      "description_required": "Descrição é obrigatória",
+      "amount_minimum": "O valor deve ser no mínimo 0",
+      "amount_required": "O valor é obrigatório",
+      "date_required": "A data é obrigatória"
+    }
   }
 }

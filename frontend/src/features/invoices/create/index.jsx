@@ -15,6 +15,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { useTranslation } from "react-i18next";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useInvoicesForm from "../../../hooks/useInvoicesForm";
@@ -35,6 +36,7 @@ import useUms from "../../../hooks/useUms";
 import BannerWithLabel from "../../common/BannerWithLabel";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 export default function CreateInvoicePage() {
+  const { t } = useTranslation("invoice");
   const { saveAndNew, onToggleSaveAndNew } =
     useSaveAndNewForm("save-new:invoice");
   const { taxes } = useTaxes();
@@ -57,7 +59,7 @@ export default function CreateInvoicePage() {
             </Flex>
           ) : hasError ? (
             <BannerWithLabel
-              label={"Invoice not found"}
+              label={t("invoice_ui.page.not_found")}
               Icon={FaFileInvoiceDollar}
             />
           ) : (
@@ -70,7 +72,7 @@ export default function CreateInvoicePage() {
                     alignItems="center"
                   >
                     <FormLabel htmlFor="save-and-new" mb="0">
-                      Save & New
+                      {t("invoice_ui.form.save_and_new_label")}
                     </FormLabel>
                     <Switch
                       onChange={(e) => {
@@ -89,16 +91,16 @@ export default function CreateInvoicePage() {
                   colorScheme="teal"
                   variant="solid"
                 >
-                  Save
+                  {t("invoice_ui.form.save_button")}
                 </Button>
               </Flex>
               <Grid gap={4}>
-                <Heading fontSize={"xl"}>Party</Heading>
+                <Heading fontSize={"xl"}>{t("invoice_ui.form.party_section")}</Heading>
                 <FormControl
                   isInvalid={formik.errors.party && formik.touched.party}
                   isRequired
                 >
-                  <FormLabel>Bill to</FormLabel>
+                  <FormLabel>{t("invoice_ui.form.bill_to")}</FormLabel>
                   <PartySelectBill formik={formik} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
@@ -110,7 +112,7 @@ export default function CreateInvoicePage() {
                     }
                     isRequired
                   >
-                    <FormLabel>Billing Address</FormLabel>
+                    <FormLabel>{t("invoice_ui.form.billing_address")}</FormLabel>
                     <Textarea
                       name="billingAddress"
                       onChange={formik.handleChange}
@@ -121,14 +123,14 @@ export default function CreateInvoicePage() {
                     </FormErrorMessage>
                   </FormControl>
                 ) : null}
-                <Heading fontSize={"xl"}>Invoice Details</Heading>
+                <Heading fontSize={"xl"}>{t("invoice_ui.form.invoice_details_section")}</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
                     isInvalid={
                       formik.errors.sequence && formik.touched.sequence
                     }
                   >
-                    <FormLabel>Invoice No.</FormLabel>
+                    <FormLabel>{t("invoice_ui.form.invoice_no")}</FormLabel>
                     <InputGroup>
                       <PrefixFormField formik={formik} prefixType={"invoice"} />
                       <NumberInputInteger
@@ -147,9 +149,10 @@ export default function CreateInvoicePage() {
                   <SelectStatus
                     formik={formik}
                     statusList={invoiceStatusList}
+                    namespace="invoice"
                   />
                   <FormControl>
-                    <FormLabel>PO Number</FormLabel>
+                    <FormLabel>{t("invoice_ui.form.po_number")}</FormLabel>
                     <Input
                       value={formik.values.poNo}
                       onChange={formik.handleChange}
@@ -157,7 +160,7 @@ export default function CreateInvoicePage() {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>PO Date</FormLabel>
+                    <FormLabel>{t("invoice_ui.form.po_date")}</FormLabel>
                     <Input
                       value={formik.values.poDate}
                       onChange={formik.handleChange}
@@ -166,7 +169,7 @@ export default function CreateInvoicePage() {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Due Date</FormLabel>
+                    <FormLabel>{t("invoice_ui.form.due_date")}</FormLabel>
                     <Input
                       min={formik.values.date}
                       value={formik.values.dueDate}
@@ -176,8 +179,13 @@ export default function CreateInvoicePage() {
                     />
                   </FormControl>
                 </SimpleGrid>
-                <Heading fontSize={"xl"}>Items</Heading>
-                <ItemsList formik={formik} taxes={taxes} ums={ums} />
+                <Heading fontSize={"xl"}>{t("invoice_ui.form.items_section")}</Heading>
+                <ItemsList
+                  formik={formik}
+                  taxes={taxes}
+                  ums={ums}
+                  namespace="invoice"
+                />
                 <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />

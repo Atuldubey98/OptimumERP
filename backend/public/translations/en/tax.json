@@ -6,5 +6,66 @@
       "updated": "Tax updated successfully",
       "deleted": "Tax deleted successfully"
     }
+  },
+  "tax_ui": {
+    "page": {
+      "heading": "Taxes",
+      "total": "Total taxes {{count}}"
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "category": "Category",
+        "percentage": "Percentage",
+        "enabled": "Enabled",
+        "type": "Type",
+        "description": "Description"
+      }
+    },
+    "modal": {
+      "delete_body": "Do you want to delete tax ?",
+      "delete_header": "Delete tax",
+      "delete_button": "Delete",
+      "show_heading": "Tax",
+      "show_add_button": "Add",
+      "add_title": "Add tax",
+      "edit_title": "Edit tax",
+      "close_button": "Close",
+      "save_button": "Save"
+    },
+    "form": {
+      "name": "Name",
+      "type": "Type",
+      "category": "Category",
+      "group": "Group",
+      "percentage": "Percentage",
+      "description": "Description",
+      "is_default": "Is Default ?"
+    },
+    "type_options": {
+      "single": "Single",
+      "grouped": "Grouped"
+    },
+    "category_options": {
+      "sgst": "SGST",
+      "cgst": "CGST",
+      "igst": "IGST",
+      "vat": "VAT",
+      "sal": "SAL",
+      "cess": "CESS",
+      "none": "NONE",
+      "others": "Others"
+    },
+    "toast": {
+      "success_title": "Success",
+      "error_title": "Error",
+      "error_fallback": "Error occured",
+      "default_updated": "Default tax updated"
+    },
+    "validation": {
+      "field_required": "Field is required",
+      "min_allowed": "Minimum allowed is 0",
+      "max_allowed": "Maximum allowed is 100"
+    }
   }
 }

@@ -1,8 +1,62 @@
 {
   "product": {
-    "not_found": "Produto não encontrado",
-    "created": "Produto criado com sucesso",
-    "updated": "Produto atualizado com sucesso",
-    "deleted": "Produto excluído com sucesso"
+    "product": {
+      "not_found": "Produto não encontrado",
+      "created": "Produto criado com sucesso",
+      "updated": "Produto atualizado com sucesso",
+      "deleted": "Produto excluído com sucesso"
+    }
+  },
+  "product_ui": {
+    "page": {
+      "heading": "Itens",
+      "heading_with_category": "Itens ({{category}})",
+      "total_found": "Total de itens encontrados"
+    },
+    "table": {
+      "columns": {
+        "name": "Nome",
+        "cost_price": "Preço de Custo",
+        "selling_price": "Preço de Venda",
+        "type": "Tipo de Item",
+        "um": "Unidade de medida"
+      }
+    },
+    "modal": {
+      "delete_header": "Excluir produto",
+      "delete_body": "Deseja excluir o produto?"
+    },
+    "drawer": {
+      "heading": "Produto",
+      "add_button": "Adicionar novo",
+      "columns": {
+        "name": "Nome",
+        "cost_price": "Preço de Custo",
+        "type": "Tipo de Produto",
+        "selling_price": "Preço de Venda",
+        "created_at": "Criado em",
+        "description": "Descrição",
+        "um": "Unidade"
+      }
+    },
+    "form": {
+      "add_button": "Adicionar",
+      "update_button": "Atualizar",
+      "new_heading": "Formulário de Novo Produto",
+      "update_heading": "Formulário de Atualização de Produto",
+      "name_label": "Nome do Item",
+      "name_placeholder": "Nome do Produto",
+      "category_label": "Categoria",
+      "type_label": "Tipo de produto",
+      "type_service": "Serviço",
+      "type_goods": "Mercadoria",
+      "um_label": "Unidade de Medida",
+      "cost_price_label": "Preço de Custo",
+      "selling_price_label": "Preço de Venda",
+      "code_label": "Código HSN ou Código SAC",
+      "code_placeholder": "Código",
+      "description_label": "Descrição",
+      "description_placeholder": "Descrição do Produto"
+    }
   }
 }

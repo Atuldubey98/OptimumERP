@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Modal,
   ModalOverlay,
@@ -26,6 +27,7 @@ export default function PrefixForm({
   formik,
   currentSelectedPrefix,
 }) {
+  const { t } = useTranslation("common");
   const [prefix, setPrefix] = useState("");
   const [error, setError] = useState("");
   const prefixes = formik.values.prefixes[currentSelectedPrefix] || [];
@@ -34,14 +36,14 @@ export default function PrefixForm({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Prefix list</ModalHeader>
+        <ModalHeader>{t("common_ui.transaction_settings.prefix_list")}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={error}>
             <InputGroup size="md">
               <Input
                 pr="4.5rem"
-                placeholder="Prefix"
+                placeholder={t("common_ui.transaction_settings.prefix")}
                 onChange={(e) => {
                   setPrefix(e.currentTarget.value);
                   setError("");
@@ -54,7 +56,7 @@ export default function PrefixForm({
                   size="sm"
                   onClick={() => {
                     if (prefixes.includes(prefix)) {
-                      setError("Already exists");
+                      setError(t("common_ui.transaction_settings.already_exists"));
                       return;
                     }
                     formik.setFieldValue(`prefixes.${currentSelectedPrefix}`, [
@@ -65,7 +67,7 @@ export default function PrefixForm({
                     setPrefix("");
                   }}
                 >
-                  Add
+                  {t("common_ui.actions.add")}
                 </Button>
               </InputRightElement>
             </InputGroup>
@@ -77,9 +79,9 @@ export default function PrefixForm({
                 key={prefix}
                 label={
                   !prefix
-                    ? "Default"
+                    ? t("common_ui.transaction_settings.default")
                     : prefix === selectedPrefix
-                    ? "Current used"
+                    ? t("common_ui.transaction_settings.current_used")
                     : undefined
                 }
               >
@@ -89,7 +91,7 @@ export default function PrefixForm({
                   variant="solid"
                   colorScheme="blue"
                 >
-                  <TagLabel>{prefix || "NONE"}</TagLabel>
+                  <TagLabel>{prefix || t("common_ui.transaction_settings.none")}</TagLabel>
                   <TagCloseButton
                     isDisabled={!prefix || prefix === selectedPrefix}
                     onClick={() => {
@@ -107,7 +109,7 @@ export default function PrefixForm({
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
+            {t("common_ui.actions.close")}
           </Button>
         </ModalFooter>
       </ModalContent>

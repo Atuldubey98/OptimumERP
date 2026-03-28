@@ -9,6 +9,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function FormModalWrapper({
   isOpen,
@@ -18,6 +19,7 @@ export default function FormModalWrapper({
   heading = "Modal title",
   isSubmitting=false
 }) {
+  const { t } = useTranslation("user");
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -28,14 +30,14 @@ export default function FormModalWrapper({
           <ModalBody>{children}</ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
-              Close
+              {t("user_ui.form_modal.close_button")}
             </Button>
             <Button
               isLoading={isSubmitting}
               type="submit"
               colorScheme="blue"
             >
-              Submit
+              {t("user_ui.form_modal.submit_button")}
             </Button>
           </ModalFooter>
         </ModalContent>

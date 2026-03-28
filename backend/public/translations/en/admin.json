@@ -1,0 +1,126 @@
+{
+  "validation": {
+    "invalid_email": "Invalid email",
+    "email_required": "Email is required",
+    "password_required": "Password is required",
+    "password_min": "Min length should be 8",
+    "name_required": "Name is required",
+    "name_min": "Min length should be 3",
+    "name_max": "Max length cannot be greater than 20"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "register": "Register"
+  },
+  "toasts": {
+    "success_title": "Success",
+    "error_title": "Error",
+    "registered_title": "Registered",
+    "organization_updated": "Organization updated",
+    "bank_title": "Bank",
+    "financial_year_closed": "Financial year closed",
+    "terms_default_set": "Terms default set",
+    "error_occurred": "Error occured"
+  },
+  "organization": {
+    "label": "Organization",
+    "select_prompt": "Select Organization",
+    "information_heading": "Organization information",
+    "details": "Details",
+    "change_logo": "Change logo",
+    "help_title": "Organization",
+    "help_description": "It collects essential information about an organization, including its name, address, PAN number and other details",
+    "fields": {
+      "name": "Name",
+      "address": "Address",
+      "gst_no": "GST No",
+      "pan_no": "PAN No",
+      "website": "Website",
+      "telephone": "Telephone",
+      "email": "Email"
+    }
+  },
+  "tabs": {
+    "organization": "Organization",
+    "users": "Users"
+  },
+  "users": {
+    "registered_heading": "Registered Users",
+    "help_title": "Users",
+    "help_description": "Here you can create users who can use the application. User can have two permissions Admin and User.",
+    "add_new": "Add new",
+    "deactivate": "Deactivate",
+    "this_is_your_account": "This is your account",
+    "table": {
+      "active": "Active",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role"
+    }
+  },
+  "drawer": {
+    "register_user": "Register User",
+    "user_role": "User role",
+    "is_user_active": "Is the user active ?",
+    "can_use_my_smtp": "Can user my SMTP?",
+    "roles": {
+      "user": "User",
+      "admin": "Admin"
+    }
+  },
+  "bank": {
+    "heading": "Bank",
+    "help_title": "Bank Details",
+    "help_description": "It collects the bank details. To print it on invoice you can change application settings",
+    "account_holder_name": "Account Holder Name",
+    "bank_name": "Bank Name",
+    "account_number": "Account Number",
+    "ifsc_code": "IFSC Code",
+    "account_no": "Bank Account no",
+    "upi": "UPI",
+    "upi_details": "UPI Details"
+  },
+  "tasks": {
+    "heading": "Admin tasks",
+    "financial_year": {
+      "close": "Close financial year",
+      "invoice_prefix": "Invoice Prefix",
+      "quotation_prefix": "Quotation Prefix",
+      "proforma_invoice_prefix": "Proforma Invoice Prefix",
+      "purchase_order_prefix": "Purchase Order Prefix",
+      "next": "Next Financial year",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "closing": "Closing",
+      "done": "Done"
+    },
+    "smtp": {
+      "title": "SMTP Setup",
+      "info": "SMTP currently supports only Google. Button below can be used to connect the google account to send receipts from the dashboard.",
+      "reconnect": "Re-Connect",
+      "connect": "Connect"
+    },
+    "default_terms": {
+      "title": "Default Terms & Conditions",
+      "invoice": "Invoice",
+      "quotations": "Quotations",
+      "purchase_order": "Purchase Order",
+      "proforma_invoice": "Proforma Invoice"
+    },
+    "import": {
+      "title": "Import",
+      "party": "Party",
+      "download_started": "Download started",
+      "no_file_selected": "No file selected",
+      "select_csv_prompt": "Please select a CSV file to upload.",
+      "success_title": "Import Successful",
+      "modal_title": "Import Parties",
+      "download_help": "Using the below button download the sample csv",
+      "download_sample": "Download Sample CSV",
+      "upload_help": "Upload a CSV file to import parties into your system.",
+      "select_csv_placeholder": "Select CSV file",
+      "submit": "Import"
+    }
+  }
+}

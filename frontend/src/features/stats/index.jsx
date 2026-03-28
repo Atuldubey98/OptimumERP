@@ -22,7 +22,9 @@ import StatProgress from "../transactions/StatProgress";
 import PeriodSelect from "../dashboard/PeriodSelect";
 import { MdOutlineQueryStats } from "react-icons/md";
 import { IoArrowBack } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 export default function StatsPage() {
+  const { t } = useTranslation("stats");
   const [stats, setStats] = useState({
     invoicesTotal: null,
     purchaseTotal: null,
@@ -56,15 +58,15 @@ export default function StatsPage() {
   const { symbol } = useCurrentOrgCurrency();
   const periods = [
     {
-      label: "This week",
+      label: t("stats_ui.periods.this_week"),
       value: "thisWeek",
     },
     {
-      label: "This month",
+      label: t("stats_ui.periods.this_month"),
       value: "thisMonth",
     },
     {
-      label: "This year",
+      label: t("stats_ui.periods.this_year"),
       value: "thisYear",
     },
   ];
@@ -95,7 +97,7 @@ export default function StatsPage() {
                   onClick={() => navigate(-1)}
                 />
                 <Text fontSize={"xl"} fontWeight={"bold"}>
-                  Stats
+                  {t("stats_ui.page.title")}
                 </Text>
               </Flex>
               <PeriodSelect
@@ -116,7 +118,7 @@ export default function StatsPage() {
               <Box w={"100%"} maxW={350}>
                 <Dashcard
                   icon={<PiMoneyDuotone size={40} color="green" />}
-                  dashType="Sales"
+                  dashType={t("stats_ui.cards.sales")}
                   period={currentPeriodLabel}
                   dashTotal={`${symbol} ${totalSales.toFixed(2)}`}
                 />
@@ -124,7 +126,7 @@ export default function StatsPage() {
               <Box w={"100%"} maxW={350}>
                 <Dashcard
                   icon={<FaMoneyBillTrendUp size={40} color="gray" />}
-                  dashType="Purchase"
+                  dashType={t("stats_ui.cards.purchase")}
                   period={currentPeriodLabel}
                   dashTotal={`${symbol} ${totalPurchase.toFixed(2)}`}
                 />
@@ -132,7 +134,7 @@ export default function StatsPage() {
               <Box w={"100%"} maxW={350}>
                 <Dashcard
                   icon={<GiExpense size={40} color="brown" />}
-                  dashType="Expenses"
+                  dashType={t("stats_ui.cards.expenses")}
                   period={currentPeriodLabel}
                   dashTotal={`${symbol} ${expensesTotal.toFixed(2)}`}
                 />
@@ -142,7 +144,7 @@ export default function StatsPage() {
               {stats.topFiveClientTotal.length ? (
                 <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
                   <Text fontWeight={"bold"} fontSize={"xl"}>
-                    Top 5 Clients
+                    {t("stats_ui.sections.top_clients")}
                   </Text>
                   <Grid marginBlock={2} gap={3}>
                     {stats.topFiveClientTotal.map((client, index) => (
@@ -175,14 +177,14 @@ export default function StatsPage() {
                   >
                     <MdOutlineQueryStats size={80} color="lightgray" />
                     <Heading color={"gray.300"} fontSize={"2xl"}>
-                      No Records
+                      {t("stats_ui.page.no_records")}
                     </Heading>
                   </Flex>
                 )}
               {stats.expensesByCategory.length ? (
                 <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
                   <Text fontWeight={"bold"} fontSize={"xl"}>
-                    Expenses
+                    {t("stats_ui.sections.expenses")}
                   </Text>
                   <Grid marginBlock={2} gap={3}>
                     {stats.expensesByCategory.map((expeseCategory, index) => (
@@ -191,7 +193,7 @@ export default function StatsPage() {
                         value={
                           expeseCategory?._id
                             ? `${expeseCategory.category.name} (${symbol} ${expeseCategory.total})`
-                            : `Miscellenous (${symbol} ${expeseCategory.total})`
+                            : `${t("stats_ui.labels.miscellaneous")} (${symbol} ${expeseCategory.total})`
                         }
                         label={`${symbol} ${expeseCategory.total}`}
                         progress={(expeseCategory.total / expensesTotal) * 100}

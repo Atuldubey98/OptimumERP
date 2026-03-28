@@ -16,7 +16,9 @@ import {
 } from "@chakra-ui/react";
 import { FieldArray, FormikProvider } from "formik";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { invoiceStatusList } from "../../../constants/invoice";
 import receiptMetas from "../../../constants/receiptMetas";
 import useReceiptForm from "../../../hooks/useReceiptForm";
 import MainLayout from "../main-layout";
@@ -29,6 +31,7 @@ import ReceiptPartySelect from "./ReceiptPartySelect";
 import SelectStatus from "./SelectStatus";
 
 export default function ReceiptEditPage() {
+  const { t } = useTranslation("common");
 
   const { type } = useParams();
   const { formik, status } = useReceiptForm();
@@ -54,7 +57,7 @@ export default function ReceiptEditPage() {
                 <FormControl
                   isInvalid={formik.errors.sequence && formik.touched.sequence}
                 >
-                  <FormLabel>Invoice #</FormLabel>
+                  <FormLabel>{t("common_ui.receipt.invoice_number")}</FormLabel>
                   <InputGroup>
                     <PrefixFormField formik={formik} prefixType={"invoice"} />
                     <NumberInputInteger
@@ -68,7 +71,7 @@ export default function ReceiptEditPage() {
                 </FormControl>
                 <DateField formik={formik} />
                 <FormControl>
-                  <FormLabel>PO Number</FormLabel>
+                  <FormLabel>{t("common_ui.receipt.po_number")}</FormLabel>
                   <Input
                     value={formik.values.poNo}
                     onChange={formik.handleChange}
@@ -76,7 +79,7 @@ export default function ReceiptEditPage() {
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>PO Date</FormLabel>
+                  <FormLabel>{t("common_ui.receipt.po_date")}</FormLabel>
                   <Input
                     value={formik.values.poDate}
                     onChange={formik.handleChange}
@@ -86,23 +89,7 @@ export default function ReceiptEditPage() {
                 </FormControl>
                 <SelectStatus
                   formik={formik}
-                  statusList={[
-                    {
-                      type: "draft",
-                      label: "Draft",
-                      colorScheme: "blue",
-                    },
-                    {
-                      type: "sent",
-                      label: "Sent",
-                      colorScheme: "teal",
-                    },
-                    {
-                      type: "pending",
-                      label: "Pending",
-                      colorScheme: "yellow",
-                    },
-                  ]}
+                  statusList={invoiceStatusList}
                 />
               </SimpleGrid>
               <Divider />
@@ -112,7 +99,7 @@ export default function ReceiptEditPage() {
                 render={(itemsHelper) => (
                   <Box>
                     <Box p={2} bg={bg}>
-                      <Text>Items List</Text>
+                      <Text>{t("common_ui.receipt.items_list")}</Text>
                     </Box>
                     <Stack spacing={2} marginBlock={2}>
                       <ReceiptItemsList
@@ -133,7 +120,7 @@ export default function ReceiptEditPage() {
                         }
                         width={"100%"}
                       >
-                        Add Line item
+                        {t("common_ui.receipt.add_line_item")}
                       </Button>
                     </Box>
                   </Box>

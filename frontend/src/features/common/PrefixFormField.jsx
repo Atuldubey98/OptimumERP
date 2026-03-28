@@ -1,8 +1,10 @@
 import { Select } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 export default function PrefixFormField({ prefixType = "invoice", formik }) {
+  const { t } = useTranslation("common");
   const prefix = formik.values.prefix;
   const { prefixes, transactionPrefix } = useCurrentOrgCurrency();
   const currentSelectedPrefixes = prefixes[prefixType] || [];
@@ -16,7 +18,7 @@ export default function PrefixFormField({ prefixType = "invoice", formik }) {
     >
       {currentSelectedPrefixes.map((option) => (
         <option key={option} value={option}>
-          {option || "NONE"}
+          {option || t("common_ui.transaction_settings.none")}
         </option>
       ))}
     </Select>

@@ -1,28 +1,30 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 import useAsyncCall from "./useAsyncCall";
 import instance from "../instance";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 
-const itemCategorySchema = Yup.object({
-  name: Yup.string()
-    .min(2, "Cannot be less than 2")
-    .max(20, "Cannot be greater than 20")
-    .required("Name is required")
-    .label("Item Name"),
-  description: Yup.string()
-    .max(40, "Cannot be greater than 40")
-    .optional()
-    .label("Description"),
-  enabled: Yup.boolean()
-    .optional()
-    .label("Enabled"),
-});
+const createItemCategorySchema = (t) =>
+  Yup.object({
+    name: Yup.string()
+      .min(2, t("validation.min_2"))
+      .max(20, t("validation.max_20"))
+      .required(t("validation.name_required"))
+      .label(t("validation.item_name")),
+    description: Yup.string()
+      .max(40, t("validation.max_40"))
+      .optional()
+      .label(t("fields.description")),
+    enabled: Yup.boolean().optional().label(t("fields.enabled")),
+  });
+
 export default function useItemCategoryForm({
   fetchItemCategories,
   closeDrawer,
 }) {
+  const { t } = useTranslation("categories");
   const { requestAsyncHandler } = useAsyncCall();
   const toast = useToast();
   const { orgId } = useParams();
@@ -33,7 +35,7 @@ export default function useItemCategoryForm({
       description: "",
       enabled: true,
     },
-    validationSchema: itemCategorySchema,
+    validationSchema: createItemCategorySchema(t),
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...productCategory } = values;
       await instance[_id ? "patch" : "post"](
@@ -43,8 +45,10 @@ export default function useItemCategoryForm({
         productCategory
       );
       toast({
-        title: "Success",
-        description: _id ? "Item Category updated" : "Item Category created",
+        title: t("toasts.success_title"),
+        description: _id
+          ? t("toasts.item_category_updated")
+          : t("toasts.item_category_created"),
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,

@@ -10,6 +10,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 import { RxAvatar } from "react-icons/rx";
 import { useState } from "react";
 import { GoArrowSwitch } from "react-icons/go";
@@ -22,6 +23,7 @@ import AvatarProfile from "../../common/main-layout/AvatarProfile";
 import AlertModal from "../AlertModal";
 import instance from "../../../instance";
 export default function AvatarProfileWithOptions() {
+  const { t } = useTranslation("common");
   const hoverBg = useColorModeValue("gray.200", "gray.700");
   const { requestAsyncHandler } = useAsyncCall();
 
@@ -37,7 +39,7 @@ export default function AvatarProfileWithOptions() {
     setStatus("loggingOut");
     const { data } = await instance.post(`/api/v1/users/logout`);
     toast({
-      title: "Logout",
+      title: t("common_ui.actions.logout"),
       description: data.message,
       status: "success",
       duration: 3000,
@@ -72,7 +74,7 @@ export default function AvatarProfileWithOptions() {
         </Flex>
       </MenuButton>
       <MenuList>
-        <MenuGroup title="Profile">
+        <MenuGroup title={t("common_ui.profile.profile_group")}>
           <MenuItem
             textTransform={"capitalize"}
             onClick={() => {
@@ -80,7 +82,7 @@ export default function AvatarProfileWithOptions() {
             }}
             icon={<RxAvatar />}
           >
-            Me ({currentPlan})
+            {t("common_ui.profile.me")} ({currentPlan})
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -88,19 +90,19 @@ export default function AvatarProfileWithOptions() {
             }}
             icon={<RiLockPasswordLine />}
           >
-            Change password
+            {t("common_ui.profile.change_password")}
           </MenuItem>
           <MenuItem
             onClick={() => navigate(`/organizations`)}
             icon={<GoArrowSwitch />}
           >
-            Switch Organization
+            {t("common_ui.profile.switch_organization")}
           </MenuItem>
         </MenuGroup>
         <MenuDivider />
-        <MenuGroup title="Acccount">
+        <MenuGroup title={t("common_ui.profile.account_group")}>
           <MenuItem onClick={onOpen} icon={<IoIosLogOut />}>
-            Logout
+            {t("common_ui.actions.logout")}
           </MenuItem>
         </MenuGroup>
       </MenuList>
@@ -109,9 +111,9 @@ export default function AvatarProfileWithOptions() {
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={onClickLogout}
-        body={"Do you want to logout ?"}
-        header={"Logout"}
-        buttonLabel="Logout"
+        body={t("common_ui.profile.logout_confirm_body")}
+        header={t("common_ui.actions.logout")}
+        buttonLabel={t("common_ui.actions.logout")}
       />
     </Menu>
   );

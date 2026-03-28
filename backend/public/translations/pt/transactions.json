@@ -1,0 +1,38 @@
+{
+  "transactions_ui": {
+    "types": {
+      "invoice": "Fatura",
+      "purchase": "Compra",
+      "quotation": "Orçamento",
+      "proforma_invoice": "Fatura Proforma",
+      "purchase_order": "Pedido de compra"
+    },
+    "stats": {
+      "invoices": "Faturas",
+      "purchase": "Compra",
+      "balance": "Saldo",
+      "owe": "Você deve {{symbol}} {{amount}}.",
+      "receive": "Você receberá {{symbol}} {{amount}}",
+      "all_settled": "Tudo liquidado",
+      "bill_label": "{{count}} Fatura {{status}}"
+    },
+    "page": {
+      "heading": "Transações-{{partyName}}",
+      "total_found": "Total de transações encontradas: {{count}}"
+    },
+    "table": {
+      "columns": {
+        "date": "Data da Transação",
+        "num": "Número da Transação",
+        "total_items": "Total de Itens",
+        "type": "Tipo de Transação",
+        "status": "Status",
+        "grand_total": "Total Geral"
+      }
+    },
+    "toast": {
+      "error_title": "Erro",
+      "error_fallback": "Ocorreu algum erro"
+    }
+  }
+}

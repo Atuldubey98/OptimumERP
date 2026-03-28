@@ -2,6 +2,7 @@ import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import instance from "../instance";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 const defaultForm = {
   name: "",
   description: "",
@@ -10,6 +11,7 @@ const defaultForm = {
 };
 export default function useUmForm({ fetchUms, onClose }) {
   const toast = useToast();
+  const { t } = useTranslation("um");
   const { orgId } = useParams();
   const formik = useFormik({
     initialValues: defaultForm,
@@ -20,7 +22,7 @@ export default function useUmForm({ fetchUms, onClose }) {
           values
         );
         toast({
-          title: "Success",
+          title: t("um_ui.toast.success_title"),
           description: data.message,
           status: "success",
           duration: 3000,
@@ -32,8 +34,9 @@ export default function useUmForm({ fetchUms, onClose }) {
         fetchUms();
       } catch (error) {
         toast({
-          title: "Error",
-          description: error?.response?.data?.message || "Error occured",
+          title: t("um_ui.toast.error_title"),
+          description:
+            error?.response?.data?.message || t("um_ui.toast.error_fallback"),
           status: "error",
           duration: 3000,
           isClosable: true,

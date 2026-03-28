@@ -1,27 +1,29 @@
+// Status labels are internationalized in the SelectStatus component
+// Keep this structure for backward compatibility but labels should be replaced with translations at render time
 const statusList = [
   {
     type: "draft",
-    label: "Draft",
+    label: "quote_ui.status.draft",
     colorScheme: "blue",
   },
   {
     type: "pending",
-    label: "Pending",
+    label: "quote_ui.status.pending",
     colorScheme: "yellow",
   },
   {
     type: "sent",
-    label: "Sent",
+    label: "quote_ui.status.sent",
     colorScheme: "green",
   },
   {
     type: "accepted",
-    label: "Accepted",
+    label: "quote_ui.status.accepted",
     colorScheme: "teal",
   },
   {
     type: "declined",
-    label: "Declined",
+    label: "quote_ui.status.declined",
     colorScheme: "red",
   },
 ];

@@ -10,7 +10,7 @@ i18next
     fallbackLng: "en",
 
     preload: ["en"],
-
+    showSupportNotice: false,
     ns: [
       "health",
       "invoice",

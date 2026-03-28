@@ -10,14 +10,17 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Dashcard({
   dashType = "invoice",
   dashTotal = "123",
-  period = "This month",
+  period,
   icon,
 }) {
+  const { t } = useTranslation("dashboard");
   const bg = useColorModeValue("gray.100", "gray.800");
+  const resolvedPeriod = period || t("dashboard_ui.periods.this_month");
   return (
     <Card w={"100%"}>
       <CardBody>
@@ -37,7 +40,7 @@ export default function Dashcard({
           justifyContent={"space-around"}
           alignItems={"center"}
         >
-          <Text>{period}</Text>
+          <Text>{resolvedPeriod}</Text>
           <Divider orientation="vertical" />
           <Text fontSize={"xl"} fontWeight={"bold"}>{dashTotal}</Text>
         </Flex>

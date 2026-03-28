@@ -8,5 +8,70 @@
       "updated": "Proforma Invoice updated successfully",
       "deleted": "Proforma Invoice deleted successfully"
     }
+  },
+  "proforma_invoice_ui": {
+    "page": {
+      "heading": "Proforma Invoices",
+      "total_found": "Total proforma invoices found"
+    },
+    "table": {
+      "columns": {
+        "num": "Number",
+        "date": "Date",
+        "recipient": "Recipient",
+        "status": "Status",
+        "grand_total": "Grand Total"
+      }
+    },
+    "modal": {
+      "delete_header": "Delete proforma invoice",
+      "delete_body": "Do you want to delete the proforma Invoice ?",
+      "convert_header": "Convert to Invoice",
+      "convert_body": "Do you want to convert the proforma to invoice?",
+      "convert_button": "Convert"
+    },
+    "bill_modal": {
+      "heading": "Proforma Invoice"
+    },
+    "toast": {
+      "success_title": "Success",
+      "error_title": "Error",
+      "error_fallback": "Some error occured"
+    },
+    "export": {
+      "default_fields": {
+        "party_name": "Party Name",
+        "billing_address": "Billing Address",
+        "total": "Total",
+        "total_tax": "Total Tax",
+        "num": "Number",
+        "status": "Status"
+      },
+      "selectable_fields": {
+        "created_by_email": "Created By Email",
+        "created_by_name": "Created By Name",
+        "po_no": "PO Number",
+        "po_date": "PO Date",
+        "cgst": "CGST",
+        "igst": "IGST",
+        "sgst": "SGST",
+        "vat": "VAT",
+        "cess": "Cess",
+        "sal": "SAL",
+        "others": "Other taxes"
+      }
+    },
+    "form": {
+      "save_button": "Save",
+      "not_found": "Proforma invoice not found",
+      "party_section": "Party",
+      "bill_to_label": "Bill to",
+      "billing_address_label": "Billing Address",
+      "invoice_details_section": "Invoice Details",
+      "sequence_label": "Proforma Invoice No.",
+      "po_number_label": "PO Number",
+      "po_date_label": "PO Date",
+      "items_section": "Items"
+    }
   }
 }

@@ -6,14 +6,17 @@ import {
     MenuList
 } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { RxHamburgerMenu } from "react-icons/rx";
 export default function ReceiptMenu(props) {
+  const { t } = useTranslation("common");
+
   return (
     <Menu>
       <MenuButton
         size={"sm"}
         as={IconButton}
-        aria-label="Options"
+        aria-label={t("common_ui.actions.options")}
         icon={<RxHamburgerMenu />}
         variant="outline"
       />

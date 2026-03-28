@@ -1,5 +1,6 @@
 import React from "react";
 import FormDrawerLayout from "../common/form-drawer-layout";
+import { useTranslation } from "react-i18next";
 import {
   FormControl,
   FormErrorMessage,
@@ -11,11 +12,13 @@ import {
 import EnabledField from "./EnabledField";
 
 export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
+  const { t } = useTranslation("categories");
+
   return (
     <FormDrawerLayout
       isSubmitting={formik.isSubmitting}
-      formBtnLabel={formik.values._id ? "Update" : "Save"}
-      formHeading={"Expense Category"}
+      formBtnLabel={formik.values._id ? t("actions.update") : t("actions.save")}
+      formHeading={t("expense.form_heading")}
       handleFormSubmit={formik.handleSubmit}
       isOpen={isOpen}
       onClose={onClose}
@@ -25,7 +28,7 @@ export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
           isInvalid={formik.errors.name && formik.touched.name}
           isRequired
         >
-          <FormLabel>Expense Type</FormLabel>
+          <FormLabel>{t("expense.type")}</FormLabel>
           <Input
             autoFocus
             name="name"
@@ -39,7 +42,7 @@ export default function ExpenseCategoryForm({ formik, isOpen, onClose }) {
           isInvalid={formik.errors.description && formik.touched.description}
           isRequired
         >
-          <FormLabel>Description</FormLabel>
+          <FormLabel>{t("fields.description")}</FormLabel>
           <Textarea
             name="description"
             value={formik.values.description}

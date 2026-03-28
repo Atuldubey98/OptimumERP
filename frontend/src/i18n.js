@@ -10,7 +10,7 @@ i18n
   .init({
     fallbackLng: "en",
     supportedLngs: ["en", "pt"],
-    ns: ["health"],
+    ns: ["health", "common", "admin", "categories", "contact", "dashboard", "quote", "expense", "forgot-password", "invoice", "user", "org", "party", "product", "proformaInvoice", "purchase", "purchaseOrder", "report", "stats", "tax", "transactions", "um"],
     debug: false,
     interpolation: { escapeValue: false },
     backend: {

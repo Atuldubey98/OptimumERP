@@ -1,17 +1,106 @@
 {
   "user": {
-    "user": {
-      "already_exists": "User already exists",
-      "not_found": "User does not exists",
-      "password_mismatch": "Password does not match",
-      "not_authenticated": "User not authenticated",
-      "not_authorized": "User not authorized",
-      "not_verified": "User not verified",
-      "upgrade_plan": "Upgrade your plan",
-      "invalid_otp": "Invalid OTP",
-      "otp_sent": "OTP Sent! Please check your email",
-      "registered": "User registered successfully for organization",
-      "smtp_setup_success": "SMTP Setup successful"
+    "already_exists": "User already exists",
+    "not_found": "User does not exists",
+    "password_mismatch": "Password does not match",
+    "not_authenticated": "User not authenticated",
+    "not_authorized": "User not authorized",
+    "not_verified": "User not verified",
+    "upgrade_plan": "Upgrade your plan",
+    "invalid_otp": "Invalid OTP",
+    "otp_sent": "OTP Sent! Please check your email",
+    "registered": "User registered successfully for organization",
+    "smtp_setup_success": "SMTP Setup successful"
+  },
+  "user_ui": {
+    "login": {
+      "page_heading": "Sign in",
+      "email_label": "Email",
+      "email_placeholder": "Email",
+      "email_validation": "Invalid email",
+      "email_required": "Email is required",
+      "password_label": "Password",
+      "password_placeholder": "Password",
+      "password_min_length": "Minimum length can be 8",
+      "password_max_length": "Maximum length can be 20",
+      "password_required": "Password is required",
+      "login_button": "Login",
+      "continue_google": "Continue with Google",
+      "register_link": "Register Now ?",
+      "forgot_password_link": "Forgot Password ?",
+      "network_error": "Network error occured"
+    },
+    "register": {
+      "page_heading": "Sign up",
+      "email_label": "Email",
+      "email_placeholder": "Email",
+      "email_validation": "Invalid email",
+      "email_required": "Email is required",
+      "password_label": "Password",
+      "password_placeholder": "Password",
+      "password_min_length": "Minimum length should be 8",
+      "password_max_length": "Maximum length can be 20",
+      "password_required": "Password is required",
+      "name_label": "Name",
+      "name_placeholder": "Name",
+      "name_required": "Name is required",
+      "name_min_length": "Minimum length should be 3",
+      "name_max_length": "Maximum length cannot be greater than 20",
+      "register_button": "Register",
+      "login_link": "Login Now ?",
+      "resend_otp_link": "Resend OTP to verify?",
+      "verify_button": "Verify",
+      "toast_registered_title": "Registered",
+      "toast_registered_description": "User registered",
+      "toast_verify_title": "Verify",
+      "toast_verified_title": "Verified"
+    },
+    "verify_email": {
+      "page_heading": "Verify email",
+      "verified_title": "User already verified",
+      "verified_description": "User is already verified you can proceed to login",
+      "email_label": "Email",
+      "send_button": "Send",
+      "login_link": "Login Now ?",
+      "verify_button": "Verify",
+      "toast_verified_title": "Verified"
+    },
+    "profile": {
+      "page_heading": "Welcome, {{name}}",
+      "page_subtitle": "Here you can manage your personnel information.",
+      "profile_info_title": "Profile info",
+      "profile_info_subtitle": "Manage your personnel information below.",
+      "field_name": "Name",
+      "field_email": "Email",
+      "field_role": "Role",
+      "field_plan": "Plan",
+      "language_title": "Language",
+      "language_subtitle": "Here you can change your language preferences",
+      "password_title": "Password",
+      "password_subtitle": "Here you can change your password",
+      "modal_heading": "Profile",
+      "toast_upload_title": "Success",
+      "toast_upload_description": "Profile updated",
+      "toast_error_title": "Error",
+      "toast_error_fallback": "Some error occured"
+    },
+    "change_password": {
+      "current_password_label": "Current password",
+      "current_password_placeholder": "Current Password",
+      "new_password_label": "New password",
+      "new_password_placeholder": "New password",
+      "confirm_password_label": "Confirm password",
+      "confirm_password_placeholder": "Confirm Password",
+      "confirm_mismatch": "Confirm password is not equal to new password",
+      "submit_button": "Update password",
+      "toast_title": "Password"
+    },
+    "profile_form": {
+      "name_label": "Name"
+    },
+    "form_modal": {
+      "close_button": "Close",
+      "submit_button": "Submit"
     }
   }
 }

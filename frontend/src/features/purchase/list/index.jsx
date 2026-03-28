@@ -28,8 +28,10 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import PayoutModal from "./PayoutModal";
 import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
+import { useTranslation } from "react-i18next";
 
 export default function PurchasePage() {
+  const { t } = useTranslation("purchase");
   const {
     items: purchases,
     dateFilter,
@@ -136,9 +138,9 @@ export default function PurchasePage() {
               status: "idle",
             }}
             limitKey={"purchases"}
-            heading={"Purchase"}
+            heading={t("purchase_ui.page.heading")}
             tableData={purchases.map(purchaseTableMapper)}
-            caption={`Total purchases found : ${totalCount}`}
+            caption={`${t("purchase_ui.page.total_found")} : ${totalCount}`}
             operations={purchases.map((purchase) => (
               <VertIconMenu
                 payoutPurchase={() => {
@@ -159,11 +161,11 @@ export default function PurchasePage() {
               />
             ))}
             selectedKeys={{
-              num: "Purchase No.",
-              date: "Purchase Date",
-              partyName: "Party name",
-              status: "Status",
-              grandTotal: "Total",
+              num: t("purchase_ui.table.columns.num"),
+              date: t("purchase_ui.table.columns.date"),
+              partyName: t("purchase_ui.table.columns.party_name"),
+              status: t("purchase_ui.table.columns.status"),
+              grandTotal: t("purchase_ui.table.columns.total"),
             }}
             onAddNewItem={onClickAddNewInvoice}
           />
@@ -173,7 +175,7 @@ export default function PurchasePage() {
             bill={purchase}
             onSaveBill={onSaveBill}
             entity={"purchases"}
-            heading={"Purchase"}
+            heading={t("purchase_ui.bill_modal.heading")}
             isOpen={isOpen}
             onClose={onClose}
           />
@@ -188,9 +190,9 @@ export default function PurchasePage() {
         ) : null}
         <AlertModal
           confirmDisable={deleting}
-          buttonLabel="Delete"
-          body={"Do you want to delete the purchase ?"}
-          header={"Delete Purchase"}
+          buttonLabel={t("purchase_ui.modal.delete_button")}
+          body={t("purchase_ui.modal.delete_body")}
+          header={t("purchase_ui.modal.delete_header")}
           isOpen={isDeleteModalOpen}
           onClose={onCloseDeleteModal}
           onConfirm={() => deleteInvoice(purchase)}
@@ -204,24 +206,24 @@ export default function PurchasePage() {
             onClose={toggleExportModal}
             downloadUrl={`/api/v1/organizations/${orgId}/purchases/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
             defaultSelectedFields={{
-              partyName: "Party Name",
-              billingAddress: "Billing Address",
-              total: "Total",
-              totalTax: "Total Tax",
-              num: "Number",
-              status: "Status",
-              grandTotal: "Grand Total",
+              partyName: t("purchase_ui.export.default_fields.party_name"),
+              billingAddress: t("purchase_ui.export.default_fields.billing_address"),
+              total: t("purchase_ui.export.default_fields.total"),
+              totalTax: t("purchase_ui.export.default_fields.total_tax"),
+              num: t("purchase_ui.export.default_fields.num"),
+              status: t("purchase_ui.export.default_fields.status"),
+              grandTotal: t("purchase_ui.export.default_fields.grand_total"),
             }}
             selectableFields={{
-              createdByEmail: "Created By Email",
-              createdByName: "Created By Name",
-              cgst: "CGST",
-              igst: "IGST",
-              sgst: "SGST",
-              vat: "VAT",
-              cess: "Cess",
-              sal: "SAL",
-              others: "Other taxes",
+              createdByEmail: t("purchase_ui.export.selectable_fields.created_by_email"),
+              createdByName: t("purchase_ui.export.selectable_fields.created_by_name"),
+              cgst: t("purchase_ui.export.selectable_fields.cgst"),
+              igst: t("purchase_ui.export.selectable_fields.igst"),
+              sgst: t("purchase_ui.export.selectable_fields.sgst"),
+              vat: t("purchase_ui.export.selectable_fields.vat"),
+              cess: t("purchase_ui.export.selectable_fields.cess"),
+              sal: t("purchase_ui.export.selectable_fields.sal"),
+              others: t("purchase_ui.export.selectable_fields.others"),
             }}
           />
         ) : null}

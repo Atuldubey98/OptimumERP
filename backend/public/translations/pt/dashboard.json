@@ -1,0 +1,95 @@
+{
+  "dashboard_ui": {
+    "greeting": "Olá,",
+    "overview_subtitle": "Aqui está uma visão geral do seu negócio!",
+    "periods": {
+      "this_week": "Esta semana",
+      "this_month": "Este mês",
+      "this_year": "Este ano"
+    },
+    "entities": {
+      "invoices": "Faturas",
+      "parties": "Contatos",
+      "expenses": "Despesas",
+      "purchases": "Compras",
+      "quotes": "Orçamentos"
+    },
+    "tables": {
+      "recent_sales": "Vendas Recentes",
+      "recent_purchase": "Compras Recentes",
+      "recent_estimates": "Orçamentos Recentes",
+      "view_more": "Mais",
+      "nothing_to_show": "Nada para mostrar",
+      "headers": {
+        "num": "Nº",
+        "party_name": "Nome do contato",
+        "total": "Total",
+        "status": "Status",
+        "date": "Data"
+      }
+    },
+    "actions": {
+      "previous": "Anterior",
+      "next": "Próximo",
+      "finish": "Concluir"
+    },
+    "tour": {
+      "welcome_title": "Bem-vindo ao OptimumERP!",
+      "image_alt": "Prévia do guia do painel",
+      "tabs": {
+        "dashboard": {
+          "label": "Painel",
+          "description": "Tenha uma visão geral das métricas do seu negócio."
+        },
+        "stats": {
+          "label": "Estatísticas",
+          "description": "Veja análises detalhadas e insights de desempenho."
+        },
+        "parties": {
+          "label": "Contatos/Partes",
+          "description": "Gerencie seus contatos comerciais e fornecedores."
+        },
+        "contacts": {
+          "label": "Contatos",
+          "description": "Organize seus contatos para uma melhor comunicação."
+        },
+        "invoices": {
+          "label": "Faturas",
+          "description": "Crie e gerencie faturas de forma eficiente."
+        },
+        "proforma_invoices": {
+          "label": "Faturas Proforma",
+          "description": "Crie e gerencie faturas proforma."
+        },
+        "purchase_orders": {
+          "label": "Pedidos de Compra",
+          "description": "Crie e acompanhe pedidos de compra."
+        },
+        "quotations": {
+          "label": "Orçamentos",
+          "description": "Gere e gerencie orçamentos."
+        },
+        "purchases": {
+          "label": "Compras",
+          "description": "Simplifique as compras e a gestão de fornecedores."
+        },
+        "expenses": {
+          "label": "Despesas",
+          "description": "Acompanhe e controle as despesas do negócio."
+        },
+        "items": {
+          "label": "Itens",
+          "description": "Organize e categorize seu inventário."
+        },
+        "reports": {
+          "label": "Relatórios",
+          "description": "Gere relatórios para decisões baseadas em dados."
+        },
+        "admin": {
+          "label": "Admin",
+          "description": "Configure ajustes avançados e permissões de usuário."
+        }
+      }
+    }
+  }
+}

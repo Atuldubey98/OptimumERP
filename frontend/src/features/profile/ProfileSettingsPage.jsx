@@ -26,16 +26,18 @@ import instance from "../../instance";
 import { isAxiosError } from "axios";
 import useStorageUtil from "../../hooks/useStorageUtil";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 function ProfileInfo(props) {
   const settingContext = useContext(SettingContext);
   const auth = useAuth();
   const plan = auth?.user?.currentPlan?.plan;
   const role = settingContext?.role || "";
+  const { t } = useTranslation("user");
   return (
     <CardWrapper
-      title={"Profile info"}
-      subtitle={"Manage your personnel information below."}
+      title={t("user_ui.profile.profile_info_title")}
+      subtitle={t("user_ui.profile.profile_info_subtitle")}
       footer={
         <Flex w={"100%"} alignItems={"center"} justifyContent={"flex-end"}>
           <IconButton isRound icon={<AiFillEdit />} onClick={props.onOpen} />
@@ -44,17 +46,17 @@ function ProfileInfo(props) {
     >
       <Stack spacing={1}>
         <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-          <Text fontSize={"xs"}>Name</Text> <Text>{props.user?.name}</Text>
+          <Text fontSize={"xs"}>{t("user_ui.profile.field_name")}</Text> <Text>{props.user?.name}</Text>
         </Flex>
         <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-          <Text fontSize={"xs"}>Email</Text> <Text>{props.user?.email}</Text>
+          <Text fontSize={"xs"}>{t("user_ui.profile.field_email")}</Text> <Text>{props.user?.email}</Text>
         </Flex>
         <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-          <Text fontSize={"xs"}>Role</Text>{" "}
+          <Text fontSize={"xs"}>{t("user_ui.profile.field_role")}</Text>{" "}
           <Text textTransform={"capitalize"}>{role}</Text>
         </Flex>
         <Flex justifyContent={"flex-start"} alignItems={"center"} gap={8}>
-          <Text fontSize={"xs"}>Plan</Text>{" "}
+          <Text fontSize={"xs"}>{t("user_ui.profile.field_plan")}</Text>{" "}
           <Text textTransform={"capitalize"}>{plan}</Text>
         </Flex>
       </Stack>
@@ -63,6 +65,7 @@ function ProfileInfo(props) {
 }
 
 export default function ProfileSettingsPage() {
+  const { t } = useTranslation("user");
   const { user, fetchUserDetails } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { formik } = useProfileForm({ closeForm: onClose });
@@ -83,18 +86,18 @@ export default function ProfileSettingsPage() {
       });
       await fetchUserDetails();
       toast({
-        title: "Success",
-        description: "Profile updated",
+        title: t("user_ui.profile.toast_upload_title"),
+        description: t("user_ui.profile.toast_upload_description"),
         status: "success",
         duration: 3000,
         isClosable: true,
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t("user_ui.profile.toast_error_title"),
         description: isAxiosError(error)
           ? error?.response?.data?.message
-          : "Some error occured",
+          : t("user_ui.profile.toast_error_fallback"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -120,23 +123,23 @@ export default function ProfileSettingsPage() {
           <Avatar name={user?.name} src={avatar} size={"xl"} />
           <Grid w={"100%"} gap={3}>
             <Heading fontSize={"2xl"} textAlign={"center"}>
-              Welcome, {user ? user.name : ""}
+              {t("user_ui.profile.page_heading", { name: user ? user.name : "" })}
             </Heading>
             <Text textAlign={"center"} fontSize={"sm"}>
-              Here you can manage your personnel information.
+              {t("user_ui.profile.page_subtitle")}
             </Text>
           </Grid>
           <ProfileInfo user={user} onOpen={onOpen} />
           <CardWrapper
-            title={"Language"}
-            subtitle={"Here you can change your language preferences"}
+            title={t("user_ui.profile.language_title")}
+            subtitle={t("user_ui.profile.language_subtitle")}
           >
             <LanguageSwitcher />
           </CardWrapper>
 
           <CardWrapper
-            title={"Password"}
-            subtitle={"Here you can change your password"}
+            title={t("user_ui.profile.password_title")}
+            subtitle={t("user_ui.profile.password_subtitle")}
           >
             <ChangePasswordForm />
           </CardWrapper>
@@ -144,7 +147,7 @@ export default function ProfileSettingsPage() {
         <FormModalWrapper
           isSubmitting={formik.isSubmitting}
           isOpen={isOpen}
-          heading="Profile"
+          heading={t("user_ui.profile.modal_heading")}
           onClose={onClose}
           handleSubmit={formik.handleSubmit}
         >
@@ -190,10 +193,10 @@ export default function ProfileSettingsPage() {
                       await fetchUserDetails();
                     } catch (error) {
                       toast({
-                        title: "Error",
+                        title: t("user_ui.profile.toast_error_title"),
                         description: isAxiosError(error)
                           ? error?.response?.data?.message
-                          : "Some error occured",
+                          : t("user_ui.profile.toast_error_fallback"),
                         status: "error",
                         duration: 3000,
                         isClosable: true,

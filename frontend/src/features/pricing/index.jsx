@@ -1,14 +1,16 @@
 import { Heading, Link, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import MainLayout from "../common/main-layout";
 import PricingCard from "./PricingCard";
 export default function PricingPage() {
+  const { t } = useTranslation("party");
   const plans = [
     {
       value: "free",
       price: (
         <>
-          Free <Text fontSize={"sm"}>lifetime</Text>
+          {t("pricing_ui.plans.free.price")} <Text fontSize={"sm"}>{t("pricing_ui.plans.free.period")}</Text>
         </>
       ),
     },
@@ -16,7 +18,7 @@ export default function PricingPage() {
       value: "gold",
       price: (
         <>
-          Rs. 999 <Text fontSize={"sm"}>per Year</Text>
+          {t("pricing_ui.plans.gold.price")} <Text fontSize={"sm"}>{t("pricing_ui.plans.gold.period")}</Text>
         </>
       ),
     },
@@ -24,7 +26,7 @@ export default function PricingPage() {
       value: "platinum",
       price: (
         <>
-          Rs. 1999 <Text fontSize={"sm"}>per Year</Text>
+          {t("pricing_ui.plans.platinum.price")} <Text fontSize={"sm"}>{t("pricing_ui.plans.platinum.period")}</Text>
         </>
       ),
     },
@@ -32,41 +34,39 @@ export default function PricingPage() {
   const allPlans = plans.map((plan) => plan.value);
   const planOfferings = [
     {
-      value: "Manage your customers, vendors and contacts at one place",
+      value: t("pricing_ui.offerings.manage_contacts"),
       valid: allPlans,
     },
     {
-      value: "Advanced reporting features.",
+      value: t("pricing_ui.offerings.advanced_reporting"),
       valid: allPlans,
     },
     {
-      value: "Advance invoicing and expense tracking",
-      valid: allPlans,
-    },
-
-    {
-      value: "Product management capabilities",
-      valid: allPlans,
-    },
-
-    {
-      value: "Dashboard and financial projections",
+      value: t("pricing_ui.offerings.invoicing_expense"),
       valid: allPlans,
     },
     {
-      value: "Proforma Invoicing enabled",
+      value: t("pricing_ui.offerings.product_management"),
+      valid: allPlans,
+    },
+    {
+      value: t("pricing_ui.offerings.dashboard_projections"),
+      valid: allPlans,
+    },
+    {
+      value: t("pricing_ui.offerings.proforma_invoicing"),
       valid: ["free", "gold", "platinum"],
     },
     {
-      value: "Mail receipts from dashboard",
+      value: t("pricing_ui.offerings.mail_receipts"),
       valid: ["gold", "platinum"],
     },
     {
-      value: "QR Code enabled on invoices",
+      value: t("pricing_ui.offerings.qr_code"),
       valid: ["gold", "platinum"],
     },
     {
-      value: "On-Premise deployment of application",
+      value: t("pricing_ui.offerings.on_premise"),
       valid: ["platinum"],
     },
   ];
@@ -74,13 +74,10 @@ export default function PricingPage() {
   return (
     <MainLayout>
       <Stack spacing={5} p={4}>
-        <Heading fontSize={"xl"}>Plans</Heading>
+        <Heading fontSize={"xl"}>{t("pricing_ui.page.heading")}</Heading>
+        <Text>{t("pricing_ui.page.subtitle")}</Text>
         <Text>
-          Our pricing structure is build to be affordable for everyone from
-          indivisuals to organizations
-        </Text>
-        <Text>
-          To upgrade to any of the below given plans you can contact at{" "}
+          {t("pricing_ui.page.contact_text")}{" "}
           <Link href="mailto:optimumerp2024@gmail.com">
             optimumerp2024@gmail.com
           </Link>
