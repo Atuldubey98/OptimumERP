@@ -1,8 +1,16 @@
 const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
 const avatarStorage = multer.diskStorage({
   destination: (_, __, cb) => {
-    cb(null, `${process.env.NETWORK_STORAGE_PATH}/avatars`);
+    const dir = path.join(process.env.NETWORK_STORAGE_PATH, "avatars");
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    cb(null, dir);
   },
   filename: (_, file, cb) => {
     cb(null, `avatar_${file.originalname}`);
