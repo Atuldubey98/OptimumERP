@@ -18,6 +18,6 @@ const verifyRegisteredUserOtp = async (req, res) => {
   await user.save();
   return res
     .status(200)
-    .json({ message: req.t("user_ui.register.toast_verified_description") });
+    .json({ message: req.t("user.user_ui.register.toast_verified_description") });
 };
 module.exports = verifyRegisteredUserOtp;
