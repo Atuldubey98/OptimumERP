@@ -19,7 +19,7 @@ Tech stack:
 
 2. Open project directory
 ```bash
-cd /home/atul/Development/OptimumERP
+cd OptimumERP
 ```
 
 3. Create environment file
