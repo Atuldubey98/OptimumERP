@@ -76,6 +76,7 @@
       "field_role": "Role",
       "field_plan": "Plan",
       "language_title": "Language",
+      "language_label": "Select language",
       "language_subtitle": "Here you can change your language preferences",
       "password_title": "Password",
       "password_subtitle": "Here you can change your password",

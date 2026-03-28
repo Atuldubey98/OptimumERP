@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Select } from "chakra-react-select";
-import { FormControl, FormLabel, Box, Text, HStack } from "@chakra-ui/react";
+import { FormControl, FormLabel, Box } from "@chakra-ui/react";
 
 const options = [
   { value: "en", label: "English" },
@@ -9,14 +9,12 @@ const options = [
 ];
 
 const LanguageSwitcher = () => {
-  const { i18n, t } = useTranslation("common");
+  const { i18n, t } = useTranslation("user");
 
   const currentOption =
     options.find((o) => o.value === i18n.language) || options[0];
 
   const handleChange = (selected) => {
-    console.log(selected);
-
     if (selected) {
       i18n.changeLanguage(selected.value);
     }
@@ -26,7 +24,7 @@ const LanguageSwitcher = () => {
     <Box w="full" maxW="300px">
       <FormControl id="language-selection">
         <FormLabel fontSize="sm" fontWeight="bold" mb={2}>
-          {t("language_label", "Select Language")}
+          {t("user_ui.profile.language_label")}
         </FormLabel>
 
         <Select

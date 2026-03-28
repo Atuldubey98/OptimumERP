@@ -76,6 +76,7 @@
       "field_role": "Função",
       "field_plan": "Plano",
       "language_title": "Idioma",
+      "language_label": "Selecionar idioma",
       "language_subtitle": "Aqui você pode alterar suas preferências de idioma",
       "password_title": "Senha",
       "password_subtitle": "Aqui você pode alterar sua senha",
