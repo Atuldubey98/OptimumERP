@@ -66,12 +66,9 @@
       <section id="features">
         <h2>About</h2>
         <p>
-          Optimum ERP is a comprehensive enterprise resource planning (ERP)
-          solution built using the MERN stack (MongoDB, Express.js, React.js,
-          and Node.js). This project aims to streamline and automate various
-          business processes, including expense management, product management,
-          quotation handling, purchase and sales operations, GST management, and
-          expense categorization. On top of it project is open source now.
+          Optimum ERP is a full-stack ERP platform for managing business
+          operations such as users, organizations, invoicing, purchases,
+          expenses, reports, and settings. This project is open source.
         </p>
         <h2>Features</h2>
         <ul>
@@ -93,10 +90,11 @@
         <h2>Technologies Used</h2>
         <p>Optimum ERP is built with:</p>
         <ul>
-          <li>MongoDB</li>
-          <li>Express.js</li>
-          <li>React.js</li>
-          <li>Node.js</li>
+          <li>Frontend: React + Vite</li>
+          <li>Backend: Node.js + Express</li>
+          <li>Database: MongoDB</li>
+          <li>Scheduler: Background cron service</li>
+          <li>Deployment: Docker Compose</li>
           <li>Chakra UI</li>
           <li>Framer Motion</li>
           <li>
@@ -106,42 +104,119 @@
         </ul>
       </section>
       <section id="deploy">
-        <h2>Steps to start developing or deploy the server:</h2>
+        <h2>Deployment Steps</h2>
         <ol>
           <li>
-            Create a <code>.env.development</code> file for development or
-            <code>.env</code> for production using the environment variables
-            provided above.
-          </li>
-          <li>
-            Install dependencies:
-            <pre><code>npm install</code></pre>
-          </li>
-          <li>
-            Build the application:
-            <pre><code>npm run build</code></pre>
-          </li>
-          <li>
-            For development, run:
+            <strong>Prerequisites</strong>
             <ul>
-              <li>
-                Backend server:
-                <pre><code>npm run dev:backend</code></pre>
-              </li>
-              <li>
-                Frontend server:
-                <pre><code>npm run dev:frontend</code></pre>
-              </li>
+              <li>Install Docker</li>
+              <li>Install Docker Compose plugin</li>
             </ul>
           </li>
           <li>
-            For production, start the server:
-            <pre><code>npm start</code></pre>
+            Clone the repository:
+            <pre><code>git clone https://github.com/Atuldubey98/OptimumERP.git</code></pre>
+          </li>
+          <li>
+            Open the project directory:
+            <pre><code>cd OptimumERP</code></pre>
+          </li>
+          <li>
+            Create a <code>.env</code> file in the project root using
+            <code>env.txt</code> as reference. Add the following keys:
+            <pre><code>MONGO_URI=mongodb://mongo:27017/mernapp?replicaSet=rs0
+SESSION_SECRET=your-secure-random-string
+VITE_API_URL=http://localhost:3000
+IMPORT_CRON_SCHEDULE=*/5 * * * *
+LOG_FILE_PATH=./logs/app.log
+DEFAULT_USER_PLAN=platinum
+NETWORK_STORAGE_PATH=./uploads</code></pre>
+          </li>
+          <li>
+            Start all services:
+            <pre><code>docker compose up -d --build</code></pre>
+          </li>
+          <li>
+            Verify services:
+            <pre><code>docker compose ps</code></pre>
+          </li>
+          <li>
+            Verify backend health:
+            <pre><code>curl http://localhost:3000/api/v1/health</code></pre>
+          </li>
+          <li>
+            Access the application:
+            <ul>
+              <li>Frontend: <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer">http://localhost:5173</a></li>
+              <li>Backend API: <a href="http://localhost:3000/api/v1" target="_blank" rel="noopener noreferrer">http://localhost:3000/api/v1</a></li>
+            </ul>
           </li>
         </ol>
+        <h2>Common Commands</h2>
+        <ul>
+          <li>
+            Restart services:
+            <pre><code>docker compose restart</code></pre>
+          </li>
+          <li>
+            Stop services:
+            <pre><code>docker compose down</code></pre>
+          </li>
+          <li>
+            View logs:
+            <pre><code>docker compose logs -f</code></pre>
+          </li>
+        </ul>
+        <h2>Production Notes</h2>
+        <ul>
+          <li>Keep <code>.env</code> secrets private.</li>
+          <li>Use HTTPS with a reverse proxy for production.</li>
+          <li>Back up MongoDB data volume regularly.</li>
+          <li>Rotate credentials periodically.</li>
+        </ul>
+      </section>
+      <section id="api">
+        <h2>API Documentation</h2>
         <p>
-          These commands will spin up the backend and frontend servers, making
-          the application fully functional.
+          The backend exposes a REST API under the base path
+          <code>/api/v1</code>. Authentication uses session-based cookies
+          (<code>express-session</code>).
+        </p>
+        <h3>Authentication</h3>
+        <ol>
+          <li>Call the login endpoint to create a session.</li>
+          <li>Store the session cookie returned by the server.</li>
+          <li>Send that cookie on all protected API calls.</li>
+        </ol>
+        <pre><code># Login and store cookies
+curl -i -c cookies.txt \
+  -X POST http://localhost:3000/api/v1/users/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"you@example.com","password":"your-password"}'
+
+# Use stored cookies for protected endpoints
+curl -i -b cookies.txt \
+  http://localhost:3000/api/v1/users</code></pre>
+        <h3>Key Endpoints</h3>
+        <ul>
+          <li><code>GET /api/v1/health</code> — Service health check</li>
+          <li><code>POST /api/v1/users/register</code> — Register a new user</li>
+          <li><code>POST /api/v1/users/login</code> — Login and create session</li>
+          <li><code>GET /api/v1/organizations</code> — List organizations for current user</li>
+          <li><code>GET /api/v1/organizations/:orgId/invoices</code> — List invoices</li>
+          <li><code>GET /api/v1/organizations/:orgId/purchases</code> — List purchases</li>
+          <li><code>GET /api/v1/organizations/:orgId/expenses</code> — List expenses</li>
+          <li><code>GET /api/v1/organizations/:orgId/dashboard</code> — Dashboard summary</li>
+          <li><code>GET /api/v1/organizations/:orgId/reports/:reportType</code> — Reports</li>
+        </ul>
+        <p>
+          For the full API reference, see
+          <a
+            href="https://github.com/Atuldubey98/OptimumERP/blob/main/backend/README.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            >backend/README.md</a
+          >.
         </p>
       </section>
       <section id="contribute">
