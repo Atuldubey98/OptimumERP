@@ -58,7 +58,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const navigate = useNavigate();
   const defaultInvoice = {
     sequence: 1,
-    date: new Date(Date.now()).toISOString().split("T")[0],
+    date: moment().format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultReceiptItem],
     terms: receiptDefaults?.terms?.invoice,
@@ -145,7 +145,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         sequence,
         prefix,
         dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
-        date: new Date(date).toISOString().split("T")[0],
+        date: moment(date).format("YYYY-MM-DD"),
         status,
         partyDetails: party,
         items: items.map((item) => ({

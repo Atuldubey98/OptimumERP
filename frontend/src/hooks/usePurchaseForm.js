@@ -92,7 +92,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         formik.resetForm({
           num: "",
           billingAddress: "",
-          date: new Date(Date.now()).toISOString().split("T")[0],
+          date: moment().format("YYYY-MM-DD"),
           status: "unpaid",
           items: [defaultInvoiceItem],
           description: "",
@@ -127,7 +127,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         party: party._id,
         partyDetails: party,
         num,
-        date: new Date(date).toISOString().split("T")[0],
+        date: moment(date).format("YYYY-MM-DD"),
         status,
         items: items.map((item) => ({
           ...item,

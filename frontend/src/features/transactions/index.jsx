@@ -10,6 +10,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
@@ -32,8 +33,8 @@ export default function TransactionsPage() {
   sevenDaysAgo.setDate(today.getDate() - 7);
 
   const [dateFilter, setDateFilter] = useState({
-    startDate: sevenDaysAgo.toISOString().split("T")[0],
-    endDate: today.toISOString().split("T")[0],
+    startDate: moment(sevenDaysAgo).format("YYYY-MM-DD"),
+    endDate: moment(today).format("YYYY-MM-DD"),
   });
   const [purchasesByStatus, setPurchaseByStatus] = useState([]);
   const [invoicesByStatus, setInvoicesByStatus] = useState([]);

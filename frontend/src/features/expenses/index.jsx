@@ -63,7 +63,7 @@ export default function ExpensesPage() {
       description: "",
       amount: 0,
       category: "",
-      date: new Date().toISOString().split("T")[0],
+      date: moment().format("YYYY-MM-DD"),
     },
     validationSchema: Yup.object({
       description: Yup.string()

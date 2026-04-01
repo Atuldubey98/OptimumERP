@@ -172,8 +172,8 @@ export default function ReportItem() {
                 const newStartDate = new Date();
                 newStartDate.setDate(newEndDate.getDate() - value);
                 onSetDateFilter({
-                  start: newStartDate.toISOString().split("T")[0],
-                  end: newEndDate.toISOString().split("T")[0],
+                  start: moment(newStartDate).format("YYYY-MM-DD"),
+                  end: moment(newEndDate).format("YYYY-MM-DD"),
                 });
               }}
             />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import moment from "moment";
 import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
@@ -15,8 +16,8 @@ export default function useEsitamtes() {
   const sevenDaysAgo = new Date(today);
   sevenDaysAgo.setDate(today.getDate() - 7);
   const [dateFilter, setDateFilter] = useState({
-    startDate: sevenDaysAgo.toISOString().split("T")[0],
-    endDate: today.toISOString().split("T")[0],
+    startDate: moment(sevenDaysAgo).format("YYYY-MM-DD"),
+    endDate: moment(today).format("YYYY-MM-DD"),
   });
   const fetchQuotes = requestAsyncHandler(async () => {
     setStatus("loading");

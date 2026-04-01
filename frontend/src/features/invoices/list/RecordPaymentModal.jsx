@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
+import moment from "moment";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useAsyncCall from "../../../hooks/useAsyncCall";
@@ -41,7 +42,7 @@ export default function RecordPaymentModal({
     amount: 0,
     paymentMode: "",
     description: "",
-    date: new Date().toISOString().split("T")[0],
+    date: moment().format("YYYY-MM-DD"),
   };
   const formik = useFormik({
     initialValues: defaultPayment,
@@ -66,7 +67,7 @@ export default function RecordPaymentModal({
     if (invoice.payment) {
       formik.setValues({
         ...invoice.payment,
-        date: new Date(invoice.payment.date).toISOString().split("T")[0],
+        date: moment(invoice.payment.date).format("YYYY-MM-DD"),
       });
     } else {
       formik.setValues(defaultPayment);

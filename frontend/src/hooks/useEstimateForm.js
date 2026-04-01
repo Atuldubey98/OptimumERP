@@ -1,5 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -46,7 +47,7 @@ export default function useEstimateForm() {
   const formik = useFormik({
     initialValues: {
       sequence: 1,
-      date: new Date(Date.now()).toISOString().split("T")[0],
+      date: moment().format("YYYY-MM-DD"),
       billingAddress: "",
       status: "draft",
       items: [defaultReceiptItem],
@@ -120,7 +121,7 @@ export default function useEstimateForm() {
           prefix,
           billingAddress,
           sequence,
-          date: new Date(date).toISOString().split("T")[0],
+          date: moment(date).format("YYYY-MM-DD"),
           status,
           items: items.map((item) => ({
             ...item,

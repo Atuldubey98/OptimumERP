@@ -6,6 +6,7 @@ import { useToast } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
+import moment from "moment";
 import instance from "../instance";
 import { defaultInvoiceItem } from "../features/estimates/create/data";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
@@ -58,7 +59,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
 
   const defaultInvoice = {
     poNo: 1,
-    date: new Date(Date.now()).toISOString().split("T")[0],
+    date: moment().format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultReceiptItem],
     terms: receiptDefaults.terms?.purchaseOrder,
@@ -139,7 +140,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
         terms,
         prefix,
         sequence,
-        date: new Date(date).toISOString().split("T")[0],
+        date: moment(date).format("YYYY-MM-DD"),
         status,
         partyDetails: party,
         items: items.map((item) => ({

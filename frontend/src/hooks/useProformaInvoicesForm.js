@@ -1,5 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -58,7 +59,7 @@ export default function useProformaInvoicesForm() {
   const navigate = useNavigate();
   const defaultInvoice = {
     sequence: 1,
-    date: new Date(Date.now()).toISOString().split("T")[0],
+    date: moment().format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultReceiptItem],
     terms: receiptDefaults.terms?.proformaInvoice,
@@ -136,7 +137,7 @@ export default function useProformaInvoicesForm() {
         party: party._id,
         terms,
         sequence,
-        date: new Date(date).toISOString().split("T")[0],
+        date: moment(date).format("YYYY-MM-DD"),
         status,
         partyDetails: party,
         items: items.map((item) => ({
