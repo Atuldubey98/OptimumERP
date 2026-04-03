@@ -4,6 +4,7 @@ import {
   Divider,
   Flex,
   IconButton,
+  SimpleGrid,
   Stack,
   Text,
   useColorModeValue,
@@ -132,6 +133,40 @@ export default function ReceiptDisplay({ receipt, meta }) {
   ];
   const bg = useColorModeValue("gray.50", "gray.700");
   const tableHeader = useColorModeValue("gray.100", "gray.800");
+  const metaBg = useColorModeValue("white", "gray.800");
+
+  const receiptMetaFields = [
+    {
+      key: "status",
+      label: t("common_ui.receipt.status", { defaultValue: "Status" }),
+      value: receipt.status,
+    },
+    {
+      key: "poNo",
+      label: t("common_ui.receipt.po_number", { defaultValue: "PO Number" }),
+      value: receipt.poNo,
+    },
+    {
+      key: "poDate",
+      label: t("common_ui.receipt.po_date", { defaultValue: "PO Date" }),
+      value: receipt.poDate ? moment(receipt.poDate).format("LL") : "",
+    },
+    {
+      key: "dueDate",
+      label: t("common_ui.receipt.due_date", { defaultValue: "Due Date" }),
+      value: receipt.dueDate ? moment(receipt.dueDate).format("LL") : "",
+    },
+    {
+      key: "createdBy",
+      label: t("common_ui.receipt.created_by", { defaultValue: "Created By" }),
+      value: receipt.createdBy?.name,
+    },
+    {
+      key: "createdAt",
+      label: t("common_ui.receipt.created_at", { defaultValue: "Created At" }),
+      value: receipt.createdAt ? moment(receipt.createdAt).format("LLL") : "",
+    },
+  ].filter((field) => field.value);
 
   return (
     <Stack
@@ -159,6 +194,18 @@ export default function ReceiptDisplay({ receipt, meta }) {
         receipt={receipt}
         partyNameLabel={meta.partyNameLabel}
       />
+      {receiptMetaFields.length ? (
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+          {receiptMetaFields.map((field) => (
+            <Box key={field.key} bg={metaBg} p={3} borderRadius={"md"}>
+              <Text fontSize={"xs"} textTransform={"uppercase"} color={"gray.500"}>
+                {field.label}
+              </Text>
+              <Text fontWeight={"semibold"}>{field.value}</Text>
+            </Box>
+          ))}
+        </SimpleGrid>
+      ) : null}
       <Divider />
       <Box fontSize={"sm"} marginBlock={2}>
         <ReceiptItemsHeading tableHeader={tableHeader} />
@@ -171,6 +218,22 @@ export default function ReceiptDisplay({ receipt, meta }) {
           <ReceiptMainAmounts receipt={receipt} />
         </Box>
       </Box>
+      {receipt.description ? (
+        <Box bg={metaBg} p={3} borderRadius={"md"}>
+          <Text fontSize={"xs"} textTransform={"uppercase"} color={"gray.500"}>
+            {t("common_ui.receipt.description", { defaultValue: "Description" })}
+          </Text>
+          <Text>{receipt.description}</Text>
+        </Box>
+      ) : null}
+      {receipt.terms ? (
+        <Box bg={metaBg} p={3} borderRadius={"md"}>
+          <Text fontSize={"xs"} textTransform={"uppercase"} color={"gray.500"}>
+            {t("common_ui.receipt.terms", { defaultValue: "Terms and Conditions" })}
+          </Text>
+          <Text whiteSpace={"pre-wrap"}>{receipt.terms}</Text>
+        </Box>
+      ) : null}
 
       {isOpen ? (
         <ShareBillModal

@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineSave } from "react-icons/ai";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
@@ -36,6 +37,7 @@ import { FaFileInvoice } from "react-icons/fa6";
 export default function CreateEstimatePage() {
   const { t } = useTranslation("quote");
   const { formik, status } = useEstimateForm();
+  const deferredItems = useDeferredValue(formik.values.items);
   const { taxes } = useTaxes();
   const { ums } = useUms();
   const loading = status === "loading";
@@ -129,7 +131,7 @@ export default function CreateEstimatePage() {
                   }}
                   taxes={taxes}
                 />
-                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
+                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

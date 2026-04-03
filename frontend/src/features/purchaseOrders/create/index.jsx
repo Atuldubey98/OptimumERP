@@ -15,6 +15,7 @@ import {
   Switch,
   Textarea,
 } from "@chakra-ui/react";
+import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
@@ -45,6 +46,7 @@ export default function PurchaseOrderEditPage() {
   const { formik, status } = usePurchaseOrderForm({
     saveAndNew,
   });
+  const deferredItems = useDeferredValue(formik.values.items);
   const { taxes } = useTaxes();
   const { ums } = useUms();
   const loading = status === "loading";
@@ -170,7 +172,7 @@ export default function PurchaseOrderEditPage() {
                   taxes={taxes}
                   ums={ums}
                 />
-                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
+                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

@@ -16,12 +16,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TbEyeSearch } from "react-icons/tb";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import SelectProduct from "./SelectProduct";
-export default function QuoteItem({
+function QuoteItem({
   quoteItem,
   errorsQuoteItems,
   formik,
@@ -37,7 +38,10 @@ export default function QuoteItem({
   const subtotal = isNaN(parseFloat(quoteItem.price * quoteItem.quantity))
     ? 0
     : parseFloat(quoteItem.price * quoteItem.quantity);
-  const selectedTax = taxes.find((tax) => tax._id === quoteItem.tax);
+  const selectedTax = useMemo(
+    () => taxes.find((tax) => tax._id === quoteItem.tax),
+    [taxes, quoteItem.tax],
+  );
   const gstPercentage = selectedTax ? selectedTax.percentage : 0;
   const totalTax = isNaN(parseFloat((subtotal * gstPercentage) / 100))
     ? 0
@@ -56,10 +60,14 @@ export default function QuoteItem({
     acc[taxId] = true;
     return acc;
   };
-  const singleTaxesFromGroup = taxes
-    .filter(isGroupedTax)
-    .reduce(collectAllSingleTaxesFromGrouped, [])
-    .reduce(makeMapOfSingleTaxIds, {});
+  const singleTaxesFromGroup = useMemo(
+    () =>
+      taxes
+        .filter(isGroupedTax)
+        .reduce(collectAllSingleTaxesFromGrouped, [])
+        .reduce(makeMapOfSingleTaxIds, {}),
+    [taxes],
+  );
 
   const filterGroupedAndUngroupedTaxes = (tax) =>
     !(tax._id in singleTaxesFromGroup);
@@ -68,14 +76,19 @@ export default function QuoteItem({
     value: tax._id,
     isDisabled: !tax.enabled,
   });
-  const taxOptions = taxes
-    .filter(filterGroupedAndUngroupedTaxes)
-    .map(makeTaxOptions);
-  const umOptions = ums.map((um) => ({
-    value: um._id,
-    label: um.name,
-    isDisabled: !um.enabled,
-  }));
+  const taxOptions = useMemo(
+    () => taxes.filter(filterGroupedAndUngroupedTaxes).map(makeTaxOptions),
+    [taxes, singleTaxesFromGroup],
+  );
+  const umOptions = useMemo(
+    () =>
+      ums.map((um) => ({
+        value: um._id,
+        label: um.name,
+        isDisabled: !um.enabled,
+      })),
+    [ums],
+  );
   return (
     <Box marginBlock={5}>
       <SimpleGrid gap={2} minChildWidth={150}>
@@ -213,3 +226,13 @@ export default function QuoteItem({
     </Box>
   );
 }
+
+export default memo(
+  QuoteItem,
+  (prevProps, nextProps) =>
+    prevProps.quoteItem === nextProps.quoteItem &&
+    prevProps.errorsQuoteItems === nextProps.errorsQuoteItems &&
+    prevProps.index === nextProps.index &&
+    prevProps.taxes === nextProps.taxes &&
+    prevProps.ums === nextProps.ums,
+);

@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { purchaseStatusList } from "../../../constants/purchase";
@@ -41,6 +42,7 @@ export default function CreatePurchasePage() {
   const { formik, status } = usePurchaseForm({
     saveAndNew,
   });
+  const deferredItems = useDeferredValue(formik.values.items);
   const loading = status === "loading";
   const { disable } = useLimitsInFreePlan({
     key: "purchases",
@@ -155,7 +157,7 @@ export default function CreatePurchasePage() {
                     />
                   </FormControl>
                 )}
-                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
+                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
                 <DescriptionField formik={formik} />
               </Grid>
             </form>

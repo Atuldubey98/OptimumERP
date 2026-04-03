@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useProformaInvoicesForm from "../../../hooks/useProformaInvoicesForm";
@@ -38,6 +39,7 @@ import { useTranslation } from "react-i18next";
 export default function ProformaInvoiceFormPage() {
   const { t } = useTranslation("proformaInvoice");
   const { formik, status } = useProformaInvoicesForm();
+  const deferredItems = useDeferredValue(formik.values.items);
   const { taxes } = useTaxes();
   const { ums } = useUms();
   const loading = status === "loading";
@@ -157,7 +159,7 @@ export default function ProformaInvoiceFormPage() {
                   taxes={taxes}
                   ums={ums}
                 />
-                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
+                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

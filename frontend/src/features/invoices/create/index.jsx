@@ -15,6 +15,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
+import { useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
@@ -44,6 +45,7 @@ export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm({
     saveAndNew,
   });
+  const deferredItems = useDeferredValue(formik.values.items);
   const loading = status === "loading";
   const { disable } = useLimitsInFreePlan({
     key: "invoices",
@@ -186,7 +188,7 @@ export default function CreateInvoicePage() {
                   ums={ums}
                   namespace="invoice"
                 />
-                <TotalsBox quoteItems={formik.values.items} taxes={taxes} />
+                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

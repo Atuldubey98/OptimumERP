@@ -1,15 +1,15 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { AsyncCreatableSelect } from "chakra-react-select";
-import React, { useRef } from "react";
+import React, { memo, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import usePartyForm from "../../../hooks/usePartyForm";
 import instance from "../../../instance";
 import PartyFormDrawer from "../../parties/PartyFormDrawer";
 
-export default function PartySelectBill({ formik }) {
+function PartySelectBill({ formik }) {
   const { orgId } = useParams();
   const selectRef=  useRef(null);
-  const promiseOptions = async (searchQuery) => {
+  const promiseOptions = useCallback(async (searchQuery) => {
     if (selectRef.current) 
       clearTimeout(selectRef.current)
       return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ export default function PartySelectBill({ formik }) {
           }
         }, 800);
   })
-  };
+        }, [orgId]);
   const {
     isOpen: isPartyFormOpen,
     onClose: onClosePartyFormDrawer,
@@ -43,6 +43,30 @@ export default function PartySelectBill({ formik }) {
     promiseOptions,
     onClosePartyFormDrawer
   );
+  const onChange = useCallback(
+    (e) => {
+      if (!e) {
+        formik.setFieldValue("party", undefined);
+        formik.setFieldValue("billingAddress", "");
+        formik.setFieldValue("partyDetails", undefined);
+      } else {
+        const party = e.value;
+        formik.setFieldValue("party", party._id);
+        formik.setFieldValue("billingAddress", party.billingAddress);
+        formik.setFieldValue("partyDetails", party);
+      }
+    },
+    [formik],
+  );
+
+  const onCreateOption = useCallback(
+    (input) => {
+      partyFormik.setFieldValue("name", input);
+      openPartyFormDrawer();
+    },
+    [openPartyFormDrawer, partyFormik],
+  );
+
   return (
     <>
       <AsyncCreatableSelect
@@ -53,22 +77,8 @@ export default function PartySelectBill({ formik }) {
           }
         }
         createOptionPosition="first"
-        onChange={(e) => {
-          if (!e) {
-            formik.setFieldValue("party", undefined);
-            formik.setFieldValue("billingAddress", "");
-            formik.setFieldValue("partyDetails", undefined);
-          } else {
-            const party = e.value
-            formik.setFieldValue("party", party._id);
-            formik.setFieldValue("billingAddress", party.billingAddress);
-            formik.setFieldValue("partyDetails", party);
-          }
-        }}
-        onCreateOption={(input) => {
-          partyFormik.setFieldValue("name", input);
-          openPartyFormDrawer();
-        }}
+        onChange={onChange}
+        onCreateOption={onCreateOption}
         isClearable
         loadOptions={promiseOptions}
       />
@@ -80,3 +90,10 @@ export default function PartySelectBill({ formik }) {
     </>
   );
 }
+
+export default memo(
+  PartySelectBill,
+  (prevProps, nextProps) =>
+    prevProps.formik.values.party === nextProps.formik.values.party &&
+    prevProps.formik.values.partyDetails === nextProps.formik.values.partyDetails,
+);

@@ -3,15 +3,14 @@ import {
   Button,
   ListItem,
   OrderedList,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { FieldArray } from "formik";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { MdAdd } from "react-icons/md";
 import QuoteItem from "./QuoteItem";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
-import useUmForm from "../../../hooks/useUmForm";
-export default function ItemsList({
+function ItemsList({
   formik,
   taxes,
   ums,
@@ -62,3 +61,14 @@ export default function ItemsList({
     />
   );
 }
+
+export default memo(
+  ItemsList,
+  (prevProps, nextProps) =>
+    prevProps.formik.values.items === nextProps.formik.values.items &&
+    prevProps.formik.errors.items === nextProps.formik.errors.items &&
+    prevProps.taxes === nextProps.taxes &&
+    prevProps.ums === nextProps.ums &&
+    prevProps.namespace === nextProps.namespace &&
+    prevProps.addItemLabelKey === nextProps.addItemLabelKey,
+);

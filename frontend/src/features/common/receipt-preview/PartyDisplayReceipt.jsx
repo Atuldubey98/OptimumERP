@@ -7,6 +7,10 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 export default function PartyDisplayReceipt(props) {
   const { t } = useTranslation("common");
+  const billingAddress =
+    props.receipt.billingAddress || props.receipt.party?.billingAddress;
+  const shippingAddress =
+    props.receipt.shippingAddress || props.receipt.party?.shippingAddress;
 
   return (
     <Box marginBlock={3}>
@@ -19,11 +23,11 @@ export default function PartyDisplayReceipt(props) {
         </Link>
       </Text>
       <Text>
-        <strong>{t("common_ui.receipt.billing_address")}</strong> : {props.receipt.party?.billingAddress}
+        <strong>{t("common_ui.receipt.billing_address")}</strong> : {billingAddress}
       </Text>
       <Text>
         <strong>{t("common_ui.receipt.shipping_address")}</strong> :{" "}
-        {props.receipt.party?.shippingAddress}
+        {shippingAddress}
       </Text>
       <Text>
         <strong>{t("common_ui.receipt.gst")}</strong> : {props.receipt.party?.gstNo}

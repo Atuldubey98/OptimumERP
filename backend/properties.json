@@ -169,17 +169,6 @@
         "locale": "Portuguese",
         "localCode": "pt-BR"
       },
-      "BDT": {
-        "symbol": "৳",
-        "name": "Bangladeshi Taka",
-        "symbol_native": "৳",
-        "decimal_digits": 2,
-        "rounding": 0,
-        "code": "BDT",
-        "name_plural": "Bangladeshi takas",
-        "locale": "English",
-        "localCode": "en-BD"
-      },
       "GYD": {
         "symbol": "$",
         "name": "Guyanese Dollar",
@@ -201,6 +190,61 @@
         "name_plural": "Australian dollars",
         "locale": "English",
         "localCode": "en-US"
+      },
+      "CAD": {
+        "symbol": "$",
+        "name": "Canadian Dollar",
+        "symbol_native": "$",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "CAD",
+        "name_plural": "Canadian dollars",
+        "locale": "English",
+        "localCode": "en-CA"
+      },
+      "FJD": {
+        "symbol": "FJ$",
+        "name": "Fijian Dollar",
+        "symbol_native": "$",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "FJD",
+        "name_plural": "Fijian dollars",
+        "locale": "English",
+        "localCode": "en-FJ"
+      },
+      "NZD": {
+        "symbol": "$",
+        "name": "New Zealand Dollar",
+        "symbol_native": "$",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "NZD",
+        "name_plural": "New Zealand dollars",
+        "locale": "English",
+        "localCode": "en-NZ"
+      },
+      "PKR": {
+        "symbol": "₨",
+        "name": "Pakistani Rupee",
+        "symbol_native": "₨",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "PKR",
+        "name_plural": "Pakistani rupees",
+        "locale": "Urdu",
+        "localCode": "ur-PK"
+      },
+      "SGD": {
+        "symbol": "$",
+        "name": "Singapore Dollar",
+        "symbol_native": "$",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "SGD",
+        "name_plural": "Singapore dollars",
+        "locale": "English",
+        "localCode": "en-SG"
       }
     }
   }
