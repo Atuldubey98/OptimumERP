@@ -23,10 +23,16 @@ const simpleTemplate = (data, color) => {
             stack: [
               { text: data.entity.org.name, style: "header" },
               { text: data.entity.org.address },
-              { text: `${labels.gstin || "GSTIN"}: `, style: "inline" },
-              { text: data.entity.org.gstNo },
-              { text: `${labels.pan || "PAN"}: `, style: "inline" },
-              { text: data.entity.org.panNo },
+              data.entity.org.gstNo
+                ? {
+                    text: [`${labels.gstin || "GSTIN"}: `, { text: data.entity.org.gstNo }],
+                  }
+                : {},
+              data.entity.org.panNo
+                ? {
+                    text: [`${labels.pan || "PAN"}: `, { text: data.entity.org.panNo }],
+                  }
+                : {},
             ],
             alignment: "right",
           },
