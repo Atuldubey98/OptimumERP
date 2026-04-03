@@ -3,9 +3,9 @@ const { getBillDetail } = require("../../services/bill.service");
 const {
   getPdfBufferFromDocDefinition,
 } = require("../../services/renderEngine.service");
+const { getDisplaySettingForOrg } = require("../../services/setting.service");
 const templator = require("../../views/templates/templator");
 const https = require("https");
-const Setting = require("../../models/settings.model");
 const logger = require("../../logger");
 const fs = require("fs/promises");
 const path = require("path");
@@ -15,10 +15,7 @@ const download = async (options = {}, req, res) => {
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
   const orgId = req.params.orgId;
-  const setting = await Setting.findOne(
-    { org: orgId },
-    { "printSettings.defaultTemplate": 1 },
-  );
+  const setting = await getDisplaySettingForOrg(orgId);
   const template =
     req.query.template || setting?.printSettings?.defaultTemplate || "simple";
   logger.info(`Using template: ${template}`);

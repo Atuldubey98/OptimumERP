@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const { OrgNotFound } = require("../../errors/org.error");
 const Setting = require("../../models/settings.model");
+const { invalidateSettingCache } = require("../../services/setting.service");
 
 const update = async (req, res) => {
   const orgId = req.params.orgId;
@@ -10,6 +11,7 @@ const update = async (req, res) => {
     req.body,
     { new: true , runValidators: true}
   ).populate("org");
+  invalidateSettingCache(orgId);
   return res.status(200).json({ data: updatedSetting });
 };
 

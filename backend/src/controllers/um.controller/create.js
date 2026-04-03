@@ -1,6 +1,7 @@
 const { umDto } = require("../../dto/um.dto");
 const OrgModel = require("../../models/org.model");
 const Um = require("../../models/um.model");
+const { invalidateUmCache } = require("../../services/um.service");
 const create = async (req, res) => {
   const body = await umDto.validateAsync(req.body);
   body.org = req.params.orgId;
@@ -10,6 +11,7 @@ const create = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.ums": 1 } }
   );
+  invalidateUmCache(req.params.orgId);
   return res.status(201).json({ data: um, message: req.t("common:api.um_created") });
 };
 

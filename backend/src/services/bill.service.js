@@ -8,6 +8,7 @@ const {
   calculateTaxes,
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
+const { getDisplaySettingForOrg } = require("./setting.service");
 const path = require("path");
 const MODEL_NAME_TO_COUNTER_KEY = {
   invoice: "invoice",
@@ -27,7 +28,7 @@ const getUpiQrCodeByPrintSettings = async ({
   return upiQr;
 };
 
-const getSettingForOrg = async (org, session) => {
+const getLiveSettingForOrg = async (org, session) => {
   const setting = await Setting.findOne(
     {
       org,
@@ -72,7 +73,7 @@ const syncSequenceCounter = async ({ org, counterKey, sequence, session }) => {
 };
 
 const getCurrentSequenceCounter = async ({ Bill, org, prefixType, session }) => {
-  const setting = await getSettingForOrg(org, session);
+  const setting = await getLiveSettingForOrg(org, session);
   const counterKey = getCounterKey({ Bill, prefixType });
   if (!counterKey) {
     const highestSequence = await getHighestSequence({
@@ -115,7 +116,7 @@ exports.saveBill = async ({
   session,
 }) => {
   const body = await dto.validateAsync(requestBody);
-  const totalWithTaxes = await calculateTaxes(body.items);
+  const totalWithTaxes = await calculateTaxes(body.items, body.org);
   const { setting, counterKey } = await getCurrentSequenceCounter({
     Bill,
     org: body.org,
@@ -274,13 +275,14 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     .populate("createdBy", "name email _id")
     .populate("org");
   if (!bill) throw new NotFound();
-  const setting = await getSettingForOrg(filter.org);
+  const setting = await getDisplaySettingForOrg(filter.org);
   const currencies = await propertyService.getCurrencyConfig();
   const currencySymbol = currencies.value[setting.currency].symbol;
   const grandTotal = bill.total + bill.totalTax;
   const items = await calculateTaxesForBillItemsWithCurrency(
     bill.items,
-    currencySymbol
+    currencySymbol,
+    filter.org,
   );
   const localeCode = setting.localeCode;
   const dateLocale = language

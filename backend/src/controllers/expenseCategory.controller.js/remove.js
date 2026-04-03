@@ -6,6 +6,7 @@ const logger = require("../../logger");
 const Expense = require("../../models/expense.model");
 const ExpenseCategory = require("../../models/expenseCategory.model");
 const OrgModel = require("../../models/org.model");
+const { invalidateExpenseCategoryCache } = require("../../services/expenseCategory.service");
 
 const remove = async (req, res) => {
   const expense = await Expense.findOne({
@@ -28,6 +29,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.expenseCategories": -1 } }
   );
+  invalidateExpenseCategoryCache(req.params.orgId);
   return res.status(200).json({ data: category });
 };
 module.exports = remove;

@@ -1,5 +1,6 @@
 const Um = require("../../models/um.model");
 const { getPaginationParams, hasUserReachedCreationLimits } = require("../../services/crud.service");
+const { getUmListForOrg } = require("../../services/um.service");
 const listAll = async (req, res) => {
   const { filter } = await getPaginationParams({
     model: Um,
@@ -7,7 +8,10 @@ const listAll = async (req, res) => {
     req,
     shouldPaginate: false,
   });
-  const ums = await Um.find(filter);
+  const shouldUseCachedOrgUmList = !req.query.search;
+  const ums = shouldUseCachedOrgUmList
+    ? await getUmListForOrg(req.params.orgId)
+    : await Um.find(filter);
   return res.status(200).json({
     data: ums,
     reachedLimit: hasUserReachedCreationLimits({

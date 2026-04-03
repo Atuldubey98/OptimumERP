@@ -97,11 +97,11 @@ export default function DashboardPage() {
       setDashboard(data.data);
       setStatus("success");
     }),
-    [currentPeriod]
+    [orgId, requestAsyncHandler, statPeriod]
   );
   useEffect(() => {
     fetchDashboard();
-  }, [currentPeriod]);
+  }, [fetchDashboard]);
   const loading = status === "loading";
   const { isOpen: isGuideTourOpen, onClose: closeGuideTour } = useDisclosure({
     defaultIsOpen: !localStorage.getItem("guide"),
@@ -154,10 +154,10 @@ export default function DashboardPage() {
               options={periods}
               onChange={({ params, value }) => {
                 setStatPeriod({
-                  ...statPeriod,
-                  endDate: moment()
+                  startDate: moment()
                     .subtract(...params)
                     .format("YYYY-MM-DD"),
+                  endDate: moment().format("YYYY-MM-DD"),
                 });
                 setCurrentPeriod(value);
               }}

@@ -31,6 +31,7 @@ const seedProperties = async (properties) => {
       .lean()
       .exec();
   }
+  propertyService.invalidatePropertyCache();
 };
 
 const markSeeded = async () => {

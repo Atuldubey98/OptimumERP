@@ -2,6 +2,7 @@ const { expenseCategoryDto } = require("../../dto/expenseCategory.dto");
 const logger = require("../../logger");
 const ExpenseCategory = require("../../models/expenseCategory.model");
 const OrgModel = require("../../models/org.model");
+const { invalidateExpenseCategoryCache } = require("../../services/expenseCategory.service");
 
 const create = async (req, res) => {
   const body = await expenseCategoryDto.validateAsync(req.body);
@@ -13,6 +14,7 @@ const create = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.expenseCategories": 1 } }
   );
+  invalidateExpenseCategoryCache(req.params.orgId);
   return res.status(201).json(category);
 };
 

@@ -149,6 +149,9 @@ export default function PurchasePage() {
                   setInvoice(purchase);
                   openPayout();
                 }}
+                openItem={() => {
+                  navigate(`/${orgId}/receipt/purchases/${purchase._id}`);
+                }}
                 onDownloadItem={() => {
                   onSaveBill(purchase);
                 }}

@@ -1,5 +1,6 @@
 const { hasUserReachedCreationLimits } = require("../../services/crud.service");
 const ExpenseCategory = require("../../models/expenseCategory.model");
+const { getExpenseCategoryListForOrg } = require("../../services/expenseCategory.service");
 
 const paginate = async (req, res) => {
   const filter = {
@@ -7,7 +8,10 @@ const paginate = async (req, res) => {
   };
   const search = req.query.search || "";
   if (search) filter.$text = { $search: search };
-  const categories = await ExpenseCategory.find(filter);
+  const shouldUseCachedOrgExpenseCategoryList = !search;
+  const categories = shouldUseCachedOrgExpenseCategoryList
+    ? await getExpenseCategoryListForOrg(req.params.orgId)
+    : await ExpenseCategory.find(filter);
   return res.status(200).json({
     data: categories,
     reachedLimit: hasUserReachedCreationLimits({

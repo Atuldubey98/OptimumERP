@@ -2,6 +2,7 @@ const { Types } = require("mongoose");
 const { taxDto } = require("../../dto/tax.dto");
 const Tax = require("../../models/tax.model");
 const OrgModel = require("../../models/org.model");
+const { invalidateTaxCache } = require("../../services/tax.service");
 
 const calculateTotalPercentageForSingleTaxes = async (taxIds = [], orgId) => {
   const childTaxes = await Tax.aggregate([
@@ -41,6 +42,7 @@ const create = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.taxes": 1 } }
   );
+  invalidateTaxCache(req.params.orgId);
   return res
     .status(200)
     .json({ data: tax, message: req.t("common:api.tax_created") });

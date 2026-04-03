@@ -7,6 +7,7 @@ const Purchase = require("../../models/purchase.model");
 const Quotes = require("../../models/quotes.model");
 const Setting = require("../../models/settings.model");
 const OrgModel = require("../../models/org.model");
+const { invalidateTaxCache } = require("../../services/tax.service");
 const findSingleChildTaxPartOfGroup = async (taxId) => {
   return Tax.findOne({
     type: "grouped",
@@ -64,6 +65,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.taxes": -1 } }
   );
+  invalidateTaxCache(req.params.orgId);
   return res.status(200).json({ message: req.t("common:api.tax_deleted") });
 };
 

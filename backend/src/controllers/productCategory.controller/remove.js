@@ -1,6 +1,7 @@
 const Product = require("../../models/product.model");
 const ProductCategory = require("../../models/productCategory.model");
 const OrgModel = require("../../models/org.model");
+const { invalidateProductCategoryCache } = require("../../services/productCategory.service");
 const remove = async (req, res) => {
   const product = await Product.findOne({ category: req.params.id });
   if (product)
@@ -20,6 +21,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.productCategories": -1 } }
   );
+  invalidateProductCategoryCache(req.params.orgId);
   return res
     .status(200)
     .json({ message: req.t("common:api.product_category_deleted") });

@@ -3,6 +3,7 @@ const {
   hasUserReachedCreationLimits,
   getPaginationParams,
 } = require("../../services/crud.service");
+const { getProductCategoryListForOrg } = require("../../services/productCategory.service");
 
 const entities = require("../../constants/entities");
 const paginate = async (req, res) => {
@@ -12,16 +13,21 @@ const paginate = async (req, res) => {
       model: ProductCategory,
       modelName: entities.PRODUCT_CATEGORIES,
     });
-  const productCategories = await ProductCategory.find(filter)
-    .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+  const shouldUseCachedOrgCategoryList = !req.query.search;
+  const productCategories = shouldUseCachedOrgCategoryList
+    ? await getProductCategoryListForOrg(req.params.orgId)
+    : await ProductCategory.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
   return res.status(200).json({
     data: productCategories,
     currentPage: page,
     limit,
-    totalPages,
-    totalCount: total,
+    totalPages: shouldUseCachedOrgCategoryList
+      ? Math.ceil(productCategories.length / limit)
+      : totalPages,
+    totalCount: shouldUseCachedOrgCategoryList ? productCategories.length : total,
     reachedLimit: hasUserReachedCreationLimits({
       relatedDocsCount: res.locals.organization.relatedDocsCount,
       userLimits: req.session.user.limits,

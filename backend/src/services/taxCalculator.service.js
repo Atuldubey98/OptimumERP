@@ -1,9 +1,10 @@
-const Tax = require("../models/tax.model");
 const Um = require("../models/um.model");
+const { getTaxMapForOrgByIds } = require("./tax.service");
+const { getUmMapForOrgByIds } = require("./um.service");
 
-exports.calculateTaxes = async (items = []) => {
+exports.calculateTaxes = async (items = [], orgId) => {
   const taxIds = items.map((item) => item.tax);
-  const taxIdItemMap = await getTaxIdTaxMap(taxIds);
+  const taxIdItemMap = await getTaxIdTaxMap(taxIds, orgId);
   let total = 0,
     totalTax = 0;
   const taxCategories = {};
@@ -31,12 +32,13 @@ exports.calculateTaxes = async (items = []) => {
 
 exports.calculateTaxesForBillItemsWithCurrency = async (
   items = [],
-  currencySymbol
+  currencySymbol,
+  orgId,
 ) => {
   const taxIds = items.map((item) => item.tax);
   const umIds = items.map((item) => item.um);
-  const taxIdItemMap = await getTaxIdTaxMap(taxIds);
-  const umIdsMap = await getUmIdMap(umIds);
+  const taxIdItemMap = await getTaxIdTaxMap(taxIds, orgId);
+  const umIdsMap = await getUmIdMap(umIds, orgId);
   const itemsWithCalculatedTaxes = items.map((item) => {
     const itemTax = taxIdItemMap[item.tax];
     const price = `${currencySymbol} ${item.price.toFixed(2)}`;
@@ -61,17 +63,11 @@ const makeIdMapReducer = (prev, current) => {
   prev[current._id] = current;
   return prev;
 };
-async function getTaxIdTaxMap(taxIds = []) {
-  const taxes = await Tax.find({ _id: { $in: taxIds } })
-    .populate("children")
-    .lean();
-  const taxIdItemMap = taxes.reduce(makeIdMapReducer, {});
-  return taxIdItemMap;
+async function getTaxIdTaxMap(taxIds = [], orgId) {
+  return getTaxMapForOrgByIds(orgId, taxIds);
 }
-async function getUmIdMap(umIds = []) {
-  const ums = await Um.find({ _id: { $in: umIds } });
-  const umIdsMap = ums.reduce(makeIdMapReducer, {});
-  return umIdsMap;
+async function getUmIdMap(umIds = [], orgId) {
+  return getUmMapForOrgByIds(orgId, umIds);
 }
 
 function updateTaxCategories({ itemTax, taxCategories, itemSubtotal }) {

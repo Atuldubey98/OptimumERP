@@ -7,6 +7,7 @@ const Um = require("../../models/um.model");
 const Product = require("../../models/product.model");
 const Setting = require("../../models/settings.model");
 const OrgModel = require("../../models/org.model");
+const { invalidateUmCache } = require("../../services/um.service");
 
 const findBillWithUm = async (Bill, umId) => {
   return Bill.findOne({
@@ -60,6 +61,7 @@ const remove = async (req, res) => {
     { _id: req.params.orgId },
     { $inc: { "relatedDocsCount.ums": -1 } }
   );
+  invalidateUmCache(req.params.orgId);
   return res.status(200).json({ message: req.t("common:api.unit_deleted") });
 };
 
