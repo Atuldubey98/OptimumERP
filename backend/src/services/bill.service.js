@@ -446,9 +446,9 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       return {
         title: t
           ? t("billing:bill_metadata:invoice_title", {
-            defaultValue: "Invoice",
+            defaultValue: "Tax Invoice",
           })
-          : "Invoice",
+          : "Tax Invoice",
         billMetaHeading: t
           ? t("billing:bill_metadata:invoice_meta_heading", {
             defaultValue: "Invoice Details",

@@ -88,7 +88,7 @@ const simpleTemplate = (data, color) => {
       {
         table: {
           headerRows: 1,
-          widths: ["auto", "*", "auto", "auto", "auto", "auto", "auto", "auto"],
+          widths: ["auto", "*", 58, "auto", "auto", "auto", "auto", "auto"],
           body: [
             [
               { text: labels.serial_no || "Sno.", style: "tableHeader" },
@@ -120,15 +120,15 @@ const simpleTemplate = (data, color) => {
         table: {
           widths: ["*", "auto"],
           body: [
-            [`${labels.subtotal || "Subtotal"}:`, data.total],
+            [{ text: `${labels.subtotal || "Subtotal"}:`, bold: true }, data.total],
             ...Object.entries(data.currencyTaxCategories).map(
               ([taxName, taxValue]) => [
-                `${taxName.toLocaleUpperCase()}:`,
+                { text: `${taxName.toLocaleUpperCase()}:`, bold: true },
                 taxValue,
               ],
             ),
-            [`${labels.grand_total || "Grand Total"}:`, data.grandTotal],
-            [`${labels.amount_in_words || "Amount in words"}:`, data.amountToWords],
+            [{ text: `${labels.grand_total || "Grand Total"}:`, bold: true }, data.grandTotal],
+            [{ text: `${labels.amount_in_words || "Amount in words"}:`, bold: true }, data.amountToWords],
           ],
         },
         margin: [0, 20, 0, 20],
