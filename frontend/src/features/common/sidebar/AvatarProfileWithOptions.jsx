@@ -40,7 +40,7 @@ export default function AvatarProfileWithOptions() {
     const { data } = await instance.post(`/api/v1/users/logout`);
     toast({
       title: t("common_ui.actions.logout"),
-      description: data.message,
+      description: t(data.message, { defaultValue: data.message }),
       status: "success",
       duration: 3000,
       isClosable: true,

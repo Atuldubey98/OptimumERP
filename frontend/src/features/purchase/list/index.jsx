@@ -44,6 +44,7 @@ export default function PurchasePage() {
     status,
   } = useDateFilterFetch({
     entity: "purchases",
+    storageKey: "dateFilter:purchases",
   });
   const loading = status === "loading";
 

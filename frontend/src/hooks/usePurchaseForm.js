@@ -82,7 +82,10 @@ export default function usePurchaseForm({ saveAndNew }) {
       );
       toast({
         title: t("common_ui.toasts.success"),
-        description: res?.data?.message,
+        description: t(res?.data?.message, {
+          defaultValue: res?.data?.message,
+          entity: "Purchase Invoice",
+        }),
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,

@@ -10,12 +10,13 @@ export default function useAsyncCall() {
     (...values) => {
       Promise.resolve(fn(...values)).catch((err) => {
         if (import.meta.env.DEV) console.log(err);
+        const backendMessage = isAxiosError(err)
+          ? err?.response?.data?.message
+          : null;
         toast({
-          title: isAxiosError(err)
-            ? err.response?.data?.name || t("common_ui.toasts.error")
-            : t("common_ui.toasts.error"),
-          description: isAxiosError(err)
-            ? err?.response?.data.message || t("common_ui.toasts.network_error")
+          title: t("common_ui.toasts.error"),
+          description: backendMessage
+            ? t(backendMessage, { defaultValue: backendMessage })
             : t("common_ui.toasts.network_error"),
           status: "error",
           duration: 3000,

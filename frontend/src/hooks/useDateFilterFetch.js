@@ -4,7 +4,7 @@ import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
 import useQuery from "./useQuery";
 import moment from "moment";
-export default function useDateFilterFetch({ entity }) {
+export default function useDateFilterFetch({ entity, storageKey }) {
   const [billItems, setBillItems] = useState({
     totalPages: 0,
     totalCount: 0,
@@ -23,9 +23,39 @@ export default function useDateFilterFetch({ entity }) {
   const searchQuery = query.get("query");
   const today = moment();
   const monthAgo = moment().subtract(30, "days");
-  const [dateFilter, setDateFilter] = useState({
+  const defaultDateFilter = {
     startDate: monthAgo.format("YYYY-MM-DD"),
     endDate: today.format("YYYY-MM-DD"),
+  };
+  const scopedStorageKey = storageKey
+    ? `${storageKey}:${orgId || "default"}`
+    : null;
+  const [dateFilter, setDateFilter] = useState(() => {
+    if (!scopedStorageKey || typeof window === "undefined") {
+      return defaultDateFilter;
+    }
+    try {
+      const rawDateFilter = window.localStorage.getItem(scopedStorageKey);
+      if (!rawDateFilter) return defaultDateFilter;
+      const parsedDateFilter = JSON.parse(rawDateFilter);
+      const hasValidStartDate = moment(
+        parsedDateFilter?.startDate,
+        "YYYY-MM-DD",
+        true,
+      ).isValid();
+      const hasValidEndDate = moment(
+        parsedDateFilter?.endDate,
+        "YYYY-MM-DD",
+        true,
+      ).isValid();
+      if (!hasValidStartDate || !hasValidEndDate) return defaultDateFilter;
+      return {
+        startDate: parsedDateFilter.startDate,
+        endDate: parsedDateFilter.endDate,
+      };
+    } catch (error) {
+      return defaultDateFilter;
+    }
   });
   const fetchItems = requestAsyncHandler(async () => {
     setStatus("loading");
@@ -64,6 +94,10 @@ export default function useDateFilterFetch({ entity }) {
       startDate: start,
     });
   };
+  useEffect(() => {
+    if (!scopedStorageKey || typeof window === "undefined") return;
+    window.localStorage.setItem(scopedStorageKey, JSON.stringify(dateFilter));
+  }, [scopedStorageKey, dateFilter]);
   useEffect(() => {
     if (entity) fetchItems();
   }, [searchQuery, dateFilter, page, entity]);

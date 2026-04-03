@@ -64,7 +64,7 @@ export default function OrgPage() {
     const { data } = await instance.post(`/api/v1/users/logout`);
     toast({
       title: "Logout",
-      description: data.message,
+      description: t(data.message, { defaultValue: data.message }),
       status: "success",
       duration: 3000,
       isClosable: true,

@@ -26,7 +26,11 @@ import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
 export default function ProformaInvoicesPage() {
-  const { t, i18n } = useTranslation("proformaInvoice");
+  const { t, i18n } = useTranslation(["proformaInvoice", "common"]);
+  const resolveToastMessage = (message, fallbackKey) => {
+    if (!message) return t(fallbackKey);
+    return t(message, { defaultValue: message });
+  };
   const {
     items,
     dateFilter,
@@ -39,6 +43,7 @@ export default function ProformaInvoicesPage() {
     status,
   } = useDateFilterFetch({
     entity: "proformaInvoices",
+    storageKey: "dateFilter:proformaInvoices",
   });
   const loading = status === "loading";
   const navigate = useNavigate();
@@ -69,10 +74,13 @@ export default function ProformaInvoicesPage() {
       setProformaInvoiceStatus("idle");
     } catch (error) {
       toast({
-        title: isAxiosError(error) ? error.response.data.name : "Error",
+        title: t("proforma_invoice_ui.toast.error_title"),
         description: isAxiosError(error)
-          ? error.response.data.message
-          : "Some error occured",
+          ? resolveToastMessage(
+              error.response?.data?.message,
+              "proforma_invoice_ui.toast.error_fallback",
+            )
+          : t("proforma_invoice_ui.toast.error_fallback"),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -121,7 +129,10 @@ export default function ProformaInvoicesPage() {
       );
       toast({
         title: t("proforma_invoice_ui.toast.success_title"),
-        description: data.message,
+        description: resolveToastMessage(
+          data.message,
+          "proforma_invoice_ui.toast.success_title",
+        ),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -129,9 +140,12 @@ export default function ProformaInvoicesPage() {
       onCloseConvertToInvoiceConfirmationModal();
     } catch (error) {
       toast({
-        title: isAxiosError(error) ? error.response.data.name : t("proforma_invoice_ui.toast.error_title"),
+        title: t("proforma_invoice_ui.toast.error_title"),
         description: isAxiosError(error)
-          ? error.response.data.message
+          ? resolveToastMessage(
+              error.response?.data?.message,
+              "proforma_invoice_ui.toast.error_fallback",
+            )
           : t("proforma_invoice_ui.toast.error_fallback"),
         status: "error",
         duration: 3000,

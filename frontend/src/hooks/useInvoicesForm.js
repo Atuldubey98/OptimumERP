@@ -84,7 +84,10 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       );
       toast({
         title: t("common_ui.toasts.success"),
-        description: response.data.message,
+        description: t(response.data.message, {
+          defaultValue: response.data.message,
+          entity: "Invoice",
+        }),
         status: _id ? "info" : "success",
         duration: 3000,
         isClosable: true,

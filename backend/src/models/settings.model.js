@@ -4,6 +4,11 @@ const termsSchema = {
   type: String,
   default: "Thanks for business !",
 };
+const sequenceCounterSchema = {
+  type: Number,
+  min: 0,
+  default: 0,
+};
 const settingSchema = new Schema({
   org: {
     type: Types.ObjectId,
@@ -64,6 +69,23 @@ const settingSchema = new Schema({
       },
     },
     required: true,
+  },
+  sequenceCounters: {
+    _id: false,
+    type: {
+      invoice: sequenceCounterSchema,
+      quotation: sequenceCounterSchema,
+      purchaseOrder: sequenceCounterSchema,
+      proformaInvoice: sequenceCounterSchema,
+      saleOrder: sequenceCounterSchema,
+    },
+    default: {
+      invoice: 0,
+      quotation: 0,
+      purchaseOrder: 0,
+      proformaInvoice: 0,
+      saleOrder: 0,
+    },
   },
   printSettings: {
     type: {

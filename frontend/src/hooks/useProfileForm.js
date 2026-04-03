@@ -19,7 +19,7 @@ export default function useProfileForm({ closeForm }) {
       const { data } = await instance.patch("/api/v1/users", values);
       toast({
         title: t("common_ui.toasts.success"),
-        description: data.message,
+        description: t(data.message, { defaultValue: data.message }),
         status: "success",
         duration: 3000,
         isClosable: true,

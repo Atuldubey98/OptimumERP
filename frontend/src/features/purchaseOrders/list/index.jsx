@@ -40,6 +40,7 @@ export default function PurchaseOrderPage() {
     totalPages,
   } = useDateFilterFetch({
     entity: "purchaseOrders",
+    storageKey: "dateFilter:purchaseOrders",
   });
   const { symbol } = useCurrentOrgCurrency();
   const loading = status === "loading";

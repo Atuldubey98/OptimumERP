@@ -40,6 +40,7 @@ export default function EstimatesPage() {
     totalCount,
   } = useDateFilterFetch({
     entity: "quotes",
+    storageKey: "dateFilter:quotes",
   });
   const loading = status === "loading";
   const estimateTableMapper = (estimate) => ({

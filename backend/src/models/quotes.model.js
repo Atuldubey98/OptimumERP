@@ -153,4 +153,9 @@ quoteSchema.index({
   description: "text",
   num: "text",
 });
+quoteSchema.index({ org: 1, createdAt: -1 });
+quoteSchema.index(
+  { org: 1, "financialYear.start": 1, sequence: 1 },
+  { unique: true, name: "quotes_org_fin_year_sequence_unique" }
+);
 module.exports = Quotes;

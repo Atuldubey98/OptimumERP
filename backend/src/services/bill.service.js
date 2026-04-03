@@ -9,6 +9,14 @@ const {
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
 const path = require("path");
+const MODEL_NAME_TO_COUNTER_KEY = {
+  invoice: "invoice",
+  quotes: "quotation",
+  purchase_order: "purchaseOrder",
+  proforma_invoice: "proformaInvoice",
+  sale_order: "saleOrder",
+};
+
 const getUpiQrCodeByPrintSettings = async ({
   upi,
   grandTotal = 0,
@@ -19,13 +27,83 @@ const getUpiQrCodeByPrintSettings = async ({
   return upiQr;
 };
 
-const getSettingForOrg = async (org) => {
-  const setting = await Setting.findOne({
-    org,
-  });
+const getSettingForOrg = async (org, session) => {
+  const setting = await Setting.findOne(
+    {
+      org,
+    },
+    null,
+    session ? { session } : undefined
+  );
   if (!setting) throw new OrgNotFound();
   return setting;
 };
+
+const getCounterKey = ({ Bill, prefixType }) => {
+  if (prefixType) return prefixType;
+  return MODEL_NAME_TO_COUNTER_KEY[Bill?.modelName];
+};
+
+const getCounterPath = (counterKey) => `sequenceCounters.${counterKey}`;
+
+const getHighestSequence = async ({ Bill, org, financialYear, session }) => {
+  const bill = await Bill.findOne(
+    {
+      org,
+      financialYear,
+    },
+    { sequence: 1 },
+    { sort: { sequence: -1 }, ...(session ? { session } : {}) }
+  );
+  return bill?.sequence || 0;
+};
+
+const syncSequenceCounter = async ({ org, counterKey, sequence, session }) => {
+  if (!counterKey || typeof sequence !== "number") return;
+  await Setting.updateOne(
+    { org },
+    {
+      $max: {
+        [getCounterPath(counterKey)]: sequence,
+      },
+    },
+    session ? { session } : undefined
+  );
+};
+
+const getCurrentSequenceCounter = async ({ Bill, org, prefixType, session }) => {
+  const setting = await getSettingForOrg(org, session);
+  const counterKey = getCounterKey({ Bill, prefixType });
+  if (!counterKey) {
+    const highestSequence = await getHighestSequence({
+      Bill,
+      org,
+      financialYear: setting.financialYear,
+      session,
+    });
+    return { setting, counterKey: null, currentCounter: highestSequence };
+  }
+
+  const storedCounter = setting.sequenceCounters?.[counterKey];
+  if (typeof storedCounter === "number") {
+    return { setting, counterKey, currentCounter: storedCounter };
+  }
+
+  const highestSequence = await getHighestSequence({
+    Bill,
+    org,
+    financialYear: setting.financialYear,
+    session,
+  });
+  await syncSequenceCounter({
+    org,
+    counterKey,
+    sequence: highestSequence,
+    session,
+  });
+  return { setting, counterKey, currentCounter: highestSequence };
+};
+
 exports.saveBill = async ({
   dto,
   Bill,
@@ -38,7 +116,12 @@ exports.saveBill = async ({
 }) => {
   const body = await dto.validateAsync(requestBody);
   const totalWithTaxes = await calculateTaxes(body.items);
-  const setting = await getSettingForOrg(body.org);
+  const { setting, counterKey } = await getCurrentSequenceCounter({
+    Bill,
+    org: body.org,
+    prefixType,
+    session,
+  });
   const billBody = {
     ...body,
     ...totalWithTaxes,
@@ -98,6 +181,14 @@ exports.saveBill = async ({
       session,
     }
   );
+
+  await syncSequenceCounter({
+    org: body.org,
+    counterKey,
+    sequence: body.sequence,
+    session,
+  });
+
   return bill;
 
   async function findExistingBillInFinancialYear() {
@@ -124,17 +215,46 @@ exports.deleteBill = async ({ Bill, NotFound, filter }) => {
   return bill;
 };
 
-exports.getNextSequence = async ({ Bill, org }) => {
-  const setting = await getSettingForOrg(org);
-  const bill = await Bill.findOne(
+exports.getNextSequence = async ({ Bill, org, prefixType, session }) => {
+  const { currentCounter } = await getCurrentSequenceCounter({
+    Bill,
+    org,
+    prefixType,
+    session,
+  });
+  return currentCounter + 1;
+};
+
+exports.reserveNextSequence = async ({ Bill, org, prefixType, session }) => {
+  const { counterKey } = await getCurrentSequenceCounter({
+    Bill,
+    org,
+    prefixType,
+    session,
+  });
+  if (!counterKey) {
+    return exports.getNextSequence({ Bill, org, prefixType, session });
+  }
+
+  const updatedSetting = await Setting.findOneAndUpdate(
+    { org },
     {
-      org,
-      financialYear: setting.financialYear,
+      $inc: {
+        [getCounterPath(counterKey)]: 1,
+      },
     },
-    { sequence: 1 },
-    { sort: { sequence: -1 } }
+    {
+      new: true,
+      ...(session ? { session } : {}),
+    }
   );
-  return bill ? (bill?.sequence || 0) + 1 : 1;
+  if (!updatedSetting) throw new OrgNotFound();
+  return updatedSetting.sequenceCounters[counterKey];
+};
+
+exports.syncSequenceCounter = async ({ Bill, org, prefixType, sequence, session }) => {
+  const counterKey = getCounterKey({ Bill, prefixType });
+  return syncSequenceCounter({ org, counterKey, sequence, session });
 };
 const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
   const newTaxCategories = Object.entries(taxCategories).reduce(

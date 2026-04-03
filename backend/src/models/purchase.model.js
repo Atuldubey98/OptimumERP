@@ -164,4 +164,5 @@ purchaseInvoice.index({
   description: "text",
   num: "text",
 });
+purchaseInvoice.index({ org: 1, createdAt: -1 });
 module.exports = Purchase;

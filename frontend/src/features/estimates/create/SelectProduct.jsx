@@ -29,6 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
+import { CiDollar } from "react-icons/ci";
 import useDebouncedInput from "../../../hooks/useDeboucedInput";
 import useProductForm from "../../../hooks/useProductForm";
 import ProductFormDrawer from "../../products/ProductFormDrawer";
@@ -39,7 +40,7 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+    const { getDefaultReceiptItem, symbol } = useCurrentOrgCurrency();
   const defaultItem = getDefaultReceiptItem();  
   const bg = useColorModeValue("gray.100", "gray.800");
 
@@ -146,7 +147,12 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                   <Tr>
                     <Th>#</Th>
                     <Th>Name</Th>
-                    <Th>Price</Th>
+                      <Th>
+                        <Flex alignItems="center" gap={2}>
+                          <span>Price</span>
+                          <CiDollar size={18} />
+                        </Flex>
+                      </Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -171,7 +177,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                         />
                       </Td>
                       <Td>{product.name}</Td>
-                      <Td>{product.sellingPrice}</Td>
+                       <Td>{symbol} {product.sellingPrice}</Td>
                     </Tr>
                   ))}
                 </Tbody>

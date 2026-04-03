@@ -19,7 +19,17 @@ const closeFinancialYear = async (req, res) => {
   const setting = await Setting.findOneAndUpdate(
     { org: orgId },
     {
-      ...body,
+      $set: {
+        financialYear: body.financialYear,
+        transactionPrefix: body.transactionPrefix,
+        sequenceCounters: {
+          invoice: 0,
+          quotation: 0,
+          purchaseOrder: 0,
+          proformaInvoice: 0,
+          saleOrder: 0,
+        },
+      },
       $addToSet: {
         "prefixes.invoice": body.transactionPrefix.invoice,
         "prefixes.quotation": body.transactionPrefix.quotation,

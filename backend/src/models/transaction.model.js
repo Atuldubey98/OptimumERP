@@ -71,5 +71,11 @@ const transactionSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
+transactionSchema.index({ org: 1, createdAt: -1 });
+transactionSchema.index(
+  { org: 1, docModel: 1, doc: 1 },
+  { unique: true, name: "transaction_org_doc_model_doc_unique" }
+);
+
 const Transaction = model("transaction", transactionSchema);
 module.exports = Transaction;

@@ -42,6 +42,7 @@ export default function InvoicesPage() {
     status,
   } = useDateFilterFetch({
     entity: "invoices",
+    storageKey: "dateFilter:invoices",
   });
   const auth = useAuth();
   const loading = status === "loading";

@@ -4,7 +4,7 @@ const { saveBill } = require("../../services/bill.service");
 const billTypes = require("../../constants/billTypes");
 
 const update = async (options = {}, req, res) => {
-  const { NotFound, Duplicate, dto, Bill } = options;
+  const { NotFound, Duplicate, dto, Bill, prefixType } = options;
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
   const requestBody = req.body;
@@ -15,7 +15,7 @@ const update = async (options = {}, req, res) => {
     Duplicate,
     NotFound: NotFound,
     requestBody,
-    prefixType: "invoice",
+    prefixType,
     billId: req.params.id,
   });
   logger.info(`${Bill.modelName} updated ${bill.id}`);
