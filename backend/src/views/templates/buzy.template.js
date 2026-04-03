@@ -1,9 +1,38 @@
 const buzyTemplate = (data, color) => {
   const labels = data?.metaLabels || {};
   const dateLocale = data?.dateLocale || "en-IN";
+  const palette = {
+    accent: color || "#1F4E79",
+    accentSoft: "#EEF4F8",
+    text: "#1F2937",
+    muted: "#6B7280",
+    border: "#D6DEE8",
+    surface: "#F8FAFC",
+  };
+  const taxEntries =
+    data && data.currencyTaxCategories && Object.keys(data.currencyTaxCategories).length
+      ? Object.entries(data.currencyTaxCategories)
+      : [];
+
   return {
     pageSize: "A4",
-    pageMargins: [20, 20, 20, 20],
+    pageMargins: [24, 24, 24, 30],
+    footer: (currentPage, pageCount) => ({
+      margin: [24, 0, 24, 10],
+      columns: [
+        {
+          text: data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : "",
+          color: palette.muted,
+          fontSize: 7,
+        },
+        {
+          text: `${currentPage} / ${pageCount}`,
+          alignment: "right",
+          color: palette.muted,
+          fontSize: 7,
+        },
+      ],
+    }),
 
     content: [
       // Title
@@ -14,7 +43,7 @@ const buzyTemplate = (data, color) => {
             : (labels.tax_invoice || "TAX INVOICE").toUpperCase(),
         style: "mainTitle",
         alignment: "center",
-        margin: [0, 10, 0, 10],
+        margin: [0, 2, 0, 14],
       },
 
       // Header: left = company, right = invoice meta
@@ -26,8 +55,8 @@ const buzyTemplate = (data, color) => {
               data && data.entity && data.entity.org && data.entity.org.logo
                 ? {
                     image: data.entity.org.logo,
-                    width: 60,
-                    margin: [0, 0, 0, 6],
+                    width: 56,
+                    margin: [0, 2, 0, 8],
                   }
                 : {},
               data && data.entity && data.entity.org && data.entity.org.name
@@ -45,6 +74,12 @@ const buzyTemplate = (data, color) => {
               data && data.entity && data.entity.org && data.entity.org.gstNo
                 ? {
                     text: `${labels.gstin || "GSTIN"}: ${data.entity.org.gstNo}`,
+                    style: "inlineBold",
+                  }
+                : {},
+              data && data.entity && data.entity.org && data.entity.org.panNo
+                ? {
+                    text: `${labels.pan || "PAN"}: ${data.entity.org.panNo}`,
                     style: "inlineBold",
                   }
                 : {},
@@ -122,15 +157,15 @@ const buzyTemplate = (data, color) => {
                   ],
                 },
                 layout: "noBorders",
-                margin: [0, 8, 0, 0],
+                margin: [0, 10, 0, 0],
               },
             ],
           },
         ],
-        columnGap: 10,
+        columnGap: 18,
       },
 
-      { text: "\n" },
+      { text: "", margin: [0, 0, 0, 8] },
 
       // Bill To and Billing meta
       {
@@ -201,7 +236,8 @@ const buzyTemplate = (data, color) => {
             alignment: "right",
           },
         ],
-        margin: [0, 0, 0, 12],
+        columnGap: 24,
+        margin: [0, 0, 0, 16],
       },
 
       // Items table
@@ -258,9 +294,22 @@ const buzyTemplate = (data, color) => {
         },
         layout: {
           fillColor: function (rowIndex) {
-            return rowIndex === 0 ? color || "#4a4a4a" : null;
+            if (rowIndex === 0) {
+              return palette.accent;
+            }
+
+            return rowIndex % 2 === 0 ? palette.surface : null;
           },
+          hLineColor: () => palette.border,
+          vLineColor: () => palette.border,
+          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+          vLineWidth: () => 0.75,
+          paddingLeft: () => 6,
+          paddingRight: () => 6,
+          paddingTop: () => 7,
+          paddingBottom: () => 7,
         },
+        margin: [0, 4, 0, 0],
       },
 
       // Totals and tax breakdown (right aligned)
@@ -273,43 +322,46 @@ const buzyTemplate = (data, color) => {
               widths: ["*", "auto"],
               body: [
                 [
-                  { text: `${labels.subtotal || "Subtotal"}:`, bold: true },
+                  { text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" },
                   {
                     text: data && data.total != null ? data.total : "₹ 0.00",
-                    alignment: "right",
+                    style: "summaryValue",
                   },
                 ],
-                ...(data &&
-                data.currencyTaxCategories &&
-                Object.keys(data.currencyTaxCategories).length
-                  ? Object.entries(data.currencyTaxCategories).map(
-                      ([taxName, taxValue]) => [
-                        { text: `${taxName.toString().toUpperCase()}:` },
-                        { text: taxValue, alignment: "right" },
-                      ],
-                    )
-                  : []),
+                ...taxEntries.map(([taxName, taxValue]) => [
+                  { text: `${taxName.toString().toUpperCase()}:`, style: "summaryLabel" },
+                  { text: taxValue, style: "summaryValue" },
+                ]),
                 [
-                  { text: `${labels.grand_total || "Grand Total"}:`, bold: true },
+                  { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
                   {
                     text:
                       data && data.grandTotal != null
                         ? data.grandTotal
                         : "₹ 0.00",
-                    alignment: "right",
+                    style: "summaryTotalValue",
                   },
                 ],
                 [
-                  { text: `${labels.amount_in_words || "Amount in words"}:`, bold: true },
+                  { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
                   {
                     text: data && data.amountToWords ? data.amountToWords : "",
-                    alignment: "right",
+                    style: "summaryValue",
                   },
                 ],
               ],
             },
-            layout: "lightHorizontalLines",
-            margin: [0, 12, 0, 12],
+            layout: {
+              hLineColor: () => palette.border,
+              vLineWidth: () => 0,
+              hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+              fillColor: (rowIndex) => (rowIndex === taxEntries.length + 1 ? palette.accentSoft : null),
+              paddingLeft: () => 0,
+              paddingRight: () => 0,
+              paddingTop: () => 6,
+              paddingBottom: () => 6,
+            },
+            margin: [0, 14, 0, 14],
           },
         ],
       },
@@ -324,7 +376,7 @@ const buzyTemplate = (data, color) => {
                 ? { text: labels.terms_and_conditions || "Terms and conditions", style: "sectionHeader" }
                 : {},
               data && data.entity && data.entity.terms
-                ? { text: data.entity.terms, style: "inline" }
+                ? { text: data.entity.terms, style: "termsText" }
                 : {},
             ],
           },
@@ -339,16 +391,35 @@ const buzyTemplate = (data, color) => {
                     table: {
                       widths: ["*", "*"],
                       body: [
-                        [labels.bank_name || "Bank Name", data.bank.name || ""],
-                        [labels.bank_account_no || "Bank Account No.", data.bank.accountNo || ""],
-                        [labels.bank_ifsc_code || "Bank IFSC code", data.bank.ifscCode || ""],
                         [
-                          labels.account_holder_name || "Account holder name",
-                          data.bank.accountHolderName || "",
+                          { text: labels.bank_name || "Bank Name", style: "bankLabel" },
+                          { text: data.bank.name || "", style: "bankValue" },
+                        ],
+                        [
+                          { text: labels.bank_account_no || "Bank Account No.", style: "bankLabel" },
+                          { text: data.bank.accountNo || "", style: "bankValue" },
+                        ],
+                        [
+                          { text: labels.bank_ifsc_code || "Bank IFSC code", style: "bankLabel" },
+                          { text: data.bank.ifscCode || "", style: "bankValue" },
+                        ],
+                        [
+                          { text: labels.account_holder_name || "Account holder name", style: "bankLabel" },
+                          { text: data.bank.accountHolderName || "", style: "bankValue" },
                         ],
                       ],
                     },
                     layout: "noBorders",
+                  }
+                : {},
+              data && data.upiQr
+                ? {
+                    stack: [
+                      { text: labels.upi_qr_code || "UPI QR Code", style: "sectionHeader" },
+                      { image: data.upiQr, width: 96, margin: [0, 4, 0, 0] },
+                    ],
+                    alignment: "right",
+                    margin: [0, data && data.bank ? 12 : 0, 0, 0],
                   }
                 : {},
             ],
@@ -396,26 +467,39 @@ const buzyTemplate = (data, color) => {
     ],
 
     styles: {
-      mainTitle: { fontSize: 14, bold: true, color: color || "#000" },
-      title: { fontSize: 16, bold: true, color: color || "#000" },
-      header: { fontSize: 12, bold: true, color: "#000" },
-      subheader: { fontSize: 11, bold: true, color: color || "#333" },
+      mainTitle: {
+        fontSize: 16,
+        bold: true,
+        color: palette.accent,
+        characterSpacing: 1.4,
+      },
+      title: { fontSize: 16, bold: true, color: palette.accent },
+      header: { fontSize: 13, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
+      subheader: { fontSize: 10, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
       sectionHeader: {
-        fontSize: 12,
+        fontSize: 10,
         bold: true,
         margin: [0, 6, 0, 6],
-        color: "#333",
+        color: palette.accent,
       },
-      inline: { fontSize: 9, margin: [0, 2, 0, 2] },
-      inlineBold: { fontSize: 9, bold: true, margin: [0, 2, 0, 2] },
-      tableHeader: { bold: true, color: "white", fontSize: 10 },
-      metaLabel: { fontSize: 9, color: "#555" },
-      metaValue: { fontSize: 9, bold: true },
+      inline: { fontSize: 9, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
+      inlineBold: { fontSize: 9, bold: true, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
+      tableHeader: { bold: true, color: "white", fontSize: 8.5 },
+      metaLabel: { fontSize: 9, color: palette.muted, bold: true },
+      metaValue: { fontSize: 9, bold: true, color: palette.text },
+      summaryLabel: { bold: true, color: palette.text },
+      summaryValue: { color: palette.text, alignment: "right" },
+      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 10 },
+      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 10 },
+      termsText: { fontSize: 9, color: palette.text, lineHeight: 1.35 },
+      bankLabel: { fontSize: 9, color: palette.muted, bold: true, margin: [0, 2, 0, 2] },
+      bankValue: { fontSize: 9, color: palette.text, margin: [0, 2, 0, 2] },
     },
 
     defaultStyle: {
       fontSize: 9,
       columnGap: 10,
+      color: palette.text,
     },
   };
 };

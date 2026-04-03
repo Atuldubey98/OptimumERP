@@ -1,9 +1,11 @@
-import { Box, Flex, Image, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Spinner, Text, useColorModeValue } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../contexts/SettingContext";
 import useStorageUtil from "../../hooks/useStorageUtil";
 export default function OrgItem({ org }) {
+  const { t } = useTranslation("org");
   const [status, setStatus] = useState("idle");
   const settingContext = useContext(SettingContext);
   const visitOrganizationDashboard = async () => {
@@ -15,30 +17,76 @@ export default function OrgItem({ org }) {
   const loading = status === "loading";
   const { getFileUrl } = useStorageUtil();
   const logo = getFileUrl(org?.logo);
+  const cardBg = useColorModeValue("white", "whiteAlpha.80");
+  const borderColor = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
+  const subtleText = useColorModeValue("gray.600", "gray.300");
+  const mutedText = useColorModeValue("gray.500", "gray.400");
   return (
     <Flex
-      borderRadius={4}
-      padding={3}
+      borderRadius={"xl"}
+      padding={{ base: 4, md: 5 }}
       justifyContent={"flex-start"}
       gap={4}
       cursor={"pointer"}
+      bg={cardBg}
+      borderWidth={1}
+      borderColor={borderColor}
       boxShadow={"md"}
+      transition={"all 200ms ease"}
+      _hover={{ transform: "translateY(-1px)", boxShadow: "xl" }}
       onClick={visitOrganizationDashboard}
       alignItems={"center"}
     >
-      {org?.logo ? (
-        <Image src={logo} width={34} />
-      ) : (
-        <GoOrganization size={34} />
-      )}
-      <Box>
-        <Flex gap={3}>
-          <Text fontWeight={"bold"}>{org.name}</Text>
+      <Flex
+        w={12}
+        h={12}
+        borderRadius={"xl"}
+        borderWidth={1}
+        borderColor={borderColor}
+        alignItems={"center"}
+        justifyContent={"center"}
+        flexShrink={0}
+      >
+        {org?.logo ? (
+          <Image src={logo} width={34} alt={org?.name} />
+        ) : (
+          <GoOrganization size={28} />
+        )}
+      </Flex>
+      <Box flex={1} minW={0}>
+        <Flex gap={3} alignItems={"center"} wrap={"wrap"}>
+          <Text fontWeight={"bold"} noOfLines={1}>
+            {org.name}
+          </Text>
           {loading ? <Spinner /> : null}
         </Flex>
-        <Text fontSize={"xs"} fontStyle={"italic"}>
+        <Text mt={1} fontSize={"sm"} color={subtleText} noOfLines={2}>
           {org.address}
         </Text>
+        <Flex mt={3} gap={2} wrap={"wrap"}>
+          <Text
+            fontSize={"xs"}
+            px={2.5}
+            py={1}
+            borderRadius={"full"}
+            borderWidth={1}
+            borderColor={borderColor}
+            color={mutedText}
+          >
+            {t("org_ui.page.org_card.workspace", { defaultValue: "Workspace" })}
+          </Text>
+          <Text
+            fontSize={"xs"}
+            px={2.5}
+            py={1}
+            borderRadius={"full"}
+            borderWidth={1}
+            borderColor={borderColor}
+            color={mutedText}
+          >
+            {t("org_ui.page.org_card.open_dashboard", { defaultValue: "Open dashboard" })}
+          </Text>
+        </Flex>
       </Box>
     </Flex>
   );

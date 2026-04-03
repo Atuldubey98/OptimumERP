@@ -37,10 +37,12 @@ export default function AvatarProfileWithOptions() {
   const [status, setStatus] = useState("idle");
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
-    const { data } = await instance.post(`/api/v1/users/logout`);
+    await instance.post(`/api/v1/users/logout`);
     toast({
       title: t("common_ui.actions.logout"),
-      description: t(data.message, { defaultValue: data.message }),
+      description: t("common_ui.profile.logout_success", {
+        defaultValue: "Logged out successfully",
+      }),
       status: "success",
       duration: 3000,
       isClosable: true,

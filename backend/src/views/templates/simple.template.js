@@ -1,58 +1,102 @@
 const simpleTemplate = (data, color) => {
   const labels = data?.metaLabels || {};
   const dateLocale = data?.dateLocale || "en-IN";
+  const palette = {
+    accent: color || "#1F4E79",
+    accentSoft: "#EEF4F8",
+    text: "#1F2937",
+    muted: "#6B7280",
+    border: "#D6DEE8",
+    surface: "#F8FAFC",
+  };
+  const taxEntries = Object.entries(data.currencyTaxCategories || {});
+
   return {
+    pageMargins: [24, 24, 24, 30],
+    footer: (currentPage, pageCount) => ({
+      margin: [24, 0, 24, 10],
+      columns: [
+        {
+          text: data.entity?.org?.name || "",
+          color: palette.muted,
+          fontSize: 7,
+        },
+        {
+          text: `${currentPage} / ${pageCount}`,
+          alignment: "right",
+          color: palette.muted,
+          fontSize: 7,
+        },
+      ],
+    }),
     content: [
       // Title
       {
         text: data.title.toLocaleUpperCase(),
         style: "mainTitle",
         alignment: "center",
-        margin: [0, 10, 0, 10],
+        margin: [0, 2, 0, 14],
       },
       {
         columns: [
           data.entity.org.logo
             ? {
                 image: data.entity.org.logo,
-                width: 50,
-                alignment: "center",
+                width: 56,
+                alignment: "left",
+                margin: [0, 4, 0, 0],
               }
             : {},
           {
             stack: [
               { text: data.entity.org.name, style: "header" },
-              { text: data.entity.org.address },
+              { text: data.entity.org.address, style: "companyMeta" },
               data.entity.org.gstNo
                 ? {
-                    text: [`${labels.gstin || "GSTIN"}: `, { text: data.entity.org.gstNo }],
+                    text: [
+                      { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
+                      { text: data.entity.org.gstNo, style: "companyMetaStrong" },
+                    ],
                   }
                 : {},
               data.entity.org.panNo
                 ? {
-                    text: [`${labels.pan || "PAN"}: `, { text: data.entity.org.panNo }],
+                    text: [
+                      { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
+                      { text: data.entity.org.panNo, style: "companyMetaStrong" },
+                    ],
                   }
                 : {},
             ],
             alignment: "right",
           },
         ],
-        columnGap: 10,
+        columnGap: 16,
         alignment: "center",
-        margin: [0, 0, 0, 0],
+        margin: [0, 0, 0, 18],
       },
       {
         columns: [
           {
             stack: [
               { text: data.partyMetaHeading, style: "subheader" },
-              { text: data.entity.party.name, style: { bold: true } },
-              { text: data.entity.billingAddress },
+              { text: data.entity.party.name, style: "partyName" },
+              { text: data.entity.billingAddress, style: "bodyText" },
               data.entity.party.gstNo
-                ? { text: [`${labels.gstin || "GSTIN"}: `, { text: data.entity.party.gstNo }] }
+                ? {
+                    text: [
+                      { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
+                      { text: data.entity.party.gstNo, style: "bodyTextStrong" },
+                    ],
+                  }
                 : {},
               data.entity.party.panNo
-                ? { text: [`${labels.pan || "PAN"}: `, { text: data.entity.party.panNo }] }
+                ? {
+                    text: [
+                      { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
+                      { text: data.entity.party.panNo, style: "bodyTextStrong" },
+                    ],
+                  }
                 : {},
             ],
           },
@@ -68,27 +112,30 @@ const simpleTemplate = (data, color) => {
                     year: "numeric",
                   },
                 )}`,
+                style: "bodyText",
               },
-              { text: `${labels.number || "Number"}: ${data.num}`, bold: true },
-              data.entity.poNo ? { text: `${labels.po_no || "PO No"}: ${data.entity.poNo}` } : {},
+              { text: `${labels.number || "Number"}: ${data.num}`, style: "bodyTextStrong" },
+              data.entity.poNo ? { text: `${labels.po_no || "PO No"}: ${data.entity.poNo}`, style: "bodyText" } : {},
               data.entity.poDate
                 ? {
                     text: `${labels.po_date || "PO Date"}: ${new Date(
                       data.entity.poDate,
                     ).toLocaleDateString(dateLocale)}`,
+                    style: "bodyText",
                   }
                 : {},
             ],
             alignment: "right",
           },
         ],
-        margin: [0, 0, 0, 20],
+        columnGap: 24,
+        margin: [0, 0, 0, 18],
       },
 
       {
         table: {
           headerRows: 1,
-          widths: ["auto", "*", 58, "auto", "auto", "auto", "auto", "auto"],
+          widths: ["auto", "*", 60, "auto", "auto", "auto", "auto", "auto"],
           body: [
             [
               { text: labels.serial_no || "Sno.", style: "tableHeader" },
@@ -113,23 +160,54 @@ const simpleTemplate = (data, color) => {
           ],
         },
         layout: {
-          fillColor: (rowIndex) => (rowIndex === 0 ? color : null),
+          fillColor: (rowIndex) => {
+            if (rowIndex === 0) {
+              return palette.accent;
+            }
+
+            return rowIndex % 2 === 0 ? palette.surface : null;
+          },
+          hLineColor: () => palette.border,
+          vLineColor: () => palette.border,
+          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+          vLineWidth: () => 0.75,
+          paddingLeft: () => 6,
+          paddingRight: () => 6,
+          paddingTop: () => 7,
+          paddingBottom: () => 7,
         },
+        margin: [0, 6, 0, 0],
       },
       {
         table: {
           widths: ["*", "auto"],
           body: [
-            [{ text: `${labels.subtotal || "Subtotal"}:`, bold: true }, data.total],
-            ...Object.entries(data.currencyTaxCategories).map(
+            [{ text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" }, { text: data.total, style: "summaryValue" }],
+            ...taxEntries.map(
               ([taxName, taxValue]) => [
-                { text: `${taxName.toLocaleUpperCase()}:`, bold: true },
-                taxValue,
+                { text: `${taxName.toLocaleUpperCase()}:`, style: "summaryLabel" },
+                { text: taxValue, style: "summaryValue" },
               ],
             ),
-            [{ text: `${labels.grand_total || "Grand Total"}:`, bold: true }, data.grandTotal],
-            [{ text: `${labels.amount_in_words || "Amount in words"}:`, bold: true }, data.amountToWords],
+            [
+              { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
+              { text: data.grandTotal, style: "summaryTotalValue" },
+            ],
+            [
+              { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
+              { text: data.amountToWords, style: "summaryValue" },
+            ],
           ],
+        },
+        layout: {
+          hLineColor: () => palette.border,
+          vLineWidth: () => 0,
+          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+          fillColor: (rowIndex) => (rowIndex === taxEntries.length + 1 ? palette.accentSoft : null),
+          paddingLeft: () => 0,
+          paddingRight: () => 0,
+          paddingTop: () => 6,
+          paddingBottom: () => 6,
         },
         margin: [0, 20, 0, 20],
       },
@@ -170,23 +248,47 @@ const simpleTemplate = (data, color) => {
         text: labels.authorized_signatory || "Authorized Signatory",
         style: "signatory",
         alignment: "right",
-        margin: [0, 50, 0, 0],
+        margin: [0, 54, 0, 0],
       },
     ],
     styles: {
-      header: { fontSize: 14, bold: true, color: color },
-      subheader: { fontSize: 10, bold: true, color: color },
-      tableHeader: { bold: true, color: "white" },
-      termsHeading: { bold: true },
-      terms: { italics: true },
-      signatory: { bold: true, decoration: "underline" },
-      mainTitle: { fontSize: 14, bold: true, color: color },
+      header: { fontSize: 15, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
+      subheader: {
+        fontSize: 9,
+        bold: true,
+        color: palette.accent,
+        margin: [0, 0, 0, 6],
+      },
+      tableHeader: { bold: true, color: "white", fontSize: 8.5, margin: [0, 2, 0, 2] },
+      termsHeading: { bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
+      terms: { italics: true, color: palette.text, lineHeight: 1.35 },
+      signatory: {
+        bold: true,
+        decoration: "underline",
+        color: palette.text,
+      },
+      mainTitle: {
+        fontSize: 16,
+        bold: true,
+        color: palette.accent,
+        characterSpacing: 1.4,
+      },
+      companyMeta: { color: palette.muted, lineHeight: 1.35 },
+      companyMetaStrong: { color: palette.text, bold: true },
+      metaLabel: { color: palette.muted, bold: true },
+      partyName: { bold: true, fontSize: 10.5, color: palette.text, margin: [0, 0, 0, 2] },
+      bodyText: { color: palette.text, lineHeight: 1.35 },
+      bodyTextStrong: { color: palette.text, bold: true, lineHeight: 1.35 },
+      summaryLabel: { bold: true, color: palette.text },
+      summaryValue: { color: palette.text, alignment: "right" },
+      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 10 },
+      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 10 },
     },
     defaultStyle: {
-      fontSize: 8,
-      lineHeight: 1.2,
+      fontSize: 8.5,
+      lineHeight: 1.3,
+      color: palette.text,
     },
-    pageMargins: [20, 20, 20, 20],
   };
 };
 

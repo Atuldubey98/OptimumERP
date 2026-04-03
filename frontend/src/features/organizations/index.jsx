@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   Heading,
+  Icon,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -13,7 +14,10 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Portal,
+  SimpleGrid,
   Spinner,
+  Stack,
+  Text,
   useColorModeValue,
   useDisclosure,
   useToast,
@@ -24,6 +28,8 @@ import { CiDollar } from "react-icons/ci";
 import { FaRegCircleDot } from "react-icons/fa6";
 import { IoIosLogOut } from "react-icons/io";
 import { IoAdd } from "react-icons/io5";
+import { GoOrganization } from "react-icons/go";
+import { HiOutlineSparkles } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../contexts/AuthContext";
 import useAsyncCall from "../../hooks/useAsyncCall";
@@ -61,10 +67,12 @@ export default function OrgPage() {
 
   const onClickLogout = requestAsyncHandler(async () => {
     setStatus("loggingOut");
-    const { data } = await instance.post(`/api/v1/users/logout`);
+    await instance.post(`/api/v1/users/logout`);
     toast({
-      title: "Logout",
-      description: t(data.message, { defaultValue: data.message }),
+      title: t("org_ui.page.logout_button", { defaultValue: "Logout" }),
+      description: t("org_ui.logout_toast.success", {
+        defaultValue: "Logged out successfully",
+      }),
       status: "success",
       duration: 3000,
       isClosable: true,
@@ -96,16 +104,30 @@ export default function OrgPage() {
   const showAddOrgBtn =
     (isCurrentPlanAboveFree && noOfOrgs < 3 && didUserPurchasePlan) ||
     !noOfOrgs;
+  const maxOrganizations = isCurrentPlanAboveFree && didUserPurchasePlan ? 3 : 1;
+  const remainingOrganizations = Math.max(maxOrganizations - noOfOrgs, 0);
+  const surfaceBg = useColorModeValue("white", "whiteAlpha.80");
+  const sectionBg = useColorModeValue("blackAlpha.50", "whiteAlpha.100");
+  const sectionBorder = useColorModeValue("blackAlpha.200", "whiteAlpha.200");
+  const subtleText = useColorModeValue("gray.600", "gray.300");
+  const mutedText = useColorModeValue("gray.500", "gray.400");
   return (
     <SettingContextProvider>
       <AuthContextProvider>
         <PrivateRoute>
           <Box padding={4}>
             <Container maxW={"container.md"}>
-              <Flex alignItems={"center"} justifyContent={"space-between"}>
+              <Flex
+                alignItems={{ base: "stretch", md: "center" }}
+                justifyContent={"space-between"}
+                direction={{ base: "column", md: "row" }}
+                gap={3}
+              >
                 <Popover>
                   <PopoverTrigger>
-                    <Button leftIcon={<CiDollar />}>{t("org_ui.page.current_plan_button")}</Button>
+                    <Button leftIcon={<CiDollar />} alignSelf={{ base: "flex-start", md: "auto" }}>
+                      {t("org_ui.page.current_plan_button")}
+                    </Button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent>
@@ -122,26 +144,96 @@ export default function OrgPage() {
                   onClick={openLogoutModal}
                   leftIcon={<IoIosLogOut />}
                   colorScheme="red"
+                  alignSelf={{ base: "flex-start", md: "auto" }}
                 >
                   {t("org_ui.page.logout_button")}
                 </Button>
               </Flex>
-              <Flex
-                marginBlock={3}
-                justifyContent={"center"}
-                gap={4}
-                alignItems={"center"}
+              <Box
+                mt={5}
+                bg={sectionBg}
+                borderWidth={1}
+                borderColor={sectionBorder}
+                borderRadius={"2xl"}
+                px={{ base: 5, md: 6 }}
+                py={{ base: 5, md: 6 }}
+                boxShadow={"xl"}
               >
-                <Heading
-                  as={"h5"}
-                  fontSize={"xl"}
-                  fontWeight={"bold"}
-                  textAlign={"center"}
-                >
-                  {t("org_ui.page.heading")}
-                </Heading>
-                <FaRegCircleDot color="green" size={24} />
-              </Flex>
+                <Stack spacing={5}>
+                  <Flex
+                    justifyContent={"space-between"}
+                    alignItems={{ base: "flex-start", md: "center" }}
+                    direction={{ base: "column", md: "row" }}
+                    gap={4}
+                  >
+                    <Stack spacing={2}>
+                      <Flex gap={3} alignItems={"center"} wrap={"wrap"}>
+                        <Heading as={"h5"} fontSize={{ base: "xl", md: "2xl" }} fontWeight={"bold"}>
+                          {t("org_ui.page.heading")}
+                        </Heading>
+                        <FaRegCircleDot color="green" size={18} />
+                      </Flex>
+                      <Text color={subtleText} maxW={"2xl"}>
+                        {t("org_ui.page.subheading", {
+                          defaultValue:
+                            "Switch between your organizations, review plan availability, and jump back into billing without hunting through settings.",
+                        })}
+                      </Text>
+                    </Stack>
+                    <Flex
+                      bg={surfaceBg}
+                      borderWidth={1}
+                      borderColor={sectionBorder}
+                      borderRadius={"xl"}
+                      px={4}
+                      py={3}
+                      minW={{ base: "100%", md: "220px" }}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                      boxShadow={"sm"}
+                    >
+                      <Box>
+                        <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
+                          {t("org_ui.page.plan_label", { defaultValue: "Current plan" })}
+                        </Text>
+                        <Text fontWeight={"semibold"} textTransform={"capitalize"}>
+                          {popup.name}
+                        </Text>
+                      </Box>
+                      <Icon as={HiOutlineSparkles} boxSize={5} color={subtleText} />
+                    </Flex>
+                  </Flex>
+
+                  <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
+                    <Box bg={surfaceBg} borderWidth={1} borderColor={sectionBorder} borderRadius={"xl"} px={4} py={3}>
+                      <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
+                        {t("org_ui.page.stats.organizations", { defaultValue: "Organizations" })}
+                      </Text>
+                      <Text mt={1} fontSize={"2xl"} fontWeight={"bold"}>
+                        {noOfOrgs}
+                      </Text>
+                    </Box>
+                    <Box bg={surfaceBg} borderWidth={1} borderColor={sectionBorder} borderRadius={"xl"} px={4} py={3}>
+                      <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
+                        {t("org_ui.page.stats.remaining", { defaultValue: "Available slots" })}
+                      </Text>
+                      <Text mt={1} fontSize={"2xl"} fontWeight={"bold"}>
+                        {remainingOrganizations}
+                      </Text>
+                    </Box>
+                    <Box bg={surfaceBg} borderWidth={1} borderColor={sectionBorder} borderRadius={"xl"} px={4} py={3}>
+                      <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
+                        {t("org_ui.page.stats.quick_action", { defaultValue: "Next step" })}
+                      </Text>
+                      <Text mt={1} fontSize={"sm"} fontWeight={"semibold"} lineHeight={1.4}>
+                        {showAddOrgBtn
+                          ? t("org_ui.page.quick_action.add", { defaultValue: "Create another organization space" })
+                          : t("org_ui.page.quick_action.manage", { defaultValue: "Open an organization to continue work" })}
+                      </Text>
+                    </Box>
+                  </SimpleGrid>
+                </Stack>
+              </Box>
               {loading ? (
                 <Flex
                   marginBlock={5}
@@ -151,6 +243,25 @@ export default function OrgPage() {
                   <Spinner size={"md"} />
                 </Flex>
               ) : (
+                <Box mt={6}>
+                  <Flex justifyContent={"space-between"} alignItems={{ base: "flex-start", md: "center" }} gap={3} mb={4} direction={{ base: "column", md: "row" }}>
+                    <Box>
+                      <Text fontSize={"lg"} fontWeight={"bold"}>
+                        {t("org_ui.page.list_heading", { defaultValue: "Available workspaces" })}
+                      </Text>
+                      <Text fontSize={"sm"} color={subtleText}>
+                        {t("org_ui.page.list_subheading", {
+                          defaultValue: "Choose an organization to continue with invoices, purchases, reports, and settings.",
+                        })}
+                      </Text>
+                    </Box>
+                    <Text fontSize={"sm"} color={mutedText}>
+                      {t("org_ui.page.list_count", {
+                        defaultValue: "{{count}} organizations available",
+                        count: noOfOrgs,
+                      })}
+                    </Text>
+                  </Flex>
                 <Grid gap={4} marginBlock={4}>
                   {authorizedOrgs.map((authorizedOrg) => (
                     <OrgItem
@@ -164,19 +275,46 @@ export default function OrgPage() {
                       _hover={{
                         backgroundColor: hoverBg,
                         transition: "all ease-in 300ms",
+                        transform: "translateY(-1px)",
                       }}
-                      borderRadius={4}
+                      bg={surfaceBg}
+                      borderWidth={1}
+                      borderColor={sectionBorder}
+                      borderRadius={"xl"}
                       onClick={onOpenNewOrganizationModal}
-                      padding={3}
-                      justifyContent={"center"}
+                      padding={{ base: 4, md: 5 }}
+                      justifyContent={"flex-start"}
                       gap={4}
                       boxShadow={"md"}
                       alignItems={"center"}
                     >
-                      <IoAdd size={34} />
+                      <Flex
+                        borderRadius={"full"}
+                        borderWidth={1}
+                        borderColor={sectionBorder}
+                        w={12}
+                        h={12}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        flexShrink={0}
+                      >
+                        <IoAdd size={24} />
+                      </Flex>
+                      <Box>
+                        <Text fontWeight={"bold"}>
+                          {t("org_ui.page.add_card.heading", { defaultValue: "Create a new organization" })}
+                        </Text>
+                        <Text fontSize={"sm"} color={subtleText}>
+                          {t("org_ui.page.add_card.body", {
+                            defaultValue:
+                              "Set up another workspace for a different business, branch, or client workflow.",
+                          })}
+                        </Text>
+                      </Box>
                     </Flex>
                   ) : null}
                 </Grid>
+                </Box>
               )}
             </Container>
           </Box>
