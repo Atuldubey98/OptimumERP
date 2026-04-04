@@ -17,6 +17,7 @@ export default function DateFilter({
           onChange={onChangeDateFilter}
           placeholder={t("common_ui.date_filter.placeholder")}
           type="date"
+          size={"sm"} 
         />
       </FormControl>
       <FormControl size={"sm"} isRequired={isRequired}>
@@ -25,6 +26,7 @@ export default function DateFilter({
           value={dateFilter.endDate}
           placeholder={t("common_ui.date_filter.placeholder")}
           type="date"
+          size={"sm"}
           name="endDate"
           onChange={onChangeDateFilter}
         />
