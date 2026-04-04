@@ -1,6 +1,11 @@
 {
   "dashboard_ui": {
-    "greeting": "Hi,",
+    "greeting": {
+      "hi": "Hi",
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
     "overview_subtitle": "Here's is overview of your business !",
     "periods": {
       "this_week": "This week",

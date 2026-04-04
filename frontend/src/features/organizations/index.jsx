@@ -42,7 +42,7 @@ import OrgItem from "./OrgItem";
 import SettingContextProvider from "../../contexts/SettingContextProvider";
 import AuthContextProvider from "../../contexts/AuthContextProvider";
 export default function OrgPage() {
-  const { t } = useTranslation("org");
+  const { t } = useTranslation(["org", "common"]);
   const {
     isOpen,
     onOpen: onOpenNewOrganizationModal,
@@ -174,10 +174,7 @@ export default function OrgPage() {
                         <FaRegCircleDot color="green" size={18} />
                       </Flex>
                       <Text color={subtleText} maxW={"2xl"}>
-                        {t("org_ui.page.subheading", {
-                          defaultValue:
-                            "Switch between your organizations, review plan availability, and jump back into billing without hunting through settings.",
-                        })}
+                        {t("common:common_ui.organizations.subheading")}
                       </Text>
                     </Stack>
                     <Flex
@@ -194,7 +191,7 @@ export default function OrgPage() {
                     >
                       <Box>
                         <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
-                          {t("org_ui.page.plan_label", { defaultValue: "Current plan" })}
+                          {t("common:common_ui.organizations.plan_label")}
                         </Text>
                         <Text fontWeight={"semibold"} textTransform={"capitalize"}>
                           {popup.name}
@@ -207,7 +204,7 @@ export default function OrgPage() {
                   <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
                     <Box bg={surfaceBg} borderWidth={1} borderColor={sectionBorder} borderRadius={"xl"} px={4} py={3}>
                       <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
-                        {t("org_ui.page.stats.organizations", { defaultValue: "Organizations" })}
+                        {t("common:common_ui.organizations.stats.organizations")}
                       </Text>
                       <Text mt={1} fontSize={"2xl"} fontWeight={"bold"}>
                         {noOfOrgs}
@@ -215,7 +212,7 @@ export default function OrgPage() {
                     </Box>
                     <Box bg={surfaceBg} borderWidth={1} borderColor={sectionBorder} borderRadius={"xl"} px={4} py={3}>
                       <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
-                        {t("org_ui.page.stats.remaining", { defaultValue: "Available slots" })}
+                        {t("common:common_ui.organizations.stats.remaining")}
                       </Text>
                       <Text mt={1} fontSize={"2xl"} fontWeight={"bold"}>
                         {remainingOrganizations}
@@ -223,12 +220,12 @@ export default function OrgPage() {
                     </Box>
                     <Box bg={surfaceBg} borderWidth={1} borderColor={sectionBorder} borderRadius={"xl"} px={4} py={3}>
                       <Text fontSize={"xs"} textTransform={"uppercase"} letterSpacing={"widest"} color={mutedText}>
-                        {t("org_ui.page.stats.quick_action", { defaultValue: "Next step" })}
+                        {t("common:common_ui.organizations.stats.quick_action")}
                       </Text>
                       <Text mt={1} fontSize={"sm"} fontWeight={"semibold"} lineHeight={1.4}>
                         {showAddOrgBtn
-                          ? t("org_ui.page.quick_action.add", { defaultValue: "Create another organization space" })
-                          : t("org_ui.page.quick_action.manage", { defaultValue: "Open an organization to continue work" })}
+                          ? t("common:common_ui.organizations.quick_action.add")
+                          : t("common:common_ui.organizations.quick_action.manage")}
                       </Text>
                     </Box>
                   </SimpleGrid>
@@ -247,17 +244,14 @@ export default function OrgPage() {
                   <Flex justifyContent={"space-between"} alignItems={{ base: "flex-start", md: "center" }} gap={3} mb={4} direction={{ base: "column", md: "row" }}>
                     <Box>
                       <Text fontSize={"lg"} fontWeight={"bold"}>
-                        {t("org_ui.page.list_heading", { defaultValue: "Available workspaces" })}
+                        {t("common:common_ui.organizations.list_heading")}
                       </Text>
                       <Text fontSize={"sm"} color={subtleText}>
-                        {t("org_ui.page.list_subheading", {
-                          defaultValue: "Choose an organization to continue with invoices, purchases, reports, and settings.",
-                        })}
+                        {t("common:common_ui.organizations.list_subheading")}
                       </Text>
                     </Box>
                     <Text fontSize={"sm"} color={mutedText}>
-                      {t("org_ui.page.list_count", {
-                        defaultValue: "{{count}} organizations available",
+                      {t("common:common_ui.organizations.list_count", {
                         count: noOfOrgs,
                       })}
                     </Text>
@@ -302,13 +296,10 @@ export default function OrgPage() {
                       </Flex>
                       <Box>
                         <Text fontWeight={"bold"}>
-                          {t("org_ui.page.add_card.heading", { defaultValue: "Create a new organization" })}
+                          {t("common:common_ui.organizations.add_card.heading")}
                         </Text>
                         <Text fontSize={"sm"} color={subtleText}>
-                          {t("org_ui.page.add_card.body", {
-                            defaultValue:
-                              "Set up another workspace for a different business, branch, or client workflow.",
-                          })}
+                          {t("common:common_ui.organizations.add_card.body")}
                         </Text>
                       </Box>
                     </Flex>

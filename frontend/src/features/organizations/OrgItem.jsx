@@ -5,7 +5,7 @@ import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../contexts/SettingContext";
 import useStorageUtil from "../../hooks/useStorageUtil";
 export default function OrgItem({ org }) {
-  const { t } = useTranslation("org");
+  const { t } = useTranslation(["org", "common"]);
   const [status, setStatus] = useState("idle");
   const settingContext = useContext(SettingContext);
   const visitOrganizationDashboard = async () => {
@@ -73,7 +73,7 @@ export default function OrgItem({ org }) {
             borderColor={borderColor}
             color={mutedText}
           >
-            {t("org_ui.page.org_card.workspace", { defaultValue: "Workspace" })}
+            {t("common:common_ui.organizations.workspace")}
           </Text>
           <Text
             fontSize={"xs"}
@@ -84,7 +84,7 @@ export default function OrgItem({ org }) {
             borderColor={borderColor}
             color={mutedText}
           >
-            {t("org_ui.page.org_card.open_dashboard", { defaultValue: "Open dashboard" })}
+            {t("common:common_ui.organizations.open_dashboard")}
           </Text>
         </Flex>
       </Box>

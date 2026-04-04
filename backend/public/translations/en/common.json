@@ -161,6 +161,28 @@
     },
     "organization": "Organization",
     "select_organization": "Select Organization",
+    "organizations": {
+      "subheading": "Switch between your organizations, review plan availability, and jump back into billing without hunting through settings.",
+      "plan_label": "Current plan",
+      "stats": {
+        "organizations": "Organizations",
+        "remaining": "Available slots",
+        "quick_action": "Next step"
+      },
+      "quick_action": {
+        "add": "Create another organization space",
+        "manage": "Open an organization to continue work"
+      },
+      "list_heading": "Available workspaces",
+      "list_subheading": "Choose an organization to continue with invoices, purchases, reports, and settings.",
+      "list_count": "{{count}} organizations available",
+      "workspace": "Workspace",
+      "open_dashboard": "Open dashboard",
+      "add_card": {
+        "heading": "Create a new organization",
+        "body": "Set up another workspace for a different business, branch, or client workflow."
+      }
+    },
     "search": {
       "placeholder": "Search",
       "by_description": "Search by description",

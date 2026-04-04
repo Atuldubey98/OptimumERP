@@ -2,8 +2,9 @@ import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 
 export default function DashboardPageHeader({
-  greeting,
+  greetingPrefix,
   userName,
+  timeGreeting,
   subtitle,
   actions,
 }) {
@@ -21,7 +22,7 @@ export default function DashboardPageHeader({
       >
         <Stack spacing={1} maxW="3xl">
           <Heading fontSize={{ base: "2xl", md: "3xl" }} lineHeight="short">
-            {greeting} <strong>{userName}</strong>
+            {greetingPrefix} <strong>{userName}</strong>, {timeGreeting}
           </Heading>
           <Text color="gray.600">{subtitle}</Text>
         </Stack>

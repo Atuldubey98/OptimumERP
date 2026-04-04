@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import moment from "moment";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FaFileInvoice,
@@ -79,6 +79,7 @@ export default function DashboardPage() {
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const [currentPeriod, setCurrentPeriod] = useState("lastMonth");
+  const [currentTime, setCurrentTime] = useState(() => new Date());
   const [statPeriod, setStatPeriod] = useState({
     endDate: moment().format("YYYY-MM-DD"),
     startDate: moment().subtract(1, "M").format("YYYY-MM-DD"),
@@ -101,6 +102,17 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchDashboard();
   }, [fetchDashboard]);
+  useEffect(() => {
+    const currentDate = new Date();
+    const millisecondsUntilNextMinute =
+      (60 - currentDate.getSeconds()) * 1000 - currentDate.getMilliseconds();
+
+    const timeoutId = setTimeout(() => {
+      setCurrentTime(new Date());
+    }, millisecondsUntilNextMinute || 60 * 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [currentTime]);
   const loading = status === "loading";
   const { isOpen: isGuideTourOpen, onClose: closeGuideTour } = useDisclosure({
     defaultIsOpen: !localStorage.getItem("guide"),
@@ -129,6 +141,23 @@ export default function DashboardPage() {
   const currentPeriodLabel = periods.find(
     (period) => period.value === currentPeriod
   ).label;
+  const timeGreeting = useMemo(() => {
+    const currentHour = currentTime.getHours();
+
+    if (currentHour < 12) {
+      return t("dashboard_ui.greeting.morning", {
+        defaultValue: "Good morning",
+      });
+    }
+    if (currentHour < 18) {
+      return t("dashboard_ui.greeting.afternoon", {
+        defaultValue: "Good afternoon",
+      });
+    }
+    return t("dashboard_ui.greeting.evening", {
+      defaultValue: "Good evening",
+    });
+  }, [currentTime, t]);
   const auth = useAuth();
   const navigate = useNavigate();
   const dashboardReceiptTableMapper = (itemStatusList) => (item) => ({
@@ -145,8 +174,11 @@ export default function DashboardPage() {
       <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
         <Stack spacing={{ base: 6, md: 8 }}>
           <DashboardPageHeader
-            greeting={t("dashboard_ui.greeting")}
+            greetingPrefix={t("dashboard_ui.greeting.hi", {
+              defaultValue: "Hi",
+            })}
             userName={auth?.user?.name}
+            timeGreeting={timeGreeting}
             subtitle={t("dashboard_ui.overview_subtitle")}
             actions={
               <Select

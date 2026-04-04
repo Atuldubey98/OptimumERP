@@ -161,6 +161,28 @@
     },
     "organization": "Organização",
     "select_organization": "Selecionar Organização",
+    "organizations": {
+      "subheading": "Alterne entre suas organizações, revise a disponibilidade do plano e volte ao faturamento sem precisar procurar nas configurações.",
+      "plan_label": "Plano atual",
+      "stats": {
+        "organizations": "Organizações",
+        "remaining": "Espaços disponíveis",
+        "quick_action": "Próximo passo"
+      },
+      "quick_action": {
+        "add": "Criar outro espaço de organização",
+        "manage": "Abra uma organização para continuar o trabalho"
+      },
+      "list_heading": "Espaços de trabalho disponíveis",
+      "list_subheading": "Escolha uma organização para continuar com faturas, compras, relatórios e configurações.",
+      "list_count": "{{count}} organizações disponíveis",
+      "workspace": "Espaço de trabalho",
+      "open_dashboard": "Abrir painel",
+      "add_card": {
+        "heading": "Criar uma nova organização",
+        "body": "Configure outro espaço de trabalho para um negócio, filial ou fluxo de cliente diferente."
+      }
+    },
     "search": {
       "placeholder": "Buscar",
       "by_description": "Buscar por descrição",
