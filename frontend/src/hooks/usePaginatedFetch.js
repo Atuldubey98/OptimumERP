@@ -34,7 +34,7 @@ const usePaginatedFetch = ({ url }) => {
         items: data.data,
         totalPages: data.totalPages,
         currentPage: data.currentPage,
-        totalCount: data.totalCount,
+        totalCount: data.totalCount ?? data.total ?? 0,
         reachedLimit: data.reachedLimit,
       });
       setStatus("success");

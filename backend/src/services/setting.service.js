@@ -7,9 +7,15 @@ const SETTING_CACHE_SCOPE = "setting";
 const DISPLAY_SETTING_CACHE_TTL_SECONDS = Number(
   process.env.SETTING_DISPLAY_CACHE_TTL_SECONDS || 10 * 60,
 );
+const DETAILED_SETTING_CACHE_TTL_SECONDS = Number(
+  process.env.SETTING_DETAILED_CACHE_TTL_SECONDS || DISPLAY_SETTING_CACHE_TTL_SECONDS,
+);
 
 const buildDisplaySettingCacheKey = (orgId) =>
   cacheService.buildKey(SETTING_CACHE_SCOPE, "display", orgId);
+
+const buildDetailedSettingCacheKey = (orgId) =>
+  cacheService.buildKey(SETTING_CACHE_SCOPE, "detailed", orgId);
 
 const getDisplaySettingForOrg = async (orgId) => {
   const key = buildDisplaySettingCacheKey(orgId);
@@ -33,6 +39,30 @@ const getDisplaySettingForOrg = async (orgId) => {
   );
 };
 
+const getDetailedSettingForOrg = async (orgId) => {
+  const key = buildDetailedSettingCacheKey(orgId);
+
+  return cacheService.getOrSet(
+    key,
+    async () => {
+      logger.debug(`Detailed setting cache miss for org ${orgId}; reading from DB`);
+
+      return Setting.findOne({ org: orgId })
+        .populate("org")
+        .populate("receiptDefaults.tax")
+        .populate("receiptDefaults.um")
+        .lean()
+        .exec();
+    },
+    {
+      ttl: DETAILED_SETTING_CACHE_TTL_SECONDS,
+      onHit: () => {
+        logger.debug(`Detailed setting cache hit for org ${orgId}`);
+      },
+    },
+  );
+};
+
 const invalidateSettingCache = (orgId) => {
   if (!orgId) {
     logger.debug("Invalidating all setting cache entries");
@@ -40,10 +70,14 @@ const invalidateSettingCache = (orgId) => {
   }
 
   logger.debug(`Invalidating setting cache for org ${orgId}`);
-  return cacheService.del(buildDisplaySettingCacheKey(orgId));
+  return cacheService.del([
+    buildDisplaySettingCacheKey(orgId),
+    buildDetailedSettingCacheKey(orgId),
+  ]);
 };
 
 module.exports = {
+  getDetailedSettingForOrg,
   getDisplaySettingForOrg,
   invalidateSettingCache,
 };

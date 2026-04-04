@@ -11,7 +11,6 @@ const paginate = async (req, res) => {
       req,
       model: Contact,
       modelName: entities.CONTACTS,
-      shouldPaginate: Boolean(req.params.paginate),
     });
   const contacts = await Contact.find(filter)
     .populate("party")

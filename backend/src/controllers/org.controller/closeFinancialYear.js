@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const Setting = require("../../models/settings.model");
+const { invalidateSettingCache } = require("../../services/setting.service");
 
 const closeFinancialYear = async (req, res) => {
   const orgId = req.params.orgId;
@@ -42,6 +43,7 @@ const closeFinancialYear = async (req, res) => {
       new: true,
     }
   );
+  invalidateSettingCache(orgId);
   return res
     .status(200)
     .json({ message: req.t("common:api.financial_year_updated"), data: setting });

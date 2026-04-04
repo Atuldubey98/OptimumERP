@@ -1,12 +1,16 @@
 import {
   Box,
+  Card,
+  CardBody,
   Flex,
   FormControl,
   FormLabel,
-  Grid,
   Heading,
+  SimpleGrid,
   Spinner,
   Stack,
+  Text,
+  useColorModeValue,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -34,6 +38,7 @@ import useProperty from "../../hooks/useProperty";
 
 export default function ContactsPage() {
   const { t } = useTranslation("contact");
+  const subtleTextColor = useColorModeValue("gray.600", "gray.300");
   const { orgId } = useParams();
   const query = useQuery();
   const type = query.get("type") || "";
@@ -170,50 +175,145 @@ export default function ContactsPage() {
   const mapContactTypes = contactTypes.reduce((acc, contactType) => {
     acc[contactType.value] = contactType;
     return acc;
-  }, {});  
+  }, {});
+
+  const activeTypeLabel = allContactTypes.find(
+    (contactType) => contactType.value === type,
+  )?.label;
+
   return (
     <MainLayout>
-      <Box p={4}>
-        <HeadingButtons
-          isAddDisabled={data.reachedLimit}
-          heading={t("contact_ui.page.heading")}
-          onAddNewItem={() => {
-            formik.resetForm(defaultContact);
-            openContactForm();
-          }}
-        />
+      <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
+        <Stack spacing={{ base: 5, md: 6 }}>
+          <HeadingButtons
+            isAddDisabled={data.reachedLimit}
+            heading={t("contact_ui.page.heading")}
+            onAddNewItem={() => {
+              formik.resetForm(defaultContact);
+              openContactForm();
+            }}
+          />
+
+          <Card borderRadius="2xl">
+            <CardBody>
+              <Stack spacing={5}>
+                <Flex
+                  justify="space-between"
+                  align={{ base: "flex-start", lg: "center" }}
+                  direction={{ base: "column", lg: "row" }}
+                  gap={4}
+                >
+                  <Box maxW="2xl">
+                    <Text fontSize="sm" color={subtleTextColor}>
+                      {t("contact_ui.page.search_contacts")}
+                    </Text>
+                    <Heading mt={1} fontSize={{ base: "2xl", md: "3xl" }} lineHeight="short">
+                      {t("contact_ui.page.heading")}
+                    </Heading>
+                    <Text mt={2} color={subtleTextColor}>
+                      {t("contact_ui.page.subtitle", {
+                        defaultValue:
+                          "Keep customer and internal contact details organized, searchable, and easy to act on.",
+                      })}
+                    </Text>
+                  </Box>
+                  <SimpleGrid columns={{ base: 2, md: 3 }} spacing={3} minW={{ base: "100%", lg: "380px" }}>
+                    <Card borderRadius="xl">
+                      <CardBody py={4}>
+                        <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="gray.500">
+                          {t("contact_ui.page.heading", { defaultValue: "Contacts" })}
+                        </Text>
+                        <Heading mt={2} fontSize="2xl">
+                          {data.totalCount || 0}
+                        </Heading>
+                      </CardBody>
+                    </Card>
+                    <Card borderRadius="xl">
+                      <CardBody py={4}>
+                        <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="gray.500">
+                          {t("common_ui.table.current_page", { defaultValue: "Page" })}
+                        </Text>
+                        <Heading mt={2} fontSize="2xl">
+                          {data.currentPage || 1}
+                        </Heading>
+                      </CardBody>
+                    </Card>
+                    <Card borderRadius="xl" gridColumn={{ base: "span 2", md: "span 1" }}>
+                      <CardBody py={4}>
+                        <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="gray.500">
+                          {t("contact_ui.page.contact_type")}
+                        </Text>
+                        <Text mt={2} fontWeight="semibold" noOfLines={1}>
+                          {activeTypeLabel || t("contact_ui.filters.all")}
+                        </Text>
+                      </CardBody>
+                    </Card>
+                  </SimpleGrid>
+                </Flex>
+              </Stack>
+            </CardBody>
+          </Card>
+
         {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"}>
+          <Flex justifyContent={"center"} alignItems={"center"} minH="40svh">
             <Spinner />
           </Flex>
         ) : (
-          <Stack spacing={3} marginBlock={3}>
-            <Flex justifyContent={"flex-start"} gap={2} alignItems={"center"}>
-              <Box maxW={"md"} flex={1}>
-                <SearchItem placeholder={t("contact_ui.page.search_contacts")} />
-              </Box>
-              <FilterPopoverWrapper>
-                <FormControl>
-                  <FormLabel>{t("contact_ui.page.contact_type")}</FormLabel>
-                  <Select
-                    options={allContactTypes}
-                    onChange={({ value }) => navigate(`?type=${value}`)}
-                    value={allContactTypes.find(
-                      (contactType) => contactType.value === type
-                    )}
-                  />
-                </FormControl>
-              </FilterPopoverWrapper>
-            </Flex>
-            <Box maxW={"container.xxl"}>
+          <Stack spacing={5}>
+            <Card borderRadius="2xl">
+              <CardBody>
+                <Flex
+                  justifyContent="space-between"
+                  gap={3}
+                  alignItems={{ base: "stretch", md: "center" }}
+                  direction={{ base: "column", md: "row" }}
+                >
+                  <Box maxW="md" flex={1}>
+                    <SearchItem placeholder={t("contact_ui.page.search_contacts")} />
+                  </Box>
+                  <FilterPopoverWrapper>
+                    <FormControl>
+                      <FormLabel>{t("contact_ui.page.contact_type")}</FormLabel>
+                      <Select
+                        options={allContactTypes}
+                        onChange={({ value }) => navigate(`?type=${value}`)}
+                        value={allContactTypes.find(
+                          (contactType) => contactType.value === type
+                        )}
+                      />
+                    </FormControl>
+                  </FilterPopoverWrapper>
+                </Flex>
+              </CardBody>
+            </Card>
+
+            <Stack spacing={4}>
+              <Flex
+                justify="space-between"
+                align={{ base: "flex-start", md: "center" }}
+                direction={{ base: "column", md: "row" }}
+                gap={2}
+              >
+                <Box>
+                  <Heading fontSize={{ base: "lg", md: "xl" }}>
+                    {t("contact_ui.page.heading")}
+                  </Heading>
+                  <Text color={subtleTextColor} fontSize="sm">
+                    {t("contact_ui.page.results_summary", {
+                      count: data.totalCount || 0,
+                      defaultValue:
+                        (data.totalCount || 0) === 1
+                          ? "1 contact found"
+                          : `${data.totalCount || 0} contacts found`,
+                    })}
+                  </Text>
+                </Box>
+              </Flex>
+
               {data.items.length ? (
-                <Grid
-                  templateColumns={{
-                    sm: "1fr",
-                    md: "repeat(2, 1fr)",
-                    lg: "repeat(3, 1fr)",
-                  }}
-                  gap={8}
+                <SimpleGrid
+                  columns={{ base: 1, md: 2, xl: 3 }}
+                  spacing={6}
                 >
                   {data.items.map((item) => (
                     <Contact
@@ -244,28 +344,38 @@ export default function ContactsPage() {
                       }}
                     />
                   ))}
-                </Grid>
+                </SimpleGrid>
               ) : (
                 <Flex
-                  minH={"50svh"}
-                  gap={8}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  flexDir={"column"}
+                  minH="40svh"
+                  justifyContent="center"
+                  alignItems="center"
                 >
-                  <LuContact2 size={80} color="lightgray" />
-                  <Heading color={"gray.300"} fontSize={"2xl"}>
-                    {t("contact_ui.page.no_contacts")}
-                  </Heading>
+                  <Card borderRadius="2xl" maxW="lg" w="100%">
+                    <CardBody>
+                      <Stack spacing={4} align="center" textAlign="center" py={8}>
+                        <LuContact2 size={72} color="lightgray" />
+                        <Heading color="gray.400" fontSize="2xl">
+                          {t("contact_ui.page.no_contacts")}
+                        </Heading>
+                        <Text color={subtleTextColor} maxW="md">
+                          {t("contact_ui.page.search_contacts", {
+                            defaultValue: "Search contacts",
+                          })}
+                        </Text>
+                      </Stack>
+                    </CardBody>
+                  </Card>
                 </Flex>
               )}
-            </Box>
+            </Stack>
             <Pagination
               currentPage={data.currentPage}
               total={data.totalPages}
             />
           </Stack>
         )}
+        </Stack>
       </Box>
       <ContactForm
         formik={formik}

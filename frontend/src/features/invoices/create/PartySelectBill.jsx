@@ -8,40 +8,51 @@ import PartyFormDrawer from "../../parties/PartyFormDrawer";
 
 function PartySelectBill({ formik }) {
   const { orgId } = useParams();
-  const selectRef=  useRef(null);
+  const selectRef = useRef(null);
   const promiseOptions = useCallback(async (searchQuery) => {
-    if (selectRef.current) 
-      clearTimeout(selectRef.current)
-      return new Promise((resolve, reject) => {
-        selectRef.current = setTimeout(async () => {
-          try {
-            const { data } = await instance.get(
-              `/api/v1/organizations/${orgId}/parties/search`,
-              {
-                params: {
-                  keyword: searchQuery,
-                },
-              }
-            );
-            const options = data.data.map((party) => ({
-              value: party,
-              label: party.name,
-            }));
-            resolve(options);
-          } catch (error) {
-            reject(error);
-          }
-        }, 800);
-  })
-        }, [orgId]);
+    if (selectRef.current) clearTimeout(selectRef.current);
+    return new Promise((resolve, reject) => {
+      selectRef.current = setTimeout(async () => {
+        try {
+          const { data } = await instance.get(
+            `/api/v1/organizations/${orgId}/parties/search`,
+            {
+              params: {
+                keyword: searchQuery,
+              },
+            }
+          );
+          const options = data.data.map((party) => ({
+            value: party,
+            label: party.name,
+          }));
+          resolve(options);
+        } catch (error) {
+          reject(error);
+        }
+      }, 800);
+    });
+  }, [orgId]);
+
+  const applySelectedParty = useCallback(
+    (party) => {
+      formik.setFieldValue("party", party?._id);
+      formik.setFieldValue("billingAddress", party?.billingAddress || "");
+      formik.setFieldValue("partyDetails", party);
+    },
+    [formik],
+  );
+
   const {
     isOpen: isPartyFormOpen,
     onClose: onClosePartyFormDrawer,
     onOpen: openPartyFormDrawer,
   } = useDisclosure();
   const { formik: partyFormik } = usePartyForm(
-    promiseOptions,
-    onClosePartyFormDrawer
+    (party) => {
+      applySelectedParty(party);
+    },
+    onClosePartyFormDrawer,
   );
   const onChange = useCallback(
     (e) => {
@@ -50,18 +61,21 @@ function PartySelectBill({ formik }) {
         formik.setFieldValue("billingAddress", "");
         formik.setFieldValue("partyDetails", undefined);
       } else {
-        const party = e.value;
-        formik.setFieldValue("party", party._id);
-        formik.setFieldValue("billingAddress", party.billingAddress);
-        formik.setFieldValue("partyDetails", party);
+        applySelectedParty(e.value);
       }
     },
-    [formik],
+    [applySelectedParty, formik],
   );
 
   const onCreateOption = useCallback(
     (input) => {
-      partyFormik.setFieldValue("name", input);
+      partyFormik.setValues({
+        name: input,
+        billingAddress: "",
+        gstNo: "",
+        panNo: "",
+        shippingAddress: "",
+      });
       openPartyFormDrawer();
     },
     [openPartyFormDrawer, partyFormik],
