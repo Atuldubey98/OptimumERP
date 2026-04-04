@@ -46,6 +46,7 @@ partySchema.index({
   billingAddress: "text",
   shippingAddress: "text",
 });
+partySchema.index({ org: 1, createdAt: -1 });
 
 const Party = model("party", partySchema);
 

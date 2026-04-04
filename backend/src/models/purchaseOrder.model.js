@@ -153,8 +153,6 @@ const purchaseOrderSchema = new Schema(
     timestamps: true,
   }
 );
-
-const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
 purchaseOrderSchema.index({
   num: "text",
   description: "text",
@@ -164,4 +162,7 @@ purchaseOrderSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
   { unique: true, name: "purchase_order_org_fin_year_sequence_unique" }
 );
+
+const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
+
 module.exports = PurchaseOrder;

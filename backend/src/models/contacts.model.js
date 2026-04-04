@@ -61,6 +61,8 @@ contactSchema.index({
   name: "text",
   type: "text",
 });
+contactSchema.index({ org: 1, createdAt: -1 });
+
 const Contact = model("contact", contactSchema);
 
 module.exports = Contact;

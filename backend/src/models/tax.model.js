@@ -58,9 +58,11 @@ const taxSchema = new Schema(
     collection: "taxes",
   }
 );
-
-const Tax = model("taxes", taxSchema);
 taxSchema.index({
   name: "text",
 });
+taxSchema.index({ org: 1, createdAt: -1 });
+
+const Tax = model("taxes", taxSchema);
+
 module.exports = Tax;

@@ -31,9 +31,11 @@ const expenseSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
-
-const Expense = mongoose.model("expense", expenseSchema);
 expenseSchema.index({
   description: "text",
 });
+expenseSchema.index({ org: 1, category: 1 });
+
+const Expense = mongoose.model("expense", expenseSchema);
+
 module.exports = Expense;

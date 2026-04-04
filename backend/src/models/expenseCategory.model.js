@@ -35,14 +35,14 @@ const expenseCategorySchema = new mongoose.Schema(
     collection: "expense_categories",
   }
 );
+expenseCategorySchema.index({
+  name: "text",
+});
+expenseCategorySchema.index({ org: 1, createdAt: -1 });
 
 const ExpenseCategory = mongoose.model(
   "expense_category",
   expenseCategorySchema
 );
-
-expenseCategorySchema.index({
-  name: "text",
-});
 
 module.exports = ExpenseCategory;

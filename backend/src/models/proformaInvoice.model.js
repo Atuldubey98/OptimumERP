@@ -152,7 +152,6 @@ const proformaInvoiceSchema = new Schema({
   },
 });
 
-const ProformaInvoice = model("proforma_invoice", proformaInvoiceSchema);
 proformaInvoiceSchema.index({
   num: "text",
   description: "text",
@@ -162,4 +161,7 @@ proformaInvoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
   { unique: true, name: "proforma_invoice_org_fin_year_sequence_unique" }
 );
+
+const ProformaInvoice = model("proforma_invoice", proformaInvoiceSchema);
+
 module.exports = ProformaInvoice;

@@ -186,7 +186,6 @@ const invoiceSchema = new Schema(
     timestamps: true,
   }
 );
-const Invoice = model("invoice", invoiceSchema);
 invoiceSchema.index({
   description: "text",
   num: "text",
@@ -196,4 +195,7 @@ invoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
   { unique: true, name: "invoice_org_fin_year_sequence_unique" }
 );
+
+const Invoice = model("invoice", invoiceSchema);
+
 module.exports = Invoice;

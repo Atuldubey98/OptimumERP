@@ -40,10 +40,12 @@ const umSchema = new Schema(
     timestamps: true,
   }
 );
-
-const Um = model("ums", umSchema);
 umSchema.index({
   name: "text",
   unit: "text",
 });
+umSchema.index({ org: 1, createdAt: -1 });
+
+const Um = model("ums", umSchema);
+
 module.exports = Um;

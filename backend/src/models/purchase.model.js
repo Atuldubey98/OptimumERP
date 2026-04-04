@@ -159,10 +159,12 @@ const purchaseInvoice = new Schema(
     timestamps: true,
   }
 );
-const Purchase = model("purchase", purchaseInvoice);
 purchaseInvoice.index({
   description: "text",
   num: "text",
 });
 purchaseInvoice.index({ org: 1, createdAt: -1 });
+
+const Purchase = model("purchase", purchaseInvoice);
+
 module.exports = Purchase;
