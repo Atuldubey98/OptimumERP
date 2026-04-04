@@ -1,7 +1,9 @@
 import {
   Box,
+  Flex,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   GridItem,
   IconButton,
   Input,
@@ -13,6 +15,8 @@ import {
   NumberInputField,
   NumberInputStepper,
   SimpleGrid,
+  Text,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
@@ -32,6 +36,8 @@ function QuoteItem({
   deleteQuote,
 }) {
   const { t } = useTranslation("quote");
+  const { t: tCommon } = useTranslation("common");
+  const sectionLabelColor = useColorModeValue("gray.500", "gray.400");
   const { symbol } = useCurrentOrgCurrency();
   const { handleChange: handleQuoteItemChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -90,22 +96,45 @@ function QuoteItem({
     [ums],
   );
   return (
-    <Box marginBlock={5}>
-      <SimpleGrid gap={2} minChildWidth={150}>
-        <GridItem colSpan={2}>
+    <Box py={{ base: 3, md: 4 }}>
+      <Flex
+        align={{ base: "flex-start", md: "center" }}
+        direction={{ base: "column", md: "row" }}
+        gap={3}
+        justify="space-between"
+        mb={4}
+      >
+        <Text fontSize="sm" fontWeight="medium" color={sectionLabelColor}>
+          {tCommon("common_ui.receipt.product")} {index + 1}
+        </Text>
+        <IconButton
+          aria-label="Delete item"
+          colorScheme="red"
+          onClick={deleteQuote}
+          icon={<AiOutlineDelete />}
+          size="sm"
+          variant="ghost"
+        />
+      </Flex>
+      <SimpleGrid columns={{ base: 1, md: 2, xl: 6 }} gap={3}>
+        <GridItem colSpan={{ base: 1, md: 2, xl: 2 }}>
           <FormControl isRequired>
+            <FormLabel>{t("quote_ui.form.item_name_placeholder")}</FormLabel>
             <InputGroup>
               <Input
                 onChange={handleQuoteItemChange}
                 name={`items[${index}].name`}
                 placeholder={t("quote_ui.form.item_name_placeholder")}
                 value={quoteItem.name}
+                pr="3rem"
               />
               <InputRightElement>
                 <IconButton
+                  aria-label="Search product"
                   icon={<TbEyeSearch size={25} />}
-                  size={30}
+                  size="sm"
                   onClick={onOpenSearchProduct}
+                  variant="ghost"
                 />
               </InputRightElement>
             </InputGroup>
@@ -117,6 +146,7 @@ function QuoteItem({
             isRequired
             isInvalid={errors.quantity && errors.quantity}
           >
+            <FormLabel>{t("quote_ui.form.quantity_placeholder")}</FormLabel>
             <NumberInput
               min={0}
               value={quoteItem.quantity}
@@ -135,6 +165,7 @@ function QuoteItem({
         </GridItem>
         <GridItem colSpan={1}>
           <FormControl>
+            <FormLabel>{t("quote_ui.form.hsn_code_placeholder")}</FormLabel>
             <Input
               placeholder={t("quote_ui.form.hsn_code_placeholder")}
               name={`items[${index}].code`}
@@ -145,6 +176,11 @@ function QuoteItem({
         </GridItem>
         <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.um && errors.um}>
+            <FormLabel>
+              {tCommon("common_ui.validation.labels.unit_of_measurement", {
+                defaultValue: "Unit of measurement",
+              })}
+            </FormLabel>
             <Select
               name={`items[${index}].um`}
               value={umOptions.find((um) => um.value === quoteItem.um)}
@@ -158,6 +194,9 @@ function QuoteItem({
         </GridItem>
         <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.tax && errors.tax}>
+            <FormLabel>
+              {tCommon("common_ui.receipt.tax", { defaultValue: "Tax" })}
+            </FormLabel>
             <Select
               name={`items[${index}].tax`}
               value={taxOptions.find(
@@ -173,6 +212,7 @@ function QuoteItem({
         </GridItem>
         <GridItem colSpan={1}>
           <FormControl isRequired isInvalid={errors.price && errors.price}>
+            <FormLabel>{tCommon("common_ui.receipt.price")}</FormLabel>
             <NumberInput
               min={0}
               value={quoteItem.price}
@@ -180,7 +220,7 @@ function QuoteItem({
                 formik.setFieldValue(`items[${index}].price`, value);
               }}
             >
-              <NumberInputField placeholder={t("common_ui.receipt.price")} />
+              <NumberInputField placeholder={tCommon("common_ui.receipt.price")} />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
@@ -189,30 +229,19 @@ function QuoteItem({
             <FormErrorMessage>{errors.price}</FormErrorMessage>
           </FormControl>
         </GridItem>
-        <GridItem
-          gap={2}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          colSpan={1}
-        >
-          <FormControl flex={1}>
+        <GridItem colSpan={{ base: 1, md: 2, xl: 1 }}>
+          <FormControl>
+            <FormLabel>{tCommon("common_ui.receipt.total")}</FormLabel>
             <InputGroup>
               <Input
                 name="total"
                 readOnly
                 value={total}
-                placeholder={t("common_ui.receipt.total")}
+                placeholder={tCommon("common_ui.receipt.total")}
               />
               <InputRightElement>{symbol}</InputRightElement>
             </InputGroup>
           </FormControl>
-          <IconButton
-            colorScheme="red"
-            onClick={deleteQuote}
-            icon={<AiOutlineDelete />}
-            size={"sm"}
-          />
         </GridItem>
       </SimpleGrid>
       {isOpen && (

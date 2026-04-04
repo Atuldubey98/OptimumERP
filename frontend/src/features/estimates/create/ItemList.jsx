@@ -1,8 +1,11 @@
 import {
   Box,
   Button,
-  ListItem,
-  OrderedList,
+  Divider,
+  Flex,
+  Stack,
+  Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FieldArray } from "formik";
 import { memo } from "react";
@@ -18,6 +21,11 @@ function ItemsList({
   addItemLabelKey,
 }) {
   const { t } = useTranslation(namespace);
+  const cardBg = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
+  const dividerColor = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
+  const rowDividerColor = useColorModeValue("blackAlpha.50", "whiteAlpha.100");
+  const headingColor = useColorModeValue("gray.700", "gray.100");
   const resolvedAddItemLabelKey =
     addItemLabelKey ||
     (namespace === "invoice"
@@ -30,10 +38,42 @@ function ItemsList({
     <FieldArray
       name="items"
       render={(itemsHelper) => (
-        <Box>
-          <OrderedList>
+        <Box
+          bg={cardBg}
+          borderWidth="1px"
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="sm"
+          overflow="hidden"
+        >
+          <Flex
+            align={{ base: "stretch", md: "center" }}
+            direction={{ base: "column", md: "row" }}
+            gap={3}
+            justify="space-between"
+            px={{ base: 4, md: 5 }}
+            py={{ base: 4, md: 4 }}
+          >
+            <Box>
+              <Text fontSize="lg" fontWeight="semibold" color={headingColor}>
+                Products ({formik.values.items.length})
+              </Text>
+            </Box>
+            <Button
+              type="button"
+              onClick={() => itemsHelper.push(defaultReceiptItem)}
+              leftIcon={<MdAdd />}
+              colorScheme="blue"
+              variant="outline"
+              width={{ base: "100%", md: "auto" }}
+            >
+              {t(resolvedAddItemLabelKey)}
+            </Button>
+          </Flex>
+          <Divider borderColor={dividerColor} />
+          <Stack spacing={0} px={{ base: 3, md: 5 }} py={{ base: 2, md: 3 }}>
             {formik.values.items.map((quoteItem, index) => (
-              <ListItem key={index}>
+              <Box key={index}>
                 <QuoteItem
                   errorsQuoteItems={errorsQuoteItems}
                   deleteQuote={() => itemsHelper.remove(index)}
@@ -43,19 +83,12 @@ function ItemsList({
                   quoteItem={quoteItem}
                   formik={formik}
                 />
-              </ListItem>
+                {index < formik.values.items.length - 1 ? (
+                  <Divider borderColor={rowDividerColor} />
+                ) : null}
+              </Box>
             ))}
-          </OrderedList>
-          <Button
-            type="button"
-            width={"100%"}
-            onClick={() => itemsHelper.push(defaultReceiptItem)}
-            leftIcon={<MdAdd />}
-            colorScheme="blue"
-            variant="outline"
-          >
-            {t(resolvedAddItemLabelKey)}
-          </Button>
+          </Stack>
         </Box>
       )}
     />
