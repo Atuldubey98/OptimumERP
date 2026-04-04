@@ -6,7 +6,7 @@ const read = async (req, res) => {
   const party = await Party.findOne({
     _id: req.params.partyId,
     org: req.params.orgId,
-  });
+  }).lean();
   if (!party) throw new PartyNotFound();
   return res.status(200).json({ data: party });
 };

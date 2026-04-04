@@ -5,7 +5,9 @@ const read = async (req, res) => {
   const contact = await Contact.findOne({
     _id: req.params.id,
     org: req.params.orgId,
-  }).populate("party");
+  })
+    .populate("party")
+    .lean();
   if (!contact) throw new ContactNotFound();
   return res.status(200).json({ data: contact });
 };

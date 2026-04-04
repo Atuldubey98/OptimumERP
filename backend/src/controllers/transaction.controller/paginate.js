@@ -15,6 +15,7 @@ const paginate = async (req, res) => {
     .populate("party", "name")
     .skip(skip)
     .limit(limit)
+    .lean()
     .exec();
   const response = {
     data: transactions,

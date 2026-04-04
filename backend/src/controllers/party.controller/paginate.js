@@ -17,7 +17,8 @@ const paginate = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate("createdBy", "name active")
-    .populate("updatedBy", "name active");
+    .populate("updatedBy", "name active")
+    .lean();
 
   return res.status(200).json({
     page,

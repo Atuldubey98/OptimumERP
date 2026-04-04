@@ -15,7 +15,9 @@ const getTransactionSummary = async (req, res) => {
   const party = await Party.findOne({
     org: req.params.orgId,
     _id: req.params.partyId,
-  }).exec();
+  })
+    .lean()
+    .exec();
   const transactionTypes = req.query.transactionTypes;
   if (transactionTypes && typeof transactionTypes === "string")
     filter.docModel = { $in: transactionTypes.split(",") };
@@ -36,6 +38,7 @@ const getTransactionSummary = async (req, res) => {
     .populate("party", "name billingAddress")
     .skip(skip)
     .limit(limit)
+    .lean()
     .exec();
   const entities = [Invoice, Purchase];
   const [invoicesByStatus, purchasesByStatus] = await Promise.all(

@@ -19,18 +19,17 @@ const borderLandTemplate = (data, color) => {
         {
           text: data.entity?.org?.name || "",
           color: palette.muted,
-          fontSize: 7,
+          fontSize: 6.3,
         },
         {
           text: `${currentPage} / ${pageCount}`,
           alignment: "right",
           color: palette.muted,
-          fontSize: 7,
+          fontSize: 6.3,
         },
       ],
     }),
     content: [
-      // Header
       {
         columns: [
           data.entity.org.logo
@@ -41,7 +40,6 @@ const borderLandTemplate = (data, color) => {
                 margin: [0, 6, 0, 0],
               }
             : {},
-
           [
             {
               text: data.title.toLocaleUpperCase(),
@@ -386,12 +384,6 @@ const borderLandTemplate = (data, color) => {
         text: data.amountToWords,
         style: "amountWords",
       },
-      {
-        text: labels.authorized_signatory || "Authorized Signatory",
-        style: "signatory",
-        alignment: "right",
-        margin: [0, 54, 0, 0],
-      },
       data.bank
         ? {
             columns: [
@@ -427,46 +419,89 @@ const borderLandTemplate = (data, color) => {
         style: "notesText",
         margin: [0, 0, 0, 4],
       },
+      {
+        alignment: "right",
+        margin: [0, 18, 0, 0],
+        unbreakable: true,
+        table: {
+          widths: [190],
+          body: [
+            [
+              {
+                stack: [
+                  {
+                    text: `For ${data.entity?.org?.name || ""}`,
+                    style: "signatoryBoxCompany",
+                    alignment: "center",
+                    margin: [0, 0, 0, 24],
+                  },
+                  {
+                    text: " ",
+                    margin: [0, 22, 0, 22],
+                  },
+                  {
+                    text: labels.authorized_signatory || "Authorized Signatory",
+                    style: "signatoryBoxLabel",
+                    alignment: "center",
+                  },
+                ],
+              },
+            ],
+          ],
+        },
+        layout: {
+          hLineColor: () => palette.border,
+          vLineColor: () => palette.border,
+          hLineWidth: () => 0.75,
+          vLineWidth: () => 0.75,
+          paddingLeft: () => 10,
+          paddingRight: () => 10,
+          paddingTop: () => 10,
+          paddingBottom: () => 10,
+        },
+      },
     ],
     styles: {
       // Document Header
       documentHeaderLeft: {
-        fontSize: 10,
+        fontSize: 9,
         margin: [5, 5, 5, 5],
         alignment: "left",
       },
       documentHeaderCenter: {
-        fontSize: 10,
+        fontSize: 9,
         margin: [5, 5, 5, 5],
         alignment: "center",
       },
       documentHeaderRight: {
-        fontSize: 10,
+        fontSize: 9,
         margin: [5, 5, 5, 5],
         alignment: "right",
       },
       // Document Footer
       documentFooterLeft: {
-        fontSize: 10,
+        fontSize: 9,
         margin: [5, 5, 5, 5],
         alignment: "left",
       },
       signatory: { bold: true, decoration: "underline" },
-      subheader: { fontSize: 10, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
+      signatoryBoxCompany: { bold: true, color: palette.text },
+      signatoryBoxLabel: { bold: true, color: palette.text },
+      subheader: { fontSize: 9, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
 
       documentFooterCenter: {
-        fontSize: 10,
+        fontSize: 9,
         margin: [5, 5, 5, 5],
         alignment: "center",
       },
       documentFooterRight: {
-        fontSize: 10,
+        fontSize: 9,
         margin: [5, 5, 5, 5],
         alignment: "right",
       },
       // Invoice Title
       invoiceTitle: {
-        fontSize: 20,
+        fontSize: 18,
         bold: true,
         alignment: "right",
         color: palette.accent,
@@ -475,15 +510,15 @@ const borderLandTemplate = (data, color) => {
       },
       // Invoice Details
       invoiceSubTitle: {
-        fontSize: 9,
+        fontSize: 8.1,
         alignment: "right",
         color: palette.muted,
         bold: true,
       },
-      invoiceSubValue: { fontSize: 10, alignment: "right", color: palette.text, bold: true },
+      invoiceSubValue: { fontSize: 9, alignment: "right", color: palette.text, bold: true },
       // Billing Headers
       invoiceBillingTitle: {
-        fontSize: 10,
+        fontSize: 9,
         bold: true,
         alignment: "left",
         color: palette.accent,
@@ -499,18 +534,18 @@ const borderLandTemplate = (data, color) => {
       billingMetaLabel: {
         color: palette.muted,
         bold: true,
-        fontSize: 9,
+        fontSize: 8.1,
       },
       billingMetaValue: {
         color: palette.text,
         bold: true,
-        fontSize: 9,
+        fontSize: 8.1,
       },
       invoiceBillingAddressTitle: {
         margin: [0, 7, 0, 3],
         bold: true,
         color: palette.muted,
-        fontSize: 9,
+        fontSize: 8.1,
       },
       invoiceBillingAddress: { color: palette.text, lineHeight: 1.35 },
       // Items Header
@@ -518,39 +553,39 @@ const borderLandTemplate = (data, color) => {
         margin: [0, 3, 0, 3],
         bold: true,
         color: "white",
-        fontSize: 8.5,
+        fontSize: 7.7,
       },
       // Item Title
       itemTitle: {
         bold: true,
         color: palette.text,
-        fontSize: 8.5,
+        fontSize: 7.7,
         lineHeight: 1.2,
       },
       itemSubTitle: {
         italics: true,
-        fontSize: 11,
+        fontSize: 9.9,
       },
       itemNumber: {
         margin: [0, 2, 0, 2],
         alignment: "right",
         noWrap: true,
         color: palette.text,
-        fontSize: 8.5,
+        fontSize: 7.7,
       },
       itemPrice: {
         margin: [0, 2, 0, 2],
         alignment: "right",
         noWrap: true,
         color: palette.text,
-        fontSize: 8.5,
+        fontSize: 7.7,
       },
       itemTotal: {
         margin: [0, 2, 0, 2],
         bold: true,
         alignment: "right",
         color: palette.text,
-        fontSize: 8.5,
+        fontSize: 7.7,
       },
 
       // Items Footer (Subtotal, Total, Tax, etc)
@@ -587,17 +622,17 @@ const borderLandTemplate = (data, color) => {
       },
       signatureJobTitle: {
         italics: true,
-        fontSize: 10,
+        fontSize: 9,
         alignment: "center",
       },
       notesTitle: {
-        fontSize: 9,
+        fontSize: 8.1,
         bold: true,
         margin: [0, 18, 0, 4],
         color: palette.accent,
       },
       notesText: {
-        fontSize: 9,
+        fontSize: 8.1,
         lineHeight: 1.35,
         color: palette.text,
       },
@@ -616,7 +651,7 @@ const borderLandTemplate = (data, color) => {
     },
     defaultStyle: {
       columnGap: 10,
-      fontSize: 9,
+      fontSize: 8.1,
       color: palette.text,
     },
   };

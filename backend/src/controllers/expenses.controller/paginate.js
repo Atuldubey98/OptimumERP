@@ -16,6 +16,7 @@ const paginate = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate("category")
+    .lean()
     .exec();
   return res.status(200).json({
     data: expenses,

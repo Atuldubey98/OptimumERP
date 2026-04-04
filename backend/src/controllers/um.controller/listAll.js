@@ -11,7 +11,7 @@ const listAll = async (req, res) => {
   const shouldUseCachedOrgUmList = !req.query.search;
   const ums = shouldUseCachedOrgUmList
     ? await getUmListForOrg(req.params.orgId)
-    : await Um.find(filter);
+    : await Um.find(filter).lean();
   return res.status(200).json({
     data: ums,
     reachedLimit: hasUserReachedCreationLimits({

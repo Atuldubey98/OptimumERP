@@ -15,6 +15,7 @@ const paginate = async (options = {}, req, res) => {
     .populate("org")
     .skip(skip)
     .limit(limit)
+    .lean()
     .exec();
   return res.status(200).json({
     data: bills,

@@ -5,7 +5,8 @@ const getUsersOfOrganization = async (req, res) => {
     org: req.params.orgId,
   })
     .populate("org")
-    .populate("user", "name email active role");
+    .populate("user", "name email active role")
+    .lean();
   return res.status(200).json({ data: organizationUsers });
 };
 

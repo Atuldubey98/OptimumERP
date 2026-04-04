@@ -65,6 +65,7 @@ const read = async (req, res) => {
         .select("name num total totalTax status party date num")
         .populate("party", "name")
         .limit(5)
+        .lean()
         .exec()
     )
   );

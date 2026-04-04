@@ -8,7 +8,7 @@ const search = async (req, res) => {
   if (search) filter.$text = { $search: search };
   const productCategories = await ProductCategory.find(filter).sort({
     createdAt: -1,
-  });
+  }).lean();
   return res.status(200).json({ data: productCategories });
 };
 

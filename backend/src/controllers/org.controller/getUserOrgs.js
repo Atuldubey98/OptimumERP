@@ -5,7 +5,8 @@ const getUserOrgs = async (req, res) => {
     user: req.session.user._id,
   })
     .populate("org")
-    .select("org role");
+    .select("org role")
+    .lean();
   return res.status(200).json({ data: organizations });
 };
 

@@ -15,7 +15,7 @@ const read = async (options = {}, req, res) => {
     .populate("items.um");
   if (["proforma_invoice", "quotes"].includes(Bill.modelName))
     billQuery = billQuery.populate("converted", "num date");
-  const bill = await billQuery.exec();
+  const bill = await billQuery.lean().exec();
   if (!bill) throw new NotFound();
   return res.status(200).json({ data: bill });
 };

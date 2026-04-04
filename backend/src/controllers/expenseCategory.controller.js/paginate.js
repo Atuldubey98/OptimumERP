@@ -11,7 +11,7 @@ const paginate = async (req, res) => {
   const shouldUseCachedOrgExpenseCategoryList = !search;
   const categories = shouldUseCachedOrgExpenseCategoryList
     ? await getExpenseCategoryListForOrg(req.params.orgId)
-    : await ExpenseCategory.find(filter);
+    : await ExpenseCategory.find(filter).lean();
   return res.status(200).json({
     data: categories,
     reachedLimit: hasUserReachedCreationLimits({

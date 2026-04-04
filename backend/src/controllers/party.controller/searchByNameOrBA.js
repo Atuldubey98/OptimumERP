@@ -6,7 +6,7 @@ const searchByNameOrBA = async (req, res) => {
   };
   const search = req.query.keyword || "";
   if (search) filter.$text = { $search: search };
-  const parties = await Party.find(filter).sort({ createdAt: -1 });
+  const parties = await Party.find(filter).sort({ createdAt: -1 }).lean();
   return res.status(200).json({ data: parties });
 };
 module.exports = searchByNameOrBA;

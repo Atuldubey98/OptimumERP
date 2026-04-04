@@ -18,6 +18,7 @@ const paginate = async (req, res) => {
     .sort({ createdAt: -1 })
     .populate("category")
     .populate("um")
+    .lean()
     .exec();
   return res.status(200).json({
     data: products,

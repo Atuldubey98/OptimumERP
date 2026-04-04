@@ -19,7 +19,8 @@ const paginate = async (req, res) => {
     : await ProductCategory.find(filter)
         .skip(skip)
         .limit(limit)
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .lean();
   return res.status(200).json({
     data: productCategories,
     currentPage: page,

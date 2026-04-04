@@ -10,7 +10,7 @@ const read = async (req, res) => {
   const product = await Product.findOne({
     org: orgId,
     _id: productId,
-  });
+  }).lean();
   if (!product) throw new ProductNotFound();
   return res.status(200).json({
     data: product,

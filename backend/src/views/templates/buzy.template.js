@@ -23,13 +23,13 @@ const buzyTemplate = (data, color) => {
         {
           text: data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : "",
           color: palette.muted,
-          fontSize: 7,
+          fontSize: 6.3,
         },
         {
           text: `${currentPage} / ${pageCount}`,
           alignment: "right",
           color: palette.muted,
-          fontSize: 7,
+          fontSize: 6.3,
         },
       ],
     }),
@@ -372,12 +372,7 @@ const buzyTemplate = (data, color) => {
           {
             width: "*",
             stack: [
-              data && data.entity && data.entity.terms
-                ? { text: labels.terms_and_conditions || "Terms and conditions", style: "sectionHeader" }
-                : {},
-              data && data.entity && data.entity.terms
-                ? { text: data.entity.terms, style: "termsText" }
-                : {},
+              {},
             ],
           },
           {
@@ -430,74 +425,89 @@ const buzyTemplate = (data, color) => {
 
       // Authorized Signatory (kept generic, no personal signature lines)
       {
-        columns: [
-          { width: "*", text: "" },
-          {
-            table: {
-              widths: ["*", 200],
-              dontBreakRows: true,
-              body: [
-                [
-                  { text: "" },
+        margin: [0, 12, 0, 0],
+        unbreakable: true,
+        table: {
+          widths: ["*", 200],
+          body: [
+            [
+              {
+                stack: [
+                  { text: labels.terms_and_conditions || "Terms and conditions", style: "sectionHeader" },
+                  { text: data.entity.terms || "", style: "termsText" },
+                ],
+                border: [false, false, false, false],
+                margin: [0, 0, 12, 0],
+              },
+              {
+                stack: [
                   {
-                    pageBreak: "avoid",
-                    stack: [
-                      {
-                        text: `For, ${data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : ""}`,
-                        style: "inlineBold",
-                        alignment: "center",
-                        margin: [0, 0, 0, 24],
-                      },
-                      {
-                        text: labels.authorized_signatory || "Authorized Signatory",
-                        style: "inlineBold",
-                        alignment: "center",
-                      },
-                    ],
+                    text: `For ${data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : ""}`,
+                    style: "signatoryBoxCompany",
+                    alignment: "center",
+                    margin: [0, 0, 0, 24],
+                  },
+                  {
+                    text: " ",
+                    margin: [0, 22, 0, 22],
+                  },
+                  {
+                    text: labels.authorized_signatory || "Authorized Signatory",
+                    style: "signatoryBoxLabel",
+                    alignment: "center",
                   },
                 ],
-              ],
-            },
-            layout: "noBorders",
-            margin: [0, 12, 0, 0],
-          },
-        ],
-        margin: [0, 12, 0, 0],
+              },
+            ],
+          ],
+        },
+        layout: {
+          hLineColor: () => palette.border,
+          vLineColor: () => palette.border,
+          hLineWidth: (index, node) => (index === 0 || index === node.table.body.length ? 0.75 : 0),
+          vLineWidth: (index) => (index === 1 || index === 2 ? 0.75 : 0),
+          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 10),
+          paddingRight: (columnIndex) => (columnIndex === 0 ? 12 : 10),
+          paddingTop: () => 10,
+          paddingBottom: () => 10,
+        },
       },
     ],
 
     styles: {
       mainTitle: {
-        fontSize: 16,
+        fontSize: 14.4,
         bold: true,
         color: palette.accent,
         characterSpacing: 1.4,
       },
-      title: { fontSize: 16, bold: true, color: palette.accent },
-      header: { fontSize: 13, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
-      subheader: { fontSize: 10, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
+      title: { fontSize: 14.4, bold: true, color: palette.accent },
+      header: { fontSize: 11.7, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
+      subheader: { fontSize: 9, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
       sectionHeader: {
-        fontSize: 10,
+        fontSize: 9,
         bold: true,
         margin: [0, 6, 0, 6],
         color: palette.accent,
       },
-      inline: { fontSize: 9, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
-      inlineBold: { fontSize: 9, bold: true, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
-      tableHeader: { bold: true, color: "white", fontSize: 8.5 },
-      metaLabel: { fontSize: 9, color: palette.muted, bold: true },
-      metaValue: { fontSize: 9, bold: true, color: palette.text },
+      inline: { fontSize: 8.1, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
+      inlineBold: { fontSize: 8.1, bold: true, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
+      tableHeader: { bold: true, color: "white", fontSize: 7.7 },
+      metaLabel: { fontSize: 8.1, color: palette.muted, bold: true },
+      metaValue: { fontSize: 8.1, bold: true, color: palette.text },
       summaryLabel: { bold: true, color: palette.text },
       summaryValue: { color: palette.text, alignment: "right" },
-      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 10 },
-      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 10 },
-      termsText: { fontSize: 9, color: palette.text, lineHeight: 1.35 },
-      bankLabel: { fontSize: 9, color: palette.muted, bold: true, margin: [0, 2, 0, 2] },
-      bankValue: { fontSize: 9, color: palette.text, margin: [0, 2, 0, 2] },
+      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 9 },
+      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 9 },
+      termsText: { fontSize: 8.1, color: palette.text, lineHeight: 1.35 },
+      bankLabel: { fontSize: 8.1, color: palette.muted, bold: true, margin: [0, 2, 0, 2] },
+      bankValue: { fontSize: 8.1, color: palette.text, margin: [0, 2, 0, 2] },
+      signatoryBoxCompany: { fontSize: 8.1, bold: true, color: palette.text },
+      signatoryBoxLabel: { fontSize: 8.1, bold: true, color: palette.text },
     },
 
     defaultStyle: {
-      fontSize: 9,
+      fontSize: 8.1,
       columnGap: 10,
       color: palette.text,
     },

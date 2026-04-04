@@ -15,7 +15,7 @@ const listAll = async (req, res) => {
   const shouldUseCachedOrgTaxList = !req.query.search;
   const taxes = shouldUseCachedOrgTaxList
     ? await getTaxListForOrg(req.params.orgId)
-    : await Tax.find(filter).populate("children");
+    : await Tax.find(filter).populate("children").lean();
   return res.status(200).json({
     data: taxes,
     total: shouldUseCachedOrgTaxList ? taxes.length : total,
