@@ -21,6 +21,9 @@ export default function usePurchaseForm({ saveAndNew }) {
     party: Yup.string().required(t("common_ui.validation.messages.party_required")),
     date: Yup.date().required(t("common_ui.validation.messages.date_required")),
     status: Yup.string().required(t("common_ui.validation.messages.status_required")),
+    shippingCharges: Yup.number()
+      .min(0, t("common_ui.validation.messages.price_positive"))
+      .default(0),
     items: Yup.array()
       .of(
         Yup.object().shape({
@@ -53,6 +56,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       description: "",
       poNo: "",
       poDate: "",
+      shippingCharges: 0,
     },
     validationSchema: purchaseSchema,
     validateOnChange: false,
@@ -101,6 +105,7 @@ export default function usePurchaseForm({ saveAndNew }) {
           description: "",
           poNo: "",
           poDate: "",
+          shippingCharges: 0,
           party: undefined,
           partyDetails: undefined,
         });
@@ -140,6 +145,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         description,
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,
+        shippingCharges: data.data.shippingCharges || 0,
         createdBy: data.data.createdBy._id,
       });
       setStatus("success");

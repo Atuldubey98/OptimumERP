@@ -157,7 +157,14 @@ export default function CreatePurchasePage() {
                     />
                   </FormControl>
                 )}
-                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
+                <TotalsBox
+                  quoteItems={deferredItems}
+                  taxes={taxes}
+                  shippingCharges={formik.values.shippingCharges || 0}
+                  onShippingChargesChange={(value) => {
+                    formik.setFieldValue("shippingCharges", value);
+                  }}
+                />
                 <DescriptionField formik={formik} />
               </Grid>
             </form>

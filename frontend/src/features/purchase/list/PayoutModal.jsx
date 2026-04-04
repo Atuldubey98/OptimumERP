@@ -30,6 +30,13 @@ import NumberInputInteger from "../../common/NumberInputInteger";
 import useProperty from "../../../hooks/useProperty";
 import { useTranslation } from "react-i18next";
 
+const getShippingChargesValue = (bill) => Number(bill?.shippingCharges || 0);
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  getShippingChargesValue(bill);
+
 export default function PayoutModal({
   purchase,
   isOpen,
@@ -78,7 +85,8 @@ export default function PayoutModal({
     }
   }, [purchase]);
   const { symbol } = useCurrentOrgCurrency();
-  const grandTotal = purchase.total + purchase.totalTax;
+  const grandTotal = getBillGrandTotal(purchase);
+  const shippingCharges = getShippingChargesValue(purchase);
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -103,6 +111,15 @@ export default function PayoutModal({
                 {symbol} {purchase.total.toFixed(2)}
               </Text>
               <Text>
+                <strong>
+                  {t("purchase_ui.payout.shipping_charges", {
+                    defaultValue: "Shipping Charges",
+                  })}
+                  {" : "}
+                </strong>
+                {symbol} {shippingCharges.toFixed(2)}
+              </Text>
+              <Text>
                 <strong> {t("purchase_ui.payout.total_tax")}: </strong>
                 {symbol} {purchase.totalTax.toFixed(2)}
               </Text>
@@ -116,7 +133,7 @@ export default function PayoutModal({
                     formik={formik}
                     name={"amount"}
                     min={0}
-                    max={purchase?.total + purchase?.totalTax}
+                    max={grandTotal}
                   />
                   <Button
                     colorScheme="green"

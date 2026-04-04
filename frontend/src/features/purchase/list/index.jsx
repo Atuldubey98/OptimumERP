@@ -30,6 +30,11 @@ import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
 
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function PurchasePage() {
   const { t, i18n } = useTranslation("purchase");
   const {
@@ -63,7 +68,7 @@ export default function PurchasePage() {
     ...purchase,
     num: purchase.num,
     date: moment(purchase.date).format("LL"),
-    grandTotal: `${symbol} ${(purchase.total + purchase.totalTax).toFixed(2)}`,
+    grandTotal: `${symbol} ${getBillGrandTotal(purchase).toFixed(2)}`,
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

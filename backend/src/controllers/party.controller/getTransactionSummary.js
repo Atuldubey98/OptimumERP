@@ -54,7 +54,11 @@ const getTransactionSummary = async (req, res) => {
         {
           $group: {
             _id: "$status",
-            total: { $sum: { $sum: ["$total", "$totalTax"] } },
+            total: {
+              $sum: {
+                $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+              },
+            },
             count: { $sum: 1 },
           },
         },
@@ -75,7 +79,11 @@ const getTransactionSummary = async (req, res) => {
           {
             $group: {
               _id: null,
-              total: { $sum: { $sum: ["$total", "$totalTax"] } },
+              total: {
+                $sum: {
+                  $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+                },
+              },
               payment: { $sum: "$payment.amount" },
             },
           },

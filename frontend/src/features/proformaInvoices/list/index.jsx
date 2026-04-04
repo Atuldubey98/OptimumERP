@@ -25,6 +25,12 @@ import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function ProformaInvoicesPage() {
   const { t, i18n } = useTranslation(["proformaInvoice", "common"]);
   const resolveToastMessage = (message, fallbackKey) => {
@@ -169,7 +175,7 @@ export default function ProformaInvoicesPage() {
       </ChakraLink>
     ),
     status: <Status status={item.status} statusList={invoiceStatusList} />,
-    grandTotal: `${symbol} ${(item.totalTax + item.total).toFixed(2)}`,
+    grandTotal: `${symbol} ${getBillGrandTotal(item).toFixed(2)}`,
   });
   return (
     <MainLayout>

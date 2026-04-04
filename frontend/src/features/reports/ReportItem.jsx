@@ -25,6 +25,11 @@ import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 import moment from "moment";
 
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 const DEFAULT_GSTR_TAX_CATEGORIES = ["cgst", "sgst", "igst"];
 const PREFERRED_TAX_CATEGORY_ORDER = [
   "cgst",
@@ -106,7 +111,7 @@ export default function ReportItem() {
             formatTaxCategoryAmount(item.taxCategories, key),
           ])
         ),
-        grandTotal: formatAmount(item?.total + item?.totalTax),
+        grandTotal: formatAmount(getBillGrandTotal(item)),
       }),
     };
   };
@@ -126,7 +131,7 @@ export default function ReportItem() {
         num: item.num,
         date: formatReportDate(item.date),
         totalTax: formatAmount(item.totalTax),
-        grandTotal: formatAmount(item.totalTax + item.total),
+        grandTotal: formatAmount(getBillGrandTotal(item)),
         status: (item?.status || "").toLocaleUpperCase(),
       }),
     },
@@ -146,7 +151,7 @@ export default function ReportItem() {
         num: item.num,
         date: formatReportDate(item.date),
         totalTax: formatAmount(item.totalTax),
-        grandTotal: formatAmount(item.totalTax + item.total),
+        grandTotal: formatAmount(getBillGrandTotal(item)),
         status: (item?.status || "").toLocaleUpperCase(),
       }),
     },
@@ -162,7 +167,7 @@ export default function ReportItem() {
         _id: item._id,
         num: item.doc?.num,
         type: transactionTypes[item?.docModel],
-        amount: formatAmount(item.total + item.totalTax),
+        amount: formatAmount(getBillGrandTotal(item)),
         relatedTo: item?.party?.name || item.doc?.description || "",
         createdAt: new Date(item.createdAt).toLocaleDateString(),
       }),

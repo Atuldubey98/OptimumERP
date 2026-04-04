@@ -29,7 +29,8 @@ const payment = async (req, res) => {
 module.exports = payment;
 async function payoutPurchaseInvoice({ filter, userId, body }) {
   const purchase = await Purchase.findOne(filter);
-  const grandTotal = purchase.total + purchase.totalTax;
+  const grandTotal =
+    purchase.total + purchase.totalTax + (purchase.shippingCharges || 0);
   const isPurchaseFullyPaid = grandTotal > body.amount;
   purchase.status = isPurchaseFullyPaid ? "unpaid" : "paid";
   purchase.updatedBy = userId;

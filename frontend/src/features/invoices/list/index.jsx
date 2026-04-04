@@ -28,6 +28,12 @@ import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import useAuth from "../../../hooks/useAuth";
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function InvoicesPage() {
   const { t, i18n } = useTranslation("invoice");
   const {
@@ -60,7 +66,7 @@ export default function InvoicesPage() {
     ),
     ...invoice,
     date: moment(invoice.date).format("LL"),
-    grandTotal: `${symbol} ${(invoice.total + invoice.totalTax).toFixed(2)}`,
+    grandTotal: `${symbol} ${getBillGrandTotal(invoice).toFixed(2)}`,
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

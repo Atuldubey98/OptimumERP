@@ -23,6 +23,12 @@ import PeriodSelect from "../dashboard/PeriodSelect";
 import { MdOutlineQueryStats } from "react-icons/md";
 import { IoArrowBack } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function StatsPage() {
   const { t } = useTranslation("stats");
   const [stats, setStats] = useState({
@@ -74,10 +80,10 @@ export default function StatsPage() {
     (period) => period.value === currentPeriod
   ).label;
   const totalSales = stats.invoicesTotal
-    ? stats.invoicesTotal.total + stats.invoicesTotal.totalTax
+    ? getBillGrandTotal(stats.invoicesTotal)
     : 0;
   const totalPurchase = stats.purchaseTotal
-    ? stats.purchaseTotal.total + stats.purchaseTotal.totalTax
+    ? getBillGrandTotal(stats.purchaseTotal)
     : 0;
   const navigate = useNavigate();
   return (
@@ -150,14 +156,13 @@ export default function StatsPage() {
                     {stats.topFiveClientTotal.map((client, index) => (
                       <StatProgress
                         key={index}
-                        value={`${client.party.name} (${symbol} ${
-                          client.total + client.totalTax
-                        })`}
-                        label={`${symbol} ${client.total + client.totalTax}`}
+                        value={`${client.party.name} (${symbol} ${getBillGrandTotal(
+                          client,
+                        )})`}
+                        label={`${symbol} ${getBillGrandTotal(client)}`}
                         progress={
-                          ((client.total + client.totalTax) /
-                            (stats.invoicesTotal.total +
-                              stats.invoicesTotal.totalTax)) *
+                          (getBillGrandTotal(client) /
+                            getBillGrandTotal(stats.invoicesTotal)) *
                           100
                         }
                       />

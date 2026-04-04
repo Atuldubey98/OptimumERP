@@ -16,6 +16,12 @@ import {
 import { useTranslation } from "react-i18next";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import { FaChevronRight } from "react-icons/fa6";
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function DashboardTable({
   heading,
   tableHeads,
@@ -58,9 +64,7 @@ export default function DashboardTable({
               <Tr key={tableRow._id}>
                 <Td>{tableRow.num}</Td>
                 <Td>{tableRow.partyName}</Td>
-                <Td>{`${symbol} ${(tableRow.total + tableRow.totalTax).toFixed(
-                  2
-                )}`}</Td>
+                <Td>{`${symbol} ${getBillGrandTotal(tableRow).toFixed(2)}`}</Td>
                 <Td>{tableRow.status}</Td>
                 <Td>{tableRow.date}</Td>
               </Tr>

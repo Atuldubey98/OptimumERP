@@ -23,6 +23,12 @@ import BalanceStats from "./BalanceStats";
 import BillStatsByStatus from "./BillStatsByStatus";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function TransactionsPage() {
   const { t } = useTranslation("transactions");
   const { partyId, orgId } = useParams();
@@ -219,7 +225,7 @@ export default function TransactionsPage() {
               totalItems: item.doc.items.length,
               status: item.doc.status,
               num: item.doc.num,
-              grandTotal: (item.total + item.totalTax).toFixed(2),
+              grandTotal: getBillGrandTotal(item).toFixed(2),
               type: (
                 <Tag
                   size={"md"}

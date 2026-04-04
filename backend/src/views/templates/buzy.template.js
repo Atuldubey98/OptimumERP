@@ -328,6 +328,19 @@ const buzyTemplate = (data, color) => {
                     style: "summaryValue",
                   },
                 ],
+                [
+                  {
+                    text: `${labels.shipping_charges || "Shipping Charges"}:`,
+                    style: "summaryLabel",
+                  },
+                  {
+                    text:
+                      data && data.shippingCharges != null
+                        ? data.shippingCharges
+                        : "₹ 0.00",
+                    style: "summaryValue",
+                  },
+                ],
                 ...taxEntries.map(([taxName, taxValue]) => [
                   { text: `${taxName.toString().toUpperCase()}:`, style: "summaryLabel" },
                   { text: taxValue, style: "summaryValue" },

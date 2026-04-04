@@ -183,6 +183,7 @@ const simpleTemplate = (data, color) => {
           widths: ["*", "auto"],
           body: [
             [{ text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" }, { text: data.total, style: "summaryValue" }],
+            [{ text: `${labels.shipping_charges || "Shipping Charges"}:`, style: "summaryLabel" }, { text: data.shippingCharges, style: "summaryValue" }],
             ...taxEntries.map(
               ([taxName, taxValue]) => [
                 { text: `${taxName.toLocaleUpperCase()}:`, style: "summaryLabel" },

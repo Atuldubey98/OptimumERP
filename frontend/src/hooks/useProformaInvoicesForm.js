@@ -31,6 +31,9 @@ export default function useProformaInvoicesForm() {
     status: Yup.string().required(t("common_ui.validation.messages.status_required")),
     poNo: Yup.string().optional(),
     poDate: Yup.string().optional(),
+    shippingCharges: Yup.number()
+      .min(0, t("common_ui.validation.messages.price_positive"))
+      .default(0),
     items: Yup.array()
       .of(
         Yup.object().shape({
@@ -68,6 +71,7 @@ export default function useProformaInvoicesForm() {
     billingAddress: "",
     poDate: "",
     prefix: "",
+    shippingCharges: 0,
   };
   const formik = useFormik({
     initialValues: defaultInvoice,
@@ -153,6 +157,7 @@ export default function useProformaInvoicesForm() {
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,
         billingAddress,
+        shippingCharges: data.data.shippingCharges || 0,
         createdBy: data.data?.createdBy._id,
       });
       setStatus("success");

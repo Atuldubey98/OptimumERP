@@ -39,6 +39,10 @@ const transactionSchema = new Schema(
       type: Number,
       default: 0,
     },
+    shippingCharges: {
+      type: Number,
+      default: 0,
+    },
     party: {
       type: Types.ObjectId,
       ref: "party",

@@ -23,6 +23,7 @@ const purchaseOrderDto = Joi.object({
   description: Joi.string().allow("").label("Description"),
   billingAddress: Joi.string().required().label("Billing Address"),
   items: Joi.array().items(itemSchema).required().label("Items"),
+  shippingCharges: Joi.number().min(0).default(0).label("Shipping Charges"),
   terms: Joi.string().allow("").label("Terms"),
   num: Joi.string().default("").allow(""),
   status: Joi.string()

@@ -117,6 +117,7 @@ exports.saveBill = async ({
 }) => {
   const body = await dto.validateAsync(requestBody);
   const totalWithTaxes = await calculateTaxes(body.items, body.org);
+  const shippingCharges = parseFloat(body.shippingCharges) || 0;
   const { setting, counterKey } = await getCurrentSequenceCounter({
     Bill,
     org: body.org,
@@ -126,6 +127,7 @@ exports.saveBill = async ({
   const billBody = {
     ...body,
     ...totalWithTaxes,
+    shippingCharges,
     financialYear: setting.financialYear,
   };
   const transaction = {
@@ -136,6 +138,7 @@ exports.saveBill = async ({
     date: body.date,
     total: totalWithTaxes.total,
     totalTax: totalWithTaxes.totalTax,
+    shippingCharges,
     party: body.party,
     docModel: Bill.modelName,
   };
@@ -269,6 +272,12 @@ const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
   );
   return newTaxCategories;
 };
+
+const getBillGrandTotal = (bill = {}) =>
+  Number(bill.total || 0) +
+  Number(bill.totalTax || 0) +
+  Number(bill.shippingCharges || 0);
+
 exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
   const bill = await Bill.findOne(filter)
     .populate("party")
@@ -278,7 +287,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
   const setting = await getDisplaySettingForOrg(filter.org);
   const currencies = await propertyService.getCurrencyConfig();
   const currencySymbol = currencies.value[setting.currency].symbol;
-  const grandTotal = bill.total + bill.totalTax;
+  const grandTotal = getBillGrandTotal(bill);
   const items = await calculateTaxesForBillItemsWithCurrency(
     bill.items,
     currencySymbol,
@@ -306,6 +315,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     amountToWords: currencyToWordConverter(localeCode, grandTotal),
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
+    shippingCharges: `${currencySymbol} ${Number(bill.shippingCharges || 0).toFixed(2)}`,
     currencyTaxCategories,
     dateLocale,
     metaLabels: {
@@ -336,6 +346,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       price: translateTemplateLabel("price", "Price"),
       total: translateTemplateLabel("total", "Total"),
       subtotal: translateTemplateLabel("subtotal", "Subtotal"),
+      shipping_charges: translateTemplateLabel("shipping_charges", "Shipping Charges"),
       grand_total: translateTemplateLabel("grand_total", "Grand Total"),
       amount_in_words: translateTemplateLabel("amount_in_words", "Amount in words"),
       terms_and_conditions: translateTemplateLabel("terms_and_conditions", "Terms and Conditions"),

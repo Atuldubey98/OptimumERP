@@ -19,6 +19,7 @@ const proformaInvoiceDto = Joi.object({
   date: Joi.date().required().label("Invoice date"),
   poNo: Joi.string().label("PO Number").allow("").optional(),
   poDate: Joi.string().label("PO Date").allow("").optional(),
+  shippingCharges: Joi.number().min(0).default(0).label("Shipping Charges"),
   status: Joi.string()
     .default("draft")
     .valid("draft", "sent", "pending")

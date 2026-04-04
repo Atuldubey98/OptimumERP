@@ -44,7 +44,7 @@ const defaultInvoiceItem = {
   tax: "",
   price: 0,
 };
-function calculateGrandTotalWithTax({ quoteItems, taxes }) {
+function calculateGrandTotalWithTax({ quoteItems, taxes, shippingCharges = 0 }) {
   let grandTotal = 0;
   let totalTax = 0;
   let total = 0;
@@ -62,6 +62,8 @@ function calculateGrandTotalWithTax({ quoteItems, taxes }) {
     totalTax += tax;
     grandTotal += subtotal;
   });
+
+  grandTotal += parseFloat(shippingCharges) || 0;
 
   return { grandTotal, totalTax, total };
 }

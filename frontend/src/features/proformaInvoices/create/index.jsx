@@ -159,7 +159,14 @@ export default function ProformaInvoiceFormPage() {
                   taxes={taxes}
                   ums={ums}
                 />
-                <TotalsBox quoteItems={deferredItems} taxes={taxes} />
+                <TotalsBox
+                  quoteItems={deferredItems}
+                  taxes={taxes}
+                  shippingCharges={formik.values.shippingCharges || 0}
+                  onShippingChargesChange={(value) => {
+                    formik.setFieldValue("shippingCharges", value);
+                  }}
+                />
                 <DescriptionField formik={formik} />
                 <TermsAndCondtions formik={formik} />
               </Grid>

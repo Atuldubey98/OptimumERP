@@ -13,6 +13,11 @@ const PREFERRED_TAX_CATEGORY_ORDER = [
 
 const formatAmount = (value = 0) => Number(value || 0).toFixed(2);
 
+const getGrandTotal = (item = {}) =>
+  Number(item.total || 0) +
+  Number(item.totalTax || 0) +
+  Number(item.shippingCharges || 0);
+
 const formatDate = (value) =>
   value
     ? new Date(value).toLocaleDateString("en-IN", {
@@ -80,7 +85,7 @@ const reportDataByType = {
       num: item.num,
       date: formatDate(item.date),
       totalTax: formatAmount(item.totalTax),
-      grandTotal: formatAmount(item.totalTax + item.total),
+      grandTotal: formatAmount(getGrandTotal(item)),
       status: (item?.status || "").toLocaleUpperCase(),
     }),
   },
@@ -100,7 +105,7 @@ const reportDataByType = {
       num: item.num,
       date: formatDate(item.date),
       totalTax: formatAmount(item.totalTax),
-      grandTotal: formatAmount(item.totalTax + item.total),
+      grandTotal: formatAmount(getGrandTotal(item)),
       status: (item?.status || "").toLocaleUpperCase(),
     }),
   },
@@ -117,7 +122,7 @@ const reportDataByType = {
       num: item.doc?.num,
       type: item?.docModel,
       relatedTo: item?.party?.name || item.doc?.description || "",
-      amount: formatAmount(item.total + item.totalTax),
+      amount: formatAmount(getGrandTotal(item)),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   },
@@ -137,7 +142,7 @@ const reportDataByType = {
       date: formatDate(item.date),
       gstNo: item.party?.gstNo,
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
-      grandTotal: formatAmount(item?.total + item?.totalTax),
+      grandTotal: formatAmount(getGrandTotal(item)),
     }),
   },
   gstr2: {
@@ -156,7 +161,7 @@ const reportDataByType = {
       gstNo: item.party?.gstNo,
       date: formatDate(item.date),
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
-      grandTotal: formatAmount(item?.total + item?.totalTax),
+      grandTotal: formatAmount(getGrandTotal(item)),
     }),
   },
 };

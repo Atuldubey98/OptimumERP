@@ -28,6 +28,14 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import instance from "../../../instance";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import useProperty from "../../../hooks/useProperty";
+
+const getShippingChargesValue = (bill) => Number(bill?.shippingCharges || 0);
+
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  getShippingChargesValue(bill);
+
 export default function RecordPaymentModal({
   isOpen,
   onClose,
@@ -74,7 +82,8 @@ export default function RecordPaymentModal({
     }
   }, [invoice]);
   const { symbol } = useCurrentOrgCurrency();
-  const grandTotal = invoice.total + invoice.totalTax;
+  const grandTotal = getBillGrandTotal(invoice);
+  const shippingCharges = getShippingChargesValue(invoice);
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -99,6 +108,10 @@ export default function RecordPaymentModal({
                 {symbol} {invoice.total.toFixed(2)}
               </Text>
               <Text>
+                <strong>Shipping Charges : </strong>
+                {symbol} {shippingCharges.toFixed(2)}
+              </Text>
+              <Text>
                 <strong> Total Tax: </strong>
                 {symbol} {invoice.totalTax.toFixed(2)}
               </Text>
@@ -108,7 +121,7 @@ export default function RecordPaymentModal({
               >
                 <FormLabel>Amount</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
-                  <NumberInputInteger formik={formik} name={"amount"} min={0} max={invoice.total + invoice.totalTax} />
+                  <NumberInputInteger formik={formik} name={"amount"} min={0} max={grandTotal} />
                   <Button
                     colorScheme="green"
                     onClick={() =>

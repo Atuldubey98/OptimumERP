@@ -58,6 +58,7 @@
     },
     "totals": {
       "sub_total": "Subtotal",
+      "shipping_charges": "Custos de envio",
       "total_tax": "Imposto total",
       "grand_total": "Total Geral"
     },

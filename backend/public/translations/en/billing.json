@@ -67,6 +67,7 @@
     "price": "Price",
     "total": "Total",
     "subtotal": "Subtotal",
+    "shipping_charges": "Shipping Charges",
     "grand_total": "Grand Total",
     "amount_in_words": "Amount in words",
     "terms_and_conditions": "Terms and Conditions",

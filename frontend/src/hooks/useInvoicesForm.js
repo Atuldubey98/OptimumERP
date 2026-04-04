@@ -32,6 +32,9 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     poNo: Yup.string().optional(),
     poDate: Yup.string().optional(),
     dueDate: Yup.string().optional(),
+    shippingCharges: Yup.number()
+      .min(0, t("common_ui.validation.messages.price_positive"))
+      .default(0),
     items: Yup.array()
       .of(
         Yup.object().shape({
@@ -67,6 +70,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     poNo: "",
     billingAddress: "",
     poDate: "",
+    shippingCharges: 0,
   };
   const formik = useFormik({
     initialValues: defaultInvoice,
@@ -160,6 +164,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,
         billingAddress,
+        shippingCharges: data.data.shippingCharges || 0,
         createdBy: data.data.createdBy._id,
       });
       setStatus("success");

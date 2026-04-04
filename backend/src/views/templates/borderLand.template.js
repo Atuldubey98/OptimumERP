@@ -319,6 +319,16 @@ const borderLandTemplate = (data, color) => {
                 style: "itemsFooterSubValue",
               },
             ],
+            [
+              {
+                text: labels.shipping_charges || "Shipping Charges",
+                style: "itemsFooterSubTitle",
+              },
+              {
+                text: data.shippingCharges,
+                style: "itemsFooterSubValue",
+              },
+            ],
             ...(
               taxEntries.length
                 ? taxEntries.map(([taxName, taxValue]) => [
@@ -361,7 +371,7 @@ const borderLandTemplate = (data, color) => {
           vLineWidth: () => 0,
           hLineWidth: (index) => (index === 0 ? 0 : 0.75),
           fillColor: (rowIndex) => {
-            const totalRowIndex = taxEntries.length ? taxEntries.length + 1 : 2;
+            const totalRowIndex = taxEntries.length ? taxEntries.length + 2 : 3;
 
             return rowIndex === totalRowIndex ? palette.accentSoft : null;
           },

@@ -25,6 +25,11 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import ExporterModal from "../../common/ExporterModal";
 import { useTranslation } from "react-i18next";
 
+const getBillGrandTotal = (bill) =>
+  Number(bill?.total || 0) +
+  Number(bill?.totalTax || 0) +
+  Number(bill?.shippingCharges || 0);
+
 export default function PurchaseOrderPage() {
   const { t, i18n } = useTranslation("purchaseOrder");
   const { orgId } = useParams();
@@ -181,9 +186,7 @@ export default function PurchaseOrderPage() {
               heading={t("purchase_order_ui.page.heading")}
               tableData={purchaseOrderItems.map((item) => ({
                 ...item,
-                grandTotal: `${symbol} ${(item.total + item.totalTax).toFixed(
-                  2
-                )}`,
+                grandTotal: `${symbol} ${getBillGrandTotal(item).toFixed(2)}`,
                 date: moment(item.date).format("LL"),
                 partyName: (
                   <ChakraLink

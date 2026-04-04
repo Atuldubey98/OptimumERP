@@ -14,7 +14,11 @@ const downloadPartyTransactionSummary = async (req, res) => {
   };
   const search = req.query.search;
   const party = await Party.findOne({
-    org: req.params.orgId,
+            total: {
+              $sum: {
+                $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+              },
+            },
     _id: req.params.partyId,
   }).exec();
   const transactionTypes = req.query.transactionTypes;
@@ -49,7 +53,11 @@ const downloadPartyTransactionSummary = async (req, res) => {
           {
             $group: {
               _id: null,
-              total: { $sum: { $sum: ["$total", "$totalTax"] } },
+              total: {
+                $sum: {
+                  $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+                },
+              },
               payment: { $sum: "$payment.amount" },
             },
           },
@@ -77,7 +85,11 @@ const downloadPartyTransactionSummary = async (req, res) => {
       type: item?.docModel,
       relatedTo: item?.doc?.party?.name || item.doc?.description || "",
       totalTax: (item.totalTax || 0).toFixed(2),
-      amount: (item.total + item.totalTax).toFixed(2),
+      amount: (
+        Number(item.total || 0) +
+        Number(item.totalTax || 0) +
+        Number(item.shippingCharges || 0)
+      ).toFixed(2),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   };

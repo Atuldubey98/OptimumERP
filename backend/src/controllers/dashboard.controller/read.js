@@ -62,7 +62,7 @@ const read = async (req, res) => {
       model
         .find(entityFilter)
         .sort({ date: -1, createdAt: -1 })
-        .select("name num total totalTax status party date num")
+        .select("name num total totalTax shippingCharges status party date num")
         .populate("party", "name")
         .limit(5)
         .lean()

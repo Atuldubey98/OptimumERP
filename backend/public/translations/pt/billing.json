@@ -67,6 +67,7 @@
     "price": "Preço",
     "total": "Total",
     "subtotal": "Subtotal",
+    "shipping_charges": "Custos de envio",
     "grand_total": "Total Geral",
     "amount_in_words": "Valor por extenso",
     "terms_and_conditions": "Termos e Condições",

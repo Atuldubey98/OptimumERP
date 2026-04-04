@@ -335,6 +335,7 @@
       "product": "Produto",
       "price": "Preço",
       "total": "Total",
+      "shipping_charges": "Custos de envio",
       "total_tax": "Imposto Total",
       "grand_total": "Total Geral",
       "paid": "Pago",

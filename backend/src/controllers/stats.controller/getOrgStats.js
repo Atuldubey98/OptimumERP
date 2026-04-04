@@ -39,6 +39,12 @@ const getOrgStats = async (req, res) => {
         _id: null,
         totalTax: { $sum: "$totalTax" },
         total: { $sum: "$total" },
+        shippingCharges: { $sum: "$shippingCharges" },
+        grandTotal: {
+          $sum: {
+            $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+          },
+        },
         count: { $sum: 1 },
       },
     },
@@ -59,13 +65,18 @@ const getOrgStats = async (req, res) => {
         _id: "$party",
         totalTax: { $sum: "$totalTax" },
         total: { $sum: "$total" },
+        shippingCharges: { $sum: "$shippingCharges" },
+        grandTotal: {
+          $sum: {
+            $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+          },
+        },
         count: { $sum: 1 },
       },
     },
     {
       $sort: {
-        totalTax: -1,
-        total: -1,
+        grandTotal: -1,
       },
     },
     {

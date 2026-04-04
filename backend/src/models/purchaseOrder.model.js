@@ -42,6 +42,11 @@ const purchaseOrderSchema = new Schema(
       default: 0,
       required: true,
     },
+    shippingCharges: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     taxCategories: {
       sgst: {
         type: Number,
