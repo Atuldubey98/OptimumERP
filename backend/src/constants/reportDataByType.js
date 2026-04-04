@@ -1,4 +1,63 @@
 
+const DEFAULT_GSTR_TAX_CATEGORIES = ["cgst", "sgst", "igst"];
+const PREFERRED_TAX_CATEGORY_ORDER = [
+  "cgst",
+  "sgst",
+  "igst",
+  "vat",
+  "cess",
+  "sal",
+  "others",
+  "none",
+];
+
+const formatAmount = (value = 0) => Number(value || 0).toFixed(2);
+
+const formatDate = (value) =>
+  value
+    ? new Date(value).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : "";
+
+const getOrderedTaxCategoryKeys = (items = [], defaultCategories = []) => {
+  const taxCategoryKeys = new Set(defaultCategories);
+  items.forEach((item) => {
+    Object.entries(item.taxCategories || {}).forEach(([key, amount]) => {
+      if (amount !== undefined && amount !== null) taxCategoryKeys.add(key);
+    });
+  });
+  return Array.from(taxCategoryKeys).sort((left, right) => {
+    const leftIndex = PREFERRED_TAX_CATEGORY_ORDER.indexOf(left);
+    const rightIndex = PREFERRED_TAX_CATEGORY_ORDER.indexOf(right);
+    if (leftIndex === -1 && rightIndex === -1) return left.localeCompare(right);
+    if (leftIndex === -1) return 1;
+    if (rightIndex === -1) return -1;
+    return leftIndex - rightIndex;
+  });
+};
+
+const buildGstrHeader = ({ dateLabel, numberLabel, taxCategoryKeys }) => {
+  const header = {
+    gstNo: "Party GST No",
+    partyName: "Party Name",
+    date: dateLabel,
+    num: numberLabel,
+  };
+  taxCategoryKeys.forEach((key) => {
+    header[key] = key.toUpperCase();
+  });
+  header.grandTotal = "Grand Total";
+  return header;
+};
+
+const mapTaxCategoryValues = (taxCategoryKeys, taxCategories = {}) =>
+  Object.fromEntries(
+    taxCategoryKeys.map((key) => [key, formatAmount(taxCategories[key])])
+  );
+
 const reportDataByType = {
   sale: {
     header: {
@@ -19,13 +78,9 @@ const reportDataByType = {
       poNo: item.poNo,
       poDate: item.poDate ? new Date(item.poDate).toLocaleDateString() : "",
       num: item.num,
-      date: new Date(item.date).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }),
-      totalTax: item.totalTax.toFixed(2),
-      grandTotal: (item.totalTax + item.total).toFixed(2),
+      date: formatDate(item.date),
+      totalTax: formatAmount(item.totalTax),
+      grandTotal: formatAmount(item.totalTax + item.total),
       status: (item?.status || "").toLocaleUpperCase(),
     }),
   },
@@ -43,9 +98,9 @@ const reportDataByType = {
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
-      date: new Date(item.date).toLocaleDateString(),
-      totalTax: item.totalTax.toFixed(2),
-      grandTotal: (item.totalTax + item.total).toFixed(2),
+      date: formatDate(item.date),
+      totalTax: formatAmount(item.totalTax),
+      grandTotal: formatAmount(item.totalTax + item.total),
       status: (item?.status || "").toLocaleUpperCase(),
     }),
   },
@@ -62,54 +117,46 @@ const reportDataByType = {
       num: item.doc?.num,
       type: item?.docModel,
       relatedTo: item?.party?.name || item.doc?.description || "",
-      amount: (item.total + item.totalTax).toFixed(2),
+      amount: formatAmount(item.total + item.totalTax),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   },
   gstr1: {
-    header: {
-      gstNo: "Party GST No",
-      partyName: "Party Name",
-      date: "Invoice Date",
-      num: "Invoice No.",
-      cgst: "CGST",
-      sgst: "SGST",
-      igst: "IGST",
-      grandTotal: "Grand Total",
-    },
-    bodyMapper: (item) => ({
+    getTaxCategoryKeys: (items) =>
+      getOrderedTaxCategoryKeys(items, DEFAULT_GSTR_TAX_CATEGORIES),
+    getHeader: ({ taxCategoryKeys }) =>
+      buildGstrHeader({
+        dateLabel: "Invoice Date",
+        numberLabel: "Invoice No.",
+        taxCategoryKeys,
+      }),
+    bodyMapper: (item, { taxCategoryKeys = DEFAULT_GSTR_TAX_CATEGORIES } = {}) => ({
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
-      date: new Date(item.date).toLocaleDateString(),
+      date: formatDate(item.date),
       gstNo: item.party?.gstNo,
-      cgst: item.taxCategories?.cgst?.toFixed(2),
-      sgst: item.taxCategories?.sgst?.toFixed(2),
-      igst: item.taxCategories?.igst?.toFixed(2),
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
+      ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
+      grandTotal: formatAmount(item?.total + item?.totalTax),
     }),
   },
   gstr2: {
-    header: {
-      gstNo: "Party GST No",
-      partyName: "Party Name",
-      num: "Invoice no",
-      date: "Purchase Date",
-      cgst: "IGST",
-      sgst: "IGST",
-      igst: "IGST",
-      grandTotal: "Grand Total",
-    },
-    bodyMapper: (item) => ({
+    getTaxCategoryKeys: (items) =>
+      getOrderedTaxCategoryKeys(items, DEFAULT_GSTR_TAX_CATEGORIES),
+    getHeader: ({ taxCategoryKeys }) =>
+      buildGstrHeader({
+        dateLabel: "Purchase Date",
+        numberLabel: "Purchase No.",
+        taxCategoryKeys,
+      }),
+    bodyMapper: (item, { taxCategoryKeys = DEFAULT_GSTR_TAX_CATEGORIES } = {}) => ({
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
       gstNo: item.party?.gstNo,
-      date: new Date(item.date).toLocaleDateString(),
-      cgst: item.taxCategories?.cgst?.toFixed(2),
-      sgst: item.taxCategories?.sgst?.toFixed(2),
-      igst: item.taxCategories?.igst?.toFixed(2),
-      grandTotal: (item?.total + item?.totalTax).toFixed(2),
+      date: formatDate(item.date),
+      ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
+      grandTotal: formatAmount(item?.total + item?.totalTax),
     }),
   },
 };

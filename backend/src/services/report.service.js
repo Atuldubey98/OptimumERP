@@ -22,8 +22,17 @@ exports.makeReportExcelBuffer = async ({
   const reportMapper = reportTypes[reportType];
   if (!reportMapper) throw new Error(i18.t("common:common.report_type_not_found"));
   const { bodyMapper, header: headerRow } = reportMapper;
-  const header = isReport ? headerRow : selectedHeaderRows;
-  const reportItems = reportData.map(bodyMapper);
+  const taxCategoryKeys = reportMapper.getTaxCategoryKeys
+    ? reportMapper.getTaxCategoryKeys(reportData)
+    : [];
+  const header = isReport
+    ? reportMapper.getHeader
+      ? reportMapper.getHeader({ reportData, taxCategoryKeys })
+      : headerRow
+    : selectedHeaderRows;
+  const reportItems = reportData.map((item) =>
+    bodyMapper(item, { reportData, taxCategoryKeys })
+  );
   const wb = new xl.Workbook();
   const ws = wb.addWorksheet();
   const headerStyle = wb.createStyle({

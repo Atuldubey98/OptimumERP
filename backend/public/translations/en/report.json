@@ -58,6 +58,8 @@
         "gstr": {
           "gst_no": "Party GST No",
           "party_name": "Party Name",
+          "date": "Date",
+          "num": "Document No.",
           "grand_total": "Grand Total",
           "cgst": "CGST",
           "sgst": "SGST",

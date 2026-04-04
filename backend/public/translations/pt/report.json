@@ -58,6 +58,8 @@
         "gstr": {
           "gst_no": "Nº GST do Contato",
           "party_name": "Nome do Contato",
+          "date": "Data",
+          "num": "Nº do Documento",
           "grand_total": "Total Geral",
           "cgst": "CGST",
           "sgst": "SGST",

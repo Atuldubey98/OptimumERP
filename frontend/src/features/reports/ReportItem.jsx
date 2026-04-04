@@ -24,8 +24,48 @@ import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 import moment from "moment";
+
+const DEFAULT_GSTR_TAX_CATEGORIES = ["cgst", "sgst", "igst"];
+const PREFERRED_TAX_CATEGORY_ORDER = [
+  "cgst",
+  "sgst",
+  "igst",
+  "vat",
+  "cess",
+  "sal",
+  "others",
+  "none",
+];
+
+const formatTaxCategoryAmount = (taxCategories, category) =>
+  taxCategories?.[category]?.toFixed(2) || "0.00";
+
+const getOrderedTaxCategoryKeys = (items = [], defaultCategories = []) => {
+  const taxCategoryKeys = new Set(defaultCategories);
+  items.forEach((item) => {
+    Object.entries(item.taxCategories || {}).forEach(([key, amount]) => {
+      if (amount !== undefined && amount !== null) taxCategoryKeys.add(key);
+    });
+  });
+  return Array.from(taxCategoryKeys).sort((left, right) => {
+    const leftIndex = PREFERRED_TAX_CATEGORY_ORDER.indexOf(left);
+    const rightIndex = PREFERRED_TAX_CATEGORY_ORDER.indexOf(right);
+    if (leftIndex === -1 && rightIndex === -1) return left.localeCompare(right);
+    if (leftIndex === -1) return 1;
+    if (rightIndex === -1) return -1;
+    return leftIndex - rightIndex;
+  });
+};
+
+const formatAmount = (value = 0) => Number(value || 0).toFixed(2);
+const formatReportDate = (value) => (value ? moment(value).format("LL") : "");
+
 export default function ReportItem() {
-  const { t } = useTranslation("report");
+  const { t } = useTranslation(["report", "tax"]);
+  const { reportType } = useParams();
+  const { onSetDateFilter, ...response } = useDateFilterFetch({
+    entity: `reports/${reportType}`,
+  });
   const transactionTypes = {
     invoice: t("report_ui.transaction_types.invoice"),
     purchase: t("report_ui.transaction_types.purchase"),
@@ -33,6 +73,42 @@ export default function ReportItem() {
     quotes: t("report_ui.transaction_types.quotes"),
     proforma_invoice: t("report_ui.transaction_types.proforma_invoice"),
     purchase_order: t("report_ui.transaction_types.purchase_order"),
+  };
+  const buildGstrReportConfig = ({ items, dateLabel, numberLabel }) => {
+    const taxCategoryKeys = getOrderedTaxCategoryKeys(
+      items,
+      DEFAULT_GSTR_TAX_CATEGORIES
+    );
+    const header = {
+      gstNo: t("report_ui.table.headers.gstr.gst_no"),
+      partyName: t("report_ui.table.headers.gstr.party_name"),
+      date: dateLabel,
+      num: numberLabel,
+    };
+    taxCategoryKeys.forEach((key) => {
+      header[key] = t(`tax_ui.category_options.${key}`, {
+        ns: "tax",
+        defaultValue: key.toUpperCase(),
+      });
+    });
+    header.grandTotal = t("report_ui.table.headers.gstr.grand_total");
+    return {
+      header,
+      bodyMapper: (item) => ({
+        _id: item._id,
+        partyName: item.party?.name,
+        gstNo: item.party?.gstNo,
+        date: formatReportDate(item.date),
+        num: item.num,
+        ...Object.fromEntries(
+          taxCategoryKeys.map((key) => [
+            key,
+            formatTaxCategoryAmount(item.taxCategories, key),
+          ])
+        ),
+        grandTotal: formatAmount(item?.total + item?.totalTax),
+      }),
+    };
   };
   const reportDataByType = {
     sale: {
@@ -48,9 +124,9 @@ export default function ReportItem() {
         _id: item._id,
         partyName: item.party?.name,
         num: item.num,
-        date: item.date ? moment(item.date).format("LL") : "",
-        totalTax: item.totalTax.toFixed(2),
-        grandTotal: (item.totalTax + item.total).toFixed(2),
+        date: formatReportDate(item.date),
+        totalTax: formatAmount(item.totalTax),
+        grandTotal: formatAmount(item.totalTax + item.total),
         status: (item?.status || "").toLocaleUpperCase(),
       }),
     },
@@ -68,9 +144,9 @@ export default function ReportItem() {
         _id: item._id,
         partyName: item.party?.name,
         num: item.num,
-        date: item.date ? moment(item.date).format("LL") : "",
-        totalTax: item.totalTax.toFixed(2),
-        grandTotal: (item.totalTax + item.total).toFixed(2),
+        date: formatReportDate(item.date),
+        totalTax: formatAmount(item.totalTax),
+        grandTotal: formatAmount(item.totalTax + item.total),
         status: (item?.status || "").toLocaleUpperCase(),
       }),
     },
@@ -86,54 +162,22 @@ export default function ReportItem() {
         _id: item._id,
         num: item.doc?.num,
         type: transactionTypes[item?.docModel],
-        amount: (item.total + item.totalTax).toFixed(2),
+        amount: formatAmount(item.total + item.totalTax),
         relatedTo: item?.party?.name || item.doc?.description || "",
         createdAt: new Date(item.createdAt).toLocaleDateString(),
       }),
     },
-    gstr1: {
-      header: {
-        gstNo: t("report_ui.table.headers.gstr.gst_no"),
-        partyName: t("report_ui.table.headers.gstr.party_name"),
-        grandTotal: t("report_ui.table.headers.gstr.grand_total"),
-        cgst: t("report_ui.table.headers.gstr.cgst"),
-        sgst: t("report_ui.table.headers.gstr.sgst"),
-        igst: t("report_ui.table.headers.gstr.igst"),
-      },
-      bodyMapper: (item) => ({
-        _id: item._id,
-        partyName: item.party?.name,
-        gstNo: item.party?.gstNo,
-        cgst: item.taxCategories.cgst?.toFixed(2),
-        sgst: item.taxCategories.sgst?.toFixed(2),
-        igst: item.taxCategories.igst?.toFixed(2),
-        grandTotal: (item?.total + item?.totalTax).toFixed(2),
-      }),
-    },
-    gstr2: {
-      header: {
-        gstNo: t("report_ui.table.headers.gstr.gst_no"),
-        partyName: t("report_ui.table.headers.gstr.party_name"),
-        grandTotal: t("report_ui.table.headers.gstr.grand_total"),
-        cgst: t("report_ui.table.headers.gstr.cgst"),
-        sgst: t("report_ui.table.headers.gstr.sgst"),
-        igst: t("report_ui.table.headers.gstr.igst"),
-      },
-      bodyMapper: (item) => ({
-        _id: item._id,
-        partyName: item.party?.name,
-        gstNo: item.party?.gstNo,
-        grandTotal: (item?.total + item?.totalTax).toFixed(2),
-        cgst: item.taxCategories.cgst?.toFixed(2),
-        sgst: item.taxCategories.sgst?.toFixed(2),
-        igst: item.taxCategories.igst?.toFixed(2),
-      }),
-    },
+    gstr1: buildGstrReportConfig({
+      items: response.items,
+      dateLabel: t("report_ui.table.headers.gstr.date"),
+      numberLabel: t("report_ui.table.headers.gstr.num"),
+    }),
+    gstr2: buildGstrReportConfig({
+      items: response.items,
+      dateLabel: t("report_ui.table.headers.gstr.date"),
+      numberLabel: t("report_ui.table.headers.gstr.num"),
+    }),
   };
-  const { reportType } = useParams();
-  const { onSetDateFilter, ...response } = useDateFilterFetch({
-    entity: `reports/${reportType}`,
-  });
   const { status, totalCount, totalPages, currentPage } = response;
   const currentReport = reportDataByType[reportType];
   const [partyFilter, setPartyFilter] = useState({ lastDays: 0 });
