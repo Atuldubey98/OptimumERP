@@ -194,34 +194,42 @@ export default function ContactsPage() {
             }}
           />
 
-          <Card borderRadius="2xl">
-            <CardBody>
-              <Stack spacing={5}>
-                <Flex
-                  justify="space-between"
-                  align={{ base: "flex-start", lg: "center" }}
-                  direction={{ base: "column", lg: "row" }}
-                  gap={4}
-                >
-                  <Box maxW="2xl">
-                    <Text fontSize="sm" color={subtleTextColor}>
-                      {t("contact_ui.page.search_contacts")}
-                    </Text>
-                    <Heading mt={1} fontSize={{ base: "2xl", md: "3xl" }} lineHeight="short">
-                      {t("contact_ui.page.heading")}
-                    </Heading>
-                    <Text mt={2} color={subtleTextColor}>
-                      {t("contact_ui.page.subtitle", {
-                        defaultValue:
-                          "Keep customer and internal contact details organized, searchable, and easy to act on.",
-                      })}
-                    </Text>
-                  </Box>
-                  <SimpleGrid columns={{ base: 2, md: 3 }} spacing={3} minW={{ base: "100%", lg: "380px" }}>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"} minH="40svh">
+            <Spinner />
+          </Flex>
+        ) : (
+          <Stack spacing={5}>
+            <Card borderRadius="2xl">
+              <CardBody>
+                <Stack spacing={5}>
+                  <Flex
+                    justifyContent="space-between"
+                    gap={3}
+                    alignItems={{ base: "stretch", md: "center" }}
+                    direction={{ base: "column", md: "row" }}
+                  >
+                    <Box maxW="md" flex={1}>
+                      <SearchItem placeholder={t("contact_ui.page.search_contacts")} />
+                    </Box>
+                    <FilterPopoverWrapper>
+                      <FormControl>
+                        <FormLabel>{t("contact_ui.page.contact_type")}</FormLabel>
+                        <Select
+                          options={allContactTypes}
+                          onChange={({ value }) => navigate(`?type=${value}`)}
+                          value={allContactTypes.find(
+                            (contactType) => contactType.value === type
+                          )}
+                        />
+                      </FormControl>
+                    </FilterPopoverWrapper>
+                  </Flex>
+                  <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
                     <Card borderRadius="xl">
                       <CardBody py={4}>
                         <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="gray.500">
-                          {t("contact_ui.page.heading", { defaultValue: "Contacts" })}
+                          {t("contact_ui.page.total_label", { defaultValue: "Total records" })}
                         </Text>
                         <Heading mt={2} fontSize="2xl">
                           {data.totalCount || 0}
@@ -238,7 +246,7 @@ export default function ContactsPage() {
                         </Heading>
                       </CardBody>
                     </Card>
-                    <Card borderRadius="xl" gridColumn={{ base: "span 2", md: "span 1" }}>
+                    <Card borderRadius="xl">
                       <CardBody py={4}>
                         <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="gray.500">
                           {t("contact_ui.page.contact_type")}
@@ -249,66 +257,20 @@ export default function ContactsPage() {
                       </CardBody>
                     </Card>
                   </SimpleGrid>
-                </Flex>
-              </Stack>
-            </CardBody>
-          </Card>
-
-        {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"} minH="40svh">
-            <Spinner />
-          </Flex>
-        ) : (
-          <Stack spacing={5}>
-            <Card borderRadius="2xl">
-              <CardBody>
-                <Flex
-                  justifyContent="space-between"
-                  gap={3}
-                  alignItems={{ base: "stretch", md: "center" }}
-                  direction={{ base: "column", md: "row" }}
-                >
-                  <Box maxW="md" flex={1}>
-                    <SearchItem placeholder={t("contact_ui.page.search_contacts")} />
-                  </Box>
-                  <FilterPopoverWrapper>
-                    <FormControl>
-                      <FormLabel>{t("contact_ui.page.contact_type")}</FormLabel>
-                      <Select
-                        options={allContactTypes}
-                        onChange={({ value }) => navigate(`?type=${value}`)}
-                        value={allContactTypes.find(
-                          (contactType) => contactType.value === type
-                        )}
-                      />
-                    </FormControl>
-                  </FilterPopoverWrapper>
-                </Flex>
+                </Stack>
               </CardBody>
             </Card>
 
             <Stack spacing={4}>
-              <Flex
-                justify="space-between"
-                align={{ base: "flex-start", md: "center" }}
-                direction={{ base: "column", md: "row" }}
-                gap={2}
-              >
-                <Box>
-                  <Heading fontSize={{ base: "lg", md: "xl" }}>
-                    {t("contact_ui.page.heading")}
-                  </Heading>
-                  <Text color={subtleTextColor} fontSize="sm">
-                    {t("contact_ui.page.results_summary", {
-                      count: data.totalCount || 0,
-                      defaultValue:
-                        (data.totalCount || 0) === 1
-                          ? "1 contact found"
-                          : `${data.totalCount || 0} contacts found`,
-                    })}
-                  </Text>
-                </Box>
-              </Flex>
+              <Text color={subtleTextColor} fontSize="sm">
+                {t("contact_ui.page.results_summary", {
+                  count: data.totalCount || 0,
+                  defaultValue:
+                    (data.totalCount || 0) === 1
+                      ? "1 contact found"
+                      : `${data.totalCount || 0} contacts found`,
+                })}
+              </Text>
 
               {data.items.length ? (
                 <SimpleGrid
