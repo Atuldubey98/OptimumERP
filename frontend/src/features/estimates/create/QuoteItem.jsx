@@ -116,7 +116,7 @@ function QuoteItem({
         mb={4}
       >
         <Text fontSize="sm" fontWeight="medium" color={sectionLabelColor}>
-          {tCommon("common_ui.receipt.product")} {index + 1}
+          Item {index + 1}
         </Text>
         <IconButton
           aria-label="Delete item"

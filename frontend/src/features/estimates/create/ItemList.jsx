@@ -25,7 +25,7 @@ function ItemsList({
   const borderColor = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
   const dividerColor = useColorModeValue("blackAlpha.100", "whiteAlpha.200");
   const rowDividerColor = useColorModeValue("blackAlpha.50", "whiteAlpha.100");
-  const headingColor = useColorModeValue("gray.700", "gray.100");
+  const metaColor = useColorModeValue("gray.500", "gray.400");
   const resolvedAddItemLabelKey =
     addItemLabelKey ||
     (namespace === "invoice"
@@ -55,8 +55,8 @@ function ItemsList({
             py={{ base: 4, md: 4 }}
           >
             <Box>
-              <Text fontSize="lg" fontWeight="semibold" color={headingColor}>
-                Products ({formik.values.items.length})
+              <Text fontSize="sm" fontWeight="medium" color={metaColor}>
+                {formik.values.items.length} item{formik.values.items.length === 1 ? "" : "s"}
               </Text>
             </Box>
             <Button
