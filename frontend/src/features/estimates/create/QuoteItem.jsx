@@ -38,6 +38,17 @@ function QuoteItem({
   const { t } = useTranslation("quote");
   const { t: tCommon } = useTranslation("common");
   const sectionLabelColor = useColorModeValue("gray.500", "gray.400");
+  const selectMenuProps = {
+    menuPortalTarget:
+      typeof document === "undefined" ? undefined : document.body,
+    menuPosition: "fixed",
+    styles: {
+      menuPortal: (base) => ({
+        ...base,
+        zIndex: 1600,
+      }),
+    },
+  };
   const { symbol } = useCurrentOrgCurrency();
   const { handleChange: handleQuoteItemChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -188,6 +199,7 @@ function QuoteItem({
                 formik.setFieldValue(`items[${index}].um`, value);
               }}
               options={umOptions}
+              {...selectMenuProps}
             />
             <FormErrorMessage>{errors.um}</FormErrorMessage>
           </FormControl>
@@ -206,6 +218,7 @@ function QuoteItem({
                 formik.setFieldValue(`items[${index}].tax`, value);
               }}
               options={taxOptions}
+              {...selectMenuProps}
             />
             <FormErrorMessage>{errors.tax}</FormErrorMessage>
           </FormControl>

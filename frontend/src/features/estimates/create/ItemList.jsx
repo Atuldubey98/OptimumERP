@@ -44,7 +44,7 @@ function ItemsList({
           borderColor={borderColor}
           borderRadius="xl"
           boxShadow="sm"
-          overflow="hidden"
+          overflow="visible"
         >
           <Flex
             align={{ base: "stretch", md: "center" }}
