@@ -183,7 +183,7 @@ export default function ContactsPage() {
 
   return (
     <MainLayout>
-      <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
+      <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
         <Stack spacing={{ base: 5, md: 6 }}>
           <HeadingButtons
             isAddDisabled={data.reachedLimit}

@@ -123,7 +123,7 @@ export default function PartysPage() {
 
   return (
     <MainLayout>
-      <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
+      <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"} minH="40svh">
             <Spinner size={"md"} />
