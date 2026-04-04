@@ -171,7 +171,8 @@ export default function DashboardPage() {
   });
   return (
     <MainLayout>
-      <Stack spacing={{ base: 6, md: 8 }}>
+     <Box mx={4}>
+       <Stack spacing={{ base: 6, md: 8 }}>
           <DashboardPageHeader
             greetingPrefix={t("dashboard_ui.greeting.hi", {
               defaultValue: "Hi",
@@ -238,6 +239,7 @@ export default function DashboardPage() {
           </Stack>
         </Stack>
       <GuideTourModal isOpen={isGuideTourOpen} onClose={onCloseGuidedTour} />
+     </Box>
     </MainLayout>
   );
 }
