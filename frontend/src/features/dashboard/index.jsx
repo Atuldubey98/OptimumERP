@@ -1,10 +1,8 @@
 import {
   Box,
-  Flex,
-  Heading,
   Skeleton,
+  SimpleGrid,
   Stack,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
@@ -27,6 +25,7 @@ import { statusList } from "../estimates/create/data";
 import Status from "../estimates/list/Status";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
+import DashboardPageHeader from "./DashboardPageHeader";
 import GuideTourModal from "./GuideTourModal";
 import { GoPeople } from "react-icons/go";
 import { GiExpense } from "react-icons/gi";
@@ -143,38 +142,34 @@ export default function DashboardPage() {
   });
   return (
     <MainLayout>
-      <Box p={5}>
-        <Heading fontSize={"xl"}>
-          {t("dashboard_ui.greeting")} <strong>{auth?.user?.name}</strong>
-        </Heading>
-        <Text>{t("dashboard_ui.overview_subtitle")}</Text>
-        <Stack marginBlock={2} spacing={3}>
-          <Flex justifyContent={"flex-end"} alignItems={"center"}>
-            <Select
-              options={periods}
-              onChange={({ params, value }) => {
-                setStatPeriod({
-                  startDate: moment()
-                    .subtract(...params)
-                    .format("YYYY-MM-DD"),
-                  endDate: moment().format("YYYY-MM-DD"),
-                });
-                setCurrentPeriod(value);
-              }}
-              value={periods.find((period) => period.value === currentPeriod)}
-            />
-          </Flex>
-          <Flex
-            w={"100%"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            wrap={"wrap"}
-            gap={5}
-          >
+      <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
+        <Stack spacing={{ base: 6, md: 8 }}>
+          <DashboardPageHeader
+            greeting={t("dashboard_ui.greeting")}
+            userName={auth?.user?.name}
+            subtitle={t("dashboard_ui.overview_subtitle")}
+            actions={
+              <Select
+                options={periods}
+                onChange={({ params, value }) => {
+                  setStatPeriod({
+                    startDate: moment()
+                      .subtract(...params)
+                      .format("YYYY-MM-DD"),
+                    endDate: moment().format("YYYY-MM-DD"),
+                  });
+                  setCurrentPeriod(value);
+                }}
+                value={periods.find((period) => period.value === currentPeriod)}
+              />
+            }
+          />
+
+          <SimpleGrid columns={{ base: 1, md: 2, xl: 5 }} spacing={5}>
             {Object.entries(dashboard.counts).map(([entity, count], index) => {
               const { Icon, label } = dashboardEntityConfiguration[entity];
               return (
-                <Skeleton maxW={350} w={"100%"} isLoaded={!loading} key={index}>
+                <Skeleton w="100%" isLoaded={!loading} key={index} borderRadius="2xl">
                   <Dashcard
                     period={currentPeriodLabel}
                     dashType={label}
@@ -184,13 +179,14 @@ export default function DashboardPage() {
                 </Skeleton>
               );
             })}
-          </Flex>
-          <Stack>
+          </SimpleGrid>
+
+          <Stack spacing={5}>
             {Object.entries(dashboard.tables).map(([entity, items], index) => {
               const { tableHeading, statusConfig, route } =
                 dashboardEntityConfiguration[entity];
               return (
-                <Skeleton key={index} isLoaded={!loading}>
+                <Skeleton key={index} isLoaded={!loading} borderRadius="2xl">
                   <DashboardTable
                     heading={tableHeading}
                     tableRows={items.map(

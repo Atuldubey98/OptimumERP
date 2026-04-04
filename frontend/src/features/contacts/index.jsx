@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LuContact2 } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
@@ -37,6 +37,7 @@ export default function ContactsPage() {
   const { orgId } = useParams();
   const query = useQuery();
   const type = query.get("type") || "";
+  const action = query.get("action") || "";
   const { status: propertyStatus, value: contactTypes = [] } =
     useProperty("CONTACT_TYPES");
   const { data, fetchFn, status } = usePaginatedFetch({
@@ -140,6 +141,24 @@ export default function ContactsPage() {
     }
   };
   const navigate = useNavigate();
+  useEffect(() => {
+    if (action !== "create") return;
+
+    formik.resetForm({ values: defaultContact });
+    openContactForm();
+
+    const nextQuery = new URLSearchParams(query.toString());
+    nextQuery.delete("action");
+    const nextSearch = nextQuery.toString();
+    navigate(
+      {
+        pathname: `/${orgId}/contacts`,
+        search: nextSearch ? `?${nextSearch}` : "",
+      },
+      { replace: true }
+    );
+  }, [action, formik, navigate, openContactForm, orgId, query]);
+
   const allContactTypes = [
     {
       value: "",

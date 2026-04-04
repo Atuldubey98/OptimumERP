@@ -1,10 +1,11 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
   Flex,
   Heading,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -14,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-import { Link, useParams } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa6";
 export default function DashboardTable({
   heading,
@@ -24,29 +24,28 @@ export default function DashboardTable({
 }) {
   const { t } = useTranslation("dashboard");
   const { symbol } = useCurrentOrgCurrency();
-  const { orgId } = useParams();
   return (
-    <Box borderRadius={"md"}>
+    <Card borderRadius="2xl" overflow="hidden">
+      <CardBody px={{ base: 4, md: 6 }} py={{ base: 4, md: 5 }}>
       <Flex
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        paddingBlock={5}
+        justifyContent="space-between"
+        alignItems={{ base: "flex-start", md: "center" }}
+        direction={{ base: "column", md: "row" }}
+        gap={3}
+        mb={4}
       >
-        <Heading fontSize={"xl"}>{heading}</Heading>
+        <Heading fontSize={{ base: "lg", md: "xl" }}>{heading}</Heading>
         <Button
           rightIcon={<FaChevronRight />}
-          size={"xs"}
-          variant={"ghost"}
+          size="sm"
+          variant="ghost"
           onClick={onViewMore}
         >
           {t("dashboard_ui.tables.view_more")}
         </Button>
       </Flex>
       <TableContainer>
-        <Table size={"sm"} variant="simple">
-          {tableRows.length ? null : (
-            <TableCaption>{t("dashboard_ui.tables.nothing_to_show")}</TableCaption>
-          )}
+        <Table size="sm" variant="simple">
           <Thead>
             <Tr>
               {tableHeads.map((tableHead) => (
@@ -55,7 +54,7 @@ export default function DashboardTable({
             </Tr>
           </Thead>
           <Tbody>
-            {tableRows.map((tableRow) => (
+            {tableRows.length ? tableRows.map((tableRow) => (
               <Tr key={tableRow._id}>
                 <Td>{tableRow.num}</Td>
                 <Td>{tableRow.partyName}</Td>
@@ -65,10 +64,19 @@ export default function DashboardTable({
                 <Td>{tableRow.status}</Td>
                 <Td>{tableRow.date}</Td>
               </Tr>
-            ))}
+            )) : (
+              <Tr>
+                <Td colSpan={tableHeads.length} py={10}>
+                  <Box textAlign="center" color="gray.500">
+                    {t("dashboard_ui.tables.nothing_to_show")}
+                  </Box>
+                </Td>
+              </Tr>
+            )}
           </Tbody>
         </Table>
       </TableContainer>
-    </Box>
+      </CardBody>
+    </Card>
   );
 }

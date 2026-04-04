@@ -1,9 +1,7 @@
 import {
+  Box,
   Button,
-  Card,
-  CardBody,
-  Flex,
-  Grid,
+  Divider,
   Input,
   InputGroup,
   InputLeftElement,
@@ -14,9 +12,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
   Stack,
   Text,
-  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -33,6 +31,7 @@ import PartyFormDrawer from "../parties/PartyFormDrawer";
 import ProductFormDrawer from "../products/ProductFormDrawer";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { TiContacts } from "react-icons/ti";
+import QuickAccessActionCard from "./QuickAccessActionCard";
 export default function QuickAccessModal({ isOpen, onClose }) {
   const { t } = useTranslation("common");
   const navigate = useNavigate();
@@ -40,16 +39,25 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   const quickAccessLabels = [
     {
       label: t("common_ui.quick_access.labels.parties"),
+      description: t("common_ui.quick_access.descriptions.parties", {
+        defaultValue: "Review your customers, vendors, and business relationships",
+      }),
       onClick: () => navigate(`/${orgId}/parties`),
       icon: <GoPeople size={50} />,
     },
     {
       label: t("common_ui.quick_access.labels.create_party"),
+      description: t("common_ui.quick_access.descriptions.create_party", {
+        defaultValue: "Add a new party and start tracking activity right away",
+      }),
       onClick: () => openPartyFormDrawer(),
       icon: <IoCreateOutline size={50} />,
     },
     {
       label: t("common_ui.quick_access.labels.invoices"),
+      description: t("common_ui.quick_access.descriptions.invoices", {
+        defaultValue: "Browse issued invoices and follow their current status",
+      }),
       onClick: () => {
         navigate(`/${orgId}/invoices`);
       },
@@ -57,6 +65,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.create_invoice"),
+      description: t("common_ui.quick_access.descriptions.create_invoice", {
+        defaultValue: "Prepare a fresh invoice for billing in just a few steps",
+      }),
       onClick: () => {
         navigate(`/${orgId}/invoices/create`);
       },
@@ -64,6 +75,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.estimates"),
+      description: t("common_ui.quick_access.descriptions.estimates", {
+        defaultValue: "Review quotations and keep upcoming deals moving",
+      }),
       onClick: () => {
         navigate(`/${orgId}/estimates`);
       },
@@ -71,6 +85,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.purchase"),
+      description: t("common_ui.quick_access.descriptions.purchase", {
+        defaultValue: "Track purchase bills and monitor supplier activity",
+      }),
       onClick: () => {
         navigate(`/${orgId}/purchases`);
       },
@@ -78,6 +95,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.create_purchase"),
+      description: t("common_ui.quick_access.descriptions.create_purchase", {
+        defaultValue: "Record a new purchase and keep expense records current",
+      }),
       onClick: () => {
         navigate(`/${orgId}/purchases/create`);
       },
@@ -85,6 +105,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.create_estimate"),
+      description: t("common_ui.quick_access.descriptions.create_estimate", {
+        defaultValue: "Draft a new estimate before converting it into a sale",
+      }),
       onClick: () => {
         navigate(`/${orgId}/estimates/create`);
       },
@@ -92,6 +115,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.reports"),
+      description: t("common_ui.quick_access.descriptions.reports", {
+        defaultValue: "Open reports to inspect performance and export data quickly",
+      }),
       onClick: () => {
         navigate(`/${orgId}/reports/sale`);
       },
@@ -99,6 +125,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.products"),
+      description: t("common_ui.quick_access.descriptions.products", {
+        defaultValue: "Manage your catalog, pricing, and sellable items",
+      }),
       onClick: () => {
         navigate(`/${orgId}/products`);
       },
@@ -106,6 +135,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.create_product"),
+      description: t("common_ui.quick_access.descriptions.create_product", {
+        defaultValue: "Add a product to your catalog without leaving the modal",
+      }),
       onClick: () => {
         openProductForm();
       },
@@ -113,11 +145,17 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.expenses"),
+      description: t("common_ui.quick_access.descriptions.expenses", {
+        defaultValue: "View expenses and keep operational costs under control",
+      }),
       onClick: () => navigate(`/${orgId}/expenses`),
       icon: <GiExpense size={50} />,
     },
     {
       label: t("common_ui.quick_access.labels.proforma_invoices"),
+      description: t("common_ui.quick_access.descriptions.proforma_invoices", {
+        defaultValue: "Check proforma invoices before they turn into billable sales",
+      }),
       onClick: () => {
         navigate(`/${orgId}/proformaInvoices`);
       },
@@ -125,6 +163,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.purchase_orders"),
+      description: t("common_ui.quick_access.descriptions.purchase_orders", {
+        defaultValue: "Review purchase orders and stay ahead of procurement work",
+      }),
       onClick: () => {
         navigate(`/${orgId}/purchaseOrders`);
       },
@@ -132,6 +173,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.create_po"),
+      description: t("common_ui.quick_access.descriptions.create_po", {
+        defaultValue: "Start a purchase order for upcoming supplier requests",
+      }),
       onClick: () => {
         navigate(`/${orgId}/purchaseOrders/create`);
       },
@@ -139,6 +183,9 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.create_pro_invoice"),
+      description: t("common_ui.quick_access.descriptions.create_pro_invoice", {
+        defaultValue: "Create a proforma invoice to share pricing before billing",
+      }),
       onClick: () => {
         navigate(`/${orgId}/proformaInvoices/create`);
       },
@@ -146,14 +193,28 @@ export default function QuickAccessModal({ isOpen, onClose }) {
     },
     {
       label: t("common_ui.quick_access.labels.contacts"),
+      description: t("common_ui.quick_access.descriptions.contacts", {
+        defaultValue: "Access contact records and keep communication details tidy",
+      }),
       onClick: () => {
         navigate(`/${orgId}/contacts`);
       },
       icon: <TiContacts size={50} />,
     },
+    {
+      label: t("common_ui.quick_access.labels.create_contact", {
+        defaultValue: "Create contact",
+      }),
+      description: t("common_ui.quick_access.descriptions.create_contact", {
+        defaultValue: "Capture a new contact without leaving your current workflow",
+      }),
+      onClick: () => {
+        navigate(`/${orgId}/contacts?action=create`);
+      },
+      icon: <IoCreateOutline size={50} />,
+    },
   ];
   const [search, setSearch] = useState("");
-  const hoverBg = useColorModeValue("gray.200", "gray.600");
   const {
     isOpen: isPartyFormOpen,
     onOpen: openPartyFormDrawer,
@@ -166,6 +227,11 @@ export default function QuickAccessModal({ isOpen, onClose }) {
   } = useDisclosure();
   const { formik } = usePartyForm(undefined, closePartyFormDrawer);
   const { formik: productFormik } = useProductForm(undefined, closeProductForm);
+  const filteredQuickAccessLabels = quickAccessLabels.filter(
+    (quickAccess) =>
+      quickAccess.label.toLowerCase().includes(search.toLowerCase()) || !search
+  );
+
   return (
     <Modal
       scrollBehavior="inside"
@@ -174,14 +240,21 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       isOpen={isOpen}
       onClose={onClose}
     >
-      <ModalOverlay />
-      <ModalContent>
+      <ModalOverlay bg="blackAlpha.400" />
+      <ModalContent borderRadius="2xl" overflow="hidden">
         <ModalHeader>
-          <Stack spacing={3}>
-            <Text>{t("common_ui.quick_access.title")}</Text>
+          <Stack spacing={4}>
+            <Box>
+              <Text fontSize="xl" fontWeight="semibold">
+                {t("common_ui.quick_access.title")}
+              </Text>
+              <Text fontSize="sm" color="gray.500" mt={1}>
+                {t("common_ui.search.placeholder")}
+              </Text>
+            </Box>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
-                <IoSearchOutline color="blue.300" />
+                <IoSearchOutline color="currentColor" />
               </InputLeftElement>
               <Input
                 value={search}
@@ -194,47 +267,39 @@ export default function QuickAccessModal({ isOpen, onClose }) {
           </Stack>
         </ModalHeader>
         <ModalCloseButton />
+        <Divider />
         <ModalBody>
-          <Flex justifyContent={"center"} width={"100%"} alignItems={"center"}>
-            <Grid
-              templateColumns={{
-                sm: "1fr",
-                md: "repeat(2, 1fr)",
-                lg: "repeat(3, 1fr)",
-              }}
-              gap={2}
-            >
-              {quickAccessLabels
-                .filter(
-                  (quickAccess) =>
-                    quickAccess.label
-                      .toLowerCase()
-                      .includes(search.toLowerCase()) || !search
-                )
-                .map((quickAccess) => (
-                  <Card
-                    onClick={quickAccess.onClick}
-                    _hover={{
-                      bg: hoverBg,
-                    }}
-                    w={"100%"}
-                    cursor={"pointer"}
-                    key={quickAccess.label}
-                  >
-                    <CardBody>
-                      <Flex justifyContent={"center"} alignItems={"center"}>
-                        {quickAccess.icon}
-                      </Flex>
-                      <Stack maxH={450} overflowY={"auto"} mt="6" spacing="3">
-                        <Text textAlign={"center"} size="md">
-                          {quickAccess.label}
-                        </Text>
-                      </Stack>
-                    </CardBody>
-                  </Card>
-                ))}
-            </Grid>
-          </Flex>
+          <Stack spacing={4} py={1}>
+            <Text fontSize="sm" color="gray.500">
+              {t("common_ui.quick_access.result_count", {
+                count: filteredQuickAccessLabels.length,
+                defaultValue:
+                  filteredQuickAccessLabels.length === 1
+                    ? "1 shortcut available"
+                    : `${filteredQuickAccessLabels.length} shortcuts available`,
+              })}
+            </Text>
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+              {filteredQuickAccessLabels.map((quickAccess) => (
+                <QuickAccessActionCard
+                  key={quickAccess.label}
+                  icon={quickAccess.icon}
+                  label={quickAccess.label}
+                  description={quickAccess.description}
+                  onClick={quickAccess.onClick}
+                />
+              ))}
+            </SimpleGrid>
+            {filteredQuickAccessLabels.length ? null : (
+              <Box py={10} textAlign="center">
+                <Text color="gray.500">
+                  {t("common_ui.tables.nothing_to_show", {
+                    defaultValue: "Nothing to show",
+                  })}
+                </Text>
+              </Box>
+            )}
+          </Stack>
         </ModalBody>
 
         <ModalFooter>
