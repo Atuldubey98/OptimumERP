@@ -1,0 +1,28 @@
+
+services:
+  backend:
+    build: ./backend
+    container_name: mern_backend
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  backend-cron:
+    build: ./backend
+    container_name: mern_backend_cron
+    env_file:
+      - .env
+    command: ["npm", "run", "cron"]
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: mern_frontend
+    ports:
+      - "5173:3000"
+    restart: unless-stopped
