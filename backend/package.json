@@ -37,10 +37,12 @@
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.0.3",
+    "openai": "^6.33.0",
     "pdfmake": "^0.2.18",
     "qrcode": "^1.5.3",
     "to-words": "^4.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "lorem-ipsum": "^2.0.8"

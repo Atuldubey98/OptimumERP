@@ -1,12 +1,17 @@
 import {
   Box,
-  Link as ChakraLink,
+  Button,
   Flex,
+  IconButton,
+  Link as ChakraLink,
+  Show,
   Spinner,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { MdAutoAwesome } from "react-icons/md";
 import { isAxiosError } from "axios";
 import moment from "moment";
 import { useState } from "react";
@@ -24,6 +29,7 @@ import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import RecordPaymentModal from "./RecordPaymentModal";
 import TableDateFilter from "./TableDateFilter";
+import GenerateInvoiceModal from "./GenerateInvoiceModal";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
@@ -107,6 +113,12 @@ export default function InvoicesPage() {
     }
   };
   const deleting = invoiceStatus === "deleting";
+  const {
+    isOpen: isGenerateModalOpen,
+    onOpen: onOpenGenerateModal,
+    onClose: onCloseGenerateModal,
+  } = useDisclosure();
+
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
@@ -160,6 +172,30 @@ export default function InvoicesPage() {
             }}
             isAddDisabled={reachedLimit}
             heading={t("invoice_ui.page.heading")}
+            extraActions={
+              <Tooltip label="Generate invoice with AI">
+                <span>
+                  <Show above="md">
+                    <Button
+                      leftIcon={<MdAutoAwesome />}
+                      size="sm"
+                      colorScheme="purple"
+                      onClick={onOpenGenerateModal}
+                    >
+                      Generate
+                    </Button>
+                  </Show>
+                  <Show below="md">
+                    <IconButton
+                      icon={<MdAutoAwesome />}
+                      size="sm"
+                      colorScheme="purple"
+                      onClick={onOpenGenerateModal}
+                    />
+                  </Show>
+                </span>
+              </Tooltip>
+            }
             tableData={invoices.map(invoiceTableMapper)}
             caption={`${t("invoice_ui.page.total_found")} : ${totalCount}`}
             operations={invoices.map((invoice) => (
@@ -199,6 +235,10 @@ export default function InvoicesPage() {
             onAddNewItem={onClickAddNewInvoice}
           />
         )}
+        <GenerateInvoiceModal
+          isOpen={isGenerateModalOpen}
+          onClose={onCloseGenerateModal}
+        />
         {invoice ? (
           <BillModal
             bill={invoice}

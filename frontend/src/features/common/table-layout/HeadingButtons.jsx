@@ -11,6 +11,7 @@ export default function HeadingButtons({
   heading,
   showExport,
   isAddDisabled,
+  extraActions,
 }) {
   const { t } = useTranslation("common");
 
@@ -18,6 +19,7 @@ export default function HeadingButtons({
     <Flex justifyContent={"space-between"} alignItems={"center"}>
       <BackButtonHeader heading={heading} />
       <ButtonGroup gap="4">
+        {extraActions || null}
         {showExport ? (
           <Tooltip label={t("common_ui.actions.export")}>
             <span>

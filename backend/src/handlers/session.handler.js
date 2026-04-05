@@ -12,8 +12,10 @@ const sessionOptions = {
   }),
 };
 
+const sessionMiddleware = session(sessionOptions);
+
 const sessionHandler = Router();
 
-sessionHandler.use(session(sessionOptions));
+sessionHandler.use(sessionMiddleware);
 
-module.exports = sessionHandler;
+module.exports = { sessionHandler, sessionMiddleware };

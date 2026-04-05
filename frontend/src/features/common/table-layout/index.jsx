@@ -21,6 +21,7 @@ function TableLayoutMemoized({
   isAddDisabled,
   showExport,
   operations,
+  extraActions,
 }) {
   const tableRows = tableData.map((row) => {
     const tableRow = {};
@@ -38,6 +39,7 @@ function TableLayoutMemoized({
         isAddDisabled={isAddDisabled}
         onAddNewItem={onAddNewItem}
         showExport={showExport}
+        extraActions={extraActions}
       />
       {filter}
       <TableContainer>
