@@ -16,7 +16,7 @@ const buzyTemplate = (data, color) => {
 
   return {
     pageSize: "A4",
-    pageMargins: [24, 24, 24, 30],
+    pageMargins: [20, 20, 20, 22],
     footer: (currentPage, pageCount) => ({
       margin: [24, 0, 24, 10],
       columns: [
@@ -43,7 +43,7 @@ const buzyTemplate = (data, color) => {
             : (labels.tax_invoice || "TAX INVOICE").toUpperCase(),
         style: "mainTitle",
         alignment: "center",
-        margin: [0, 2, 0, 14],
+        margin: [0, 0, 0, 8],
       },
 
       // Header: left = company, right = invoice meta
@@ -165,7 +165,7 @@ const buzyTemplate = (data, color) => {
         columnGap: 18,
       },
 
-      { text: "", margin: [0, 0, 0, 8] },
+      { text: "", margin: [0, 0, 0, 4] },
 
       // Bill To and Billing meta
       {
@@ -237,7 +237,7 @@ const buzyTemplate = (data, color) => {
           },
         ],
         columnGap: 24,
-        margin: [0, 0, 0, 16],
+        margin: [0, 0, 0, 10],
       },
 
       // Items table
@@ -273,7 +273,13 @@ const buzyTemplate = (data, color) => {
                     noWrap: true,
                     alignment: "right",
                   },
-                  { text: item.gst || "", alignment: "right" },
+                  {
+                    stack: [
+                      { text: item.taxAmount || "", style: "taxAmount", noWrap: true },
+                      { text: item.gst ? `(${item.gst})` : "", style: "taxName", noWrap: true },
+                    ],
+                    alignment: "right",
+                  },
                   {
                     text: item.total != null ? item.total : "",
                     noWrap: true,
@@ -304,92 +310,19 @@ const buzyTemplate = (data, color) => {
           vLineColor: () => palette.border,
           hLineWidth: (index) => (index === 0 ? 0 : 0.75),
           vLineWidth: () => 0.75,
-          paddingLeft: () => 6,
-          paddingRight: () => 6,
-          paddingTop: () => 7,
-          paddingBottom: () => 7,
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 5,
+          paddingBottom: () => 5,
         },
         margin: [0, 4, 0, 0],
       },
 
-      // Totals and tax breakdown (right aligned)
-      {
-        columns: [
-          { width: "*", text: "" },
-          {
-            width: 260,
-            table: {
-              widths: ["*", "auto"],
-              body: [
-                [
-                  { text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" },
-                  {
-                    text: data && data.total != null ? data.total : "₹ 0.00",
-                    style: "summaryValue",
-                  },
-                ],
-                [
-                  {
-                    text: `${labels.shipping_charges || "Shipping Charges"}:`,
-                    style: "summaryLabel",
-                  },
-                  {
-                    text:
-                      data && data.shippingCharges != null
-                        ? data.shippingCharges
-                        : "₹ 0.00",
-                    style: "summaryValue",
-                  },
-                ],
-                ...taxEntries.map(([taxName, taxValue]) => [
-                  { text: `${taxName.toString().toUpperCase()}:`, style: "summaryLabel" },
-                  { text: taxValue, style: "summaryValue" },
-                ]),
-                [
-                  { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
-                  {
-                    text:
-                      data && data.grandTotal != null
-                        ? data.grandTotal
-                        : "₹ 0.00",
-                    style: "summaryTotalValue",
-                  },
-                ],
-                [
-                  { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
-                  {
-                    text: data && data.amountToWords ? data.amountToWords : "",
-                    style: "summaryValue",
-                  },
-                ],
-              ],
-            },
-            layout: {
-              hLineColor: () => palette.border,
-              vLineWidth: () => 0,
-              hLineWidth: (index) => (index === 0 ? 0 : 0.75),
-              fillColor: (rowIndex) => (rowIndex === taxEntries.length + 1 ? palette.accentSoft : null),
-              paddingLeft: () => 0,
-              paddingRight: () => 0,
-              paddingTop: () => 6,
-              paddingBottom: () => 6,
-            },
-            margin: [0, 14, 0, 14],
-          },
-        ],
-      },
-
-      // Terms and Bank details
+      // Bank + Totals
       {
         columns: [
           {
             width: "*",
-            stack: [
-              {},
-            ],
-          },
-          {
-            width: 260,
             stack: [
               data && data.bank
                 ? { text: labels.company_bank_details || "Company Bank details", style: "sectionHeader" }
@@ -424,24 +357,80 @@ const buzyTemplate = (data, color) => {
                 ? {
                     stack: [
                       { text: labels.upi_qr_code || "UPI QR Code", style: "sectionHeader" },
-                      { image: data.upiQr, width: 96, margin: [0, 4, 0, 0] },
+                      { image: data.upiQr, width: 72, margin: [0, 4, 0, 0] },
                     ],
-                    alignment: "right",
-                    margin: [0, data && data.bank ? 12 : 0, 0, 0],
+                    margin: [0, data && data.bank ? 8 : 0, 0, 0],
                   }
                 : {},
             ],
           },
+          {
+            width: 235,
+            table: {
+              widths: ["*", "auto"],
+              body: [
+                [
+                  { text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" },
+                  {
+                    text: data && data.total != null ? data.total : "₹ 0.00",
+                    style: "summaryValue",
+                  },
+                ],
+                ...(data.rawShippingCharges ? [[
+                  {
+                    text: `${labels.shipping_charges || "Shipping Charges"}:`,
+                    style: "summaryLabel",
+                  },
+                  {
+                    text: data.shippingCharges,
+                    style: "summaryValue",
+                  },
+                ]] : []),
+                ...taxEntries.map(([taxName, taxValue]) => [
+                  { text: `${taxName.toString().toUpperCase()}:`, style: "summaryLabel" },
+                  { text: taxValue, style: "summaryValue" },
+                ]),
+                [
+                  { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
+                  {
+                    text:
+                      data && data.grandTotal != null
+                        ? data.grandTotal
+                        : "₹ 0.00",
+                    style: "summaryTotalValue",
+                  },
+                ],
+                [
+                  { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
+                  {
+                    text: data && data.amountToWords ? data.amountToWords : "",
+                    style: "summaryValue",
+                  },
+                ],
+              ],
+            },
+            layout: {
+              hLineColor: () => palette.border,
+              vLineWidth: () => 0,
+              hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+              paddingLeft: () => 0,
+              paddingRight: () => 0,
+              paddingTop: () => 4,
+              paddingBottom: () => 4,
+            },
+            margin: [0, 4, 0, 0],
+          },
         ],
-        margin: [0, 8, 0, 8],
+        columnGap: 16,
+        margin: [0, 10, 0, 12],
       },
 
       // Authorized Signatory (kept generic, no personal signature lines)
       {
-        margin: [0, 12, 0, 0],
+        margin: [0, 8, 0, 0],
         unbreakable: true,
         table: {
-          widths: ["*", 200],
+          widths: ["*", 120],
           body: [
             [
               {
@@ -458,11 +447,11 @@ const buzyTemplate = (data, color) => {
                     text: `For ${data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : ""}`,
                     style: "signatoryBoxCompany",
                     alignment: "center",
-                    margin: [0, 0, 0, 24],
+                    margin: [0, 0, 0, 16],
                   },
                   {
                     text: " ",
-                    margin: [0, 22, 0, 22],
+                    margin: [0, 14, 0, 14],
                   },
                   {
                     text: labels.authorized_signatory || "Authorized Signatory",
@@ -479,48 +468,50 @@ const buzyTemplate = (data, color) => {
           vLineColor: () => palette.border,
           hLineWidth: (index, node) => (index === 0 || index === node.table.body.length ? 0.75 : 0),
           vLineWidth: (index) => (index === 1 || index === 2 ? 0.75 : 0),
-          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 10),
-          paddingRight: (columnIndex) => (columnIndex === 0 ? 12 : 10),
-          paddingTop: () => 10,
-          paddingBottom: () => 10,
+          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 8),
+          paddingRight: (columnIndex) => (columnIndex === 0 ? 10 : 8),
+          paddingTop: () => 7,
+          paddingBottom: () => 7,
         },
       },
     ],
 
     styles: {
       mainTitle: {
-        fontSize: 14.4,
+        fontSize: 12,
         bold: true,
         color: palette.accent,
-        characterSpacing: 1.4,
+        characterSpacing: 1.2,
       },
-      title: { fontSize: 14.4, bold: true, color: palette.accent },
-      header: { fontSize: 11.7, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
-      subheader: { fontSize: 9, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
+      title: { fontSize: 12, bold: true, color: palette.accent },
+      header: { fontSize: 10, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
+      subheader: { fontSize: 7.5, bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
       sectionHeader: {
-        fontSize: 9,
+        fontSize: 7.5,
         bold: true,
-        margin: [0, 6, 0, 6],
+        margin: [0, 4, 0, 4],
         color: palette.accent,
       },
-      inline: { fontSize: 8.1, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
-      inlineBold: { fontSize: 8.1, bold: true, margin: [0, 2, 0, 2], color: palette.text, lineHeight: 1.35 },
-      tableHeader: { bold: true, color: "white", fontSize: 7.7 },
-      metaLabel: { fontSize: 8.1, color: palette.muted, bold: true },
-      metaValue: { fontSize: 8.1, bold: true, color: palette.text },
+      inline: { fontSize: 7, margin: [0, 1, 0, 1], color: palette.text, lineHeight: 1.3 },
+      inlineBold: { fontSize: 7, bold: true, margin: [0, 1, 0, 1], color: palette.text, lineHeight: 1.3 },
+      tableHeader: { bold: true, color: "white", fontSize: 7 },
+      metaLabel: { fontSize: 7, color: palette.muted, bold: true },
+      metaValue: { fontSize: 7, bold: true, color: palette.text },
       summaryLabel: { bold: true, color: palette.text },
       summaryValue: { color: palette.text, alignment: "right" },
-      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 9 },
-      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 9 },
-      termsText: { fontSize: 8.1, color: palette.text, lineHeight: 1.35 },
-      bankLabel: { fontSize: 8.1, color: palette.muted, bold: true, margin: [0, 2, 0, 2] },
-      bankValue: { fontSize: 8.1, color: palette.text, margin: [0, 2, 0, 2] },
-      signatoryBoxCompany: { fontSize: 8.1, bold: true, color: palette.text },
-      signatoryBoxLabel: { fontSize: 8.1, bold: true, color: palette.text },
+      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 8 },
+      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8 },
+      termsText: { fontSize: 7, color: palette.text, lineHeight: 1.3 },
+      taxName: { color: palette.muted, fontSize: 6.5 },
+      taxAmount: { bold: true, color: palette.text, fontSize: 6.5 },
+      bankLabel: { fontSize: 7, color: palette.muted, bold: true, margin: [0, 1, 0, 1] },
+      bankValue: { fontSize: 7, color: palette.text, margin: [0, 1, 0, 1] },
+      signatoryBoxCompany: { fontSize: 7, bold: true, color: palette.text },
+      signatoryBoxLabel: { fontSize: 7, bold: true, color: palette.text },
     },
 
     defaultStyle: {
-      fontSize: 8.1,
+      fontSize: 7,
       columnGap: 10,
       color: palette.text,
     },

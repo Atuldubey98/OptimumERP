@@ -12,7 +12,7 @@ const borderLandTemplate = (data, color) => {
   const taxEntries = Object.entries(data.currencyTaxCategories || {});
 
   return {
-    pageMargins: [24, 24, 24, 30],
+    pageMargins: [20, 20, 20, 22],
     footer: (currentPage, pageCount) => ({
       margin: [24, 0, 24, 10],
       columns: [
@@ -113,7 +113,7 @@ const borderLandTemplate = (data, color) => {
           ],
         ],
         columnGap: 16,
-        margin: [0, 0, 0, 18],
+        margin: [0, 0, 0, 10],
       },
       // Billing Headers
       {
@@ -212,7 +212,7 @@ const borderLandTemplate = (data, color) => {
         margin: [0, 0, 0, 6],
       },
       // Line breaks
-      { text: "", margin: [0, 0, 0, 10] },
+      { text: "", margin: [0, 0, 0, 6] },
       // Items
       {
         table: {
@@ -266,9 +266,11 @@ const borderLandTemplate = (data, color) => {
                 noWrap: true,
               },
               {
-                text: item.gst,
-                style: "itemNumber",
-                noWrap: true,
+                stack: [
+                  { text: item.taxAmount, style: "taxAmount", noWrap: true },
+                  { text: `(${item.gst})`, style: "taxName", noWrap: true },
+                ],
+                alignment: "right",
               },
               {
                 text: item.price,
@@ -295,131 +297,81 @@ const borderLandTemplate = (data, color) => {
           vLineColor: () => palette.border,
           hLineWidth: (index) => (index === 0 ? 0 : 0.75),
           vLineWidth: () => 0.75,
-          paddingLeft: () => 6,
-          paddingRight: () => 6,
-          paddingTop: () => 7,
-          paddingBottom: () => 7,
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 5,
+          paddingBottom: () => 5,
         },
         margin: [0, 4, 0, 0],
       },
       // TOTAL
       {
-        table: {
-          headerRows: 0,
-          widths: ["*", 80],
-
-          body: [
-            [
-              {
-                text: labels.subtotal || "Subtotal",
-                style: "itemsFooterSubTitle",
-              },
-              {
-                text: data.total,
-                style: "itemsFooterSubValue",
-              },
-            ],
-            [
-              {
-                text: labels.shipping_charges || "Shipping Charges",
-                style: "itemsFooterSubTitle",
-              },
-              {
-                text: data.shippingCharges,
-                style: "itemsFooterSubValue",
-              },
-            ],
-            ...(
-              taxEntries.length
-                ? taxEntries.map(([taxName, taxValue]) => [
-                    {
-                      text: `${taxName.toLocaleUpperCase()}`,
-                      style: "itemsFooterSubTitle",
-                    },
-                    {
-                      text: taxValue,
-                      style: "itemsFooterSubValue",
-                    },
-                  ])
-                : [
-                    [
-                      {
-                        text: labels.tax_upper || "TAX",
-                        style: "itemsFooterSubTitle",
-                      },
-                      {
-                        text: data.entity?.totalTax,
-                        style: "itemsFooterSubValue",
-                      },
-                    ],
-                  ]
-            ),
-            [
-              {
-                text: labels.total_upper || "TOTAL",
-                style: "itemsFooterTotalTitle",
-              },
-              {
-                text: data.grandTotal,
-                style: "itemsFooterTotalValue",
-              },
-            ],
-          ],
-        },
-        layout: {
-          hLineColor: () => palette.border,
-          vLineWidth: () => 0,
-          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
-          fillColor: (rowIndex) => {
-            const totalRowIndex = taxEntries.length ? taxEntries.length + 2 : 3;
-
-            return rowIndex === totalRowIndex ? palette.accentSoft : null;
-          },
-          paddingLeft: () => 0,
-          paddingRight: () => 0,
-          paddingTop: () => 6,
-          paddingBottom: () => 6,
-        },
-        margin: [0, 18, 0, 18],
-      },
-
-      // Signature
-
-      {
-        text: (labels.amount_in_words || "Amount in words").toUpperCase(),
-        style: "notesTitle",
-        margin: [0, 0, 0, 4],
-      },
-      {
-        text: data.amountToWords,
-        style: "amountWords",
-      },
-      data.bank
-        ? {
-            columns: [
-              {
+        columns: [
+          data.bank
+            ? {
                 stack: [
                   { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
                   { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}`, style: "bankDetail" },
                   { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}`, style: "bankDetail" },
                   { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}`, style: "bankDetail" },
                   { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}`, style: "bankDetail" },
+                  ...(data.upiQr
+                    ? [
+                        { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
+                        { image: data.upiQr, width: 72 },
+                      ]
+                    : []),
                 ],
-              },
-              data.upiQr
-                ? {
-                    stack: [
-                      { text: labels.upi_qr_code || "UPI QR Code", style: "subheader" },
-                      { image: data.upiQr, width: 100 },
-                    ],
-                    alignment: "right",
-                  }
-                : {},
-            ],
-            columnGap: 24,
-            margin: [0, 16, 0, 0],
-          }
-        : {},
+              }
+            : { text: "" },
+          {
+            table: {
+              headerRows: 0,
+              widths: ["*", 80],
+              body: [
+                [
+                  { text: labels.subtotal || "Subtotal", style: "itemsFooterSubTitle" },
+                  { text: data.total, style: "itemsFooterSubValue" },
+                ],
+                ...(data.rawShippingCharges ? [[
+                  { text: labels.shipping_charges || "Shipping Charges", style: "itemsFooterSubTitle" },
+                  { text: data.shippingCharges, style: "itemsFooterSubValue" },
+                ]] : []),
+                ...(taxEntries.length
+                  ? taxEntries.map(([taxName, taxValue]) => [
+                      { text: `${taxName.toLocaleUpperCase()}`, style: "itemsFooterSubTitle" },
+                      { text: taxValue, style: "itemsFooterSubValue" },
+                    ])
+                  : [
+                      [
+                        { text: labels.tax_upper || "TAX", style: "itemsFooterSubTitle" },
+                        { text: data.entity?.totalTax, style: "itemsFooterSubValue" },
+                      ],
+                    ]),
+                [
+                  { text: labels.total_upper || "TOTAL", style: "itemsFooterTotalTitle" },
+                  { text: data.grandTotal, style: "itemsFooterTotalValue" },
+                ],
+                [
+                  { text: (labels.amount_in_words || "Amount in words").toUpperCase(), style: "itemsFooterSubTitle" },
+                  { text: data.amountToWords, style: "itemsFooterSubValue" },
+                ],
+              ],
+            },
+            layout: {
+              hLineColor: () => palette.border,
+              vLineWidth: () => 0,
+              hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+              paddingLeft: () => 0,
+              paddingRight: () => 0,
+              paddingTop: () => 4,
+              paddingBottom: () => 4,
+            },
+          },
+        ],
+        columnGap: 16,
+        margin: [0, 10, 0, 12],
+      },
       {
         text: `${labels.terms_and_conditions || "Terms and Conditions"}:`,
         style: "notesTitle",
@@ -431,10 +383,10 @@ const borderLandTemplate = (data, color) => {
       },
       {
         alignment: "right",
-        margin: [0, 18, 0, 0],
+        margin: [0, 10, 0, 0],
         unbreakable: true,
         table: {
-          widths: [190],
+          widths: [120],
           body: [
             [
               {
@@ -443,11 +395,11 @@ const borderLandTemplate = (data, color) => {
                     text: `For ${data.entity?.org?.name || ""}`,
                     style: "signatoryBoxCompany",
                     alignment: "center",
-                    margin: [0, 0, 0, 24],
+                    margin: [0, 0, 0, 16],
                   },
                   {
                     text: " ",
-                    margin: [0, 22, 0, 22],
+                    margin: [0, 14, 0, 14],
                   },
                   {
                     text: labels.authorized_signatory || "Authorized Signatory",
@@ -464,10 +416,10 @@ const borderLandTemplate = (data, color) => {
           vLineColor: () => palette.border,
           hLineWidth: () => 0.75,
           vLineWidth: () => 0.75,
-          paddingLeft: () => 10,
-          paddingRight: () => 10,
-          paddingTop: () => 10,
-          paddingBottom: () => 10,
+          paddingLeft: () => 8,
+          paddingRight: () => 8,
+          paddingTop: () => 7,
+          paddingBottom: () => 7,
         },
       },
     ],
@@ -497,7 +449,7 @@ const borderLandTemplate = (data, color) => {
       signatory: { bold: true, decoration: "underline" },
       signatoryBoxCompany: { bold: true, color: palette.text },
       signatoryBoxLabel: { bold: true, color: palette.text },
-      subheader: { fontSize: 9, bold: true, color: palette.accent, margin: [0, 0, 0, 6] },
+      subheader: { fontSize: 7.5, bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
 
       documentFooterCenter: {
         fontSize: 9,
@@ -511,28 +463,28 @@ const borderLandTemplate = (data, color) => {
       },
       // Invoice Title
       invoiceTitle: {
-        fontSize: 18,
+        fontSize: 13,
         bold: true,
         alignment: "right",
         color: palette.accent,
-        characterSpacing: 1.2,
-        margin: [0, 0, 0, 12],
+        characterSpacing: 1.0,
+        margin: [0, 0, 0, 8],
       },
       // Invoice Details
       invoiceSubTitle: {
-        fontSize: 8.1,
+        fontSize: 7.5,
         alignment: "right",
         color: palette.muted,
         bold: true,
       },
-      invoiceSubValue: { fontSize: 9, alignment: "right", color: palette.text, bold: true },
+      invoiceSubValue: { fontSize: 8, alignment: "right", color: palette.text, bold: true },
       // Billing Headers
       invoiceBillingTitle: {
-        fontSize: 9,
+        fontSize: 7.5,
         bold: true,
         alignment: "left",
         color: palette.accent,
-        margin: [0, 12, 0, 6],
+        margin: [0, 8, 0, 4],
       },
       // Billing Details
       invoiceBillingDetails: {
@@ -544,58 +496,60 @@ const borderLandTemplate = (data, color) => {
       billingMetaLabel: {
         color: palette.muted,
         bold: true,
-        fontSize: 8.1,
+        fontSize: 7,
       },
       billingMetaValue: {
         color: palette.text,
         bold: true,
-        fontSize: 8.1,
+        fontSize: 7,
       },
       invoiceBillingAddressTitle: {
-        margin: [0, 7, 0, 3],
+        margin: [0, 5, 0, 2],
         bold: true,
         color: palette.muted,
-        fontSize: 8.1,
+        fontSize: 7,
       },
       invoiceBillingAddress: { color: palette.text, lineHeight: 1.35 },
       // Items Header
       itemsHeader: {
-        margin: [0, 3, 0, 3],
+        margin: [0, 2, 0, 2],
         bold: true,
         color: "white",
-        fontSize: 7.7,
+        fontSize: 7,
       },
       // Item Title
       itemTitle: {
         bold: true,
         color: palette.text,
-        fontSize: 7.7,
+        fontSize: 7,
         lineHeight: 1.2,
       },
       itemSubTitle: {
         italics: true,
-        fontSize: 9.9,
+        fontSize: 8,
       },
       itemNumber: {
-        margin: [0, 2, 0, 2],
+        margin: [0, 1, 0, 1],
         alignment: "right",
         noWrap: true,
         color: palette.text,
-        fontSize: 7.7,
+        fontSize: 7,
       },
+      taxName: { color: palette.muted, fontSize: 6.5 },
+      taxAmount: { bold: true, color: palette.text, fontSize: 6.5 },
       itemPrice: {
-        margin: [0, 2, 0, 2],
+        margin: [0, 1, 0, 1],
         alignment: "right",
         noWrap: true,
         color: palette.text,
-        fontSize: 7.7,
+        fontSize: 7,
       },
       itemTotal: {
-        margin: [0, 2, 0, 2],
+        margin: [0, 1, 0, 1],
         bold: true,
         alignment: "right",
         color: palette.text,
-        fontSize: 7.7,
+        fontSize: 7,
       },
 
       // Items Footer (Subtotal, Total, Tax, etc)
@@ -636,13 +590,13 @@ const borderLandTemplate = (data, color) => {
         alignment: "center",
       },
       notesTitle: {
-        fontSize: 8.1,
+        fontSize: 7.5,
         bold: true,
-        margin: [0, 18, 0, 4],
+        margin: [0, 10, 0, 3],
         color: palette.accent,
       },
       notesText: {
-        fontSize: 8.1,
+        fontSize: 7,
         lineHeight: 1.35,
         color: palette.text,
       },
@@ -661,7 +615,7 @@ const borderLandTemplate = (data, color) => {
     },
     defaultStyle: {
       columnGap: 10,
-      fontSize: 8.1,
+      fontSize: 7,
       color: palette.text,
     },
   };

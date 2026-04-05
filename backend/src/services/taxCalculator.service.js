@@ -51,6 +51,7 @@ exports.calculateTaxesForBillItemsWithCurrency = async (
       quantity: item.quantity,
       code : item.code,
       gst: itemTax.name,
+      taxAmount: `${currencySymbol} ${tax.toFixed(2)}`,
       um: um.unit,
       price,
       total,

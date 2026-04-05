@@ -130,6 +130,10 @@
       {
         "value": "borderLand",
         "name": "Border Land template "
+      },
+      {
+        "value": "buzy",
+        "name": "Buzy template "
       }
     ]
   },

@@ -12,7 +12,7 @@ const simpleTemplate = (data, color) => {
   const taxEntries = Object.entries(data.currencyTaxCategories || {});
 
   return {
-    pageMargins: [24, 24, 24, 30],
+    pageMargins: [20, 20, 20, 22],
     footer: (currentPage, pageCount) => ({
       margin: [24, 0, 24, 10],
       columns: [
@@ -35,7 +35,7 @@ const simpleTemplate = (data, color) => {
         text: data.title.toLocaleUpperCase(),
         style: "mainTitle",
         alignment: "center",
-        margin: [0, 2, 0, 14],
+        margin: [0, 0, 0, 8],
       },
       {
         columns: [
@@ -73,7 +73,7 @@ const simpleTemplate = (data, color) => {
         ],
         columnGap: 16,
         alignment: "center",
-        margin: [0, 0, 0, 18],
+        margin: [0, 0, 0, 10],
       },
       {
         columns: [
@@ -128,8 +128,8 @@ const simpleTemplate = (data, color) => {
             alignment: "right",
           },
         ],
-        columnGap: 24,
-        margin: [0, 0, 0, 18],
+        columnGap: 20,
+        margin: [0, 0, 0, 10],
       },
 
       {
@@ -154,7 +154,13 @@ const simpleTemplate = (data, color) => {
               item.um,
               { text: item.price, noWrap: true, alignment: "right" },
               { text: item.quantity, noWrap: true, alignment: "right" },
-              item.gst,
+              {
+                stack: [
+                  { text: item.taxAmount, style: "taxAmount", noWrap: true },
+                  { text: `(${item.gst})`, style: "taxName", noWrap: true },
+                ],
+                alignment: "right",
+              },
               { text: item.total, noWrap: true, alignment: "right" },
             ]),
           ],
@@ -171,76 +177,73 @@ const simpleTemplate = (data, color) => {
           vLineColor: () => palette.border,
           hLineWidth: (index) => (index === 0 ? 0 : 0.75),
           vLineWidth: () => 0.75,
-          paddingLeft: () => 6,
-          paddingRight: () => 6,
-          paddingTop: () => 7,
-          paddingBottom: () => 7,
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 5,
+          paddingBottom: () => 5,
         },
         margin: [0, 6, 0, 0],
       },
       {
-        table: {
-          widths: ["*", "auto"],
-          body: [
-            [{ text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" }, { text: data.total, style: "summaryValue" }],
-            [{ text: `${labels.shipping_charges || "Shipping Charges"}:`, style: "summaryLabel" }, { text: data.shippingCharges, style: "summaryValue" }],
-            ...taxEntries.map(
-              ([taxName, taxValue]) => [
-                { text: `${taxName.toLocaleUpperCase()}:`, style: "summaryLabel" },
-                { text: taxValue, style: "summaryValue" },
-              ],
-            ),
-            [
-              { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
-              { text: data.grandTotal, style: "summaryTotalValue" },
-            ],
-            [
-              { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
-              { text: data.amountToWords, style: "summaryValue" },
-            ],
-          ],
-        },
-        layout: {
-          hLineColor: () => palette.border,
-          vLineWidth: () => 0,
-          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
-          fillColor: (rowIndex) => (rowIndex === taxEntries.length + 1 ? palette.accentSoft : null),
-          paddingLeft: () => 0,
-          paddingRight: () => 0,
-          paddingTop: () => 6,
-          paddingBottom: () => 6,
-        },
-        margin: [0, 20, 0, 20],
-      },
-      data.bank
-        ? {
-            columns: [
-              {
+        columns: [
+          data.bank
+            ? {
                 stack: [
                   { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
                   { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}` },
                   { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}` },
                   { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}` },
                   { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}` },
+                  ...(data.upiQr
+                    ? [
+                        { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
+                        { image: data.upiQr, width: 72 },
+                      ]
+                    : []),
                 ],
-              },
-              data.upiQr
-                ? {
-                    stack: [
-                      { text: labels.upi_qr_code || "UPI QR Code", style: "subheader" },
-                      { image: data.upiQr, width: 100 },
-                    ],
-                    alignment: "right",
-                  }
-                : {},
-            ],
-          }
-        : {},
+              }
+            : { text: "" },
+          {
+            table: {
+              widths: ["*", "auto"],
+              body: [
+                [{ text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" }, { text: data.total, style: "summaryValue" }],
+                ...(data.rawShippingCharges ? [[{ text: `${labels.shipping_charges || "Shipping Charges"}:`, style: "summaryLabel" }, { text: data.shippingCharges, style: "summaryValue" }]] : []),
+                ...taxEntries.map(
+                  ([taxName, taxValue]) => [
+                    { text: `${taxName.toLocaleUpperCase()}:`, style: "summaryLabel" },
+                    { text: taxValue, style: "summaryValue" },
+                  ],
+                ),
+                [
+                  { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
+                  { text: data.grandTotal, style: "summaryTotalValue" },
+                ],
+                [
+                  { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
+                  { text: data.amountToWords, style: "summaryValue" },
+                ],
+              ],
+            },
+            layout: {
+              hLineColor: () => palette.border,
+              vLineWidth: () => 0,
+              hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+              paddingLeft: () => 0,
+              paddingRight: () => 0,
+              paddingTop: () => 4,
+              paddingBottom: () => 4,
+            },
+          },
+        ],
+        columnGap: 16,
+        margin: [0, 12, 0, 14],
+      },
       {
-        margin: [0, 18, 0, 0],
+        margin: [0, 10, 0, 0],
         unbreakable: true,
         table: {
-          widths: ["*", 180],
+          widths: ["*", 120],
           body: [
             [
               {
@@ -249,7 +252,7 @@ const simpleTemplate = (data, color) => {
                   { text: data.entity.terms || "", style: "terms" },
                 ],
                 border: [false, false, false, false],
-                margin: [0, 0, 12, 0],
+                margin: [0, 0, 10, 0],
               },
               {
                 stack: [
@@ -257,11 +260,11 @@ const simpleTemplate = (data, color) => {
                     text: `For ${data.entity?.org?.name || ""}`,
                     style: "signatoryBoxCompany",
                     alignment: "center",
-                    margin: [0, 0, 0, 24],
+                    margin: [0, 0, 0, 16],
                   },
                   {
                     text: " ",
-                    margin: [0, 22, 0, 22],
+                    margin: [0, 14, 0, 14],
                   },
                   {
                     text: labels.authorized_signatory || "Authorized Signatory",
@@ -280,22 +283,22 @@ const simpleTemplate = (data, color) => {
             columnIndex === 1 ? palette.border : palette.border,
           hLineWidth: (index, node) => (index === 0 || index === node.table.body.length ? 0.75 : 0),
           vLineWidth: (index) => (index === 1 || index === 2 ? 0.75 : 0),
-          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 10),
-          paddingRight: (columnIndex) => (columnIndex === 0 ? 12 : 10),
-          paddingTop: () => 10,
-          paddingBottom: () => 10,
+          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 8),
+          paddingRight: (columnIndex) => (columnIndex === 0 ? 10 : 8),
+          paddingTop: () => 7,
+          paddingBottom: () => 7,
         },
       },
     ],
     styles: {
-      header: { fontSize: 13.5, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
+      header: { fontSize: 11, bold: true, color: palette.text, margin: [0, 0, 0, 2] },
       subheader: {
-        fontSize: 8.1,
+        fontSize: 7.5,
         bold: true,
         color: palette.accent,
-        margin: [0, 0, 0, 6],
+        margin: [0, 0, 0, 4],
       },
-      tableHeader: { bold: true, color: "white", fontSize: 7.7, margin: [0, 2, 0, 2] },
+      tableHeader: { bold: true, color: "white", fontSize: 7, margin: [0, 1, 0, 1] },
       termsHeading: { bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
       terms: { italics: true, color: palette.text, lineHeight: 1.35 },
       signatory: {
@@ -306,25 +309,27 @@ const simpleTemplate = (data, color) => {
       signatoryBoxCompany: { bold: true, color: palette.text },
       signatoryBoxLabel: { bold: true, color: palette.text },
       mainTitle: {
-        fontSize: 14.4,
+        fontSize: 12,
         bold: true,
         color: palette.accent,
-        characterSpacing: 1.4,
+        characterSpacing: 1.2,
       },
       companyMeta: { color: palette.muted, lineHeight: 1.35 },
       companyMetaStrong: { color: palette.text, bold: true },
       metaLabel: { color: palette.muted, bold: true },
-      partyName: { bold: true, fontSize: 9.5, color: palette.text, margin: [0, 0, 0, 2] },
+      partyName: { bold: true, fontSize: 8.5, color: palette.text, margin: [0, 0, 0, 2] },
       bodyText: { color: palette.text, lineHeight: 1.35 },
       bodyTextStrong: { color: palette.text, bold: true, lineHeight: 1.35 },
       summaryLabel: { bold: true, color: palette.text },
       summaryValue: { color: palette.text, alignment: "right" },
-      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 9 },
-      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 9 },
+      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 8 },
+      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8 },
+      taxName: { color: palette.muted, fontSize: 6.5 },
+      taxAmount: { bold: true, color: palette.text, fontSize: 6.5 },
     },
     defaultStyle: {
-      fontSize: 7.7,
-      lineHeight: 1.3,
+      fontSize: 7,
+      lineHeight: 1.25,
       color: palette.text,
     },
   };

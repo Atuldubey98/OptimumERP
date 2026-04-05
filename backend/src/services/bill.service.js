@@ -316,6 +316,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
     total: `${currencySymbol} ${bill.total.toFixed(2)}`,
     shippingCharges: `${currencySymbol} ${Number(bill.shippingCharges || 0).toFixed(2)}`,
+    rawShippingCharges: Number(bill.shippingCharges || 0),
     currencyTaxCategories,
     dateLocale,
     metaLabels: {
