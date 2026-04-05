@@ -325,7 +325,7 @@ const simpleTemplate = (data, color) => {
       summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 8 },
       summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8 },
       taxName: { color: palette.muted, fontSize: 6.5 },
-      taxAmount: { bold: true, color: palette.text, fontSize: 6.5 },
+      taxAmount: { color: palette.text, fontSize: 6.5 },
     },
     defaultStyle: {
       fontSize: 7,

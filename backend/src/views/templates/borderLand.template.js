@@ -536,7 +536,7 @@ const borderLandTemplate = (data, color) => {
         fontSize: 7,
       },
       taxName: { color: palette.muted, fontSize: 6.5 },
-      taxAmount: { bold: true, color: palette.text, fontSize: 6.5 },
+      taxAmount: { color: palette.text, fontSize: 6.5 },
       itemPrice: {
         margin: [0, 1, 0, 1],
         alignment: "right",

@@ -251,5 +251,491 @@
         "localCode": "en-SG"
       }
     }
+  },
+  {
+    "name": "COUNTRIES_CONFIG",
+    "value": [
+      {
+        "code2": "IN",
+        "code3": "IND",
+        "name": "India",
+        "capital": "New Delhi",
+        "region": "Asia",
+        "subregion": "Southern Asia",
+        "states": [
+          {
+            "code": "AN",
+            "name": "Andaman and Nicobar Islands",
+            "subdivision": "Union territory",
+            "taxCode": "35"
+          },
+          {
+            "code": "CH",
+            "name": "Chandigarh",
+            "subdivision": "Union territory",
+            "taxCode": "04"
+          },
+          {
+            "code": "DN",
+            "name": "Dadra and Nagar Haveli",
+            "subdivision": "Union territory",
+            "taxCode": "26"
+          },
+          {
+            "code": "DD",
+            "name": "Daman and Diu",
+            "subdivision": "Union territory",
+            "taxCode": "25"
+          },
+          {
+            "code": "DL",
+            "name": "Delhi",
+            "subdivision": "Union territory",
+            "taxCode": "07"
+          },
+          {
+            "code": "LD",
+            "name": "Lakshadweep",
+            "subdivision": "Union territory",
+            "taxCode": "31"
+          },
+          {
+            "code": "PY",
+            "name": "Puducherry",
+            "subdivision": "Union territory",
+            "taxCode": "34"
+          },
+          {
+            "code": "AP",
+            "name": "Andhra Pradesh",
+            "subdivision": "state",
+            "taxCode": "37"
+          },
+          {
+            "code": "AR",
+            "name": "Arunachal Pradesh",
+            "subdivision": "state",
+            "taxCode": "12"
+          },
+          {
+            "code": "AS",
+            "name": "Assam",
+            "subdivision": "state",
+            "taxCode": "18"
+          },
+          {
+            "code": "BR",
+            "name": "Bihar",
+            "subdivision": "state",
+            "taxCode": "10"
+          },
+          {
+            "code": "CT",
+            "name": "Chhattisgarh",
+            "subdivision": "state",
+            "taxCode": "22"
+          },
+          {
+            "code": "GA",
+            "name": "Goa",
+            "subdivision": "state",
+            "taxCode": "30"
+          },
+          {
+            "code": "GJ",
+            "name": "Gujarat",
+            "subdivision": "state",
+            "taxCode": "24"
+          },
+          {
+            "code": "HR",
+            "name": "Haryana",
+            "subdivision": "state",
+            "taxCode": "06"
+          },
+          {
+            "code": "HP",
+            "name": "Himachal Pradesh",
+            "subdivision": "state",
+            "taxCode": "02"
+          },
+          {
+            "code": "JK",
+            "name": "Jammu and Kashmir",
+            "subdivision": "state",
+            "taxCode": "01"
+          },
+          {
+            "code": "JH",
+            "name": "Jharkhand",
+            "subdivision": "state",
+            "taxCode": "20"
+          },
+          {
+            "code": "KA",
+            "name": "Karnataka",
+            "subdivision": "state",
+            "taxCode": "29"
+          },
+          {
+            "code": "KL",
+            "name": "Kerala",
+            "subdivision": "state",
+            "taxCode": "32"
+          },
+          {
+            "code": "MP",
+            "name": "Madhya Pradesh",
+            "subdivision": "state",
+            "taxCode": "23"
+          },
+          {
+            "code": "MH",
+            "name": "Maharashtra",
+            "subdivision": "state",
+            "taxCode": "27"
+          },
+          {
+            "code": "MN",
+            "name": "Manipur",
+            "subdivision": "state",
+            "taxCode": "14"
+          },
+          {
+            "code": "ML",
+            "name": "Meghalaya",
+            "subdivision": "state",
+            "taxCode": "17"
+          },
+          {
+            "code": "MZ",
+            "name": "Mizoram",
+            "subdivision": "state",
+            "taxCode": "15"
+          },
+          {
+            "code": "NL",
+            "name": "Nagaland",
+            "subdivision": "state",
+            "taxCode": "13"
+          },
+          {
+            "code": "OR",
+            "name": "Odisha",
+            "subdivision": "state",
+            "taxCode": "21"
+          },
+          {
+            "code": "PB",
+            "name": "Punjab",
+            "subdivision": "state",
+            "taxCode": "03"
+          },
+          {
+            "code": "RJ",
+            "name": "Rajasthan",
+            "subdivision": "state",
+            "taxCode": "08"
+          },
+          {
+            "code": "SK",
+            "name": "Sikkim",
+            "subdivision": "state",
+            "taxCode": "11"
+          },
+          {
+            "code": "TN",
+            "name": "Tamil Nadu",
+            "subdivision": "state",
+            "taxCode": "33"
+          },
+          {
+            "code": "TG",
+            "name": "Telangana",
+            "subdivision": "state",
+            "taxCode": "36"
+          },
+          {
+            "code": "TR",
+            "name": "Tripura",
+            "subdivision": "state",
+            "taxCode": "16"
+          },
+          {
+            "code": "UP",
+            "name": "Uttar Pradesh",
+            "subdivision": "state",
+            "taxCode": "09"
+          },
+          {
+            "code": "UT",
+            "name": "Uttarakhand",
+            "subdivision": "state",
+            "taxCode": "05"
+          },
+          {
+            "code": "WB",
+            "name": "West Bengal",
+            "subdivision": "state",
+            "taxCode": "19"
+          }
+        ]
+      },
+      {
+        "code2": "BR",
+        "code3": "BRA",
+        "name": "Brazil",
+        "capital": "Brasília",
+        "region": "Americas",
+        "subregion": "South America",
+        "states": [
+          {
+            "code": "AC",
+            "name": "Acre",
+            "subdivision": null
+          },
+          {
+            "code": "AL",
+            "name": "Alagoas",
+            "subdivision": null
+          },
+          {
+            "code": "AP",
+            "name": "Amapá",
+            "subdivision": null
+          },
+          {
+            "code": "AM",
+            "name": "Amazonas",
+            "subdivision": null
+          },
+          {
+            "code": "BA",
+            "name": "Bahia",
+            "subdivision": null
+          },
+          {
+            "code": "CE",
+            "name": "Ceará",
+            "subdivision": null
+          },
+          {
+            "code": "DF",
+            "name": "Distrito Federal",
+            "subdivision": null
+          },
+          {
+            "code": "ES",
+            "name": "Espírito Santo",
+            "subdivision": null
+          },
+          {
+            "code": "GO",
+            "name": "Goiás",
+            "subdivision": null
+          },
+          {
+            "code": "MA",
+            "name": "Maranhão",
+            "subdivision": null
+          },
+          {
+            "code": "MT",
+            "name": "Mato Grosso",
+            "subdivision": null
+          },
+          {
+            "code": "MS",
+            "name": "Mato Grosso do Sul",
+            "subdivision": null
+          },
+          {
+            "code": "MG",
+            "name": "Minas Gerais",
+            "subdivision": null
+          },
+          {
+            "code": "PR",
+            "name": "Paraná",
+            "subdivision": null
+          },
+          {
+            "code": "PB",
+            "name": "Paraíba",
+            "subdivision": null
+          },
+          {
+            "code": "PA",
+            "name": "Pará",
+            "subdivision": null
+          },
+          {
+            "code": "PE",
+            "name": "Pernambuco",
+            "subdivision": null
+          },
+          {
+            "code": "PI",
+            "name": "Piauí",
+            "subdivision": null
+          },
+          {
+            "code": "RN",
+            "name": "Rio Grande do Norte",
+            "subdivision": null
+          },
+          {
+            "code": "RS",
+            "name": "Rio Grande do Sul",
+            "subdivision": null
+          },
+          {
+            "code": "RJ",
+            "name": "Rio de Janeiro",
+            "subdivision": null
+          },
+          {
+            "code": "RO",
+            "name": "Rondônia",
+            "subdivision": null
+          },
+          {
+            "code": "RR",
+            "name": "Roraima",
+            "subdivision": null
+          },
+          {
+            "code": "SC",
+            "name": "Santa Catarina",
+            "subdivision": null
+          },
+          {
+            "code": "SE",
+            "name": "Sergipe",
+            "subdivision": null
+          },
+          {
+            "code": "SP",
+            "name": "São Paulo",
+            "subdivision": null
+          },
+          {
+            "code": "TO",
+            "name": "Tocantins",
+            "subdivision": null
+          }
+        ]
+      },
+      {
+        "code2": "GY",
+        "code3": "GUY",
+        "name": "Guyana",
+        "capital": "Georgetown",
+        "region": "Americas",
+        "subregion": "South America",
+        "states": [
+          {
+            "code": "BA",
+            "name": "Barima-Waini",
+            "subdivision": null
+          },
+          {
+            "code": "CU",
+            "name": "Cuyuni-Mazaruni",
+            "subdivision": null
+          },
+          {
+            "code": "DE",
+            "name": "Demerara-Mahaica",
+            "subdivision": null
+          },
+          {
+            "code": "EB",
+            "name": "East Berbice-Corentyne",
+            "subdivision": null
+          },
+          {
+            "code": "ES",
+            "name": "Essequibo Islands-West Demerara",
+            "subdivision": null
+          },
+          {
+            "code": "MA",
+            "name": "Mahaica-Berbice",
+            "subdivision": null
+          },
+          {
+            "code": "PM",
+            "name": "Pomeroon-Supenaam",
+            "subdivision": null
+          },
+          {
+            "code": "PT",
+            "name": "Potaro-Siparuni",
+            "subdivision": null
+          },
+          {
+            "code": "UD",
+            "name": "Upper Demerara-Berbice",
+            "subdivision": null
+          },
+          {
+            "code": "UT",
+            "name": "Upper Takutu-Upper Essequibo",
+            "subdivision": null
+          }
+        ]
+      },
+      {
+        "code2": "AU",
+        "code3": "AUS",
+        "name": "Australia",
+        "capital": "Canberra",
+        "region": "Oceania",
+        "subregion": "Australia and New Zealand",
+        "states": [
+          {
+            "code": "ACT",
+            "name": "Australian Capital Territory",
+            "subdivision": null
+          },
+          {
+            "code": "NSW",
+            "name": "New South Wales",
+            "subdivision": null
+          },
+          {
+            "code": "NT",
+            "name": "Northern Territory",
+            "subdivision": null
+          },
+          {
+            "code": "QLD",
+            "name": "Queensland",
+            "subdivision": null
+          },
+          {
+            "code": "SA",
+            "name": "South Australia",
+            "subdivision": null
+          },
+          {
+            "code": "TAS",
+            "name": "Tasmania",
+            "subdivision": null
+          },
+          {
+            "code": "VIC",
+            "name": "Victoria",
+            "subdivision": null
+          },
+          {
+            "code": "WA",
+            "name": "Western Australia",
+            "subdivision": null
+          }
+        ]
+      }
+    ]
   }
 ]

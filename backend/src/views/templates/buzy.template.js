@@ -503,7 +503,7 @@ const buzyTemplate = (data, color) => {
       summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8 },
       termsText: { fontSize: 7, color: palette.text, lineHeight: 1.3 },
       taxName: { color: palette.muted, fontSize: 6.5 },
-      taxAmount: { bold: true, color: palette.text, fontSize: 6.5 },
+      taxAmount: { color: palette.text, fontSize: 6.5 },
       bankLabel: { fontSize: 7, color: palette.muted, bold: true, margin: [0, 1, 0, 1] },
       bankValue: { fontSize: 7, color: palette.text, margin: [0, 1, 0, 1] },
       signatoryBoxCompany: { fontSize: 7, bold: true, color: palette.text },
