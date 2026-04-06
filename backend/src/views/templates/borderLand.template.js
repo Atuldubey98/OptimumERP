@@ -1,8 +1,9 @@
 const borderLandTemplate = (data, color) => {
   const labels = data?.metaLabels || {};
   const dateLocale = data?.dateLocale || "en-IN";
+  const hasColor = !!color;
   const palette = {
-    accent: color || "#1F4E79",
+    accent: color || "#1F2937",
     accentSoft: "#EEF4F8",
     text: "#1F2937",
     muted: "#6B7280",
@@ -12,20 +13,20 @@ const borderLandTemplate = (data, color) => {
   const taxEntries = Object.entries(data.currencyTaxCategories || {});
 
   return {
-    pageMargins: [20, 20, 20, 22],
+    pageMargins: [22, 22, 22, 24],
     footer: (currentPage, pageCount) => ({
-      margin: [24, 0, 24, 10],
+      margin: [26, 0, 26, 11],
       columns: [
         {
           text: data.entity?.org?.name || "",
           color: palette.muted,
-          fontSize: 6.3,
+          fontSize: 6.9,
         },
         {
           text: `${currentPage} / ${pageCount}`,
           alignment: "right",
           color: palette.muted,
-          fontSize: 6.3,
+          fontSize: 6.9,
         },
       ],
     }),
@@ -288,7 +289,7 @@ const borderLandTemplate = (data, color) => {
         layout: {
           fillColor: (rowIndex) => {
             if (rowIndex === 0) {
-              return palette.accent;
+              return hasColor ? palette.accent : null;
             }
 
             return rowIndex % 2 === 0 ? palette.surface : null;
@@ -426,44 +427,44 @@ const borderLandTemplate = (data, color) => {
     styles: {
       // Document Header
       documentHeaderLeft: {
-        fontSize: 9,
+        fontSize: 9.9,
         margin: [5, 5, 5, 5],
         alignment: "left",
       },
       documentHeaderCenter: {
-        fontSize: 9,
+        fontSize: 9.9,
         margin: [5, 5, 5, 5],
         alignment: "center",
       },
       documentHeaderRight: {
-        fontSize: 9,
+        fontSize: 9.9,
         margin: [5, 5, 5, 5],
         alignment: "right",
       },
       // Document Footer
       documentFooterLeft: {
-        fontSize: 9,
+        fontSize: 9.9,
         margin: [5, 5, 5, 5],
         alignment: "left",
       },
       signatory: { bold: true, decoration: "underline" },
       signatoryBoxCompany: { bold: true, color: palette.text },
       signatoryBoxLabel: { bold: true, color: palette.text },
-      subheader: { fontSize: 7.5, bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
+      subheader: { fontSize: 8.3, bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
 
       documentFooterCenter: {
-        fontSize: 9,
+        fontSize: 9.9,
         margin: [5, 5, 5, 5],
         alignment: "center",
       },
       documentFooterRight: {
-        fontSize: 9,
+        fontSize: 9.9,
         margin: [5, 5, 5, 5],
         alignment: "right",
       },
       // Invoice Title
       invoiceTitle: {
-        fontSize: 13,
+        fontSize: 14.3,
         bold: true,
         alignment: "right",
         color: palette.accent,
@@ -472,15 +473,15 @@ const borderLandTemplate = (data, color) => {
       },
       // Invoice Details
       invoiceSubTitle: {
-        fontSize: 7.5,
+        fontSize: 8.3,
         alignment: "right",
         color: palette.muted,
         bold: true,
       },
-      invoiceSubValue: { fontSize: 8, alignment: "right", color: palette.text, bold: true },
+      invoiceSubValue: { fontSize: 8.8, alignment: "right", color: palette.text, bold: true },
       // Billing Headers
       invoiceBillingTitle: {
-        fontSize: 7.5,
+        fontSize: 8.3,
         bold: true,
         alignment: "left",
         color: palette.accent,
@@ -496,66 +497,65 @@ const borderLandTemplate = (data, color) => {
       billingMetaLabel: {
         color: palette.muted,
         bold: true,
-        fontSize: 7,
+        fontSize: 7.7,
       },
       billingMetaValue: {
         color: palette.text,
         bold: true,
-        fontSize: 7,
+        fontSize: 7.7,
       },
       invoiceBillingAddressTitle: {
         margin: [0, 5, 0, 2],
         bold: true,
         color: palette.muted,
-        fontSize: 7,
+        fontSize: 7.7,
       },
       invoiceBillingAddress: { color: palette.text, lineHeight: 1.35 },
       // Items Header
       itemsHeader: {
         margin: [0, 2, 0, 2],
         bold: true,
-        color: "white",
-        fontSize: 7,
+        color: hasColor ? "white" : palette.text,
+        fontSize: 7.7,
       },
       // Item Title
       itemTitle: {
         bold: true,
         color: palette.text,
-        fontSize: 7,
+        fontSize: 7.7,
         lineHeight: 1.2,
       },
       itemSubTitle: {
         italics: true,
-        fontSize: 8,
+        fontSize: 8.8,
       },
       itemNumber: {
         margin: [0, 1, 0, 1],
         alignment: "right",
         noWrap: true,
         color: palette.text,
-        fontSize: 7,
+        fontSize: 7.7,
       },
-      taxName: { color: palette.muted, fontSize: 6.5 },
-      taxAmount: { color: palette.text, fontSize: 6.5 },
+      taxName: { color: palette.muted, fontSize: 7.2 },
+      taxAmount: { color: palette.text, fontSize: 7.2 },
       itemPrice: {
         margin: [0, 1, 0, 1],
         alignment: "right",
         noWrap: true,
         color: palette.text,
-        fontSize: 7,
+        fontSize: 7.7,
       },
       itemTotal: {
         margin: [0, 1, 0, 1],
         bold: true,
         alignment: "right",
         color: palette.text,
-        fontSize: 7,
+        fontSize: 7.7,
       },
 
       // Items Footer (Subtotal, Total, Tax, etc)
       itemsFooterSubTitle: {
         margin: [0, 0, 0, 0],
-        bold: true,
         alignment: "right",
         color: palette.text,
       },
@@ -567,7 +567,6 @@ const borderLandTemplate = (data, color) => {
       },
       itemsFooterTotalTitle: {
         margin: [0, 0, 0, 0],
-        bold: true,
         alignment: "right",
         color: palette.accent,
       },
@@ -586,17 +585,17 @@ const borderLandTemplate = (data, color) => {
       },
       signatureJobTitle: {
         italics: true,
-        fontSize: 9,
+        fontSize: 9.9,
         alignment: "center",
       },
       notesTitle: {
-        fontSize: 7.5,
+        fontSize: 8.3,
         bold: true,
         margin: [0, 10, 0, 3],
         color: palette.accent,
       },
       notesText: {
-        fontSize: 7,
+        fontSize: 7.7,
         lineHeight: 1.35,
         color: palette.text,
       },
@@ -615,7 +614,7 @@ const borderLandTemplate = (data, color) => {
     },
     defaultStyle: {
       columnGap: 10,
-      fontSize: 7,
+      fontSize: 7.7,
       color: palette.text,
     },
   };

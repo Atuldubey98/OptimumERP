@@ -1,8 +1,9 @@
 const buzyTemplate = (data, color) => {
   const labels = data?.metaLabels || {};
   const dateLocale = data?.dateLocale || "en-IN";
+  const hasColor = !!color;
   const palette = {
-    accent: color || "#1F4E79",
+    accent: color || "#1F2937",
     accentSoft: "#EEF4F8",
     text: "#1F2937",
     muted: "#6B7280",
@@ -16,20 +17,20 @@ const buzyTemplate = (data, color) => {
 
   return {
     pageSize: "A4",
-    pageMargins: [20, 20, 20, 22],
+    pageMargins: [22, 22, 22, 24],
     footer: (currentPage, pageCount) => ({
-      margin: [24, 0, 24, 10],
+      margin: [26, 0, 26, 11],
       columns: [
         {
           text: data && data.entity && data.entity.org && data.entity.org.name ? data.entity.org.name : "",
           color: palette.muted,
-          fontSize: 6.3,
+          fontSize: 6.9,
         },
         {
           text: `${currentPage} / ${pageCount}`,
           alignment: "right",
           color: palette.muted,
-          fontSize: 6.3,
+          fontSize: 6.9,
         },
       ],
     }),
@@ -301,7 +302,7 @@ const buzyTemplate = (data, color) => {
         layout: {
           fillColor: function (rowIndex) {
             if (rowIndex === 0) {
-              return palette.accent;
+              return hasColor ? palette.accent : null;
             }
 
             return rowIndex % 2 === 0 ? palette.surface : null;
@@ -478,40 +479,40 @@ const buzyTemplate = (data, color) => {
 
     styles: {
       mainTitle: {
-        fontSize: 12,
+        fontSize: 13.2,
         bold: true,
         color: palette.accent,
         characterSpacing: 1.2,
       },
-      title: { fontSize: 12, bold: true, color: palette.accent },
-      header: { fontSize: 10, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
-      subheader: { fontSize: 7.5, bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
+      title: { fontSize: 13.2, bold: true, color: palette.accent },
+      header: { fontSize: 11, bold: true, color: palette.text, margin: [0, 0, 0, 4] },
+      subheader: { fontSize: 8.3, bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
       sectionHeader: {
-        fontSize: 7.5,
+        fontSize: 8.3,
         bold: true,
         margin: [0, 4, 0, 4],
         color: palette.accent,
       },
-      inline: { fontSize: 7, margin: [0, 1, 0, 1], color: palette.text, lineHeight: 1.3 },
-      inlineBold: { fontSize: 7, bold: true, margin: [0, 1, 0, 1], color: palette.text, lineHeight: 1.3 },
-      tableHeader: { bold: true, color: "white", fontSize: 7 },
-      metaLabel: { fontSize: 7, color: palette.muted, bold: true },
-      metaValue: { fontSize: 7, bold: true, color: palette.text },
-      summaryLabel: { bold: true, color: palette.text },
-      summaryValue: { color: palette.text, alignment: "right" },
-      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 8 },
-      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8 },
-      termsText: { fontSize: 7, color: palette.text, lineHeight: 1.3 },
-      taxName: { color: palette.muted, fontSize: 6.5 },
-      taxAmount: { color: palette.text, fontSize: 6.5 },
-      bankLabel: { fontSize: 7, color: palette.muted, bold: true, margin: [0, 1, 0, 1] },
-      bankValue: { fontSize: 7, color: palette.text, margin: [0, 1, 0, 1] },
-      signatoryBoxCompany: { fontSize: 7, bold: true, color: palette.text },
-      signatoryBoxLabel: { fontSize: 7, bold: true, color: palette.text },
+      inline: { fontSize: 7.7, margin: [0, 1, 0, 1], color: palette.text, lineHeight: 1.3 },
+      inlineBold: { fontSize: 7.7, bold: true, margin: [0, 1, 0, 1], color: palette.text, lineHeight: 1.3 },
+      tableHeader: { bold: true, color: hasColor ? "white" : palette.text, fontSize: 7.7 },
+      metaLabel: { fontSize: 7.7, color: palette.muted, bold: true },
+      metaValue: { fontSize: 7.7, bold: true, color: palette.text },
+      summaryLabel: { color: palette.text },
+      summaryValue: { bold: true, color: palette.text, alignment: "right" },
+      summaryTotalLabel: { color: palette.accent, fontSize: 8.8 },
+      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8.8 },
+      termsText: { fontSize: 7.7, color: palette.text, lineHeight: 1.3 },
+      taxName: { color: palette.muted, fontSize: 7.2 },
+      taxAmount: { color: palette.text, fontSize: 7.2 },
+      bankLabel: { fontSize: 7.7, color: palette.muted, bold: true, margin: [0, 1, 0, 1] },
+      bankValue: { fontSize: 7.7, color: palette.text, margin: [0, 1, 0, 1] },
+      signatoryBoxCompany: { fontSize: 7.7, bold: true, color: palette.text },
+      signatoryBoxLabel: { fontSize: 7.7, bold: true, color: palette.text },
     },
 
     defaultStyle: {
-      fontSize: 7,
+      fontSize: 7.7,
       columnGap: 10,
       color: palette.text,
     },

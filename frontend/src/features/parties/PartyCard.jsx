@@ -8,9 +8,36 @@ import {
   Heading,
   Stack,
   Text,
+  Tooltip,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
+
+function CopyableText({ value, children, ...props }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (!value) return;
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+
+  return (
+    <Tooltip label={copied ? "Copied!" : value} placement="top" isDisabled={!value}>
+      <Box
+        as="span"
+        onClick={handleCopy}
+        cursor={value ? "pointer" : undefined}
+        {...props}
+      >
+        {children}
+      </Box>
+    </Tooltip>
+  );
+}
 
 export default function PartyCard({ party, actions }) {
   const subtleTextColor = useColorModeValue("gray.500", "gray.400");
@@ -27,9 +54,11 @@ export default function PartyCard({ party, actions }) {
               </Heading>
             </Box>
             {party.gstNo ? (
-              <Badge borderRadius="full" px={3} py={1} bg={surfaceBg} textTransform="none" flexShrink={0}>
-                {party.gstNo}
-              </Badge>
+              <CopyableText value={party.gstNo}>
+                <Badge borderRadius="full" px={3} py={1} bg={surfaceBg} textTransform="none" flexShrink={0} maxW="28" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap" display="block">
+                  {party.gstNo}
+                </Badge>
+              </CopyableText>
             ) : null}
           </Flex>
 
@@ -37,7 +66,7 @@ export default function PartyCard({ party, actions }) {
             <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color={subtleTextColor}>
               Billing Address
             </Text>
-            <Text mt={1} noOfLines={3}>
+            <Text mt={1} noOfLines={2}>
               {party.billingAddress || "Not set"}
             </Text>
           </Box>
@@ -47,13 +76,17 @@ export default function PartyCard({ party, actions }) {
               <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color={subtleTextColor}>
                 GST No
               </Text>
-              <Text mt={1}>{party.gstNo || "Not set"}</Text>
+              <CopyableText value={party.gstNo || undefined}>
+                <Text mt={1} noOfLines={1} maxW="28">{party.gstNo || "Not set"}</Text>
+              </CopyableText>
             </Box>
             <Box>
               <Text fontSize="xs" textTransform="uppercase" letterSpacing="widest" color={subtleTextColor}>
                 PAN No
               </Text>
-              <Text mt={1}>{party.panNo || "Not set"}</Text>
+              <CopyableText value={party.panNo || undefined}>
+                <Text mt={1} noOfLines={1} maxW="28">{party.panNo || "Not set"}</Text>
+              </CopyableText>
             </Box>
           </Flex>
         </Stack>

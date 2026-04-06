@@ -1,338 +1,304 @@
-const simpleTemplate = (data, color) => {
+const borderLandTemplate = (data, color) => {
   const labels = data?.metaLabels || {};
   const dateLocale = data?.dateLocale || "en-IN";
   const palette = {
-    accent: color || "#1F4E79",
-    accentSoft: "#EEF4F8",
     text: "#1F2937",
-    muted: "#6B7280",
-    border: "#D6DEE8",
-    surface: "#F8FAFC",
+    muted: "#4B5563",
+    border: "#374151",
   };
+
   const taxEntries = Object.entries(data.currencyTaxCategories || {});
 
   return {
-    pageMargins: [20, 20, 20, 22],
-    footer: (currentPage, pageCount) => ({
-      margin: [24, 0, 24, 10],
-      columns: [
-        {
-          text: data.entity?.org?.name || "",
-          color: palette.muted,
-          fontSize: 6.3,
-        },
-        {
-          text: `${currentPage} / ${pageCount}`,
-          alignment: "right",
-          color: palette.muted,
-          fontSize: 6.3,
-        },
-      ],
-    }),
+    pageMargins: [30, 30, 30, 30],
     content: [
-      // Title
       {
-        text: data.title.toLocaleUpperCase(),
+        text: data.title?.toLocaleUpperCase() || "TAX INVOICE",
         style: "mainTitle",
         alignment: "center",
-        margin: [0, 0, 0, 8],
+        margin: [0, 0, 0, 5],
       },
-      {
-        columns: [
-          data.entity.org.logo
-            ? {
-                image: data.entity.org.logo,
-                width: 56,
-                alignment: "left",
-                margin: [0, 4, 0, 0],
-              }
-            : {},
-          {
-            stack: [
-              { text: data.entity.org.name, style: "header" },
-              { text: data.entity.org.address, style: "companyMeta" },
-              data.entity.org.gstNo
-                ? {
-                    text: [
-                      { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
-                      { text: data.entity.org.gstNo, style: "companyMetaStrong" },
-                    ],
-                  }
-                : {},
-              data.entity.org.panNo
-                ? {
-                    text: [
-                      { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
-                      { text: data.entity.org.panNo, style: "companyMetaStrong" },
-                    ],
-                  }
-                : {},
-            ],
-            alignment: "right",
-          },
-        ],
-        columnGap: 16,
-        alignment: "center",
-        margin: [0, 0, 0, 10],
-      },
-      {
-        columns: [
-          {
-            stack: [
-              { text: data.partyMetaHeading, style: "subheader" },
-              { text: data.entity.party.name, style: "partyName" },
-              { text: data.entity.billingAddress, style: "bodyText" },
-              data.entity.party.gstNo
-                ? {
-                    text: [
-                      { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
-                      { text: data.entity.party.gstNo, style: "bodyTextStrong" },
-                    ],
-                  }
-                : {},
-              data.entity.party.panNo
-                ? {
-                    text: [
-                      { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
-                      { text: data.entity.party.panNo, style: "bodyTextStrong" },
-                    ],
-                  }
-                : {},
-            ],
-          },
-          {
-            stack: [
-              { text: data.billMetaHeading, style: "subheader" },
-              {
-                text: `${labels.date || "Date"}: ${new Date(data.entity.date).toLocaleDateString(
-                  dateLocale,
-                  {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  },
-                )}`,
-                style: "bodyText",
-              },
-              { text: `${labels.number || "Number"}: ${data.num}`, style: "bodyTextStrong" },
-              data.entity.poNo ? { text: `${labels.po_no || "PO No"}: ${data.entity.poNo}`, style: "bodyText" } : {},
-              data.entity.poDate
-                ? {
-                    text: `${labels.po_date || "PO Date"}: ${new Date(
-                      data.entity.poDate,
-                    ).toLocaleDateString(dateLocale)}`,
-                    style: "bodyText",
-                  }
-                : {},
-            ],
-            alignment: "right",
-          },
-        ],
-        columnGap: 20,
-        margin: [0, 0, 0, 10],
-      },
-
       {
         table: {
-          headerRows: 1,
-          widths: ["auto", "*", 60, "auto", "auto", "auto", "auto", "auto"],
+          widths: ["*"],
           body: [
             [
-              { text: labels.serial_no || "Sno.", style: "tableHeader" },
-              { text: labels.item || "Item", style: "tableHeader" },
-              { text: labels.hsn_sac_code || "HSN/SAC Code", style: "tableHeader" },
-              { text: labels.um || "UM", style: "tableHeader" },
-              { text: labels.rate || "Rate", style: "tableHeader" },
-              { text: labels.qty || "Qty", style: "tableHeader" },
-              { text: labels.tax || "Tax", style: "tableHeader" },
-              { text: labels.amount || "Amount", style: "tableHeader" },
-            ],
-            ...data.items.map((item, index) => [
-              index + 1,
-              item.name,
-              { text: item.code, noWrap: true, alignment: "right" },
-              item.um,
-              { text: item.price, noWrap: true, alignment: "right" },
-              { text: item.quantity, noWrap: true, alignment: "right" },
               {
-                stack: [
-                  { text: item.taxAmount, style: "taxAmount", noWrap: true },
-                  { text: `(${item.gst})`, style: "taxName", noWrap: true },
-                ],
-                alignment: "right",
-              },
-              { text: item.total, noWrap: true, alignment: "right" },
-            ]),
-          ],
-        },
-        layout: {
-          fillColor: (rowIndex) => {
-            if (rowIndex === 0) {
-              return palette.accent;
-            }
-
-            return rowIndex % 2 === 0 ? palette.surface : null;
-          },
-          hLineColor: () => palette.border,
-          vLineColor: () => palette.border,
-          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
-          vLineWidth: () => 0.75,
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 5,
-          paddingBottom: () => 5,
-        },
-        margin: [0, 6, 0, 0],
-      },
-      {
-        columns: [
-          data.bank
-            ? {
-                stack: [
-                  { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
-                  { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}` },
-                  { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}` },
-                  { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}` },
-                  { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}` },
-                  ...(data.upiQr
-                    ? [
-                        { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
-                        { image: data.upiQr, width: 72 },
-                      ]
-                    : []),
-                ],
-              }
-            : { text: "" },
-          {
-            table: {
-              widths: ["*", "auto"],
-              body: [
-                [{ text: `${labels.subtotal || "Subtotal"}:`, style: "summaryLabel" }, { text: data.total, style: "summaryValue" }],
-                ...(data.rawShippingCharges ? [[{ text: `${labels.shipping_charges || "Shipping Charges"}:`, style: "summaryLabel" }, { text: data.shippingCharges, style: "summaryValue" }]] : []),
-                ...taxEntries.map(
-                  ([taxName, taxValue]) => [
-                    { text: `${taxName.toLocaleUpperCase()}:`, style: "summaryLabel" },
-                    { text: taxValue, style: "summaryValue" },
+                table: {
+                  widths: ["*", "25%", "25%"],
+                  body: [
+                    // Header Row: Logo, Name, and Invoice Meta
+                    [
+                      {
+                        columns: [
+                          data.entity?.org?.logo ? { image: data.entity.org.logo, width: 45, margin: [0, 5, 5, 0] } : {},
+                          {
+                            stack: [
+                              { text: data.entity?.org?.name, style: "header" },
+                              { text: data.entity?.org?.address, style: "companyMeta" },
+                              { text: `Phone no.: ${data.entity?.org?.phone || ""}`, style: "companyMeta" },
+                              { text: `Email: ${data.entity?.org?.email || ""}`, style: "companyMeta" },
+                              { text: `GSTIN: ${data.entity?.org?.gstNo || ""}`, style: "companyMetaStrong" },
+                              { text: `State: ${data.entity?.org?.state || ""}`, style: "companyMeta" },
+                            ],
+                          },
+                        ],
+                        rowSpan: 3,
+                      },
+                      {
+                        stack: [
+                          { text: labels.number || "Invoice No.", style: "metaLabel" },
+                          { text: data.num, style: "bodyTextStrong" },
+                        ],
+                      },
+                      {
+                        stack: [
+                          { text: labels.date || "Date", style: "metaLabel" },
+                          { text: new Date(data.entity.date).toLocaleDateString(dateLocale), style: "bodyTextStrong" },
+                        ],
+                      },
+                    ],
+                    // Second Meta Row: Place of Supply & PO Date
+                    [
+                      {},
+                      {
+                        stack: [
+                          { text: labels.place_of_supply || "Place of supply", style: "metaLabel" },
+                          { text: data.entity.placeOfSupply || "", style: "bodyTextStrong" },
+                        ],
+                      },
+                      {
+                        stack: [
+                          { text: labels.po_date || "PO date", style: "metaLabel" },
+                          { text: data.entity.poDate ? new Date(data.entity.poDate).toLocaleDateString(dateLocale) : "", style: "bodyTextStrong" },
+                        ],
+                      },
+                    ],
+                    // Third Meta Row: PO Number
+                    [
+                      {},
+                      {
+                        colSpan: 2,
+                        stack: [
+                          { text: labels.po_no || "PO number", style: "metaLabel" },
+                          { text: data.entity.poNo || "", style: "bodyTextStrong" },
+                        ],
+                      },
+                      {},
+                    ],
+                    // Bill To Section
+                    [
+                      {
+                        stack: [
+                          { text: data.partyMetaHeading || "Bill To", style: "subheader" },
+                          { text: data.entity.party.name, style: "partyName" },
+                          { text: data.entity.billingAddress, style: "bodyText" },
+                          { text: `GSTIN : ${data.entity.party.gstNo || ""}`, style: "bodyText" },
+                          { text: `State: ${data.entity.party.state || ""}`, style: "bodyText" },
+                        ],
+                        margin: [0, 5, 0, 5],
+                      },
+                      { text: "", colSpan: 2 },
+                      {},
+                    ],
                   ],
-                ),
-                [
-                  { text: `${labels.grand_total || "Grand Total"}:`, style: "summaryTotalLabel" },
-                  { text: data.grandTotal, style: "summaryTotalValue" },
-                ],
-                [
-                  { text: `${labels.amount_in_words || "Amount in words"}:`, style: "summaryLabel" },
-                  { text: data.amountToWords, style: "summaryValue" },
-                ],
-              ],
-            },
-            layout: {
-              hLineColor: () => palette.border,
-              vLineWidth: () => 0,
-              hLineWidth: (index) => (index === 0 ? 0 : 0.75),
-              paddingLeft: () => 0,
-              paddingRight: () => 0,
-              paddingTop: () => 4,
-              paddingBottom: () => 4,
-            },
-          },
-        ],
-        columnGap: 16,
-        margin: [0, 12, 0, 14],
-      },
-      {
-        margin: [0, 10, 0, 0],
-        unbreakable: true,
-        table: {
-          widths: ["*", 120],
-          body: [
+                },
+                layout: "headerLayout",
+              },
+            ],
+            // Items Table
             [
               {
-                stack: [
-                  { text: `${labels.terms_and_conditions || "Terms and Conditions"}:`, style: "termsHeading" },
-                  { text: data.entity.terms || "", style: "terms" },
-                ],
-                border: [false, false, false, false],
-                margin: [0, 0, 10, 0],
+                table: {
+                  headerRows: 1,
+                  widths: ["auto", "*", "auto", "auto", "auto", "auto", "auto", "auto"],
+                  body: [
+                    [
+                      { text: "#", style: "tableHeader" },
+                      { text: labels.item || "Item name", style: "tableHeader" },
+                      { text: labels.hsn_sac_code || "HSN/ SAC", style: "tableHeader" },
+                      { text: labels.qty || "Quantity", style: "tableHeader" },
+                      { text: labels.um || "Unit", style: "tableHeader" },
+                      { text: labels.rate || "Price/ Unit", style: "tableHeader" },
+                      { text: labels.tax || "GST", style: "tableHeader" },
+                      { text: labels.amount || "Amount", style: "tableHeader" },
+                    ],
+                    ...data.items.map((item, index) => [
+                      { text: index + 1, alignment: "center" },
+                      { text: item.name },
+                      { text: item.code, alignment: "center" },
+                      { text: item.quantity, alignment: "center" },
+                      { text: item.um, alignment: "center" },
+                      { text: `₹ ${item.price}`, alignment: "right" },
+                      { text: `${item.taxAmount} (${item.gst})`, alignment: "right" },
+                      { text: `₹ ${item.total}`, alignment: "right" },
+                    ]),
+                    [
+                      { text: "Total", colSpan: 3, style: "bodyTextStrong", alignment: "left" },
+                      {}, {},
+                      { text: data.items.reduce((acc, curr) => acc + (curr.quantity || 0), 0), style: "bodyTextStrong", alignment: "center" },
+                      { text: "", colSpan: 2 },
+                      {},
+                      { text: `₹ ${data.totalTaxAmount}`, style: "bodyTextStrong", alignment: "right" },
+                      { text: `₹ ${data.total}`, style: "bodyTextStrong", alignment: "right" },
+                    ],
+                  ],
+                },
+                layout: "itemsLayout",
               },
+            ],
+            // Footer/Summary Section
+            [
               {
-                stack: [
-                  {
-                    text: `For ${data.entity?.org?.name || ""}`,
-                    style: "signatoryBoxCompany",
-                    alignment: "center",
-                    margin: [0, 0, 0, 16],
-                  },
-                  {
-                    text: " ",
-                    margin: [0, 14, 0, 14],
-                  },
-                  {
-                    text: labels.authorized_signatory || "Authorized Signatory",
-                    style: "signatoryBoxLabel",
-                    alignment: "center",
-                  },
-                ],
+                table: {
+                  widths: ["*", "*"],
+                  body: [
+                    [
+                      {
+                        stack: [
+                          { text: labels.amount_in_words || "Invoice Amount In Words", style: "metaLabel" },
+                          { text: data.amountToWords, style: "bodyTextStrong" },
+                        ],
+                      },
+                      {
+                        table: {
+                          widths: ["*", "auto"],
+                          body: [
+                            [{ text: "Amounts:", style: "bodyTextStrong", colSpan: 2 }, {}],
+                            [{ text: "Sub Total", style: "bodyText" }, { text: `₹ ${data.total}`, alignment: "right" }],
+                            [{ text: "Total", style: "bodyTextStrong" }, { text: `₹ ${data.grandTotal}`, alignment: "right", style: "bodyTextStrong" }],
+                            [{ text: "Received", style: "bodyText" }, { text: "₹ 0.00", alignment: "right" }],
+                            [{ text: "Balance", style: "bodyText" }, { text: `₹ ${data.grandTotal}`, alignment: "right" }],
+                          ],
+                        },
+                        layout: "noBorders",
+                      },
+                    ],
+                  ],
+                },
+                layout: "footerGrid",
+              },
+            ],
+            // Tax Breakup Table
+            [
+              {
+                table: {
+                  widths: ["*", "*", "auto", "auto", "auto", "auto", "auto"],
+                  body: [
+                    [
+                      { text: "HSN/ SAC", style: "tableHeader", alignment: "center" },
+                      { text: "Taxable amount", style: "tableHeader", alignment: "center" },
+                      { text: "CGST", style: "tableHeader", colSpan: 2, alignment: "center" }, {},
+                      { text: "SGST", style: "tableHeader", colSpan: 2, alignment: "center" }, {},
+                      { text: "Total Tax Amount", style: "tableHeader", alignment: "center" },
+                    ],
+                    [
+                      "", "",
+                      { text: "Rate", style: "tableHeaderSmall" }, { text: "Amount", style: "tableHeaderSmall" },
+                      { text: "Rate", style: "tableHeaderSmall" }, { text: "Amount", style: "tableHeaderSmall" },
+                      "",
+                    ],
+                    ...taxEntries.map(([hsn, val]) => [
+                      { text: hsn, alignment: "center" },
+                      { text: val.taxableAmount, alignment: "right" },
+                      { text: val.cgstRate, alignment: "center" }, { text: val.cgstAmount, alignment: "right" },
+                      { text: val.sgstRate, alignment: "center" }, { text: val.sgstAmount, alignment: "right" },
+                      { text: val.totalTax, alignment: "right" },
+                    ]),
+                  ],
+                },
+                layout: "itemsLayout",
+              },
+            ],
+            // Bank and Signature
+            [
+              {
+                table: {
+                  widths: ["*", "*"],
+                  body: [
+                    [
+                      {
+                        stack: [
+                          { text: "Terms and conditions:", style: "bodyTextStrong" },
+                          { text: data.entity.terms || "Thanks for doing business with us!", style: "bodyText" },
+                        ],
+                      },
+                      {
+                        stack: [
+                          { text: "Company's Bank details:", style: "bodyTextStrong" },
+                          { text: `Bank Name : ${data.bank?.name || ""}`, style: "bodyText" },
+                          { text: `Bank Account No. : ${data.bank?.accountNo || ""}`, style: "bodyText" },
+                          { text: `Bank IFSC code : ${data.bank?.ifscCode || ""}`, style: "bodyText" },
+                          { text: `Account holder's name : ${data.bank?.accountHolderName || ""}`, style: "bodyText" },
+                        ],
+                      },
+                    ],
+                    [
+                      {},
+                      {
+                        stack: [
+                          { text: `For, : ${data.entity?.org?.name}`, alignment: "center", margin: [0, 5, 0, 40] },
+                          { text: "Authorized Signatory", alignment: "center", style: "bodyText" },
+                        ],
+                        border: [true, true, false, false],
+                      },
+                    ],
+                  ],
+                },
+                layout: "footerGrid",
               },
             ],
           ],
         },
-        layout: {
-          hLineColor: (index, node, columnIndex) =>
-            columnIndex === 1 ? palette.border : palette.border,
-          vLineColor: (index, node, columnIndex) =>
-            columnIndex === 1 ? palette.border : palette.border,
-          hLineWidth: (index, node) => (index === 0 || index === node.table.body.length ? 0.75 : 0),
-          vLineWidth: (index) => (index === 1 || index === 2 ? 0.75 : 0),
-          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 8),
-          paddingRight: (columnIndex) => (columnIndex === 0 ? 10 : 8),
-          paddingTop: () => 7,
-          paddingBottom: () => 7,
-        },
+        layout: "outerLayout",
       },
     ],
     styles: {
-      header: { fontSize: 11, bold: true, color: palette.text, margin: [0, 0, 0, 2] },
-      subheader: {
-        fontSize: 7.5,
-        bold: true,
-        color: palette.accent,
-        margin: [0, 0, 0, 4],
-      },
-      tableHeader: { bold: true, color: "white", fontSize: 7, margin: [0, 1, 0, 1] },
-      termsHeading: { bold: true, color: palette.accent, margin: [0, 0, 0, 4] },
-      terms: { italics: true, color: palette.text, lineHeight: 1.35 },
-      signatory: {
-        bold: true,
-        decoration: "underline",
-        color: palette.text,
-      },
-      signatoryBoxCompany: { bold: true, color: palette.text },
-      signatoryBoxLabel: { bold: true, color: palette.text },
-      mainTitle: {
-        fontSize: 12,
-        bold: true,
-        color: palette.accent,
-        characterSpacing: 1.2,
-      },
-      companyMeta: { color: palette.muted, lineHeight: 1.35 },
-      companyMetaStrong: { color: palette.text, bold: true },
-      metaLabel: { color: palette.muted, bold: true },
-      partyName: { bold: true, fontSize: 8.5, color: palette.text, margin: [0, 0, 0, 2] },
-      bodyText: { color: palette.text, lineHeight: 1.35 },
-      bodyTextStrong: { color: palette.text, bold: true, lineHeight: 1.35 },
-      summaryLabel: { bold: true, color: palette.text },
-      summaryValue: { color: palette.text, alignment: "right" },
-      summaryTotalLabel: { bold: true, color: palette.accent, fontSize: 8 },
-      summaryTotalValue: { bold: true, color: palette.accent, alignment: "right", fontSize: 8 },
-      taxName: { color: palette.muted, fontSize: 6.5 },
-      taxAmount: { color: palette.text, fontSize: 6.5 },
+      mainTitle: { fontSize: 10, bold: true, color: palette.text },
+      header: { fontSize: 14, bold: true, color: palette.text },
+      subheader: { fontSize: 9, color: palette.muted },
+      partyName: { fontSize: 10, bold: true },
+      companyMeta: { fontSize: 8, color: palette.muted },
+      companyMetaStrong: { fontSize: 8, bold: true },
+      metaLabel: { fontSize: 8, color: palette.muted },
+      bodyText: { fontSize: 8.5 },
+      bodyTextStrong: { fontSize: 8.5, bold: true },
+      tableHeader: { fontSize: 8.5, bold: true, alignment: "center" },
+      tableHeaderSmall: { fontSize: 7, bold: true, alignment: "center" },
     },
-    defaultStyle: {
-      fontSize: 7,
-      lineHeight: 1.25,
-      color: palette.text,
+    tableLayouts: {
+      outerLayout: {
+        hLineWidth: () => 1,
+        vLineWidth: () => 1,
+        hLineColor: () => palette.border,
+        vLineColor: () => palette.border,
+        paddingLeft: () => 0,
+        paddingRight: () => 0,
+        paddingTop: () => 0,
+        paddingBottom: () => 0,
+      },
+      headerLayout: {
+        hLineWidth: (i) => (i > 0 ? 1 : 0),
+        vLineWidth: (i) => (i > 0 ? 1 : 0),
+        hLineColor: () => palette.border,
+        vLineColor: () => palette.border,
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+      },
+      itemsLayout: {
+        hLineWidth: () => 1,
+        vLineWidth: (i) => (i === 0 || i === 8 ? 0 : 1),
+        hLineColor: () => palette.border,
+        vLineColor: () => palette.border,
+      },
+      footerGrid: {
+        hLineWidth: (i) => (i === 1 ? 1 : 0),
+        vLineWidth: (i) => (i === 1 ? 1 : 0),
+        hLineColor: () => palette.border,
+        vLineColor: () => palette.border,
+      },
     },
   };
 };
 
-module.exports = simpleTemplate;
+module.exports = borderLandTemplate;

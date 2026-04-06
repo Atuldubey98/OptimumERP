@@ -13,6 +13,7 @@ import {
   IconButton,
   Stack,
   Text,
+  Tooltip,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
@@ -40,9 +41,11 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
               </Link>
             </Box>
           </HStack>
-          <Badge borderRadius="full" px={3} py={1} bg={surfaceBg} textTransform="none">
-            {item.type}
-          </Badge>
+          <Tooltip label={item.type} placement="top">
+            <Badge borderRadius="full" px={3} py={1} bg={surfaceBg} textTransform="none" maxW="24" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap" display="block" cursor="default">
+              {item.type}
+            </Badge>
+          </Tooltip>
         </Flex>
       </CardHeader>
       <CardBody pt={0} fontSize="sm">
@@ -52,7 +55,9 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
               {t("contact_ui.card.email")}
             </Text>
             {item.email ? (
-              <Link href={`mailto:${item.email}`}>{item.email}</Link>
+              <Tooltip label={item.email} placement="top">
+                <Link href={`mailto:${item.email}`} noOfLines={1} display="block">{item.email}</Link>
+              </Tooltip>
             ) : (
               <Text color={subtleTextColor}>{t("contact_ui.card.not_set")}</Text>
             )}
