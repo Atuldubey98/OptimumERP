@@ -1,8 +1,9 @@
 const { google } = require("googleapis");
+const config = require("../config");
 exports.getOAuth2Client = (options = {}) => {
   const oAuth2Client = new google.auth.OAuth2({
-    clientId: process.env.GOOGLE_AUTH_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+    clientId: config.GOOGLE_AUTH_CLIENT_ID,
+    clientSecret: config.GOOGLE_AUTH_CLIENT_SECRET,
     ...options,
   });
   return oAuth2Client;

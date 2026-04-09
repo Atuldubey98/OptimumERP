@@ -13,10 +13,10 @@ const logger = require("./logger");
 const app = express();
 const middleware = require("i18next-http-middleware");
 const i18 = require("./i18");
+const config = require("./config");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
-
 
 if (process.env.NETWORK_STORAGE_PATH) {
   logger.info(`Using network storage at ${process.env.NETWORK_STORAGE_PATH}`);
@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
   res.render("landing", {
     title: "Optimum ERP",
     user,
-    dashboardUrl: process.env.VITE_APP_URL,
+    dashboardUrl: config.VITE_APP_URL,
   });
 });
 app.get("/privacy", (req, res) => {

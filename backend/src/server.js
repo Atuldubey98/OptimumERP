@@ -3,7 +3,7 @@ require("dotenv").config({
     process.env.NODE_ENV === "development" ? "../.env.development" : "../.env",
 });
 const { connectDatabase, closeDBConnection } = require("./services/db.service");
-const { MONGO_URI, PORT } = require("./config");
+const { MONGO_URI, PORT = 3000 } = require("./config");
 connectDatabase(MONGO_URI);
 const app = require("./app");
 const http = require("http");

@@ -1,3 +1,4 @@
+const config = require("../../config");
 const { getOAuth2Client } = require("../../services/googleAuth.service");
 
 const getGoogleAuthorizationUri = async (req, res) => {
@@ -6,7 +7,8 @@ const getGoogleAuthorizationUri = async (req, res) => {
     "https://www.googleapis.com/auth/userinfo.email",
   ];
   const parameters = {
-    client_id: process.env.GOOGLE_AUTH_CLIENT_ID,
+    client_id: config.GOOGLE_AUTH_CLIENT_ID,
+    client_secret: config.GOOGLE_AUTH_CLIENT_SECRET,
     access_type: "offline",
     scope: "email",
     display: "popup",
