@@ -5,7 +5,6 @@ const {
 } = require("../../services/renderEngine.service");
 const { getDisplaySettingForOrg } = require("../../services/setting.service");
 const templator = require("../../views/templates/templator");
-const https = require("https");
 const logger = require("../../logger");
 const fs = require("fs/promises");
 const path = require("path");
