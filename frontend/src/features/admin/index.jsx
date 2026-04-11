@@ -58,7 +58,7 @@ import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 import useStorageUtil from "../../hooks/useStorageUtil";
 export default function AdminPage() {
   const { t } = useTranslation("admin");
-
+  const {t : tCommon} = useTranslation("common");
   const registerSchema = Yup.object({
     email: Yup.string()
       .email(t("validation.invalid_email"))
@@ -166,7 +166,7 @@ export default function AdminPage() {
       accountHolderName: Yup.string().label(t("bank.account_holder_name")),
     }),
     onSubmit: async (data, { setSubmitting }) => {
-      const { data: responseData } = await instance.patch(
+      await instance.patch(
         `/api/v1/organizations/${organization}`,
         {
           bank: data,
@@ -174,7 +174,7 @@ export default function AdminPage() {
       );
       toast({
         title: t("toasts.bank_title"),
-        description: responseData.message,
+        description: tCommon("api.bank_details_updated"),
         status: "success",
         duration: 3000,
         isClosable: true,
