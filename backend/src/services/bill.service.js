@@ -34,7 +34,7 @@ const getLiveSettingForOrg = async (org, session) => {
       org,
     },
     null,
-    session ? { session } : undefined
+    session ? { session } : undefined,
   );
   if (!setting) throw new OrgNotFound();
   return setting;
@@ -54,7 +54,7 @@ const getHighestSequence = async ({ Bill, org, financialYear, session }) => {
       financialYear,
     },
     { sequence: 1 },
-    { sort: { sequence: -1 }, ...(session ? { session } : {}) }
+    { sort: { sequence: -1 }, ...(session ? { session } : {}) },
   );
   return bill?.sequence || 0;
 };
@@ -68,11 +68,16 @@ const syncSequenceCounter = async ({ org, counterKey, sequence, session }) => {
         [getCounterPath(counterKey)]: sequence,
       },
     },
-    session ? { session } : undefined
+    session ? { session } : undefined,
   );
 };
 
-const getCurrentSequenceCounter = async ({ Bill, org, prefixType, session }) => {
+const getCurrentSequenceCounter = async ({
+  Bill,
+  org,
+  prefixType,
+  session,
+}) => {
   const setting = await getLiveSettingForOrg(org, session);
   const counterKey = getCounterKey({ Bill, prefixType });
   if (!counterKey) {
@@ -159,17 +164,17 @@ exports.saveBill = async ({
   }
   const bill = billId
     ? await Bill.findOneAndUpdate(
-      {
-        _id: billId,
-        org: body.org,
-      },
-      billBody,
-      {
-        new: true,
-        session
-      }
-    )
-    : await new Bill(billBody).save({session});
+        {
+          _id: billId,
+          org: body.org,
+        },
+        billBody,
+        {
+          new: true,
+          session,
+        },
+      )
+    : await new Bill(billBody).save({ session });
   if (billId && !bill) throw new NotFound();
   transaction.doc = bill.id;
   await Transaction.findOneAndUpdate(
@@ -183,7 +188,7 @@ exports.saveBill = async ({
       upsert: true,
       new: true,
       session,
-    }
+    },
   );
 
   await syncSequenceCounter({
@@ -250,29 +255,44 @@ exports.reserveNextSequence = async ({ Bill, org, prefixType, session }) => {
     {
       new: true,
       ...(session ? { session } : {}),
-    }
+    },
   );
   if (!updatedSetting) throw new OrgNotFound();
   return updatedSetting.sequenceCounters[counterKey];
 };
 
-exports.syncSequenceCounter = async ({ Bill, org, prefixType, sequence, session }) => {
+exports.syncSequenceCounter = async ({
+  Bill,
+  org,
+  prefixType,
+  sequence,
+  session,
+}) => {
   const counterKey = getCounterKey({ Bill, prefixType });
   return syncSequenceCounter({ org, counterKey, sequence, session });
 };
-const addCurrencyToTaxCategories = (taxCategories = {}, currencySymbol) => {
+const addCurrencyToTaxCategories = (taxCategories = {}, formatCurrency) => {
   const newTaxCategories = Object.entries(taxCategories).reduce(
     (prev, current) => {
       const [taxType, taxValue = 0] = current;
-      if(taxValue === 0) return prev;
-      prev[taxType] = `${currencySymbol} ${taxValue.toFixed(2)}`;
+      if (taxValue === 0) return prev;
+      prev[taxType] = formatCurrency.format(taxValue);
       return prev;
     },
-    {}
+    {},
   );
   return newTaxCategories;
 };
 
+const getCurrencyFormatter = ({ locale, currency, decimalDigits = 2 }) => {
+  return Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+    maximumFractionDigits: decimalDigits,
+    minimumFractionDigits: decimalDigits,
+  });
+};
 const getBillGrandTotal = (bill = {}) =>
   Number(bill.total || 0) +
   Number(bill.totalTax || 0) +
@@ -286,11 +306,17 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
   if (!bill) throw new NotFound();
   const setting = await getDisplaySettingForOrg(filter.org);
   const currencies = await propertyService.getCurrencyConfig();
+  const code = setting.currency;
+  const formatCurrency = getCurrencyFormatter({
+    locale: setting.localeCode || "en-IN",
+    currency: code,
+    decimalDigits: setting?.decimal_digits,
+  });
   const currencySymbol = currencies.value[setting.currency].symbol;
   const grandTotal = getBillGrandTotal(bill);
   const items = await calculateTaxesForBillItemsWithCurrency(
     bill.items,
-    currencySymbol,
+    formatCurrency,
     filter.org,
   );
   const localeCode = setting.localeCode;
@@ -301,7 +327,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     : localeCode || "en-IN";
   const currencyTaxCategories = addCurrencyToTaxCategories(
     bill.taxCategories,
-    currencySymbol
+    formatCurrency,
   );
   const translateTemplateLabel = (key, defaultValue) =>
     t ? t(`billing:template_labels.${key}`, { defaultValue }) : defaultValue;
@@ -313,9 +339,9 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     upiQr: null,
     currencySymbol,
     amountToWords: currencyToWordConverter(localeCode, grandTotal),
-    grandTotal: `${currencySymbol} ${grandTotal.toFixed(2)}`,
-    total: `${currencySymbol} ${bill.total.toFixed(2)}`,
-    shippingCharges: `${currencySymbol} ${Number(bill.shippingCharges || 0).toFixed(2)}`,
+    grandTotal: formatCurrency.format(grandTotal),
+    total: formatCurrency.format(bill.total),
+    shippingCharges: formatCurrency.format(Number(bill.shippingCharges || 0)),
     rawShippingCharges: Number(bill.shippingCharges || 0),
     currencyTaxCategories,
     dateLocale,
@@ -347,21 +373,54 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       price: translateTemplateLabel("price", "Price"),
       total: translateTemplateLabel("total", "Total"),
       subtotal: translateTemplateLabel("subtotal", "Subtotal"),
-      shipping_charges: translateTemplateLabel("shipping_charges", "Shipping Charges"),
+      shipping_charges: translateTemplateLabel(
+        "shipping_charges",
+        "Shipping Charges",
+      ),
       grand_total: translateTemplateLabel("grand_total", "Grand Total"),
-      amount_in_words: translateTemplateLabel("amount_in_words", "Amount in words"),
-      terms_and_conditions: translateTemplateLabel("terms_and_conditions", "Terms and Conditions"),
-      company_bank_details: translateTemplateLabel("company_bank_details", "Company Bank details"),
-      bank_account_details: translateTemplateLabel("bank_account_details", "Bank Account Details"),
+      amount_in_words: translateTemplateLabel(
+        "amount_in_words",
+        "Amount in words",
+      ),
+      terms_and_conditions: translateTemplateLabel(
+        "terms_and_conditions",
+        "Terms and Conditions",
+      ),
+      company_bank_details: translateTemplateLabel(
+        "company_bank_details",
+        "Company Bank details",
+      ),
+      bank_account_details: translateTemplateLabel(
+        "bank_account_details",
+        "Bank Account Details",
+      ),
       bank_name: translateTemplateLabel("bank_name", "Bank Name"),
-      bank_account_no: translateTemplateLabel("bank_account_no", "Bank Account No."),
-      bank_ifsc_code: translateTemplateLabel("bank_ifsc_code", "Bank IFSC code"),
-      account_holder_name: translateTemplateLabel("account_holder_name", "Account holder name"),
-      account_holder: translateTemplateLabel("account_holder", "Account Holder"),
-      account_number: translateTemplateLabel("account_number", "Account Number"),
+      bank_account_no: translateTemplateLabel(
+        "bank_account_no",
+        "Bank Account No.",
+      ),
+      bank_ifsc_code: translateTemplateLabel(
+        "bank_ifsc_code",
+        "Bank IFSC code",
+      ),
+      account_holder_name: translateTemplateLabel(
+        "account_holder_name",
+        "Account holder name",
+      ),
+      account_holder: translateTemplateLabel(
+        "account_holder",
+        "Account Holder",
+      ),
+      account_number: translateTemplateLabel(
+        "account_number",
+        "Account Number",
+      ),
       ifsc_code: translateTemplateLabel("ifsc_code", "IFSC Code"),
       upi_qr_code: translateTemplateLabel("upi_qr_code", "UPI QR Code"),
-      authorized_signatory: translateTemplateLabel("authorized_signatory", "Authorized Signatory"),
+      authorized_signatory: translateTemplateLabel(
+        "authorized_signatory",
+        "Authorized Signatory",
+      ),
       invoice_hash: translateTemplateLabel("invoice_hash", "Invoice #"),
       date_issued: translateTemplateLabel("date_issued", "Date Issued"),
       billing_from: translateTemplateLabel("billing_from", "Billing From"),
@@ -377,18 +436,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       return {
         title: t
           ? t("billing:bill_metadata:quotation_title", {
-            defaultValue: "Quotation",
-          })
+              defaultValue: "Quotation",
+            })
           : "Quotation",
         billMetaHeading: t
           ? t("billing:bill_metadata:quotation_meta_heading", {
-            defaultValue: "Estimate Details",
-          })
+              defaultValue: "Estimate Details",
+            })
           : "Estimate Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:quotation_party_heading", {
-            defaultValue: "Estimate to",
-          })
+              defaultValue: "Estimate to",
+            })
           : "Estimate to",
       };
     },
@@ -396,18 +455,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       return {
         title: t
           ? t("billing:bill_metadata:purchase_title", {
-            defaultValue: "Purchase",
-          })
+              defaultValue: "Purchase",
+            })
           : "Purchase",
         billMetaHeading: t
           ? t("billing:bill_metadata:purchase_meta_heading", {
-            defaultValue: "Purchase Details",
-          })
+              defaultValue: "Purchase Details",
+            })
           : "Purchase Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:purchase_party_heading", {
-            defaultValue: "Bill From",
-          })
+              defaultValue: "Bill From",
+            })
           : "Bill From",
       };
     },
@@ -415,18 +474,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       return {
         title: t
           ? t("billing:bill_metadata:proforma_invoice_title", {
-            defaultValue: "Proforma Invoice",
-          })
+              defaultValue: "Proforma Invoice",
+            })
           : "Proforma Invoice",
         billMetaHeading: t
           ? t("billing:bill_metadata:proforma_invoice_meta_heading", {
-            defaultValue: "Proforma Invoice Details",
-          })
+              defaultValue: "Proforma Invoice Details",
+            })
           : "Proforma Invoice Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:proforma_invoice_party_heading", {
-            defaultValue: "Bill To",
-          })
+              defaultValue: "Bill To",
+            })
           : "Bill To",
       };
     },
@@ -434,18 +493,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
       return {
         title: t
           ? t("billing:bill_metadata:purchase_order_title", {
-            defaultValue: "Purchase Order",
-          })
+              defaultValue: "Purchase Order",
+            })
           : "Purchase Order",
         billMetaHeading: t
           ? t("billing:bill_metadata:purchase_order_meta_heading", {
-            defaultValue: "PO Details",
-          })
+              defaultValue: "PO Details",
+            })
           : "PO Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:purchase_order_party_heading", {
-            defaultValue: "PO to",
-          })
+              defaultValue: "PO to",
+            })
           : "PO to",
       };
     },
@@ -455,23 +514,24 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
         grandTotal,
         shouldPrintQr: setting?.printSettings?.upiQr,
       });
-      
-      const bank = setting?.printSettings?.bank && bill.org.bank ? bill.org.bank : null;      
+
+      const bank =
+        setting?.printSettings?.bank && bill.org.bank ? bill.org.bank : null;
       return {
         title: t
           ? t("billing:bill_metadata:invoice_title", {
-            defaultValue: "Tax Invoice",
-          })
+              defaultValue: "Tax Invoice",
+            })
           : "Tax Invoice",
         billMetaHeading: t
           ? t("billing:bill_metadata:invoice_meta_heading", {
-            defaultValue: "Invoice Details",
-          })
+              defaultValue: "Invoice Details",
+            })
           : "Invoice Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:invoice_party_heading", {
-            defaultValue: "Bill To",
-          })
+              defaultValue: "Bill To",
+            })
           : "Bill To",
         bank,
         upiQr,
@@ -501,7 +561,7 @@ exports.convertBillToHtmlByTemplate = async ({
   });
   const pdfTemplateLocation = path.join(
     __dirname,
-    `../views/templates/${template}/index.ejs`
+    `../views/templates/${template}/index.ejs`,
   );
   const html = await renderHtml(pdfTemplateLocation, data);
   return { html, data };

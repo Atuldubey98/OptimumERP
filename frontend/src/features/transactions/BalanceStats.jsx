@@ -5,12 +5,12 @@ import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import { useTranslation } from "react-i18next";
 export default function BalanceStats({ balance }) {
   const { t } = useTranslation("transactions");
-  const { symbol } = useCurrentOrgCurrency();
+  const { symbol, getAmountWithSymbol } = useCurrentOrgCurrency();
   return (
     <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
       <Text>{t("transactions_ui.stats.balance")}</Text>
       <Flex>
-        <Heading>{Math.abs(balance).toFixed(2)}</Heading>
+        <Heading>{getAmountWithSymbol(Math.abs(balance))}</Heading>
         {balance > 0 ? (
           <FiArrowDownLeft size={40} color="green" />
         ) : balance < 0 ? (
@@ -22,12 +22,12 @@ export default function BalanceStats({ balance }) {
           {balance < 0
             ? t("transactions_ui.stats.owe", {
                 symbol,
-                amount: Math.abs(balance).toFixed(2),
+                amount: getAmountWithSymbol(Math.abs(balance)),
               })
             : balance > 0
             ? t("transactions_ui.stats.receive", {
                 symbol,
-                amount: Math.abs(balance).toFixed(2),
+                amount: getAmountWithSymbol(Math.abs(balance)),
               })
             : t("transactions_ui.stats.all_settled")}
         </Text>

@@ -32,7 +32,7 @@ exports.calculateTaxes = async (items = [], orgId) => {
 
 exports.calculateTaxesForBillItemsWithCurrency = async (
   items = [],
-  currencySymbol,
+  formatCurrency,
   orgId,
 ) => {
   const taxIds = items.map((item) => item.tax);
@@ -41,28 +41,23 @@ exports.calculateTaxesForBillItemsWithCurrency = async (
   const umIdsMap = await getUmIdMap(umIds, orgId);
   const itemsWithCalculatedTaxes = items.map((item) => {
     const itemTax = taxIdItemMap[item.tax];
-    const price = `${currencySymbol} ${item.price.toFixed(2)}`;
+    const price = formatCurrency.format(item.price);
     const itemSubtotal = item.price * item.quantity;
     const tax = (itemSubtotal * itemTax.percentage) / 100;
-    const total = `${currencySymbol} ${(itemSubtotal + tax).toFixed(2)}`;
+    const total = formatCurrency.format(itemSubtotal + tax);
     const um = umIdsMap[item.um];
     return {
       name: item.name,
       quantity: item.quantity,
       code : item.code,
       gst: itemTax.name,
-      taxAmount: `${currencySymbol} ${tax.toFixed(2)}`,
+      taxAmount: formatCurrency.format(tax),
       um: um.unit,
       price,
       total,
     };
   });
   return itemsWithCalculatedTaxes;
-};
-
-const makeIdMapReducer = (prev, current) => {
-  prev[current._id] = current;
-  return prev;
 };
 async function getTaxIdTaxMap(taxIds = [], orgId) {
   return getTaxMapForOrgByIds(orgId, taxIds);
