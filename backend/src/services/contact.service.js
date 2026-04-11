@@ -1,4 +1,5 @@
 const { ContactNotFound } = require("../errors/contact.error");
+const { ExpenseCategoryNotFound } = require("../errors/expenseCategory.error");
 const logger = require("../logger");
 const Contact = require("../models/contacts.model");
 const OrgModel = require("../models/org.model");
@@ -51,12 +52,22 @@ const remove = async (filter = { org: null, _id: null }) => {
   });
   return deleteContact;
 };
-
+const update = async (filter, data) => {
+  const updatedContact = await Contact.findOneAndUpdate(
+    filter,
+    data,
+    { new: true },
+  ).populate("party", "name").lean();
+  if (!updatedContact) throw new ContactNotFound();
+  logger.log("info", `Contact updated with id ${updatedContact.id}`);
+  return updatedContact;
+};
 const contactService = {
   create,
   getAll,
   getById,
   remove,
+  update,
 };
 
 module.exports = contactService;

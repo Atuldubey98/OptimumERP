@@ -15,6 +15,7 @@ const paginate = async (req, res) => {
   const expenses = await Expense.find(filter)
     .skip(skip)
     .limit(limit)
+    .sort({ createdAt: -1 })
     .populate("category")
     .lean()
     .exec();

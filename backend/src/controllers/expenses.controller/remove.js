@@ -3,27 +3,32 @@ const logger = require("../../logger");
 const Expense = require("../../models/expense.model");
 const OrgModel = require("../../models/org.model");
 const Transaction = require("../../models/transaction.model");
+const { executeMongoDbTransaction } = require("../../services/crud.service");
 
 const remove = async (req, res) => {
   const { expenseId } = req.params;
   if (!expenseId) throw new ExpenseNotFound();
-  const deletedExpense = await Expense.softDelete({
-    _id: expenseId,
-    org: req.params.orgId,
-  });
+  await executeMongoDbTransaction(async (session) => {
+    const deletedExpense = await Expense.softDelete({
+      _id: expenseId,
+      org: req.params.orgId,
+    }, { session });
 
-  if (!deletedExpense) throw new ExpenseNotFound();
-  const transaction = await Transaction.softDelete({
-    org: req.params.orgId,
-    docModel: "expense",
-    doc: expenseId,
+    if (!deletedExpense) throw new ExpenseNotFound();
+    const transaction = await Transaction.softDelete({
+      org: req.params.orgId,
+      docModel: "expense",
+      doc: expenseId,
+    }, { session });
+    if (!transaction) throw new ExpenseNotFound();
+    logger.info(`expense category deleted ${deletedExpense.id}`);
+    await OrgModel.updateOne(
+      { _id: req.params.orgId },
+      { $inc: { "relatedDocsCount.expenses": -1 } },
+      { session }
+    );
+    return deletedExpense;
   });
-  if (!transaction) throw new ExpenseNotFound();
-  logger.info(`expense category deleted ${deletedExpense.id}`);
-  await OrgModel.updateOne(
-    { _id: req.params.orgId },
-    { $inc: { "relatedDocsCount.expenses": -1 } }
-  );
   return res.status(200).json({ message: req.t("common:api.expense_deleted") });
 };
 

@@ -1,35 +1,25 @@
 const {
   ExpenseCategoryNotDeleted,
-  ExpenseCategoryNotFound,
 } = require("../../errors/expenseCategory.error");
 const logger = require("../../logger");
-const Expense = require("../../models/expense.model");
-const ExpenseCategory = require("../../models/expenseCategory.model");
-const OrgModel = require("../../models/org.model");
-const { invalidateExpenseCategoryCache } = require("../../services/expenseCategory.service");
+const expenseCategorService = require("../../services/expenseCategory.service");
 
 const remove = async (req, res) => {
-  const expense = await Expense.findOne({
-    org: req.params.orgId,
-    category: req.params.categoryId,
-  });
+  const expense = await expenseCategorService.findLinkedExepense(
+    req.params.categoryId,
+    req.params.orgId
+  );
   if (expense) {
     logger.warn(`Expense category not deleted`);
     throw new ExpenseCategoryNotDeleted({
       reason: "Expense category linked to expense",
     });
   }
-  const category = await ExpenseCategory.softDelete({
+  const category = await expenseCategorService.remove({
     org: req.params.orgId,
     _id: req.params.categoryId,
-  }).lean();
-  if (!category) throw new ExpenseCategoryNotFound();
-  logger.info(`deleted expense category ${category.id}`);
-  await OrgModel.updateOne(
-    { _id: req.params.orgId },
-    { $inc: { "relatedDocsCount.expenseCategories": -1 } }
-  );
-  invalidateExpenseCategoryCache(req.params.orgId);
+  });
+  expenseCategorService.invalidateExpenseCategoryCache(req.params.orgId);
   return res.status(200).json({ data: category });
 };
 module.exports = remove;

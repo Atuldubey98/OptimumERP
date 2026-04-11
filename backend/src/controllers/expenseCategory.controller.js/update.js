@@ -1,25 +1,17 @@
 const {
   ExpenseCategoryNotFound,
 } = require("../../errors/expenseCategory.error");
-const logger = require("../../logger");
-const ExpenseCategory = require("../../models/expenseCategory.model");
-const { invalidateExpenseCategoryCache } = require("../../services/expenseCategory.service");
+
+const expenseCategoryService = require("../../services/expenseCategory.service");
 
 const update = async (req, res) => {
   if (!req.params.categoryId) throw new ExpenseCategoryNotFound();
-  const category = await ExpenseCategory.findOneAndUpdate(
-    {
-      org: req.params.orgId,
-      _id: req.params.categoryId,
-    },
-    req.body,
-    {
-      new: true,
-    }
+  
+  const category = await expenseCategoryService.update(
+    { org: req.params.orgId, _id: req.params.categoryId },
+    req.body
   );
-  logger.info(`updated expense category ${category.id}`);
-  if (!category) throw new ExpenseCategoryNotFound();
-  invalidateExpenseCategoryCache(req.params.orgId);
+  expenseCategoryService.invalidateExpenseCategoryCache(req.params.orgId);
   return res.status(200).json({ data: category });
 };
 
