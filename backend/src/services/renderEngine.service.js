@@ -67,18 +67,26 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
       NotoSans: {
         normal: getPathForFonts("NotoSans-Regular.ttf"),
         bold: getPathForFonts("NotoSans-Bold.ttf"),
+        italics: getPathForFonts("NotoSans-Regular.ttf"),
+        bolditalics: getPathForFonts("NotoSans-Bold.ttf"),
       },
       NotoSansArabic: {
         normal: getPathForFonts("NotoSansArabic-Regular.ttf"),
         bold: getPathForFonts("NotoSansArabic-Bold.ttf"),
+        italics: getPathForFonts("NotoSansArabic-Regular.ttf"),
+        bolditalics: getPathForFonts("NotoSansArabic-Bold.ttf"),
       },
       NotoSansBengali: {
         normal: getPathForFonts("NotoSansBengali-Regular.ttf"),
         bold: getPathForFonts("NotoSansBengali-Bold.ttf"),
+        italics: getPathForFonts("NotoSansBengali-Regular.ttf"),
+        bolditalics: getPathForFonts("NotoSansBengali-Bold.ttf"),
       },
       NotoSansJP: {
         normal: getPathForFonts("NotoSansJP-Regular.ttf"),
         bold: getPathForFonts("NotoSansJP-Bold.ttf"),
+        italics: getPathForFonts("NotoSansJP-Regular.ttf"),
+        bolditalics: getPathForFonts("NotoSansJP-Bold.ttf"),
       },
     });
     const printer = pdfmake.createPdfKitDocument(docDefinition);
