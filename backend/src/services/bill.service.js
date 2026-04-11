@@ -10,6 +10,7 @@ const {
 } = require("./taxCalculator.service");
 const { getDisplaySettingForOrg } = require("./setting.service");
 const path = require("path");
+const logger = require("../logger");
 const MODEL_NAME_TO_COUNTER_KEY = {
   invoice: "invoice",
   quotes: "quotation",
@@ -329,6 +330,8 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     bill.taxCategories,
     formatCurrency,
   );
+  const fontFamily = currencies.value[setting.currency].fontFamily || "Roboto";  
+  logger.info("Selected font family for bill generation" + fontFamily);
   const translateTemplateLabel = (key, defaultValue) =>
     t ? t(`billing:template_labels.${key}`, { defaultValue }) : defaultValue;
   const data = {
@@ -345,6 +348,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     rawShippingCharges: Number(bill.shippingCharges || 0),
     currencyTaxCategories,
     dateLocale,
+    fontFamily,
     metaLabels: {
       tax_invoice: translateTemplateLabel("tax_invoice", "Tax Invoice"),
       phone: translateTemplateLabel("phone", "Phone"),

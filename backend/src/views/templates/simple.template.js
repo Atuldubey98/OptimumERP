@@ -331,6 +331,7 @@ const simpleTemplate = (data, color) => {
     defaultStyle: {
       fontSize: 7.7,
       lineHeight: 1.25,
+      font: data.fontFamily,
       color: palette.text,
     },
   };

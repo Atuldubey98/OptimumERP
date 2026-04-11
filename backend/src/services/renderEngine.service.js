@@ -56,7 +56,6 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
   const getPathForFonts = (filename) => {
     return path.join(__dirname, "..", "..", "public", "fonts", filename);
   };
-
   return new Promise((resolve, reject) => {
     const pdfmake = new PdfMake({
       Roboto: {
@@ -64,6 +63,22 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
         bold: getPathForFonts("Roboto-Medium.ttf"),
         italics: getPathForFonts("Roboto-Italic.ttf"),
         bolditalics: getPathForFonts("Roboto-MediumItalic.ttf"),
+      },
+      NotoSans: {
+        normal: getPathForFonts("NotoSans-Regular.ttf"),
+        bold: getPathForFonts("NotoSans-Bold.ttf"),
+      },
+      NotoSansArabic: {
+        normal: getPathForFonts("NotoSansArabic-Regular.ttf"),
+        bold: getPathForFonts("NotoSansArabic-Bold.ttf"),
+      },
+      NotoSansBengali: {
+        normal: getPathForFonts("NotoSansBengali-Regular.ttf"),
+        bold: getPathForFonts("NotoSansBengali-Bold.ttf"),
+      },
+      NotoSansJP: {
+        normal: getPathForFonts("NotoSansJP-Regular.ttf"),
+        bold: getPathForFonts("NotoSansJP-Bold.ttf"),
       },
     });
     const printer = pdfmake.createPdfKitDocument(docDefinition);

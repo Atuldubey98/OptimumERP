@@ -149,7 +149,8 @@
         "code": "INR",
         "name_plural": "Indian rupees",
         "locale": "English",
-        "localCode": "en-IN"
+        "localCode": "en-IN",
+        "fontFamily": "Roboto"
       },
       "USD": {
         "symbol": "$",
@@ -160,7 +161,8 @@
         "code": "USD",
         "name_plural": "US dollars",
         "locale": "English",
-        "localCode": "en-US"
+        "localCode": "en-US",
+        "fontFamily": "Roboto"
       },
       "EUR": {
         "symbol": "€",
@@ -171,7 +173,8 @@
         "code": "EUR",
         "name_plural": "euros",
         "locale": "English",
-        "localCode": "en-IE"
+        "localCode": "en-IE",
+        "fontFamily": "Roboto"
       },
       "GBP": {
         "symbol": "£",
@@ -182,7 +185,8 @@
         "code": "GBP",
         "name_plural": "pounds sterling",
         "locale": "English",
-        "localCode": "en-GB"
+        "localCode": "en-GB",
+        "fontFamily": "Roboto"
       },
       "JPY": {
         "symbol": "¥",
@@ -193,7 +197,8 @@
         "code": "JPY",
         "name_plural": "yen",
         "locale": "Japanese",
-        "localCode": "ja-JP"
+        "localCode": "ja-JP",
+        "fontFamily": "NotoSansJP"
       },
       "AED": {
         "symbol": "د.إ",
@@ -204,7 +209,8 @@
         "code": "AED",
         "name_plural": "dirhams",
         "locale": "English",
-        "localCode": "en-AE"
+        "localCode": "en-AE",
+        "fontFamily": "NotoSansArabic"
       },
       "SAR": {
         "symbol": "﷼",
@@ -215,7 +221,8 @@
         "code": "SAR",
         "name_plural": "riyals",
         "locale": "English",
-        "localCode": "en-SA"
+        "localCode": "en-SA",
+        "fontFamily": "NotoSansArabic"
       },
       "BDT": {
         "symbol": "৳",
@@ -226,7 +233,8 @@
         "code": "BDT",
         "name_plural": "taka",
         "locale": "Bengali",
-        "localCode": "bn-BD"
+        "localCode": "bn-BD",
+        "fontFamily": "NotoSansBengali"
       },
       "PKR": {
         "symbol": "₨",
@@ -237,7 +245,8 @@
         "code": "PKR",
         "name_plural": "rupees",
         "locale": "English",
-        "localCode": "en-PK"
+        "localCode": "en-PK",
+        "fontFamily": "NotoSans"
       },
       "LKR": {
         "symbol": "Rs",
@@ -248,7 +257,8 @@
         "code": "LKR",
         "name_plural": "rupees",
         "locale": "English",
-        "localCode": "en-LK"
+        "localCode": "en-LK",
+        "fontFamily": "NotoSans"
       },
       "AUD": {
         "symbol": "$",
@@ -259,7 +269,8 @@
         "code": "AUD",
         "name_plural": "Australian dollars",
         "locale": "English",
-        "localCode": "en-AU"
+        "localCode": "en-AU",
+        "fontFamily": "Roboto"
       },
       "CAD": {
         "symbol": "$",
@@ -270,7 +281,8 @@
         "code": "CAD",
         "name_plural": "Canadian dollars",
         "locale": "English",
-        "localCode": "en-CA"
+        "localCode": "en-CA",
+        "fontFamily": "Roboto"
       },
       "SGD": {
         "symbol": "$",
@@ -281,7 +293,8 @@
         "code": "SGD",
         "name_plural": "Singapore dollars",
         "locale": "English",
-        "localCode": "en-SG"
+        "localCode": "en-SG",
+        "fontFamily": "Roboto"
       },
       "ZAR": {
         "symbol": "R",
@@ -292,7 +305,8 @@
         "code": "ZAR",
         "name_plural": "rand",
         "locale": "English",
-        "localCode": "en-ZA"
+        "localCode": "en-ZA",
+        "fontFamily": "Roboto"
       }
     }
   },
