@@ -3,6 +3,7 @@ const Contact = require("../../models/contacts.model");
 const OrgModel = require("../../models/org.model");
 const Party = require("../../models/party.model");
 const Transaction = require("../../models/transaction.model");
+const { executeMongoDbTransaction } = require("../../services/crud.service");
 
 const remove = async (req, res) => {
   if (!req.params.partyId) throw new PartyNotFound();
@@ -12,7 +13,9 @@ const remove = async (req, res) => {
   });
   if (transaction)
     throw new PartyNotDelete({
-      reason: req.t("common:api.entity_linked", { entity: transaction.docModel }),
+      reason: req.t("common:api.entity_linked", {
+        entity: transaction.docModel,
+      }),
     });
   const contact = await Contact.findOne({
     org: req.params.orgId,
@@ -22,15 +25,18 @@ const remove = async (req, res) => {
     throw new PartyNotDelete({
       reason: req.t("common:api.entity_linked", { entity: "contact" }),
     });
-  const party = await Party.softDelete({
-    _id: req.params.partyId,
-    org: req.params.orgId,
+  await executeMongoDbTransaction(async (session) => {
+    const party = await Party.softDelete({
+      _id: req.params.partyId,
+      org: req.params.orgId,
+    });
+    if (!party) throw new PartyNotFound();
+    await OrgModel.updateOne(
+      { _id: req.params.orgId },
+      { $inc: { "relatedDocsCount.parties": -1 } },
+    );
+    return party;
   });
-  if (!party) throw new PartyNotFound();
-  await OrgModel.updateOne(
-    { _id: req.params.orgId },
-    { $inc: { "relatedDocsCount.parties": -1 } }
-  );
   return res.status(200).json({ message: req.t("common:api.party_deleted") });
 };
 
