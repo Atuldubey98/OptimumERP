@@ -112,7 +112,7 @@ export default function ExpensesPage() {
     setExpenseStatus("idle");
   });
   const deleting = expenseStatus === "deleting";
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
 
   return (
     <MainLayout>
@@ -134,7 +134,7 @@ export default function ExpensesPage() {
             heading={heading}
             tableData={expenses.map((expense) => ({
               ...expense,
-              amount: `${symbol} ${expense.amount}`,
+              amount: getAmountWithSymbol(expense.amount),
               category: expense.category
                 ? expense.category.name
                 : t("expense_ui.messages.miscellaneous"),
@@ -187,7 +187,7 @@ export default function ExpensesPage() {
             item={{
               ...expenseSelected,
               date: moment(expenseSelected.date).format("DD-MM-YYYY"),
-              amount: `${symbol} ${expenseSelected.amount}`,
+              amount: getAmountWithSymbol(expenseSelected.amount),
               category: expenseSelected.category
                 ? expenseSelected.category.name
                 : t("expense_ui.messages.miscellaneous"),

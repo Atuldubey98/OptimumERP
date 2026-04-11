@@ -47,7 +47,7 @@ export default function PurchaseOrderPage() {
     entity: "purchaseOrders",
     storageKey: "dateFilter:purchaseOrders",
   });
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   const loading = status === "loading";
   const navigate = useNavigate();
   const toast = useToast();
@@ -186,7 +186,7 @@ export default function PurchaseOrderPage() {
               heading={t("purchase_order_ui.page.heading")}
               tableData={purchaseOrderItems.map((item) => ({
                 ...item,
-                grandTotal: `${symbol} ${getBillGrandTotal(item).toFixed(2)}`,
+                grandTotal: getAmountWithSymbol(getBillGrandTotal(item)),
                 date: moment(item.date).format("LL"),
                 partyName: (
                   <ChakraLink

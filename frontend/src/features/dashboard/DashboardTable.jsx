@@ -29,7 +29,7 @@ export default function DashboardTable({
   onViewMore,
 }) {
   const { t } = useTranslation("dashboard");
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   return (
     <Card borderRadius="2xl" overflow="hidden">
       <CardBody px={{ base: 4, md: 6 }} py={{ base: 4, md: 5 }}>
@@ -64,7 +64,7 @@ export default function DashboardTable({
               <Tr key={tableRow._id}>
                 <Td>{tableRow.num}</Td>
                 <Td>{tableRow.partyName}</Td>
-                <Td>{`${symbol} ${getBillGrandTotal(tableRow).toFixed(2)}`}</Td>
+                <Td>{getAmountWithSymbol(getBillGrandTotal(tableRow))}</Td>
                 <Td>{tableRow.status}</Td>
                 <Td>{tableRow.date}</Td>
               </Tr>

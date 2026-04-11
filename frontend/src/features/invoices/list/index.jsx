@@ -50,10 +50,9 @@ export default function InvoicesPage() {
     entity: "invoices",
     storageKey: "dateFilter:invoices",
   });
-  const auth = useAuth();
   const loading = status === "loading";
   const navigate = useNavigate();
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
 
   const invoiceTableMapper = (invoice) => ({
     partyName: (
@@ -66,7 +65,7 @@ export default function InvoicesPage() {
     ),
     ...invoice,
     date: moment(invoice.date).format("LL"),
-    grandTotal: `${symbol} ${getBillGrandTotal(invoice).toFixed(2)}`,
+    grandTotal: getAmountWithSymbol(getBillGrandTotal(invoice)),
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -88,7 +87,7 @@ export default function InvoicesPage() {
       if (!invoice) return;
       setInvoiceStatus("deleting");
       await instance.delete(
-        `/api/v1/organizations/${orgId}/invoices/${invoice._id}`
+        `/api/v1/organizations/${orgId}/invoices/${invoice._id}`,
       );
       onCloseDeleteModal();
       fetchInvoices();
@@ -244,7 +243,9 @@ export default function InvoicesPage() {
             downloadUrl={`/api/v1/organizations/${orgId}/invoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
             defaultSelectedFields={{
               partyName: t("invoice_ui.export.default_fields.party_name"),
-              billingAddress: t("invoice_ui.export.default_fields.billing_address"),
+              billingAddress: t(
+                "invoice_ui.export.default_fields.billing_address",
+              ),
               total: t("invoice_ui.export.default_fields.total"),
               totalTax: t("invoice_ui.export.default_fields.total_tax"),
               date: t("invoice_ui.export.default_fields.date"),
@@ -253,8 +254,12 @@ export default function InvoicesPage() {
               grandTotal: t("invoice_ui.export.default_fields.grand_total"),
             }}
             selectableFields={{
-              createdByEmail: t("invoice_ui.export.selectable_fields.created_by_email"),
-              createdByName: t("invoice_ui.export.selectable_fields.created_by_name"),
+              createdByEmail: t(
+                "invoice_ui.export.selectable_fields.created_by_email",
+              ),
+              createdByName: t(
+                "invoice_ui.export.selectable_fields.created_by_name",
+              ),
               poNo: t("invoice_ui.export.selectable_fields.po_number"),
               poDate: t("invoice_ui.export.selectable_fields.po_date"),
               cgst: t("invoice_ui.export.selectable_fields.cgst"),

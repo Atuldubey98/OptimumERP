@@ -81,7 +81,7 @@ export default function RecordPaymentModal({
       formik.setValues(defaultPayment);
     }
   }, [invoice]);
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   const grandTotal = getBillGrandTotal(invoice);
   const shippingCharges = getShippingChargesValue(invoice);
   return (
@@ -96,7 +96,7 @@ export default function RecordPaymentModal({
               <Divider />
               <Text fontSize={"xl"}>
                 <strong>Grand Total : </strong>
-                {symbol} {grandTotal.toFixed(2)}
+                {getAmountWithSymbol(grandTotal)}
               </Text>
               <Divider />
               <Text>
@@ -105,15 +105,15 @@ export default function RecordPaymentModal({
               </Text>
               <Text>
                 <strong>Sub Total : </strong>
-                {symbol} {invoice.total.toFixed(2)}
+                {getAmountWithSymbol(invoice.total)}
               </Text>
               <Text>
                 <strong>Shipping Charges : </strong>
-                {symbol} {shippingCharges.toFixed(2)}
+                {getAmountWithSymbol(shippingCharges)}
               </Text>
               <Text>
                 <strong> Total Tax: </strong>
-                {symbol} {invoice.totalTax.toFixed(2)}
+                {getAmountWithSymbol(invoice.totalTax)}
               </Text>
               <Divider />
               <FormControl

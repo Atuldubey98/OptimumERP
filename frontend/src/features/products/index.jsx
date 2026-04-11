@@ -117,12 +117,12 @@ export default function ProductsPage() {
     closeDeleteModal();
     setProductStatus("idle");
   });
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   const productsMapper = (product) => ({
     ...product,
     um: product.um.name,
-    costPrice: `${symbol} ${product.costPrice}`,
-    sellingPrice: `${symbol} ${product.sellingPrice}`,
+    costPrice: getAmountWithSymbol(product.costPrice),
+    sellingPrice: getAmountWithSymbol(product.sellingPrice),
     type: (
       <Tag
         textTransform={"capitalize"}
@@ -196,8 +196,8 @@ export default function ProductsPage() {
             item={{
               ...selectedToShowProduct,
               um: selectedToShowProduct.um.name,
-              costPrice: `${symbol} ${selectedToShowProduct.costPrice}`,
-              sellingPrice: `${symbol} ${selectedToShowProduct.sellingPrice}`,
+              costPrice: getAmountWithSymbol(selectedToShowProduct.costPrice),
+              sellingPrice: getAmountWithSymbol(selectedToShowProduct.sellingPrice),
               type: selectedToShowProduct.type?.toUpperCase(),
               createdAt: moment(selectedToShowProduct.createdAt).format("LL"),
             }}

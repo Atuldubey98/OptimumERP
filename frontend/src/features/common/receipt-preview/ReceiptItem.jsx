@@ -3,10 +3,9 @@ import {
     GridItem,
     Text
 } from "@chakra-ui/react";
-import React from "react";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function ReceiptItem(props) {
-  const {symbol} = useCurrentOrgCurrency();
+  const {getAmountWithSymbol} = useCurrentOrgCurrency();
   return (
     <Grid p={3} gap={2} templateColumns={"4fr 1fr 1fr 1fr 1fr"}>
       <GridItem>
@@ -17,14 +16,14 @@ export default function ReceiptItem(props) {
         <Text textAlign={"right"}>{props.item.quantity}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"right"}>{`${symbol} ${props.item.price}`}</Text>
+        <Text textAlign={"right"}>{getAmountWithSymbol(props.item.price)}</Text>
       </GridItem>
       <GridItem>
         <Text textAlign={"right"}>{props.item.tax.name}</Text>
       </GridItem>
       <GridItem>
         <Text textAlign={"right"}>
-         {symbol} { props.item.price * props.item.quantity}
+         {getAmountWithSymbol(props.item.price * props.item.quantity)}
         </Text>
       </GridItem>
     </Grid>

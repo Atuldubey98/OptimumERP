@@ -10,7 +10,7 @@ export default function BillStatsByStatus({ invoicesByStatus, label }) {
     (prev, currentInvoiceStatus) => prev + currentInvoiceStatus.count,
     0
   );
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
 
   return (
     <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
@@ -20,9 +20,7 @@ export default function BillStatsByStatus({ invoicesByStatus, label }) {
       <Grid width={"100%"}>
         {invoicesByStatus.map((invByStatus) => (
           <StatProgress
-            value={`${invByStatus._id} ${symbol} ${invByStatus.total.toFixed(
-              2
-            )})`}
+            value={`${invByStatus._id} ${getAmountWithSymbol(invByStatus.total)}`}
             key={invByStatus._id}
             progress={(invByStatus.count / numberOfInvoices) * 100}
             label={t("transactions_ui.stats.bill_label", {

@@ -8,12 +8,12 @@ import {
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 
 export default function AmountField({ label, amount }) {
-  const {symbol} = useCurrentOrgCurrency();
+  const {getAmountWithSymbol, symbol} = useCurrentOrgCurrency();
   return (
     <Flex justifyContent={"center"} alignItems={"center"}>
       <Text flex={4}>{label}</Text>
       <InputGroup flex={8}>
-        <Input textAlign={"right"} value={amount} readOnly />
+        <Input textAlign={"right"} value={getAmountWithSymbol(amount)} readOnly />
         <InputRightElement>{symbol}</InputRightElement>
       </InputGroup>
     </Flex>

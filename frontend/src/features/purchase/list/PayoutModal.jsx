@@ -84,7 +84,7 @@ export default function PayoutModal({
       formik.setValues(defaultPayment);
     }
   }, [purchase]);
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   const grandTotal = getBillGrandTotal(purchase);
   const shippingCharges = getShippingChargesValue(purchase);
   return (
@@ -99,7 +99,7 @@ export default function PayoutModal({
               <Divider />
               <Text fontSize={"xl"}>
                 <strong>{t("purchase_ui.payout.grand_total")} : </strong>
-                {symbol} {grandTotal.toFixed(2)}
+                {getAmountWithSymbol(grandTotal)}
               </Text>
               <Divider />
               <Text>
@@ -108,7 +108,7 @@ export default function PayoutModal({
               </Text>
               <Text>
                 <strong>{t("purchase_ui.payout.sub_total")} : </strong>
-                {symbol} {purchase.total.toFixed(2)}
+                {getAmountWithSymbol(purchase.total)}
               </Text>
               <Text>
                 <strong>
@@ -117,11 +117,11 @@ export default function PayoutModal({
                   })}
                   {" : "}
                 </strong>
-                {symbol} {shippingCharges.toFixed(2)}
+                {getAmountWithSymbol(shippingCharges)}
               </Text>
               <Text>
                 <strong> {t("purchase_ui.payout.total_tax")}: </strong>
-                {symbol} {purchase.totalTax.toFixed(2)}
+                {getAmountWithSymbol(purchase.totalTax)}
               </Text>
               <Divider />
               <FormControl

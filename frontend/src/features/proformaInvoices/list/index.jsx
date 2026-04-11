@@ -53,7 +53,7 @@ export default function ProformaInvoicesPage() {
   });
   const loading = status === "loading";
   const navigate = useNavigate();
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   const { orgId } = useParams();
   const {
     isOpen: isAlertModalOpen,
@@ -175,7 +175,7 @@ export default function ProformaInvoicesPage() {
       </ChakraLink>
     ),
     status: <Status status={item.status} statusList={invoiceStatusList} />,
-    grandTotal: `${symbol} ${getBillGrandTotal(item).toFixed(2)}`,
+    grandTotal: getAmountWithSymbol(getBillGrandTotal(item)),
   });
   return (
     <MainLayout>

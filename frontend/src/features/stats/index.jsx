@@ -49,7 +49,7 @@ export default function StatsPage() {
         params: {
           period: currentPeriod,
         },
-      }
+      },
     );
     setStats(data.data);
     setStatus("idle");
@@ -59,9 +59,9 @@ export default function StatsPage() {
   }, [currentPeriod]);
   const expensesTotal = stats.expensesByCategory.reduce(
     (total, prev) => prev.total + total,
-    0
+    0,
   );
-  const { symbol } = useCurrentOrgCurrency();
+  const { getAmountWithSymbol } = useCurrentOrgCurrency();
   const periods = [
     {
       label: t("stats_ui.periods.this_week"),
@@ -77,7 +77,7 @@ export default function StatsPage() {
     },
   ];
   const currentPeriodLabel = periods.find(
-    (period) => period.value === currentPeriod
+    (period) => period.value === currentPeriod,
   ).label;
   const totalSales = stats.invoicesTotal
     ? getBillGrandTotal(stats.invoicesTotal)
@@ -126,7 +126,7 @@ export default function StatsPage() {
                   icon={<PiMoneyDuotone size={40} color="green" />}
                   dashType={t("stats_ui.cards.sales")}
                   period={currentPeriodLabel}
-                  dashTotal={`${symbol} ${totalSales.toFixed(2)}`}
+                  dashTotal={getAmountWithSymbol(totalSales)}
                 />
               </Box>
               <Box w={"100%"} maxW={350}>
@@ -134,7 +134,7 @@ export default function StatsPage() {
                   icon={<FaMoneyBillTrendUp size={40} color="gray" />}
                   dashType={t("stats_ui.cards.purchase")}
                   period={currentPeriodLabel}
-                  dashTotal={`${symbol} ${totalPurchase.toFixed(2)}`}
+                  dashTotal={getAmountWithSymbol(totalPurchase)}
                 />
               </Box>
               <Box w={"100%"} maxW={350}>
@@ -142,7 +142,7 @@ export default function StatsPage() {
                   icon={<GiExpense size={40} color="brown" />}
                   dashType={t("stats_ui.cards.expenses")}
                   period={currentPeriodLabel}
-                  dashTotal={`${symbol} ${expensesTotal.toFixed(2)}`}
+                  dashTotal={getAmountWithSymbol(expensesTotal)}
                 />
               </Box>
             </Flex>
@@ -156,10 +156,8 @@ export default function StatsPage() {
                     {stats.topFiveClientTotal.map((client, index) => (
                       <StatProgress
                         key={index}
-                        value={`${client.party.name} (${symbol} ${getBillGrandTotal(
-                          client,
-                        )})`}
-                        label={`${symbol} ${getBillGrandTotal(client)}`}
+                        value={`${client.party.name} (${getAmountWithSymbol(getBillGrandTotal(client))})`}
+                        label={getAmountWithSymbol(getBillGrandTotal(client))}
                         progress={
                           (getBillGrandTotal(client) /
                             getBillGrandTotal(stats.invoicesTotal)) *
@@ -197,10 +195,10 @@ export default function StatsPage() {
                         key={index}
                         value={
                           expeseCategory?._id
-                            ? `${expeseCategory.category.name} (${symbol} ${expeseCategory.total})`
-                            : `${t("stats_ui.labels.miscellaneous")} (${symbol} ${expeseCategory.total})`
+                            ? `${expeseCategory.category.name} (${getAmountWithSymbol(expeseCategory.total)})`
+                            : `${t("stats_ui.labels.miscellaneous")} (${getAmountWithSymbol(expeseCategory.total)})`
                         }
-                        label={`${symbol} ${expeseCategory.total}`}
+                        label={getAmountWithSymbol(expeseCategory.total)}
                         progress={(expeseCategory.total / expensesTotal) * 100}
                       />
                     ))}
