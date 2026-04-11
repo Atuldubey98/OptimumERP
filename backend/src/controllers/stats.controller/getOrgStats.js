@@ -4,104 +4,111 @@ const Purchase = require("../../models/purchase.model");
 const { Types, isValidObjectId } = require("mongoose");
 const { OrgNotFound } = require("../../errors/org.error");
 
-const getPeriodFilters = (period)=>{
-  const periodFilters = {
-    thisWeek: {
-      $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
-      $lte: new Date(),
-    },
-    thisMonth: {
-      $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      $lte: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-    },
-    thisYear: {
-      $gte: new Date(new Date().getFullYear() - 1, 0, 1),
-      $lte: new Date(new Date().getFullYear(), 11, 31),
-    },
-  }
-  return periodFilters[period] || periodFilters['thisYear'];
-}
+const getPeriodFilters = (period) => {
+  const now = new Date();
+
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const endOfYear = new Date(
+    now.getFullYear(),
+    11,
+    31,
+    23,
+    59,
+    59,
+    999
+  );
+
+  const filters = {
+    thisWeek: { $gte: startOfWeek, $lte: endOfWeek },
+    thisMonth: { $gte: startOfMonth, $lte: endOfMonth },
+    thisYear: { $gte: startOfYear, $lte: endOfYear },
+  };
+
+  return filters[period] || filters.thisYear;
+};
 
 const getOrgStats = async (req, res) => {
   const { period } = req.query;
   const orgId = req.params.orgId;
+
   if (!isValidObjectId(orgId)) throw new OrgNotFound();
+
   const periodFilter = getPeriodFilters(period);
+  const objectOrgId = new Types.ObjectId(orgId);
+
+  const baseMatch = {
+    org: objectOrgId,
+    date: periodFilter,
+  };
+
   const aggregator = [
-    {
-      $match: {
-        org: new Types.ObjectId(req.params.orgId),
-        date: periodFilter,
-      },
-    },
+    { $match: baseMatch },
     {
       $group: {
         _id: null,
         totalTax: { $sum: "$totalTax" },
         total: { $sum: "$total" },
         shippingCharges: { $sum: "$shippingCharges" },
-        grandTotal: {
-          $sum: {
-            $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
-          },
-        },
+        grandTotal: { $sum: "$grandTotal" },
         count: { $sum: 1 },
       },
     },
-  ]
-  const [invoicesTotal, purchaseTotal] = await Promise.all([
-    Invoice.aggregate(aggregator),
-    Purchase.aggregate(aggregator),
-  ]);
+  ];
+
   const topFiveAggregator = [
-    {
-      $match: {
-        org: new Types.ObjectId(req.params.orgId),
-        date: periodFilter,
-      },
-    },
+    { $match: baseMatch },
     {
       $group: {
         _id: "$party",
         totalTax: { $sum: "$totalTax" },
         total: { $sum: "$total" },
         shippingCharges: { $sum: "$shippingCharges" },
-        grandTotal: {
-          $sum: {
-            $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
-          },
-        },
+        grandTotal: { $sum: "$grandTotal" },
         count: { $sum: 1 },
       },
     },
-    {
-      $sort: {
-        grandTotal: -1,
-      },
-    },
-    {
-      $limit: 5,
-    },
+    { $sort: { grandTotal: -1 } },
+    { $limit: 5 },
     {
       $lookup: {
         from: "parties",
         localField: "_id",
         foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              name: 1,
+              gstNo: 1,
+            },
+          },
+        ],
         as: "party",
       },
     },
-    {
-      $unwind: "$party",
-    },
+    { $unwind: "$party" },
   ];
-  const topFiveClientTotal = await Invoice.aggregate(topFiveAggregator);
-  const expensesByCategory = await Expense.aggregate([
-    {
-      $match: {
-        org: new Types.ObjectId(req.params.orgId),
-        date: periodFilter,
-      },
-    },
+
+  const expensesPipeline = [
+    { $match: baseMatch },
     {
       $group: {
         _id: "$category",
@@ -114,6 +121,13 @@ const getOrgStats = async (req, res) => {
         from: "expense_categories",
         localField: "_id",
         foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              name: 1,
+            },
+          },
+        ],
         as: "category",
       },
     },
@@ -123,13 +137,27 @@ const getOrgStats = async (req, res) => {
         preserveNullAndEmptyArrays: true,
       },
     },
+  ];
+
+  const [
+    invoicesTotal,
+    purchaseTotal,
+    topFiveClientTotal,
+    expensesByCategory,
+  ] = await Promise.all([
+    Invoice.aggregate(aggregator),
+    Purchase.aggregate(aggregator),
+    Invoice.aggregate(topFiveAggregator),
+    Expense.aggregate(expensesPipeline),
   ]);
+
   const response = {
     invoicesTotal: invoicesTotal.length ? invoicesTotal[0] : null,
     purchaseTotal: purchaseTotal.length ? purchaseTotal[0] : null,
     topFiveClientTotal,
     expensesByCategory,
   };
+
   return res.status(200).json({ data: response });
 };
 
