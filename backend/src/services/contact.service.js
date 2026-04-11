@@ -39,11 +39,11 @@ const getById = async (id) => {
 };
 const remove = async (filter = { org: null, _id: null }) => {    
   const deleteContact = executeMongoDbTransaction(async (session) => {    
-    const deletedContact = await Contact.softDelete(filter);
+    const deletedContact = await Contact.softDelete(filter, {session});
     if (!deletedContact) throw new ContactNotFound();
     logger.log("info", `Contact deleted with id ${deletedContact.id}`);
     await changeOrgContactCount({
-      orgId: filter.orgId,
+      orgId: filter.org,
       incrementBy: -1,
       session,
     });
