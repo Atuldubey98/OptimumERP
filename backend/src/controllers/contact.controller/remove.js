@@ -1,21 +1,13 @@
-const { ContactNotFound } = require("../../errors/contact.error");
-const logger = require("../../logger");
-const Contact = require("../../models/contacts.model");
-const OrgModel = require("../../models/org.model");
-
+const contactService = require("../../services/contact.service");
 
 const remove = async (req, res) => {
-  const deletedContact = await Contact.softDelete({
-    _id: req.params.id,
+  const contact = await contactService.remove({
     org: req.params.orgId,
+    _id: req.params.id,
   });
-  if (!deletedContact) throw new ContactNotFound();
-  logger.log("info", `Contact deleted with id ${deletedContact.id}`);
-  await OrgModel.updateOne(
-    { _id: req.params.orgId },
-    { $inc: { "relatedDocsCount.contacts": -1 } }
-  );
-  return res.status(200).json({ message: req.t('contact:contact:deleted') });
+  return res
+    .status(200)
+    .json({ message: req.t("contact:contact:deleted"), data: contact.id });
 };
 
 module.exports = remove;

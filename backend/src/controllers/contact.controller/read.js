@@ -1,13 +1,7 @@
 const { ContactNotFound } = require("../../errors/contact.error");
-const Contact = require("../../models/contacts.model");
-
+const contactService = require("../../services/contact.service");
 const read = async (req, res) => {
-  const contact = await Contact.findOne({
-    _id: req.params.id,
-    org: req.params.orgId,
-  })
-    .populate("party")
-    .lean();
+  const contact = await contactService.getById(req.params.id);
   if (!contact) throw new ContactNotFound();
   return res.status(200).json({ data: contact });
 };

@@ -1,6 +1,10 @@
+const { NODE_ENV } = require("../config");
 const logger = require("../logger");
 module.exports = (err, req, res, next) => {
   if (res.headersSent) return next(err);
+  if(NODE_ENV === "development") {
+    logger.error(err.stack || err);
+  }
   let code = err.code || 500;
   let message;
   if (err.name === "ValidationError") {

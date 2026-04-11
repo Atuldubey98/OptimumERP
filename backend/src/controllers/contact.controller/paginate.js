@@ -4,6 +4,7 @@ const {
   hasUserReachedCreationLimits,
 } = require("../../services/crud.service");
 const Contact = require("../../models/contacts.model");
+const contactService = require("../../services/contact.service");
 
 const paginate = async (req, res) => {
   const { filter, page, limit, skip, total, totalPages } =
@@ -12,23 +13,24 @@ const paginate = async (req, res) => {
       model: Contact,
       modelName: entities.CONTACTS,
     });
-  const contacts = await Contact.find(filter)
-    .populate("party")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
+  const contacts = await contactService.getAll({
+    filter,
+    skip,
+    limit,
+    sort: { createdAt: -1 },
+  });
+  const reachedLimit = hasUserReachedCreationLimits({
+    relatedDocsCount: res.locals.organization.relatedDocsCount,
+    userLimits: req.session.user.limits,
+    key: "contacts",
+  });
   return res.status(200).json({
     currentPage: page,
     limit,
     totalPages,
     total,
     data: contacts,
-    reachedLimit: hasUserReachedCreationLimits({
-      relatedDocsCount: res.locals.organization.relatedDocsCount,
-      userLimits: req.session.user.limits,
-      key: "contacts",
-    }),
+    reachedLimit,
   });
 };
 
