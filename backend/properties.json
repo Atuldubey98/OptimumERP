@@ -140,17 +140,6 @@
   {
     "name": "CURRENCIES_CONFIG",
     "value": {
-      "EUR": {
-        "symbol": "€",
-        "name": "Euro",
-        "symbol_native": "€",
-        "decimal_digits": 2,
-        "rounding": 0,
-        "code": "EUR",
-        "name_plural": "euros",
-        "locale": "French",
-        "localCode": "fr-FR"
-      },
       "INR": {
         "symbol": "₹",
         "name": "Indian Rupee",
@@ -162,27 +151,104 @@
         "locale": "English",
         "localCode": "en-IN"
       },
-      "BRL": {
-        "symbol": "R$",
-        "name": "Brazilian Real",
-        "symbol_native": "R$",
-        "decimal_digits": 2,
-        "rounding": 0,
-        "code": "BRL",
-        "name_plural": "Brazilian reals",
-        "locale": "Portuguese",
-        "localCode": "pt-BR"
-      },
-      "GYD": {
+      "USD": {
         "symbol": "$",
-        "name": "Guyanese Dollar",
+        "name": "US Dollar",
         "symbol_native": "$",
         "decimal_digits": 2,
         "rounding": 0,
-        "code": "GYD",
-        "name_plural": "Guyanese dollars",
+        "code": "USD",
+        "name_plural": "US dollars",
         "locale": "English",
         "localCode": "en-US"
+      },
+      "EUR": {
+        "symbol": "€",
+        "name": "Euro",
+        "symbol_native": "€",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "EUR",
+        "name_plural": "euros",
+        "locale": "English",
+        "localCode": "en-IE"
+      },
+      "GBP": {
+        "symbol": "£",
+        "name": "British Pound",
+        "symbol_native": "£",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "GBP",
+        "name_plural": "pounds sterling",
+        "locale": "English",
+        "localCode": "en-GB"
+      },
+      "JPY": {
+        "symbol": "¥",
+        "name": "Japanese Yen",
+        "symbol_native": "円",
+        "decimal_digits": 0,
+        "rounding": 0,
+        "code": "JPY",
+        "name_plural": "yen",
+        "locale": "Japanese",
+        "localCode": "ja-JP"
+      },
+      "AED": {
+        "symbol": "د.إ",
+        "name": "UAE Dirham",
+        "symbol_native": "درهم",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "AED",
+        "name_plural": "dirhams",
+        "locale": "English",
+        "localCode": "en-AE"
+      },
+      "SAR": {
+        "symbol": "﷼",
+        "name": "Saudi Riyal",
+        "symbol_native": "ريال",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "SAR",
+        "name_plural": "riyals",
+        "locale": "English",
+        "localCode": "en-SA"
+      },
+      "BDT": {
+        "symbol": "৳",
+        "name": "Bangladeshi Taka",
+        "symbol_native": "৳",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "BDT",
+        "name_plural": "taka",
+        "locale": "Bengali",
+        "localCode": "bn-BD"
+      },
+      "PKR": {
+        "symbol": "₨",
+        "name": "Pakistani Rupee",
+        "symbol_native": "₨",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "PKR",
+        "name_plural": "rupees",
+        "locale": "English",
+        "localCode": "en-PK"
+      },
+      "LKR": {
+        "symbol": "Rs",
+        "name": "Sri Lankan Rupee",
+        "symbol_native": "Rs",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "LKR",
+        "name_plural": "rupees",
+        "locale": "English",
+        "localCode": "en-LK"
       },
       "AUD": {
         "symbol": "$",
@@ -193,7 +259,7 @@
         "code": "AUD",
         "name_plural": "Australian dollars",
         "locale": "English",
-        "localCode": "en-US"
+        "localCode": "en-AU"
       },
       "CAD": {
         "symbol": "$",
@@ -206,39 +272,6 @@
         "locale": "English",
         "localCode": "en-CA"
       },
-      "FJD": {
-        "symbol": "FJ$",
-        "name": "Fijian Dollar",
-        "symbol_native": "$",
-        "decimal_digits": 2,
-        "rounding": 0,
-        "code": "FJD",
-        "name_plural": "Fijian dollars",
-        "locale": "English",
-        "localCode": "en-FJ"
-      },
-      "NZD": {
-        "symbol": "$",
-        "name": "New Zealand Dollar",
-        "symbol_native": "$",
-        "decimal_digits": 2,
-        "rounding": 0,
-        "code": "NZD",
-        "name_plural": "New Zealand dollars",
-        "locale": "English",
-        "localCode": "en-NZ"
-      },
-      "PKR": {
-        "symbol": "₨",
-        "name": "Pakistani Rupee",
-        "symbol_native": "₨",
-        "decimal_digits": 2,
-        "rounding": 0,
-        "code": "PKR",
-        "name_plural": "Pakistani rupees",
-        "locale": "Urdu",
-        "localCode": "ur-PK"
-      },
       "SGD": {
         "symbol": "$",
         "name": "Singapore Dollar",
@@ -249,6 +282,17 @@
         "name_plural": "Singapore dollars",
         "locale": "English",
         "localCode": "en-SG"
+      },
+      "ZAR": {
+        "symbol": "R",
+        "name": "South African Rand",
+        "symbol_native": "R",
+        "decimal_digits": 2,
+        "rounding": 0,
+        "code": "ZAR",
+        "name_plural": "rand",
+        "locale": "English",
+        "localCode": "en-ZA"
       }
     }
   },
