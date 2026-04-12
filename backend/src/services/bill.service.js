@@ -122,7 +122,7 @@ exports.saveBill = async ({
   session,
 }) => {
   const body = await dto.validateAsync(requestBody);
-  const totalWithTaxes = await calculateTaxes(body.items, body.org);
+  const totalWithTaxes = await calculateTaxes(body.items, body.org);  
   const shippingCharges = parseFloat(body.shippingCharges) || 0;
   const { setting, counterKey } = await getCurrentSequenceCounter({
     Bill,
@@ -321,16 +321,12 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
     filter.org,
   );
   const localeCode = setting.localeCode;
-  const dateLocale = language
-    ? language.toLowerCase().startsWith("pt")
-      ? "pt-PT"
-      : "en-IN"
-    : localeCode || "en-IN";
+  const dateLocale = setting.localeCode;
   const currencyTaxCategories = addCurrencyToTaxCategories(
     bill.taxCategories,
     formatCurrency,
   );
-  const fontFamily = currencies.value[setting.currency].fontFamily || "Roboto";  
+  const fontFamily = currencies.value[setting.currency].fontFamily || "Roboto";
   logger.info("Selected font family for bill generation" + fontFamily);
   const translateTemplateLabel = (key, defaultValue) =>
     t ? t(`billing:template_labels.${key}`, { defaultValue }) : defaultValue;
