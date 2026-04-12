@@ -7,7 +7,7 @@ const simpleTemplate = (data, color) => {
     accentSoft: "#EEF4F8",
     text: "#1F2937",
     muted: "#6B7280",
-    border: "#D6DEE8",
+    border: "#000000",
     surface: "#F8FAFC",
   };
   const taxEntries = Object.entries(data.currencyTaxCategories || {});
