@@ -37,7 +37,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProductId, setSelectedProductId] = useState();
   const [loading, setLoading] = useState(false);
-  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, getAmountWithSymbol } = useCurrentOrgCurrency();
   const defaultItem = getDefaultReceiptItem();
   const emptyStateBg = useColorModeValue("gray.100", "gray.700");
   const cardBg = useColorModeValue("white", "gray.800");
