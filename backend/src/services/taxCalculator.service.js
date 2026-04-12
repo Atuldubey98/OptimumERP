@@ -22,7 +22,7 @@ exports.calculateTaxes = async (items = [], orgId) => {
       itemSubtotal,
     });
   }
-  
+
   return {
     total: parseFloat(total.toFixed(2)),
     totalTax: parseFloat(totalTax.toFixed(2)),
@@ -75,18 +75,20 @@ function updateTaxCategories({ itemTax, taxCategories, itemSubtotal }) {
   const calculateTax = calculator[type];
   calculateTax({ itemTax, taxCategories, itemSubtotal });
 }
+const makeCategoryKey = (category, percentage) => `${category}@${percentage}%`;
+
+function updateTaxCategory(category, percentage, taxCategories, itemSubtotal) {
+  const key = makeCategoryKey(category, percentage);
+  const taxAmount = (itemSubtotal * percentage) / 100;
+  taxCategories[key] = (taxCategories[key] || 0) + taxAmount;
+}
+
 function updateByGroupedTypeTax({ itemTax, taxCategories, itemSubtotal }) {
-  const updateTaxCategoryByChildren = (itemTaxChild) => {
-    const category = itemTaxChild.category;
-    taxCategories[category] =
-      (taxCategories[category] || 0) +
-      (itemSubtotal * itemTaxChild.percentage) / 100;
-  };
-  itemTax.children.forEach(updateTaxCategoryByChildren);
+  itemTax.children.forEach((itemTaxChild) => {
+    updateTaxCategory(itemTaxChild.category, itemTaxChild.percentage, taxCategories, itemSubtotal);
+  });
 }
 
 function updateBySingleTypeTax({ itemTax, taxCategories, itemSubtotal }) {
-  const category = itemTax.category;
-  const currentItemTax = (itemSubtotal * itemTax.percentage) / 100;
-  taxCategories[category] = (taxCategories[category] || 0) + currentItemTax;
+  updateTaxCategory(itemTax.category, itemTax.percentage, taxCategories, itemSubtotal);
 }

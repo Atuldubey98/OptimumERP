@@ -30,7 +30,7 @@ const getBillGrandTotal = (bill) =>
   Number(bill?.totalTax || 0) +
   Number(bill?.shippingCharges || 0);
 
-const DEFAULT_GSTR_TAX_CATEGORIES = ["cgst", "sgst", "igst"];
+const DEFAULT_GSTR_TAX_CATEGORIES = [];
 const PREFERRED_TAX_CATEGORY_ORDER = [
   "cgst",
   "sgst",
@@ -96,6 +96,9 @@ export default function ReportItem() {
         defaultValue: key.toUpperCase(),
       });
     });
+    header.totalTax = t("report_ui.table.headers.gstr.total_tax", {
+      defaultValue: t("report_ui.table.headers.sale.total_tax"),
+    });
     header.grandTotal = t("report_ui.table.headers.gstr.grand_total");
     return {
       header,
@@ -112,6 +115,7 @@ export default function ReportItem() {
           ])
         ),
         grandTotal: formatAmount(getBillGrandTotal(item)),
+        totalTax: formatAmount(item.totalTax),
       }),
     };
   };

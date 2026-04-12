@@ -31,13 +31,16 @@ const invoiceSchema = new Schema(
           type: Date,
         },
       },
-      validate : {
-        validator:  async function (value) {       
-          const payment = await Property.findOne({name : "PAYMENT_METHODS", "value.value" : value.paymentMode});
+      validate: {
+        validator: async function (value) {
+          const payment = await Property.findOne({
+            name: "PAYMENT_METHODS",
+            "value.value": value.paymentMode,
+          });
           return Boolean(payment);
         },
-        message : () => `Payment method does not exist`
-      }
+        message: () => `Payment method does not exist`,
+      },
     },
     billingAddress: {
       type: String,
@@ -69,33 +72,24 @@ const invoiceSchema = new Schema(
       min: 0,
     },
     taxCategories: {
-      sgst: {
-        type: Number,
-        min: 0,
-      },
-      cgst: {
-        type: Number,
-        min: 0,
-      },
-      igst: {
-        type: Number,
-        min: 0,
-      },
-      vat: {
-        type: Number,
-        min: 0,
-      },
-      cess: {
-        type: Number,
-        min: 0,
-      },
-      sal: {
-        type: Number,
-        min: 0,
-      },
-      others: {
-        type: Number,
-        min: 0,
+      type: Object,
+      default: {},
+      validate: {
+        validator: function (value) {
+          console.log(value);
+
+          if (!value || typeof value !== "object" || Array.isArray(value)) {
+            return false;
+          }
+          return Object.values(value).every(
+            (taxValue) =>
+              typeof taxValue === "number" &&
+              Number.isFinite(taxValue) &&
+              taxValue >= 0,
+          );
+        },
+        message: () =>
+          "taxCategories must be an object with numeric percentage values between 0 and 100",
       },
     },
     description: {
@@ -189,7 +183,7 @@ const invoiceSchema = new Schema(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 invoiceSchema.index({
   description: "text",
@@ -198,7 +192,7 @@ invoiceSchema.index({
 invoiceSchema.index({ org: 1, createdAt: -1 });
 invoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
-  { unique: true, name: "invoice_org_fin_year_sequence_unique" }
+  { unique: true, name: "invoice_org_fin_year_sequence_unique" },
 );
 
 const Invoice = model("invoice", invoiceSchema);

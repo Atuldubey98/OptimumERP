@@ -28,14 +28,17 @@ const purchaseInvoice = new Schema(
           type: Date,
         },
       },
-      validate : {
-        validator:  async (value) => {
-          if(!value) return true;
-          const payment = await Property.findOne({name : "PAYMENT_METHODS", "value.value" : value.paymentMode});
+      validate: {
+        validator: async (value) => {
+          if (!value) return true;
+          const payment = await Property.findOne({
+            name: "PAYMENT_METHODS",
+            "value.value": value.paymentMode,
+          });
           return Boolean(payment);
         },
-        message : () => `Payment method does not exist` 
-      }
+        message: () => `Payment method does not exist`,
+      },
     },
     total: {
       type: Number,
@@ -53,33 +56,22 @@ const purchaseInvoice = new Schema(
       min: 0,
     },
     taxCategories: {
-      sgst: {
-        type: Number,
-        min: 0,
-      },
-      cgst: {
-        type: Number,
-        min: 0,
-      },
-      igst: {
-        type: Number,
-        min: 0,
-      },
-      vat: {
-        type: Number,
-        min: 0,
-      },
-      cess: {
-        type: Number,
-        min: 0,
-      },
-      sal: {
-        type: Number,
-        min: 0,
-      },
-      others: {
-        type: Number,
-        min: 0,
+      type: Object,
+      default: {},
+      validate: {
+        validator: function (value) {
+          if (!value || typeof value !== "object" || Array.isArray(value)) {
+            return false;
+          }
+          return Object.values(value).every(
+            (taxValue) =>
+              typeof taxValue === "number" &&
+              Number.isFinite(taxValue) &&
+              taxValue >= 0,
+          );
+        },
+        message: () =>
+          "taxCategories must be an object with numeric percentage values between 0 and 100",
       },
     },
     description: {
@@ -162,7 +154,7 @@ const purchaseInvoice = new Schema(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 purchaseInvoice.index({
   description: "text",

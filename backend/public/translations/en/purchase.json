@@ -73,7 +73,7 @@
       "title": "Payment",
       "grand_total": "Grand Total",
       "vendor_name": "Vendor Name",
-      "sub_total": "Sub Total",
+      "sub_total": "Taxable Amount",
       "total_tax": "Total Tax",
       "amount": "Amount",
       "settle": "Settle",

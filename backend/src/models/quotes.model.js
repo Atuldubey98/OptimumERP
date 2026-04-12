@@ -26,33 +26,22 @@ const quoteSchema = new Schema(
       required: true,
     },
     taxCategories: {
-      sgst: {
-        type: Number,
-        min: 0,
-      },
-      cgst: {
-        type: Number,
-        min: 0,
-      },
-      igst: {
-        type: Number,
-        min: 0,
-      },
-      vat: {
-        type: Number,
-        min: 0,
-      },
-      cess: {
-        type: Number,
-        min: 0,
-      },
-      sal: {
-        type: Number,
-        min: 0,
-      },
-      others: {
-        type: Number,
-        min: 0,
+      type: Object,
+      default: {},
+      validate: {
+        validator: function (value) {
+          if (!value || typeof value !== "object" || Array.isArray(value)) {
+            return false;
+          }
+          return Object.values(value).every(
+            (taxValue) =>
+              typeof taxValue === "number" &&
+              Number.isFinite(taxValue) &&
+              taxValue >= 0,
+          );
+        },
+        message: () =>
+          "taxCategories must be an object with numeric percentage values between 0 and 100",
       },
     },
     num: {
@@ -146,7 +135,7 @@ const quoteSchema = new Schema(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 quoteSchema.index({
   description: "text",
@@ -155,7 +144,7 @@ quoteSchema.index({
 quoteSchema.index({ org: 1, createdAt: -1 });
 quoteSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
-  { unique: true, name: "quotes_org_fin_year_sequence_unique" }
+  { unique: true, name: "quotes_org_fin_year_sequence_unique" },
 );
 
 const Quotes = model("quotes", quoteSchema);

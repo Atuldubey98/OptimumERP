@@ -1,5 +1,5 @@
 
-const DEFAULT_GSTR_TAX_CATEGORIES = ["cgst", "sgst", "igst"];
+const DEFAULT_GSTR_TAX_CATEGORIES = [];
 const PREFERRED_TAX_CATEGORY_ORDER = [
   "cgst",
   "sgst",
@@ -54,6 +54,7 @@ const buildGstrHeader = ({ dateLabel, numberLabel, taxCategoryKeys }) => {
   taxCategoryKeys.forEach((key) => {
     header[key] = key.toUpperCase();
   });
+  header.totalTax = "Total Tax";
   header.grandTotal = "Grand Total";
   return header;
 };
@@ -142,6 +143,7 @@ const reportDataByType = {
       date: formatDate(item.date),
       gstNo: item.party?.gstNo,
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
+      totalTax: formatAmount(item.totalTax),
       grandTotal: formatAmount(getGrandTotal(item)),
     }),
   },
@@ -161,6 +163,7 @@ const reportDataByType = {
       gstNo: item.party?.gstNo,
       date: formatDate(item.date),
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
+      totalTax: formatAmount(item.totalTax),
       grandTotal: formatAmount(getGrandTotal(item)),
     }),
   },
