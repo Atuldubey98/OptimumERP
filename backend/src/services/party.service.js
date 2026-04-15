@@ -17,3 +17,10 @@ exports.create = async (body) => {
     });
     return newParty;
 }
+exports.findByName = async (searchQuery, orgId) => {
+    const party = await Party.findOne({
+        $text: { $search: searchQuery },
+        org: orgId
+    }).lean().exec();
+    return party;
+}

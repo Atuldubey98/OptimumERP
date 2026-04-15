@@ -38,10 +38,12 @@
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.0.3",
+    "ollama": "^0.6.3",
     "pdfmake": "^0.2.18",
     "qrcode": "^1.5.3",
     "to-words": "^5.4.0",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "lorem-ipsum": "^2.0.8"
