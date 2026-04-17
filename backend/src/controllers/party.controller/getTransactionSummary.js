@@ -4,7 +4,7 @@ const Invoice = require("../../models/invoice.model");
 const Party = require("../../models/party.model");
 const Purchase = require("../../models/purchase.model");
 const Transaction = require("../../models/transaction.model");
-
+const partyService = require("../../services/party.service");
 const getTransactionSummary = async (req, res) => {
   if (!req.params.partyId) throw PartyNotFound();
   const filter = {
@@ -65,37 +65,7 @@ const getTransactionSummary = async (req, res) => {
       ])
     )
   );
-  const [invoiceBalanceCalculator, purchaseBalanceCalculator] =
-    await Promise.all(
-      entities.map((model) =>
-        model.aggregate([
-          {
-            $match: {
-              org: new mongoose.Types.ObjectId(req.params.orgId),
-              party: new mongoose.Types.ObjectId(req.params.partyId),
-              date: filter.date,
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              total: {
-                $sum: {
-                  $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
-                },
-              },
-              payment: { $sum: "$payment.amount" },
-            },
-          },
-        ])
-      )
-    );
-  const invoiceBalance = invoiceBalanceCalculator.length
-    ? invoiceBalanceCalculator[0]
-    : { total: 0, payment: 0 };
-  const purchaseBalance = purchaseBalanceCalculator.length
-    ? purchaseBalanceCalculator[0]
-    : { total: 0, payment: 0 };
+  const { invoiceBalance, purchaseBalance } = await partyService.getLedgerTotals(req.params.partyId, req.params.orgId, filter.date);
 
   const total = await Transaction.countDocuments(filter).exec();
   const totalPages = Math.ceil(total / limit);

@@ -1,11 +1,13 @@
 const freePlanLimits = require("../constants/freePlanLimits");
-const { UserDuplicate } = require("../errors/user.error");
+const { UserDuplicate, UnAuthenticated, UnAuthorizedUser } = require("../errors/user.error");
 const Otp = require("../models/otp.model");
 const UserModel = require("../models/user.model");
 const { getHashedString } = require("./hashing.service");
 const path = require("path");
 const { renderHtml } = require("./renderEngine.service");
 const transporter = require("../mailer");
+const OrgUser = require("../models/orgUser.model");
+const logger = require("../logger");
 exports.registerUser = async ({
   email,
   password,
@@ -75,4 +77,10 @@ exports.sendOtpEmailToUser = async ({ user, typeOfOtp, subject }) => {
     html,
   });
   return mail;
+};
+
+exports.findOrgUser = async (userId, orgId) => {
+  logger.info(`Checking org user for userId: ${userId} and orgId: ${orgId}`);
+  const orgUser = await OrgUser.findOne({ user: userId, org: orgId }).lean().exec();
+  return orgUser;
 };

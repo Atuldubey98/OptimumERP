@@ -1,6 +1,9 @@
+const { default: mongoose } = require("mongoose");
 const logger = require("../logger");
+const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
 const Party = require("../models/party.model");
+const Purchase = require("../models/purchase.model");
 const { executeMongoDbTransaction } = require("./crud.service");
 
 exports.create = async (body) => {
@@ -17,10 +20,52 @@ exports.create = async (body) => {
     });
     return newParty;
 }
-exports.findByName = async (searchQuery, orgId) => {
-    const party = await Party.findOne({
-        $text: { $search: searchQuery },
-        org: orgId
-    }).lean().exec();
+exports.findOne = async (params) => {
+    const filter = { org: params.org };
+    if (mongoose.Types.ObjectId.isValid(params.partyId)) filter._id = params.partyId;
+    if (params.name) filter["$text"] = { $search: params.name };
+    const party = await Party.findOne(filter).lean().exec();
     return party;
+}
+
+exports.getLedgerTotals = async (partyId, orgId, date) => {
+    const entities = [Invoice, Purchase];
+    const match = {
+        org: new mongoose.Types.ObjectId(orgId),
+        party: new mongoose.Types.ObjectId(partyId),
+    };
+    if (date)
+        match.date = date;
+    const aggregator = [
+        {
+            $match: match,
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: {
+                        $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
+                    },
+                },
+                payment: { $sum: "$payment.amount" },
+            },
+        },
+    ];
+    const [invoiceBalanceCalculator, purchaseBalanceCalculator] =
+        await Promise.all(
+            entities.map((model) =>
+                model.aggregate(aggregator)
+            )
+        );
+    const invoiceBalance = invoiceBalanceCalculator.length
+        ? invoiceBalanceCalculator[0]
+        : { total: 0, payment: 0 };
+    const purchaseBalance = purchaseBalanceCalculator.length
+        ? purchaseBalanceCalculator[0]
+        : { total: 0, payment: 0 };
+    return {
+        invoiceBalance,
+        purchaseBalance
+    };
 }

@@ -1,4 +1,6 @@
 const partyTools = require("./party.tool");
 
-const tools = [...partyTools];
+const billTools = require("./bill.tool");
+
+const tools = [...partyTools, ...billTools];
 module.exports = tools;

@@ -20,7 +20,7 @@ exports.authorize = requestAsyncHandler(async (req, __, next) => {
   const orgUser = await OrgUser.findOne({
     org: req.params.orgId,
     user: req.session.user._id,
-  });
+  }).lean().exec();
   if (!orgUser) return next(new UnAuthenticated());
   if (orgUser.role !== "admin") return next(new UnAuthorizedUser());
   next();

@@ -1,48 +1,64 @@
-const { Ollama } = require("ollama");
-const getHandler = require("./handlers");
-const tools = require("./tools");
-const ollama = new Ollama({
-    host: "https://ollama.com",
-    headers: {
-        Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`
-    }
-});
+  const { Ollama } = require("ollama");
+  const getHandler = require("./handlers");
+  const tools = require("./tools");
+  const logger = require("../logger");
 
-const chat = async (model, body) => {
-    const messages = [...body.messages];
-    const response = await ollama.chat({
-        model: model,
-        messages,
-        tools
-    });
+  const ollama = new Ollama({
+      host: "https://ollama.com",
+      headers: {
+          Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`
+      }
+  });
 
-    const message = response.message;
-    if (!message.tool_calls || message.tool_calls.length === 0) {
-        return message;
-    }
+  const chat = async (model, { messages = [], body }) => {
+      const MAX_ITERATIONS = 5;
+      let iteration = 0;
 
-    messages.push(message);
+      while (iteration < MAX_ITERATIONS) {
+          iteration++;
 
-    for (const tool of message.tool_calls) {
-        const handler = getHandler(tool.function.name);                
-        if (handler) {
-            const result = await handler({ ...tool.function.arguments, org: body.org, createdBy: body.createdBy });
-            messages.push({
-                role: "tool",
-                content: JSON.stringify(result),
-                tool_call_id: tool.id
-            });
-        }
-    }
+          const response = await ollama.chat({
+              model,
+              messages,
+              tools
+          });
 
-    const finalResponse = await ollama.chat({
-        model: model,
-        messages: messages
-    });
+          const aiMessage = response.message;
+          messages.push(aiMessage);
 
-    return finalResponse.message;
-};
+          if (!aiMessage.tool_calls || aiMessage.tool_calls.length === 0) {
+              return aiMessage;
+          }
+          logger.debug(`AI requested tool calls: ${aiMessage.tool_calls.map(tc => tc.function.name).join(", ")}`);
+          for (const tool of aiMessage.tool_calls) {
+              const handler = getHandler(tool.function.name);
+              if (!handler) continue;
 
-module.exports = {
-    chat
-}
+              try {
+                  const result = await handler({
+                      ...tool.function.arguments,
+                      org: body.org,
+                      createdBy: body.createdBy
+                  });
+
+                  messages.push({ 
+                      role: "tool",
+                      content: JSON.stringify(result),
+                      tool_call_id: tool.id
+                  });
+              } catch (error) {
+                  messages.push({
+                      role: "tool",
+                      content: JSON.stringify({ error: true, message: error.message }),
+                  });
+              }
+          }
+      }
+
+      return {
+          role: "assistant",
+          content: "Execution limit reached."
+      };
+  };
+
+  module.exports = { chat };

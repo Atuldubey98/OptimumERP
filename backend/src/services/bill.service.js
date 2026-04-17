@@ -19,6 +19,20 @@ const MODEL_NAME_TO_COUNTER_KEY = {
   sale_order: "saleOrder",
 };
 
+exports.getBill = async ({Bill, filter})=>{
+  let billQuery = Bill.findOne(filter)
+    .populate("party")
+    .populate("createdBy", "name email ")
+    .populate("updatedBy", "name email")
+    .populate("org", "name address ")
+    .populate("items.tax")
+    .populate("items.um");
+  if (["proforma_invoice", "quotes"].includes(Bill.modelName))
+    billQuery = billQuery.populate("converted", "num date");
+  const bill = await billQuery.lean().exec();
+  return bill;
+}
+
 const getUpiQrCodeByPrintSettings = async ({
   upi,
   grandTotal = 0,
