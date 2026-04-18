@@ -15,11 +15,32 @@ const partyTools = [
             type: "string",
             description: "The exact name of the party to look up."
           },
-          duration: {
-            type: "enum",
-            description: "Optional relative duration like '7d', '30d', '60d', '90d', '1w', '1m'. If provided, backend can compute startDate."
+        },
+      }
+    }
+  },
+   {
+    type: "function",
+    function: {
+      name: "get_parties",
+      description: "Search and retrieve multiple parties using a partial name or search query.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "Search query to match party names (partial or full)."
+          },
+          limit: {
+            type: "number",
+            description: "Maximum number of results to return (default 10)."
+          },
+          page : {
+            type: "number",
+            description: "Refers to the page at which we are (default 1)."
           }
         },
+        required: ["query"]
       }
     }
   },

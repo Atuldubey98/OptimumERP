@@ -82,7 +82,7 @@ const upsertBill = async (params) => {
     try {
         const makeRequestBody = async () => {
             logger.info("Bill details ", params)
-            
+
             logger.info(`Executing ${params?.billId ? "Edit" : "Create"} flow`)
             const party = await partyService.upsert(params);
             const setting = params?.sequence || await settingService.getDetailedSettingForOrg(params.org);
@@ -94,22 +94,48 @@ const upsertBill = async (params) => {
                 org: params.org,
             });
             params.items.forEach(item => {
-                const tax = setting?.receiptDefaults?.tax?._id?.toString();
+                let taxId = null;
+
+                if (item.tax?.length) {
+                    const totalIncomingTax = item.tax.reduce((sum, t) => {
+                        return sum + Number(t.percentage || 0);
+                    }, 0);
+
+                    const matchedTax = taxes.find(t => {
+                        if (t.type === "grouped") {
+                            return Number(t?.percentage) === totalIncomingTax;
+                        }
+
+                        return item.tax.some(it =>
+                            it?.type === t?.category &&
+                            Number(it?.percentage) === Number(t?.percentage)
+                        );
+                    });
+
+                    taxId = matchedTax?._id?.toString();
+                }
+
                 const storedUm = ums.find(um => {
                     const searchTerm = item?.um?.toLowerCase();
                     if (!searchTerm) return false;
 
-                    return um.name.toLowerCase().includes(searchTerm) ||
-                        um.unit.toLowerCase().includes(searchTerm);
+                    return (
+                        um.name.toLowerCase().includes(searchTerm) ||
+                        um.unit.toLowerCase().includes(searchTerm)
+                    );
                 });
-                const um = storedUm ? storedUm?._id?.toString() : setting?.receiptDefaults?.um?._id?.toString();
+
+                const um = storedUm
+                    ? storedUm._id.toString()
+                    : setting?.receiptDefaults?.um?._id?.toString();
+
                 items.push({
                     name: item.name,
                     price: item.price,
                     quantity: item?.quantity || 1,
                     code: item?.code,
                     um,
-                    tax
+                    tax: taxId || setting?.receiptDefaults?.tax?._id?.toString()
                 });
             });
             return {
@@ -137,7 +163,7 @@ const upsertBill = async (params) => {
             });
             await OrgModel.updateOne(
                 { _id: params.org },
-                { $inc: { [modelProps.relatedDocType]: 1 } }
+                { $inc: { [`relatedDocsCount.${modelProps.relatedDocType}`]: 1 } }
             ).session(session);
             logger.info(`${Bill.modelName} created ${bill.id}`);
             return bill;

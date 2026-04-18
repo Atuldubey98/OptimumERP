@@ -1,4 +1,6 @@
+const { PARTIES } = require("../../constants/entities");
 const { PartyNotFound } = require("../../errors/party.error");
+const Party = require("../../models/party.model");
 const partyService = require("../../services/party.service");
 const settingService = require("../../services/setting.service")
 
@@ -126,6 +128,40 @@ const partyHandler = {
     } catch (error) {
       throw error;
     }
+  },
+  get_parties: async (params) => {
+    const {
+      query = "",
+      page = 1,
+      limit = 10
+    } = params;
+
+    const parsedPage = Math.max(parseInt(page) || 1, 1);
+    const parsedLimit = Math.min(Math.max(parseInt(limit) || 10, 1), 100);
+    const skip = (parsedPage - 1) * parsedLimit;
+
+    const filter = { org: params.org };
+
+    if (query && query.trim()) {
+      filter.$text = { $search: query.trim() };
+    }
+    const [parties, total] = await Promise.all([
+      Party.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parsedLimit),
+      Party.countDocuments(filter)
+    ]);
+
+    return {
+      data: parties,
+      pagination: {
+        total,
+        page: parsedPage,
+        limit: parsedLimit,
+        totalPages: Math.ceil(total / parsedLimit)
+      }
+    };
   }
 }
 module.exports = partyHandler;
