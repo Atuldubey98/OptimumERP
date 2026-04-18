@@ -46,13 +46,18 @@ const getDetailedSettingForOrg = async (orgId) => {
     key,
     async () => {
       logger.debug(`Detailed setting cache miss for org ${orgId}; reading from DB`);
-
-      return Setting.findOne({ org: orgId })
+      const setting = await Setting.findOne({ org: orgId })
         .populate("org")
         .populate("receiptDefaults.tax")
         .populate("receiptDefaults.um")
         .lean()
         .exec();
+      if (!setting) {
+        logger.error(`No settings found for OrgID: ${orgId}`);
+        throw new OrgNotFound();
+      }
+
+      return setting;
     },
     {
       ttl: DETAILED_SETTING_CACHE_TTL_SECONDS,

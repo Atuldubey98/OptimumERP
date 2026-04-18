@@ -80,7 +80,7 @@ exports.sendOtpEmailToUser = async ({ user, typeOfOtp, subject }) => {
 };
 
 exports.findOrgUser = async (userId, orgId) => {
-  logger.info(`Checking org user for userId: ${userId} and orgId: ${orgId}`);
   const orgUser = await OrgUser.findOne({ user: userId, org: orgId }).lean().exec();
+  logger.info(`Authorized org user for orgId: ${orgId} - userId: ${userId}`);
   return orgUser;
 };

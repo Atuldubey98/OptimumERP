@@ -15,6 +15,7 @@ import Sidebar from "../sidebar";
 import Header from "./Header";
 import NavDrawer from "./NavDrawer";
 import SettingContextProvider from "../../../contexts/SettingContextProvider";
+import ChatWidget from "../../bot";
 export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { t } = useTranslation("common");
@@ -48,6 +49,7 @@ export default function MainLayout({ children }) {
         </Flex>
         <NavDrawer isOpen={isOpen} onClose={onClose} />
       </PrivateRoute>
+      <ChatWidget />
     </ErrorBoundary>
   );
 }

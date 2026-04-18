@@ -5,11 +5,15 @@ const MongoStore = require("connect-mongo");
 const sessionOptions = {
   secret: SESSION_SECRET,
   resave: false,
-  httpOnly: true,
-  saveUninitialized: true,
+  saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
   }),
+  cookie: {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+  },
 };
 
 const sessionHandler = Router();

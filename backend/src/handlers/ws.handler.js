@@ -4,6 +4,9 @@ const authService = require("../services/auth.service");
 const logger = require("../logger");
 const config = require("../config");
 const cacheService = require("../services/cache.service");
+const settingService = require("../services/setting.service");
+const url = require("url");
+const factory = require("../ai/prompts/factory");
 function getWsHandlers(wss) {
     const ORG_USER_MESSAGES_CACHE_TTL_SECONDS = Number(
         process.env.EXPENSE_CATEGORY_CACHE_TTL_SECONDS || 20 * 60,
@@ -11,7 +14,7 @@ function getWsHandlers(wss) {
     const buildOrgUserMessagesCacheKey = (userId, orgId) =>
         cacheService.buildKey("orgUserMessages", userId, orgId);
 
-    const getSessionMessage = async (orgId, userId) => {
+    const getSessionMessage = async (userId, orgId) => {
         const key = buildOrgUserMessagesCacheKey(userId, orgId);
         return cacheService.getOrSet(
             key,
@@ -19,10 +22,19 @@ function getWsHandlers(wss) {
                 logger.debug(
                     `Messages cache miss for org ${orgId} and user ${userId}; returning empty array`,
                 );
+                const setting = await settingService.getDetailedSettingForOrg(orgId); 
+                const content = factory.organizationPrompt({
+                    organization: setting.org,
+                    preferences: {
+                        localeCode: setting.localeCode,
+                        timeZone: setting.timeZone,
+                    }
+                }).build();
+                
                 return [
                     {
                         role: "system",
-                        content: "You are the OptimumERP Manager. Rules: 1. Always call get_party first. 2. If get_party returns empty, use partyDetails in create_bill. 3. NEVER repeat a tool call. 4. Complete all steps automatically."
+                        content
                     }
                 ];
             },
@@ -32,7 +44,7 @@ function getWsHandlers(wss) {
                     logger.debug(`Messages cache hit for org ${orgId} and user ${userId}`);
                 },
             },
-        );
+        );  
     };
     const trimMessages = (messages, count = 10) => {
         if (messages.length <= count * 2) return messages;
@@ -45,7 +57,9 @@ function getWsHandlers(wss) {
     const onMessage = async (ws, data, request) => {
         try {
             const body = JSON.parse(data);
-            const messages = await getSessionMessage(request.session.user._id, request.headers["orgid"]);
+            const {query} = url.parse(request.url, true);         
+            const orgId = request.headers["orgid"] || query.orgId;
+            const messages = await getSessionMessage(request.session.user._id, orgId);
             messages.push({
                 role: "user",
                 content: body.message
@@ -53,7 +67,7 @@ function getWsHandlers(wss) {
             const response = await ai.chat("qwen3.5", {
                 messages,
                 body: {
-                    org: request.headers["orgid"],
+                    org: orgId,
                     createdBy: request.session.user._id
                 }
             });
@@ -62,7 +76,7 @@ function getWsHandlers(wss) {
                 event: "ai_response",
                 message: response.content
             }));
-            cacheService.set(buildOrgUserMessagesCacheKey(request.session.user._id, request.headers["orgid"]), trimMessages([...messages, response]));
+            cacheService.set(buildOrgUserMessagesCacheKey(request.session.user._id, orgId), trimMessages([...messages, response]));
         } catch (error) {
             if (config.NODE_ENV === "development") {
                 console.log(error);
@@ -83,18 +97,22 @@ function getWsHandlers(wss) {
                 socket.destroy();
                 return;
             }
-            if (!request.headers["orgid"]) {
+            const {query} = url.parse(request.url, true);         
+            if (!request.headers["orgid"] && !query.orgId) {
+                logger.error("Org ID not provided in headers or query parameters");
                 socket.write('HTTP/1.1 401 Unauthenticated\r\n\r\n');
                 socket.destroy();
                 return;
             }
-            const orgUser = await authService.findOrgUser(request.session.user._id, request.headers["orgid"]);
+            const orgId = request.headers["orgid"] || query.orgId;            
+            const orgUser = await authService.findOrgUser(request.session.user._id, orgId);
             if (!orgUser) {
+                logger.error("Org user not found for userId: " + request.session.user._id + " and orgId: " + orgId);
                 socket.write('HTTP/1.1 401 UnAuthenticated\r\n\r\n');
                 socket.destroy();
                 return;
             }
-            socket.orgId = request.headers["orgid"];
+            socket.orgId = orgId;
             wss.handleUpgrade(request, socket, head, (wsInstance) => {
                 wss.emit('connection', wsInstance, request);
             });

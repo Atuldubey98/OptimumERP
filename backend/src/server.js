@@ -10,6 +10,8 @@ const http = require("http");
 const logger = require("./logger");
 
 const bootstrap = async () => {
+  const connection = await connectDatabase(MONGO_URI);
+
   const server = http.createServer(app);
   const wss = new ws.Server({ noServer: true });
 
@@ -23,7 +25,6 @@ const bootstrap = async () => {
   });
 
   try {
-    const connection = await connectDatabase(MONGO_URI);
     try {
       await connection.connection.db.admin().command({ replSetGetStatus: 1 });
       logger.info("MongoDB replica set is enabled");

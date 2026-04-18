@@ -6,6 +6,7 @@ const Party = require("../models/party.model");
 const Purchase = require("../models/purchase.model");
 const { executeMongoDbTransaction } = require("./crud.service");
 
+
 exports.create = async (body) => {
     const newParty = await executeMongoDbTransaction(async (session) => {
         const party = new Party(body);
@@ -24,9 +25,27 @@ exports.findOne = async (params) => {
     const filter = { org: params.org };
     if (mongoose.Types.ObjectId.isValid(params.partyId)) filter._id = params.partyId;
     if (params.name) filter["$text"] = { $search: params.name };
-    const party = await Party.findOne(filter).lean().exec();
+    const party = await Party.findOne(filter).select(params?.select).lean().exec();
     return party;
 }
+
+exports.upsert = async (params) => {
+    const filter = { org: params.org };
+    
+    if (mongoose.Types.ObjectId.isValid(params.partyId)) {
+        filter._id = params.partyId;
+    } else if (params.name) {
+        filter.name = { $regex: new RegExp(`^${params.name}$`, "i") };
+    }
+
+    const existingParty = await Party.findOne(filter).lean().exec();
+
+    if (existingParty) {
+        return existingParty;
+    }
+
+    return await exports.create({ ...body, org: params.org });
+};
 
 exports.getLedgerTotals = async (partyId, orgId, date) => {
     const entities = [Invoice, Purchase];

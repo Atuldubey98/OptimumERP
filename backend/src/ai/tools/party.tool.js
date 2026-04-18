@@ -41,6 +41,28 @@ const partyTools = [
       }
     }
   },
+ {
+    type: "function",
+    function: {
+      name: "get_party_ledger",
+      description: "Get ledger entries for a party. Supports duration (last 30/90 days) or defaults to financial year.",
+      parameters: {
+        type: "object",
+        properties: {
+          partyId: { type: "string" },
+          name: { type: "string" },
+          duration: {
+            type: "string",
+            enum: ["7d", "30d", "60d", "90d", "1w", "1m"]
+          },
+          useFinancialYear: {
+            type: "boolean",
+            description: "If true, filter using current financial year"
+          }
+        }
+      }
+    }
+  }
 ];
 
 module.exports = partyTools;
