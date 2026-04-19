@@ -76,7 +76,7 @@ function getWsHandlers(wss) {
         content: body.message,
         images,
       });
-      const response = await ai.chat("qwen3.5", {
+      const response = await ai.chat(process.env.OLLAMA_TEXT_MODEL, {
         messages,
         body: {
           org: orgId,
