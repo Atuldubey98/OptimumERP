@@ -105,10 +105,24 @@
                     <div>
                         <h4 class="text-indigo-400 font-semibold mb-2">1. Configure Environment</h4>
                         <p class="text-slate-400 mb-4">Add your credentials to <code>backend/.env</code>:</p>
-                        <pre><code>MONGO_URI=mongodb://localhost:27017/optimumerp
+                        <pre><code>MONGO_URI=mongodb://localhost:27017/mydb?replicaSet=rs0
 SESSION_SECRET=your_secret
 OLLAMA_TEXT_MODEL=llama3
-NODE_MAILER_HOST=smtp.gmail.com</code></pre>
+NODE_MAILER_HOST=smtp.gmail.com
+MONGO_URI=your_value
+SESSION_SECRET=your_value
+NODE_MAILER_USER_NAME=your_value
+NODE_MAILER_APP_PASSWORD=your_value
+NODE_MAILER_HOST=your_value
+VITE_GOOGLE_SSO_ENABLED=false // true
+IMPORT_CRON_SCHEDULE=false
+LOG_FILE_PATH=./logs/app.log //your directory path for logs
+NETWORK_STORAGE_PATH=./uploads // your directory path for network storage
+DEFAULT_USER_PLAN=free // free | gold | platinum
+OLLAMA_API_KEY=your_value
+OLLAMA_TEXT_MODEL=your_value
+OLLAMA_HOST=your_value
+</code></pre>
                     </div>
                     <div>
                         <h4 class="text-indigo-400 font-semibold mb-2">2. Start AI Engine</h4>
