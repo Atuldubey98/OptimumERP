@@ -43,7 +43,7 @@ export default function TaxesPage() {
       if (!selectedTax) return;
       setSelectedTaxStatus("deleting");
       const { data } = await instance.delete(
-        `/api/v1/organizations/${orgId}/taxes/${selectedTax._id}`
+        `/api/v1/organizations/${orgId}/taxes/${selectedTax._id}`,
       );
       setSelectedTaxStatus("idle");
       toast({
@@ -90,7 +90,7 @@ export default function TaxesPage() {
 
   const isAddDisabled = hasReachedLimit;
   return (
-    <MainLayout>
+    <>
       <Box p={4}>
         {status === "loading" ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -185,6 +185,6 @@ export default function TaxesPage() {
           ) : null}
         </ShowDrawer>
       ) : null}
-    </MainLayout>
+    </>
   );
 }

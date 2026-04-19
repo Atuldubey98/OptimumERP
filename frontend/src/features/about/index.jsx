@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 export default function AboutPage() {
   const { t } = useTranslation("common");
   return (
-    <MainLayout>
+    
       <Box p={4}>
         <Flex
           gap={3}
@@ -42,6 +42,6 @@ export default function AboutPage() {
           </Button>
         </Flex>
       </Box>
-    </MainLayout>
+    
   );
 }

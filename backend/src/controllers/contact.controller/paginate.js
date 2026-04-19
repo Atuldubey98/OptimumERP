@@ -9,7 +9,8 @@ const contactService = require("../../services/contact.service");
 const paginate = async (req, res) => {
   const { filter, page, limit, skip, total, totalPages } =
     await getPaginationParams({
-      req,
+      query : req.query,
+      params : req.params,
       model: Contact,
       modelName: entities.CONTACTS,
     });

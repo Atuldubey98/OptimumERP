@@ -73,7 +73,7 @@ export default function ProformaInvoicesPage() {
       if (!proformaInvoiceSelected) return;
       setProformaInvoiceStatus("deleting");
       await instance.delete(
-        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceSelected._id}`
+        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceSelected._id}`,
       );
       closeAlertModal();
       fetchFn();
@@ -131,7 +131,7 @@ export default function ProformaInvoicesPage() {
     try {
       setProformaInvoiceStatus("converting");
       const { data } = await instance.post(
-        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceSelected._id}/convertToInvoice`
+        `/api/v1/organizations/${orgId}/proformaInvoices/${proformaInvoiceSelected._id}/convertToInvoice`,
       );
       toast({
         title: t("proforma_invoice_ui.toast.success_title"),
@@ -178,7 +178,7 @@ export default function ProformaInvoicesPage() {
     grandTotal: getAmountWithSymbol(getBillGrandTotal(item)),
   });
   return (
-    <MainLayout>
+    <>
       <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -268,16 +268,24 @@ export default function ProformaInvoicesPage() {
           onClose={toggleExportModal}
           downloadUrl={`/api/v1/organizations/${orgId}/proformaInvoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
           defaultSelectedFields={{
-            partyName: t("proforma_invoice_ui.export.default_fields.party_name"),
-            billingAddress: t("proforma_invoice_ui.export.default_fields.billing_address"),
+            partyName: t(
+              "proforma_invoice_ui.export.default_fields.party_name",
+            ),
+            billingAddress: t(
+              "proforma_invoice_ui.export.default_fields.billing_address",
+            ),
             total: t("proforma_invoice_ui.export.default_fields.total"),
             totalTax: t("proforma_invoice_ui.export.default_fields.total_tax"),
             num: t("proforma_invoice_ui.export.default_fields.num"),
             status: t("proforma_invoice_ui.export.default_fields.status"),
           }}
           selectableFields={{
-            createdByEmail: t("proforma_invoice_ui.export.selectable_fields.created_by_email"),
-            createdByName: t("proforma_invoice_ui.export.selectable_fields.created_by_name"),
+            createdByEmail: t(
+              "proforma_invoice_ui.export.selectable_fields.created_by_email",
+            ),
+            createdByName: t(
+              "proforma_invoice_ui.export.selectable_fields.created_by_name",
+            ),
             poNo: t("proforma_invoice_ui.export.selectable_fields.po_no"),
             poDate: t("proforma_invoice_ui.export.selectable_fields.po_date"),
             cgst: t("proforma_invoice_ui.export.selectable_fields.cgst"),
@@ -290,6 +298,6 @@ export default function ProformaInvoicesPage() {
           }}
         />
       ) : null}
-    </MainLayout>
+    </>
   );
 }

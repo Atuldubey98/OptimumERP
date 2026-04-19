@@ -20,7 +20,8 @@ exports.makeReportExcelBuffer = async ({
 }) => {
   const reportTypes = isReport ? reportDataByType : exportDataByReceiptType;
   const reportMapper = reportTypes[reportType];
-  if (!reportMapper) throw new Error(i18.t("common:common.report_type_not_found"));
+  if (!reportMapper)
+    throw new Error(i18.t("common:common.report_type_not_found"));
   const { bodyMapper, header: headerRow } = reportMapper;
   const taxCategoryKeys = reportMapper.getTaxCategoryKeys
     ? reportMapper.getTaxCategoryKeys(reportData)
@@ -31,7 +32,7 @@ exports.makeReportExcelBuffer = async ({
       : headerRow
     : selectedHeaderRows;
   const reportItems = reportData.map((item) =>
-    bodyMapper(item, { reportData, taxCategoryKeys })
+    bodyMapper(item, { reportData, taxCategoryKeys }),
   );
   const wb = new xl.Workbook();
   const ws = wb.addWorksheet();
@@ -87,7 +88,8 @@ exports.getReportForBill = async ({ req, reportType }) => {
     throw new Error(i18.t("common:common.report_type_not_found"));
   const Model = paginationProps.model;
   const paginationParams = await getPaginationParams({
-    req,
+    query: req.query,
+    params: req.params,
     shouldPaginate: false,
     ...paginationProps,
   });

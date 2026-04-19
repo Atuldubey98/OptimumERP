@@ -144,7 +144,7 @@ export default function ProductsPage() {
   });
 
   return (
-    <MainLayout>
+    
       <Box p={5}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -228,6 +228,6 @@ export default function ProductsPage() {
           onClose={onCloseProductFormDrawer}
         />
       </Box>
-    </MainLayout>
+    
   );
 }

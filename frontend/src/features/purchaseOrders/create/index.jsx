@@ -55,7 +55,7 @@ export default function PurchaseOrderEditPage() {
   });
   const hasError = status === "error";
   return (
-    <MainLayout>
+    
       <Box p={5}>
         <FormikProvider value={formik}>
           {loading ? (
@@ -187,6 +187,6 @@ export default function PurchaseOrderEditPage() {
           )}
         </FormikProvider>
       </Box>
-    </MainLayout>
+    
   );
 }

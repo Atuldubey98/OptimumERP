@@ -8,7 +8,8 @@ const Product = require("../../models/product.model");
 const paginate = async (req, res) => {
   const { filter, limit, page, skip, total, totalPages } =
     await getPaginationParams({
-      req,
+      query : req.query,
+      params :req.params,
       model: Product,
       modelName: entities.PRODUCTS,
     });

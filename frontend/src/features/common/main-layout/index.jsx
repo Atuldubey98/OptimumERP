@@ -6,7 +6,7 @@ import {
   Link,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -16,6 +16,7 @@ import Header from "./Header";
 import NavDrawer from "./NavDrawer";
 import SettingContextProvider from "../../../contexts/SettingContextProvider";
 import ChatWidget from "../../bot";
+import FullLoader from "../FullLoader";
 export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { t } = useTranslation("common");
@@ -33,22 +34,22 @@ export default function MainLayout({ children }) {
         );
       }}
     >
-      <PrivateRoute>
-        <Flex>
-          <Hide below="xl">
-            <Sidebar />
-          </Hide>
-          <Flex height={"100dvh"} flexDirection={"column"} width={"100%"}>
-            <Box position={""} boxShadow={"md"} p={2}>
-              <Header onSideNavOpen={onOpen} />
-            </Box>
-            <Box flex={1} maxH={"100%"} overflowY={"auto"}>
-              {children}
-            </Box>
+        <PrivateRoute>
+          <Flex>
+            <Hide below="xl">
+              <Sidebar />
+            </Hide>
+            <Flex height={"100dvh"} flexDirection={"column"} width={"100%"}>
+              <Box position={""} boxShadow={"md"} p={2}>
+                <Header onSideNavOpen={onOpen} />
+              </Box>
+              <Box flex={1} maxH={"100%"} overflowY={"auto"}>
+                {children}
+              </Box>
+            </Flex>
           </Flex>
-        </Flex>
-        <NavDrawer isOpen={isOpen} onClose={onClose} />
-      </PrivateRoute>
+          <NavDrawer isOpen={isOpen} onClose={onClose} />
+        </PrivateRoute>
     </ErrorBoundary>
   );
 }

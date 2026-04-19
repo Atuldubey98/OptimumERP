@@ -122,7 +122,7 @@ export default function PartysPage() {
   const searchQuery = query.get("query") || "";
 
   return (
-    <MainLayout>
+    
       <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"} minH="40svh">
@@ -256,6 +256,6 @@ export default function PartysPage() {
           <Pagination currentPage={currentPage} total={totalPages} />
         )}
       </Box>
-    </MainLayout>
+    
   );
 }

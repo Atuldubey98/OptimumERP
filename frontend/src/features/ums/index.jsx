@@ -33,7 +33,7 @@ export default function UmsPage() {
     ),
   });
   return (
-    <MainLayout>
+    <>
       <Box p={4}>
         {status === "loading" ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -98,6 +98,6 @@ export default function UmsPage() {
           />
         </ShowDrawer>
       ) : null}
-    </MainLayout>
+    </>
   );
 }

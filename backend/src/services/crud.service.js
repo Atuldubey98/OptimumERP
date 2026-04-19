@@ -20,38 +20,39 @@ exports.executeMongoDbTransaction = async (operationsCallback) => {
   });
 }
 exports.getPaginationParams = async ({
-  req,
+  query,
   modelName,
+  params,
   model,
   shouldPaginate = true,
 }) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const page = parseInt(query?.page) || 1;
+  const limit = parseInt(query?.limit) || 10;
   const skip = (page - 1) * limit;
   const filter = {
-    org: req.params.orgId,
+    org: params?.orgId,
   };
-  if (req.query.search) filter.$text = { $search: req.query.search };
+  if (query.search) filter.$text = { $search: query?.search };
   switch (modelName) {
     case CONTACTS:
-      if (req.query.type) filter.type = req.query.type;
-      if (isValidObjectId(req.query.party)) filter.party = req.query.party;
+      if (query.type) filter.type = query.type;
+      if (isValidObjectId(query.party)) filter.party = query.party;
       break;
     case EXPENSES:
     case PRODUCTS:
-      if (req.query.category) filter.category = req.query.category;
+      if (query.category) filter.category = query.category;
       break;
     case TRANSACTIONS:
-      if (req.query.type) filter.docModel = req.query.type;
+      if (query.type) filter.docModel = query.type;
     case INVOICES:
     case PROFORMA_INVOICES:
     case QUOTATION:
     case PURCHASE_INVOICES:
     case PURCHASE_ORDERS:
-      if (req.query.startDate && req.query.endDate)
+      if (query.startDate && query.endDate)
         filter.date = {
-          $gte: new Date(req.query.startDate),
-          $lte: new Date(req.query.endDate),
+          $gte: new Date(query.startDate),
+          $lte: new Date(query.endDate),
         };
       break;
     default:

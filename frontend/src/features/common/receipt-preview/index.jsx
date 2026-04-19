@@ -40,7 +40,7 @@ export default function ReceiptPreview() {
   const currentReceiptMeta = receiptMetas[type];
   const { receipt, isReceiptNotFound, isLoading } = useReceipt();
   return (
-    <MainLayout>
+    
       <Box p={4}>
         {isLoading ? (
           <ReceiptLoader />
@@ -56,6 +56,6 @@ export default function ReceiptPreview() {
           <InvalidReceipt heading={t("common_ui.receipt.invalid_type")} />
         )}
       </Box>
-    </MainLayout>
+    
   );
 }

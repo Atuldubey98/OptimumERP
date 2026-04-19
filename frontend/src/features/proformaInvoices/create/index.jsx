@@ -48,7 +48,7 @@ export default function ProformaInvoiceFormPage() {
   });
   const error = status === "error";
   return (
-    <MainLayout>
+    
       <Box p={5}>
         <FormikProvider value={formik}>
           {loading ? (
@@ -174,6 +174,6 @@ export default function ProformaInvoiceFormPage() {
           )}
         </FormikProvider>
       </Box>
-    </MainLayout>
+    
   );
 }

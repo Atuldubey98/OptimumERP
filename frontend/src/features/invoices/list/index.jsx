@@ -138,7 +138,7 @@ export default function InvoicesPage() {
     useDisclosure();
 
   return (
-    <MainLayout>
+    
       <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -273,6 +273,6 @@ export default function InvoicesPage() {
           />
         ) : null}
       </Box>
-    </MainLayout>
+    
   );
 }

@@ -108,7 +108,7 @@ export default function TransactionSettingsPage() {
     },
   });
   return (
-    <MainLayout>
+    
       <AdminLayout>
         <Stack spacing={3}>
           {loading ? (
@@ -178,6 +178,6 @@ export default function TransactionSettingsPage() {
           </SimpleGrid>
         </Stack>
       </AdminLayout>
-    </MainLayout>
+    
   );
 }

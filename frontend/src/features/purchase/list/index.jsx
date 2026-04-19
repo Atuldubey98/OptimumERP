@@ -125,7 +125,7 @@ export default function PurchasePage() {
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
   useDisclosure();
   return (
-    <MainLayout>
+    
       <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -238,6 +238,6 @@ export default function PurchasePage() {
           />
         ) : null}
       </Box>
-    </MainLayout>
+    
   );
 }

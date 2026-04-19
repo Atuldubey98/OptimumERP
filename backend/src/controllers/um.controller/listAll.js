@@ -1,11 +1,15 @@
 const Um = require("../../models/um.model");
-const { getPaginationParams, hasUserReachedCreationLimits } = require("../../services/crud.service");
+const {
+  getPaginationParams,
+  hasUserReachedCreationLimits,
+} = require("../../services/crud.service");
 const { getUmListForOrg } = require("../../services/um.service");
 const listAll = async (req, res) => {
   const { filter } = await getPaginationParams({
     model: Um,
     modelName: Um.modelName,
-    req,
+    query: req.query,
+    params: req.params,
     shouldPaginate: false,
   });
   const shouldUseCachedOrgUmList = !req.query.search;

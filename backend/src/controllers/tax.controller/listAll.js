@@ -9,7 +9,8 @@ const listAll = async (req, res) => {
     await getPaginationParams({
       model: Tax,
       modelName: TAXES,
-      req,
+     query : req.query,
+      params :req.params,
       shouldPaginate,
     });
   const shouldUseCachedOrgTaxList = !req.query.search;

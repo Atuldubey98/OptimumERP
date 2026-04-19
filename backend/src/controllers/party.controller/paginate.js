@@ -8,7 +8,8 @@ const Party = require("../../models/party.model");
 const paginate = async (req, res) => {
   const { skip, limit, total, totalPages, filter, page } =
     await getPaginationParams({
-      req,
+      query : req.query,
+      params :req.params,
       model: Party,
       modelName: PARTIES,
     });      

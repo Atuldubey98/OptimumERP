@@ -38,7 +38,7 @@ export default function ReceiptEditPage() {
   const currentReceiptMeta = receiptMetas[type];
   const bg = useColorModeValue("gray.50", "gray.700");
   return (
-    <MainLayout>
+    
       {status === "loading" ? (
         <Flex marginBlock={4} justifyContent={"center"} alignItems={"center"}>
           <Spinner />
@@ -130,6 +130,6 @@ export default function ReceiptEditPage() {
           </form>
         </FormikProvider>
       )}
-    </MainLayout>
+    
   );
 }

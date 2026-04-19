@@ -170,7 +170,7 @@ export default function DashboardPage() {
     date: moment(item.date).format("DD-MM-YYYY"),
   });
   return (
-    <MainLayout>
+    
      <Box mx={4}>
        <Stack spacing={{ base: 6, md: 8 }}>
           <DashboardPageHeader
@@ -240,6 +240,6 @@ export default function DashboardPage() {
         </Stack>
       <GuideTourModal isOpen={isGuideTourOpen} onClose={onCloseGuidedTour} />
      </Box>
-    </MainLayout>
+    
   );
 }

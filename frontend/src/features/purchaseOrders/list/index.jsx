@@ -132,7 +132,7 @@ export default function PurchaseOrderPage() {
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
     useDisclosure();
   return (
-    <MainLayout>
+    
       <Box p={4}>
         {loading ? (
           <PurchaseOrderLoader />
@@ -249,7 +249,7 @@ export default function PurchaseOrderPage() {
           />
         ) : null}
       </Box>
-    </MainLayout>
+    
   );
 
   function PurchaseOrderLoader() {

@@ -200,7 +200,7 @@ export default function AdminPage() {
   const logoInputRef = useRef(null);
   const [logoStatus, setLogoStatus] = useState("idle");
   return (
-    <MainLayout>
+    
       <AdminLayout>
         <Box>
           {loading ? (
@@ -478,6 +478,6 @@ export default function AdminPage() {
           ) : null}
         </Box>
       </AdminLayout>
-    </MainLayout>
+    
   );
 }

@@ -115,7 +115,7 @@ export default function ExpensesPage() {
   const { getAmountWithSymbol } = useCurrentOrgCurrency();
 
   return (
-    <MainLayout>
+    
       <Box p={4}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -213,6 +213,6 @@ export default function ExpensesPage() {
           <Pagination currentPage={currentPage} total={totalPages} />
         )}
       </Box>
-    </MainLayout>
+    
   );
 }

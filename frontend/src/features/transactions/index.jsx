@@ -169,7 +169,7 @@ export default function TransactionsPage() {
     ? transactionsResponse.party.name
     : "";
   return (
-    <MainLayout>
+    
       <Box p={5}>
         {loading ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
@@ -261,6 +261,6 @@ export default function TransactionsPage() {
           />
         )}
       </Box>
-    </MainLayout>
+    
   );
 }

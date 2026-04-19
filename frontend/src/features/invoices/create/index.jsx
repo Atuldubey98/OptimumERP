@@ -52,7 +52,7 @@ export default function CreateInvoicePage() {
   });
   const hasError = status === "error";
   return (
-    <MainLayout>
+    
       <Box p={5}>
         <FormikProvider value={formik}>
           {loading ? (
@@ -203,6 +203,6 @@ export default function CreateInvoicePage() {
           )}
         </FormikProvider>
       </Box>
-    </MainLayout>
+    
   );
 }

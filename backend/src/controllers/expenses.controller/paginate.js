@@ -8,7 +8,8 @@ const Expense = require("../../models/expense.model");
 const paginate = async (req, res) => {
   const { skip, limit, filter, page, total, totalPages } =
     await getPaginationParams({
-      req,
+      query : req.query,
+      params :req.params,
       modelName: entities.EXPENSES,
       model: Expense,
     });

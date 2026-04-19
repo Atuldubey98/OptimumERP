@@ -5,7 +5,8 @@ const Transaction = require("../../models/transaction.model");
 const paginate = async (req, res) => {
   const { filter, limit, page, total, totalPages, skip } =
     await getPaginationParams({
-      req,
+      query : req.query,
+      params :req.params,
       model: Transaction,
       modelName: TRANSACTIONS,
     });

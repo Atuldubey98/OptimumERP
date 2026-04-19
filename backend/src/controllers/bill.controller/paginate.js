@@ -5,7 +5,8 @@ const paginate = async (options = {}, req, res) => {
   const { Bill } = options;
   const { filter, skip, limit, total, totalPages, page } =
     await getPaginationParams({
-      req,
+      query : req.query,
+      params : req.params,
       modelName: entities.INVOICES,
       model: Bill,
     });

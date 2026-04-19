@@ -72,7 +72,7 @@ export default function PricingPage() {
   ];
 
   return (
-    <MainLayout>
+    
       <Stack spacing={5} p={4}>
         <Heading fontSize={"xl"}>{t("pricing_ui.page.heading")}</Heading>
         <Text>{t("pricing_ui.page.subtitle")}</Text>
@@ -93,6 +93,6 @@ export default function PricingPage() {
           ))}
         </SimpleGrid>
       </Stack>
-    </MainLayout>
+    
   );
 }

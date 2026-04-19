@@ -47,7 +47,7 @@ export default function CreateEstimatePage() {
   const { receiptDefaults } = useCurrentOrgCurrency();
   const hasError = status === "error";
   return (
-    <MainLayout>
+    
       <Box p={5}>
         <FormikProvider value={formik}>
           {loading ? (
@@ -139,6 +139,6 @@ export default function CreateEstimatePage() {
           )}
         </FormikProvider>
       </Box>
-    </MainLayout>
+    
   );
 }

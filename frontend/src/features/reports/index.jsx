@@ -25,7 +25,7 @@ export default function Reportspage() {
   };
   const reportName = reportTypes[reportType];
   return (
-    <MainLayout>
+    <>
       <Box>
         <Box p={2} width={"100%"} boxShadow={"md"}>
           <Flex justifyContent={"flex-start"} gap={5} alignItems={"center"}>
@@ -50,6 +50,6 @@ export default function Reportspage() {
         )}
       </Box>
       <SideReportDrawer isOpen={isMenuOpen} onClose={closeMenu} />
-    </MainLayout>
+    </>
   );
 }
