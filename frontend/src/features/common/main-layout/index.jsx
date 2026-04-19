@@ -49,7 +49,6 @@ export default function MainLayout({ children }) {
         </Flex>
         <NavDrawer isOpen={isOpen} onClose={onClose} />
       </PrivateRoute>
-      <ChatWidget />
     </ErrorBoundary>
   );
 }

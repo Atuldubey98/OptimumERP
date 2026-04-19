@@ -39,6 +39,7 @@
     "nodemailer": "^6.9.12",
     "nodemon": "^3.0.3",
     "ollama": "^0.6.3",
+    "pdf-to-img": "^6.0.0",
     "pdfmake": "^0.2.18",
     "qrcode": "^1.5.3",
     "to-words": "^5.4.0",

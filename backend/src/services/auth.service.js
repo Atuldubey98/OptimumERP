@@ -56,7 +56,9 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
       expenseCategories: 100,
       productCategories: 100,
     },
-    platinum: {},
+    platinum: {
+      bot : Boolean(process.env.OLLAMA_API_KEY) && Boolean(process.env.OLLAMA_TEXT_MODEL),
+    },
   };
   const limits = planLimits[activatedPlan.plan];
   return limits;

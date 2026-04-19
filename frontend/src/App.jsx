@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
+import OrgChatbotLayout from "./features/common/OrgChatbotLayout";
 const ReceiptPreview = lazy(() => import("./features/common/receipt-preview"));
 const GoogleAuthAdminPage = lazy(() => import("./features/login/GoogleAuthPage"));
 const TaxesPage = lazy(() => import("./features/taxes"));
@@ -58,7 +59,7 @@ export default function App() {
         <Route path="/auth/google" element={<GoogleAuthAdminPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/:orgId">
+        <Route path="/:orgId" element={<OrgChatbotLayout/>}>
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
           <Route element={<PricingPage />} path="pricings" />
           <Route element={<ContactsPage />} path="contacts" />

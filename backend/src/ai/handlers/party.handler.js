@@ -149,7 +149,7 @@ const partyHandler = {
       Party.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(parsedLimit),
+        .limit(parsedLimit).lean(),
       Party.countDocuments(filter)
     ]);
 

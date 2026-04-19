@@ -76,8 +76,6 @@ const invoiceSchema = new Schema(
       default: {},
       validate: {
         validator: function (value) {
-          console.log(value);
-
           if (!value || typeof value !== "object" || Array.isArray(value)) {
             return false;
           }

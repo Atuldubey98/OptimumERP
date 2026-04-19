@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const PdfMake = require("pdfmake");
 const path = require("path");
 const i18 = require("../i18");
+const logger = require("../logger");
 exports.renderHtml = (location, data) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(location, data, (err, html) => {
@@ -105,4 +106,28 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
     printer.on("error", onErrorInChunking);
     printer.end();
   });
+};
+
+exports.convertPdfToImages = async (base64Content) => {
+  try {
+    const { pdf: pdfToImg } = require("pdf-to-img");
+    const rawPdfData = base64Content.includes(",")
+      ? base64Content.split(",")[1]
+      : base64Content;
+
+    const pdfBuffer = Buffer.from(rawPdfData, "base64");
+    const imageList = [];
+    const pages = await pdfToImg(pdfBuffer,{
+      renderParams : "viewport"
+    });
+    let i = 1;
+    for await (const page of pages) {
+      logger.info(`Converting ${i} of ${pages.length}`);
+      imageList.push(page.toString("base64"));
+    }
+
+    return imageList;
+  } catch (error) {
+    throw error;
+  }
 };
