@@ -1,86 +1,57 @@
-# Optimum ERP Deployment Guide
+# OptimumERP 🚀
+> **Local-First Enterprise Resource Planning with Integrated LLM Intelligence.**
 
-## Project Brief
+OptimumERP is a modern, privacy-centric ERP suite designed to handle Invoicing, Inventory, and Financial reporting. By leveraging **Ollama**, it allows businesses to use AI for automation without sending sensitive financial data to the cloud.
 
-Optimum ERP is a full-stack ERP platform for managing business operations such as users, organizations, invoicing, purchases, expenses, reports, and settings.
+---
 
-Tech stack:
-- Frontend: React + Vite
-- Backend: Node.js + Express
-- Database: MongoDB
-- Scheduler: Background cron service
-- Deployment: Docker Compose
+## ✨ Key Features
 
-## Deployment Steps
+- **🤖 Local AI (Ollama):** Natural language handlers for creating Bills and Parties locally.
+- **💼 Financial Operations:** Full support for Invoices, Quotes, Proforma, and Purchase Orders.
+- **📈 Advanced Reporting:** Real-time dashboard stats and PDF/Excel exports.
+- **🔐 Enterprise Security:** Role-based access, Session-based auth, and OTP verification.
+- **📂 Storage & Logs:** Configurable network storage for uploads and persistent logging.
+- **📧 Automated Mailer:** Built-in EJS templates for system notifications and OTPs.
 
-1. Prerequisites
-- Install Docker
-- Install Docker Compose plugin
+---
 
-2. Clone repository
-```bash
-git clone https://github.com/Atuldubey98/OptimumERP.git
-```
+## 🛠 Tech Stack
 
-3. Open project directory
-```bash
-cd OptimumERP
-```
+- **Backend:** Node.js, Express, MongoDB (Mongoose)
+- **AI Engine:** Ollama (Local LLM)
+- **Frontend:** React 18, Vite, Ant Design
+- **Task Scheduling:** Node-cron for automated workflows
 
-4. Create environment file
-- Create .env in project root.
-- Use env.txt as reference.
-- Add only these keys in .env:
+---
 
-```dotenv
-MONGO_URI=mongodb://mongo:27017/mernapp?replicaSet=rs0
-SESSION_SECRET=SESSION_SECRET
-VITE_API_URL=http://localhost:3000
-IMPORT_CRON_SCHEDULE=*/5 * * * *
+## 🚀 Installation & Setup
+
+### 1. Prerequisites
+- Node.js (v18+)
+- MongoDB (Local or Atlas)
+- [Ollama](https://ollama.ai/) installed and running.
+
+### 2. Environment Configuration
+Create a `.env` file in the `backend/` directory and populate it with the following:
+
+```env
+# Database & Security
+MONGO_URI=mongodb://localhost:27017/optimumerp
+SESSION_SECRET=your_random_secret_string
+
+# Email Configuration (Nodemailer)
+NODE_MAILER_USER_NAME=your_email@gmail.com
+NODE_MAILER_APP_PASSWORD=your_app_specific_password
+NODE_MAILER_HOST=smtp.gmail.com
+
+# AI / LLM Configuration
+OLLAMA_API_KEY=not_required_for_local_usually
+OLLAMA_TEXT_MODEL=llama3  # or mistral
+
+# App Settings
+VITE_GOOGLE_SSO_ENABLED=false
+IMPORT_CRON_SCHEDULE=false
+DEFAULT_USER_PLAN=free
 LOG_FILE_PATH=./logs/app.log
-DEFAULT_USER_PLAN=platinum
 NETWORK_STORAGE_PATH=./uploads
-```
-
-5. Start all services
-```bash
-docker compose up -d --build
-```
-
-6. Verify services
-```bash
-docker compose ps
-```
-
-7. Verify backend health
-```bash
-curl http://localhost:3000/api/v1/health
-```
-
-8. Access application
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3000/api/v1
-
-## Common Commands
-
-Restart services:
-```bash
-docker compose restart
-```
-
-Stop services:
-```bash
-docker compose down
-```
-
-View logs:
-```bash
-docker compose logs -f
-```
-
-## Production Notes
-
-- Keep .env secrets private.
-- Use HTTPS with reverse proxy for production.
-- Back up MongoDB data volume regularly.
-- Rotate credentials periodically.
