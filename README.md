@@ -48,6 +48,7 @@ NODE_MAILER_HOST=smtp.gmail.com
 # AI / LLM Configuration
 OLLAMA_API_KEY=not_required_for_local_usually
 OLLAMA_TEXT_MODEL=llama3  # or mistral
+OLLAMA_HOST=your_value
 
 # App Settings
 VITE_GOOGLE_SSO_ENABLED=false

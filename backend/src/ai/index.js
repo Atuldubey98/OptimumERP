@@ -4,7 +4,7 @@ const tools = require("./tools");
 const logger = require("../logger");
 
 const ollama = new Ollama({
-  host: "https://ollama.com",
+  host: process.env.OLLAMA_HOST,
   headers: {
     Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`,
   },
