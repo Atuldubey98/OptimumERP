@@ -3,7 +3,9 @@ const logger = require("../logger");
 const cacheService = require("./cache.service");
 
 const UM_CACHE_SCOPE = "um";
-const UM_LIST_CACHE_TTL_SECONDS = Number(process.env.UM_CACHE_TTL_SECONDS || 30 * 60);
+const UM_LIST_CACHE_TTL_SECONDS = Number(
+  process.env.UM_CACHE_TTL_SECONDS || 30 * 60,
+);
 
 const buildOrgUmListCacheKey = (orgId) =>
   cacheService.buildKey(UM_CACHE_SCOPE, "list", orgId);

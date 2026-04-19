@@ -24,12 +24,25 @@ function getWsHandlers(wss) {
           `Messages cache miss for org ${orgId} and user ${userId}; returning empty array`,
         );
         const setting = await settingService.getDetailedSettingForOrg(orgId);
+        const dateOptions = {
+          timeZone: setting.timeZone,
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+
+        const dateFormatter = new Intl.DateTimeFormat(
+          setting.localeCode,
+          dateOptions,
+        );
+        const formattedDate = dateFormatter.format(new Date());
         const content = factory
           .organizationPrompt({
             organization: setting.org,
             preferences: {
               localeCode: setting.localeCode,
               timeZone: setting.timeZone,
+              date: formattedDate,
             },
           })
           .build();

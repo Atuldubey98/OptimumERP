@@ -26,10 +26,10 @@ const organizationPrompt = ({ organization, preferences }) => {
             create: "/:orgId/purchaseOrders/create",
             edit: "/:orgId/purchaseOrders/:purchaseId/edit"
         },
-        purchases: {
-            list: "/:orgId/purchases",
-            create: "/:orgId/purchases/create",
-            edit: "/:orgId/purchases/:purchaseId/edit"
+        purchaseOrders: {
+            list: "/:orgId/purchaseOrders",
+            create: "/:orgId/purchaseOrders/create",
+            edit: "/:orgId/purchaseOrders/:purchaseId/edit"
         },
         reports: {
             list: "/:orgId/reports",

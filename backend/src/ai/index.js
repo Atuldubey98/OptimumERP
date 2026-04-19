@@ -21,6 +21,8 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     get_parties: "Searching customers...",
     create_party: "Creating customer record...",
     get_party_ledger: "Loading account ledger...",
+    get_product_details : "Searching products...",
+    create_product : "Creating item"
   };
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;

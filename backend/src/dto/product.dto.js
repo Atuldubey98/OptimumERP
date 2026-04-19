@@ -5,7 +5,7 @@ const productDto = Joi.object({
   costPrice: Joi.number().label("Cost Price"),
   sellingPrice: Joi.number().label("Selling Price"),
   description: Joi.string().max(200).allow(""),
-  um: Joi.string().default("NONE").optional(),
+  um: Joi.string().optional(),
   type: Joi.string()
     .valid("goods", "service")
     .required()
