@@ -25,22 +25,21 @@ const create = async (data) => {
   });
   return contact;
 };
-const getAll = async ({ filter, skip, limit, sort }) => {
-  const contacts = await Contact.find(filter)
-    .populate("party", "name")
-    .sort(sort)
-    .skip(skip)
-    .limit(limit)
-    .lean();
-  return contacts;
+const getAll = async ({ filter, skip, limit, sort, shouldPaginate = true }) => {
+  let query = Contact.find(filter).populate("party", "name").sort(sort);
+
+  if (shouldPaginate) {
+    query = query.skip(skip).limit(limit);
+  }
+  return await query.lean();
 };
 const getById = async (id) => {
   const contact = await Contact.findById(id).populate("party", "name").lean();
   return contact;
 };
-const remove = async (filter = { org: null, _id: null }) => {    
-  const deleteContact = executeMongoDbTransaction(async (session) => {    
-    const deletedContact = await Contact.softDelete(filter, {session});
+const remove = async (filter = { org: null, _id: null }) => {
+  const deleteContact = executeMongoDbTransaction(async (session) => {
+    const deletedContact = await Contact.softDelete(filter, { session });
     if (!deletedContact) throw new ContactNotFound();
     logger.log("info", `Contact deleted with id ${deletedContact.id}`);
     await changeOrgContactCount({
@@ -53,11 +52,11 @@ const remove = async (filter = { org: null, _id: null }) => {
   return deleteContact;
 };
 const update = async (filter, data) => {
-  const updatedContact = await Contact.findOneAndUpdate(
-    filter,
-    data,
-    { new: true },
-  ).populate("party", "name").lean();
+  const updatedContact = await Contact.findOneAndUpdate(filter, data, {
+    new: true,
+  })
+    .populate("party", "name")
+    .lean();
   if (!updatedContact) throw new ContactNotFound();
   logger.log("info", `Contact updated with id ${updatedContact.id}`);
   return updatedContact;

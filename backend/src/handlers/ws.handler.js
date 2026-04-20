@@ -8,6 +8,7 @@ const settingService = require("../services/setting.service");
 const url = require("url");
 const factory = require("../ai/prompts/factory");
 const renderEngineService = require("../services/renderEngine.service.js");
+const { dateUtils } = require("../utils.js");
 function getWsHandlers(wss) {
   const ORG_USER_MESSAGES_CACHE_TTL_SECONDS = Number(
     process.env.EXPENSE_CATEGORY_CACHE_TTL_SECONDS || 20 * 60,
@@ -24,18 +25,7 @@ function getWsHandlers(wss) {
           `Messages cache miss for org ${orgId} and user ${userId}; returning empty array`,
         );
         const setting = await settingService.getDetailedSettingForOrg(orgId);
-        const dateOptions = {
-          timeZone: setting.timeZone,
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        };
-
-        const dateFormatter = new Intl.DateTimeFormat(
-          setting.localeCode,
-          dateOptions,
-        );
-        const formattedDate = dateFormatter.format(new Date());
+        const formattedDate = dateUtils.formatterBySetting(new Date());
         const content = factory
           .organizationPrompt({
             organization: setting.org,

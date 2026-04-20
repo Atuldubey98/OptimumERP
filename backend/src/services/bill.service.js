@@ -11,6 +11,7 @@ const {
 const { getDisplaySettingForOrg } = require("./setting.service");
 const path = require("path");
 const logger = require("../logger");
+const { moneyUtils } = require("../utils");
 const MODEL_NAME_TO_COUNTER_KEY = {
   invoice: "invoice",
   quotes: "quotation",
@@ -19,7 +20,7 @@ const MODEL_NAME_TO_COUNTER_KEY = {
   sale_order: "saleOrder",
 };
 
-exports.getBill = async ({Bill, filter})=>{
+exports.getBill = async ({ Bill, filter }) => {
   let billQuery = Bill.findOne(filter)
     .populate("party")
     .populate("createdBy", "name email ")
@@ -31,7 +32,7 @@ exports.getBill = async ({Bill, filter})=>{
     billQuery = billQuery.populate("converted", "num date");
   const bill = await billQuery.lean().exec();
   return bill;
-}
+};
 
 const getUpiQrCodeByPrintSettings = async ({
   upi,
@@ -136,7 +137,7 @@ exports.saveBill = async ({
   session,
 }) => {
   const body = await dto.validateAsync(requestBody);
-  const totalWithTaxes = await calculateTaxes(body.items, body.org);  
+  const totalWithTaxes = await calculateTaxes(body.items, body.org);
   const shippingCharges = parseFloat(body.shippingCharges) || 0;
   const { setting, counterKey } = await getCurrentSequenceCounter({
     Bill,
@@ -299,15 +300,6 @@ const addCurrencyToTaxCategories = (taxCategories = {}, formatCurrency) => {
   return newTaxCategories;
 };
 
-const getCurrencyFormatter = ({ locale, currency, decimalDigits = 2 }) => {
-  return Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-    currencyDisplay: "narrowSymbol",
-    maximumFractionDigits: decimalDigits,
-    minimumFractionDigits: decimalDigits,
-  });
-};
 const getBillGrandTotal = (bill = {}) =>
   Number(bill.total || 0) +
   Number(bill.totalTax || 0) +
@@ -322,7 +314,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, language }) => {
   const setting = await getDisplaySettingForOrg(filter.org);
   const currencies = await propertyService.getCurrencyConfig();
   const code = setting.currency;
-  const formatCurrency = getCurrencyFormatter({
+  const formatCurrency = moneyUtils.getCurrencyFormatter({
     locale: setting.localeCode || "en-IN",
     currency: code,
     decimalDigits: setting?.decimal_digits,

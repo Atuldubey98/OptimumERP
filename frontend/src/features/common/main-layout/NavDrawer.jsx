@@ -27,7 +27,7 @@ export default function NavDrawer({ isOpen, onClose }) {
         <CurrentOrganization />
         <Divider />
         <DrawerBody>
-          <SidebarLinksList />
+          <SidebarLinksList onClose={onClose}/>
         </DrawerBody>
       </DrawerContent>
     </Drawer>

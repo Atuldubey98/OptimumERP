@@ -68,7 +68,7 @@ const models = {
     Bill: PurchaseOrder,
     Duplicate: PurchaseOrderDuplicate,
     NotFound: PurchaseOrderNotFound,
-    dto : purchaseOrderDto
+    dto: purchaseOrderDto,
   },
   estimates: {
     NotFound: QuoteNotFound,
@@ -94,9 +94,7 @@ const upsertBill = async (params) => {
       logger.info(`Executing ${params?.billId ? "Edit" : "Create"} flow`);
 
       const party = await partyService.upsert(params);
-      const setting =
-        params?.sequence ||
-        (await settingService.getDetailedSettingForOrg(params.org));
+      const setting = await settingService.getDetailedSettingForOrg(params.org);
       const items = [];
       const ums = await getUmListForOrg(params.org);
       const taxes = await getTaxListForOrg(params.org);
@@ -180,6 +178,7 @@ const upsertBill = async (params) => {
         createdBy: params.createdBy,
         poNo: params?.poNo,
         poDate: params?.poDate,
+        num : params?.num,
       };
     };
 

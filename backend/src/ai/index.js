@@ -12,7 +12,7 @@ const ollama = new Ollama({
 
 const executeTools = async ({ toolCalls, body, onProgress }) => {
   logger.info(
-    `Processing ${toolCalls.length} tool(s): ${toolCalls.map((t) => t.function.name).join(", ")}`,
+    `Processing ${toolCalls.length} tool(s): ${toolCalls.map((t) => `${t.function.name} - ${JSON.stringify(t.function.arguments)}`).join(", ")} `,
   );
   const toolDisplayMap = {
     find_bill: "Retrieving document details...",
@@ -21,8 +21,10 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     get_parties: "Searching customers...",
     create_party: "Creating customer record...",
     get_party_ledger: "Loading account ledger...",
-    get_product_details : "Searching products...",
-    create_product : "Creating item"
+    get_product_details: "Searching products...",
+    create_product: "Creating item...",
+    create_contact: "Creating contact...",
+    get_product_details: "Fetching product details...",
   };
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;

@@ -154,7 +154,7 @@
         "pan_number": "PAN Number",
         "cost_price": "Cost Price",
         "selling_price": "Selling Price",
-        "unit_of_measurement": "Unit of Measurement",
+        "unit_of_measurement": "UOM",
         "product_type": "Type of product",
         "hsn_or_sac": "HSN Code or SAC Code"
       }

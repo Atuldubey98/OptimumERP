@@ -21,7 +21,7 @@ import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
-export const SidebarLinksList = () => {
+export const SidebarLinksList = ({ onClose }) => {
   const { t } = useTranslation("common");
   const {
     orgId = localStorage.getItem("organization") || "",
@@ -32,14 +32,18 @@ export const SidebarLinksList = () => {
   const [openSettings, setOpenSettings] = useState(
     settingsLinks
       .map((settingLink) => `/${orgId}${settingLink.link}`)
-      .includes(location.pathname)
+      .includes(location.pathname),
   );
   const bg = useColorModeValue("black");
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
         {headerLinks.map((headerLink) => (
-          <HeaderLink headerLink={headerLink} key={headerLink.link} />
+          <HeaderLink
+            headerLink={headerLink}
+            key={headerLink.link}
+            onClose={onClose}
+          />
         ))}
         <HeaderLink
           headerLink={{
@@ -47,6 +51,7 @@ export const SidebarLinksList = () => {
             link: `/categories/${type}`,
             labelKey: "common_ui.sidebar.categories",
           }}
+          onClose={onClose}
         />
         <HeaderLink
           headerLink={{
@@ -54,6 +59,7 @@ export const SidebarLinksList = () => {
             link: `/reports/${reportType}`,
             labelKey: "common_ui.sidebar.reports",
           }}
+          onClose={onClose}
         />
         <Divider bg={bg} />
         <ListItem
@@ -89,6 +95,7 @@ export const SidebarLinksList = () => {
             link: `/pricings`,
             labelKey: "common_ui.sidebar.plans",
           }}
+          onClose={onClose}
         />
         <HeaderLink
           headerLink={{
@@ -96,6 +103,7 @@ export const SidebarLinksList = () => {
             link: `/about`,
             labelKey: "common_ui.sidebar.about",
           }}
+          onClose={onClose}
         />
       </List>
     </Container>
