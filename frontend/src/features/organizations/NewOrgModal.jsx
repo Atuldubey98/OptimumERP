@@ -18,11 +18,14 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import React from "react";
+import React, { useMemo } from "react";
 import useAsyncCall from "../../hooks/useAsyncCall";
+import useProperty from "../../hooks/useProperty";
 import instance from "../../instance";
+
 export default function NewOrgModal({
   isOpen: isOpenNewOrgModal,
   onCloseNewOrgModal,
@@ -30,6 +33,10 @@ export default function NewOrgModal({
 }) {
   const { t } = useTranslation("org");
   const { requestAsyncHandler } = useAsyncCall();
+
+  const { value: currencies = {} } = useProperty("CURRENCIES_CONFIG");
+  const { value: countries = [] } = useProperty("COUNTRIES_CONFIG");
+
   const date = new Date();
   const formik = useFormik({
     initialValues: {
@@ -39,13 +46,29 @@ export default function NewOrgModal({
       panNo: "",
       financialYearStart: `${date.getFullYear()}-04-01`,
       financialYearEnd: `${date.getFullYear() + 1}-03-31`,
+      currency: "INR",
+      localeCode: "en-IN",
+      countryCode3: "",
+      stateCode: "",
     },
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
-      const { financialYearEnd, financialYearStart, ...resetOrg } = values;
+      const {
+        financialYearEnd,
+        financialYearStart,
+        countryCode3,
+        stateCode,
+        ...restOrg
+      } = values;
       await instance.post(`/api/v1/organizations`, {
-        ...resetOrg,
+        ...restOrg,
         financialYear: { start: financialYearStart, end: financialYearEnd },
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        ...(countryCode3 && {
+          location: {
+            countryCode3,
+            ...(stateCode && { stateCode }),
+          },
+        }),
       });
       onAddedFetch();
       onCloseNewOrgModal();
@@ -53,6 +76,39 @@ export default function NewOrgModal({
       setSubmitting(false);
     }),
   });
+
+  // Build currency options
+  const currencyOptions = useMemo(
+    () =>
+      Object.keys(currencies).map((code) => ({
+        label: `${currencies[code].name} (${code}) ${currencies[code].symbol}`,
+        value: code,
+      })),
+    [currencies]
+  );
+
+  // Build country options
+  const countryOptions = useMemo(
+    () =>
+      countries.map((c) => ({
+        label: c.name,
+        value: c.code3,
+      })),
+    [countries]
+  );
+
+  // Build state options based on selected country
+  const stateOptions = useMemo(() => {
+    const selectedCountry = countries.find(
+      (c) => c.code3 === formik.values.countryCode3
+    );
+    if (!selectedCountry?.states?.length) return [];
+    return selectedCountry.states.map((s) => ({
+      label: s.name,
+      value: s.code,
+    }));
+  }, [countries, formik.values.countryCode3]);
+
   return (
     <Modal size={"xl"} isOpen={isOpenNewOrgModal} onClose={onCloseNewOrgModal}>
       <ModalOverlay />
@@ -62,6 +118,7 @@ export default function NewOrgModal({
           <ModalCloseButton />
           <ModalBody>
             <Grid gap={4}>
+              {/* Name */}
               <FormControl
                 isRequired
                 isInvalid={formik.errors.name && formik.touched.name}
@@ -78,6 +135,8 @@ export default function NewOrgModal({
                 <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
                 <FormHelperText>{t("org_ui.new_org_modal.name_helper")}</FormHelperText>
               </FormControl>
+
+              {/* Address */}
               <FormControl
                 isRequired
                 isInvalid={formik.errors.address && formik.touched.address}
@@ -93,6 +152,8 @@ export default function NewOrgModal({
                 <FormErrorMessage>{formik.errors.address}</FormErrorMessage>
                 <FormHelperText>{t("org_ui.new_org_modal.address_helper")}</FormHelperText>
               </FormControl>
+
+              {/* GST No */}
               <FormControl
                 isInvalid={formik.errors.gstNo && formik.touched.gstNo}
               >
@@ -109,6 +170,8 @@ export default function NewOrgModal({
                   {t("org_ui.new_org_modal.gst_helper")}
                 </FormHelperText>
               </FormControl>
+
+              {/* PAN No */}
               <FormControl
                 isRequired
                 isInvalid={formik.errors.panNo && formik.touched.panNo}
@@ -126,10 +189,85 @@ export default function NewOrgModal({
                   {t("org_ui.new_org_modal.pan_helper")}
                 </FormHelperText>
               </FormControl>
+
               <Text fontSize={"sm"}>
                 {t("org_ui.new_org_modal.rest_details_note")}
               </Text>
               <Divider />
+
+              {/* Currency */}
+              <FormControl isRequired>
+                <FormLabel>Currency</FormLabel>
+                <Select
+                  name="currency"
+                  options={currencyOptions}
+                  value={
+                    currencyOptions.find(
+                      (opt) => opt.value === formik.values.currency
+                    ) || null
+                  }
+                  onChange={({ value }) => {
+                    formik.setFieldValue("currency", value);
+                    const localeCode = currencies[value]?.localCode || "en-IN";
+                    formik.setFieldValue("localeCode", localeCode);
+                  }}
+                  placeholder="Select currency..."
+                />
+                <FormHelperText>
+                  Sets the default currency for all invoices in this organization.
+                </FormHelperText>
+              </FormControl>
+
+              {/* Country */}
+              <FormControl>
+                <FormLabel>Country</FormLabel>
+                <Select
+                  name="countryCode3"
+                  options={countryOptions}
+                  value={
+                    countryOptions.find(
+                      (opt) => opt.value === formik.values.countryCode3
+                    ) || null
+                  }
+                  onChange={(selected) => {
+                    formik.setFieldValue(
+                      "countryCode3",
+                      selected ? selected.value : ""
+                    );
+                    formik.setFieldValue("stateCode", "");
+                  }}
+                  isClearable
+                  placeholder="Select country..."
+                />
+              </FormControl>
+
+              {/* State — only shown when a country with states is selected */}
+              {stateOptions.length > 0 && (
+                <FormControl>
+                  <FormLabel>State / Province</FormLabel>
+                  <Select
+                    name="stateCode"
+                    options={stateOptions}
+                    value={
+                      stateOptions.find(
+                        (opt) => opt.value === formik.values.stateCode
+                      ) || null
+                    }
+                    onChange={(selected) => {
+                      formik.setFieldValue(
+                        "stateCode",
+                        selected ? selected.value : ""
+                      );
+                    }}
+                    isClearable
+                    placeholder="Select state..."
+                  />
+                </FormControl>
+              )}
+
+              <Divider />
+
+              {/* Financial Year */}
               <Grid>
                 <Text fontWeight={"bold"} fontSize={"md"}>
                   {t("org_ui.new_org_modal.fiscal_year_heading")}

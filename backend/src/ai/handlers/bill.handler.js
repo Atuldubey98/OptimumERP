@@ -90,6 +90,8 @@ const models = {
 };
 const upsertBill = async (params) => {
   try {
+    const modelProps = models[params.type];
+    const { Bill, prefixType } = modelProps;
     const makeRequestBody = async () => {
       logger.info("Bill details ", params);
       logger.info(`Executing ${params?.billId ? "Edit" : "Create"} flow`);
@@ -173,13 +175,14 @@ const upsertBill = async (params) => {
           tax: taxId || setting?.receiptDefaults?.tax?._id?.toString(),
         });
       });
-
+      const terms = (setting?.receiptDefaults?.terms||{})[prefixType]
       return {
         party: params.partyId,
         billingAddress: party.billingAddress,
         items,
+        terms,
         date: params.date || new Date().toISOString().split("T")[0],
-        prefix: setting?.transactionPrefix?.invoice || "",
+        prefix: (setting?.transactionPrefix||{})[prefixType] ||"",
         org: params.org,
         sequence,
         createdBy: params.createdBy,
@@ -192,8 +195,7 @@ const upsertBill = async (params) => {
       };
     };
 
-    const modelProps = models[params.type];
-    const { Bill } = modelProps;
+   
 
     if (!Bill) throw new Error("Invalid bill type");
 

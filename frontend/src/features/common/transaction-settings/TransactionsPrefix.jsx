@@ -19,10 +19,8 @@ import { IoAdd } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import instance from "../../../instance";
 import PrefixForm from "./PrefixForm";
-import useProperty from '../../../hooks/useProperty'
 export default function TransactionPrefix({ formik, loading, printFormik }) {
   const { t } = useTranslation("common");
-  const { value: currencies = {} } = useProperty("CURRENCIES_CONFIG");
   useEffect(() => {
     (async () => {
       if (!formik.values.organization) {
@@ -62,12 +60,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
       data?.data.setting.printSettings && printFormik.setValues(data.data.setting.printSettings);
     })();
   }, [formik.values.organization]);
-  const currencyCodes = Object.keys(currencies);
-
-  const currencyOptions = currencyCodes.map((currency) => ({
-    label: `${currencies[currency].name} (${currency})-${currencies[currency].symbol}`,
-    value: currency,
-  }));
   const getPrefixOptions = (prefixType) =>
     formik.values.prefixes[prefixType].map((prefix) => ({
       value: prefix,
@@ -193,23 +185,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 />
               </FormControl>
             </SimpleGrid>
-            <Divider />
-            <FormControl isDisabled={!formik.values.organization}>
-              <FormLabel>{t("common_ui.transaction_settings.currency")}</FormLabel>
-              <Select
-                name="currency"
-                value={currencyOptions.find(
-                  (currencyOption) =>
-                    currencyOption.value === formik.values.currency
-                )}
-                options={currencyOptions}
-                onChange={({ value }) => {
-                  formik.setFieldValue("currency", value);
-                  const localeCode = currencies[value].localCode;
-                  formik.setFieldValue("localeCode", localeCode);
-                }}
-              />
-            </FormControl>
             <Divider />
           </Stack>
         </form>

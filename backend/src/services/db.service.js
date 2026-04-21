@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 const logger = require("../logger");
+
+mongoose.plugin(softDeletePlugin);
+
 const connectDatabase = async (MONGO_URI) => {
   try {
-    mongoose.plugin(softDeletePlugin);
     const connection = await mongoose.connect(MONGO_URI);
     logger.info("Connected to mongodb");
     return connection;

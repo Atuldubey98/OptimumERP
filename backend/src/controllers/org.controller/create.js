@@ -53,6 +53,8 @@ function createSettingForOrg({ organization, body, receiptDefaults, session }) {
   const setting = new Setting({
     org: organization.id,
     financialYear: body.financialYear,
+    currency: body.currency || "INR",
+    localeCode: body.localeCode || "en-IN",
     receiptDefaults,
   });
 

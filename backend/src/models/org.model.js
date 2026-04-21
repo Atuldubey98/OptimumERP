@@ -27,6 +27,10 @@ const orgSchema = new Schema(
       type: String,
       required: true,
     },
+    location : {
+      countryCode3 : String,
+      stateCode: String,
+    },
     createdBy: {
       type: Types.ObjectId,
       ref: "user",
