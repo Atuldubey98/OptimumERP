@@ -22,7 +22,9 @@ import useProductForm from "../../../hooks/useProductForm";
 import ProductFormDrawer from "../../products/ProductFormDrawer";
 import AsyncSearchableSelect from "./AsyncSearchableSelect";
 import useTaxes from "../../../hooks/useTaxes";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function ReceiptItemsList({ formik, itemsHelper }) {
+  const { currencyPrecision, currencyStep } = useCurrentOrgCurrency();
   const { t } = useTranslation("common");
   const { orgId } = useParams();
   const { taxes } = useTaxes();
@@ -109,9 +111,16 @@ export default function ReceiptItemsList({ formik, itemsHelper }) {
               <GridItem>
                 <NumberInput
                   min={0}
+                  precision={currencyPrecision}
+                  step={currencyStep}
                   isRequired
                   value={item.price}
                   onChange={(value) => {
+                    if (currencyPrecision !== undefined && value.includes('.')) {
+                      if (currencyPrecision === 0) return;
+                      const decPart = value.split('.')[1] || '';
+                      if (decPart.length > currencyPrecision) return;
+                    }
                     formik.setFieldValue(`items[${index}].price`, value);
                   }}
                 >

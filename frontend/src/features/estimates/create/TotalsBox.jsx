@@ -23,10 +23,10 @@ function TotalsBox({
   onShippingChargesChange,
 }) {
   const { t } = useTranslation("quote");
-  const { symbol } = useCurrentOrgCurrency();
+  const { symbol, currencyPrecision, currencyStep } = useCurrentOrgCurrency();
   const formattedShippingCharges = Number(
     Number.isFinite(shippingCharges) ? shippingCharges : 0,
-  ).toFixed(2);
+  ).toFixed(currencyPrecision);
 
   const { grandTotal, total, totalTax } = useMemo(
     () =>
@@ -40,7 +40,7 @@ function TotalsBox({
   return (
     <Flex justifyContent={"flex-end"} alignItems={"center"}>
       <Stack spacing={2} width={"100%"} maxW={450}>
-        <AmountField amount={total.toFixed(2)} label={t("quote_ui.totals.sub_total")} />
+        <AmountField amount={total.toFixed(currencyPrecision)} label={t("quote_ui.totals.sub_total")} />
         {typeof shippingCharges === "number" && typeof onShippingChargesChange === "function" ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Text flex={4}>{t("quote_ui.totals.shipping_charges")}</Text>
@@ -48,10 +48,15 @@ function TotalsBox({
               <NumberInput
                 width={"100%"}
                 min={0}
-                precision={2}
-                step={0.01}
+                precision={currencyPrecision}
+                step={currencyStep}
                 value={formattedShippingCharges}
                 onChange={(valueAsString, valueAsNumber) => {
+                  if (currencyPrecision !== undefined && valueAsString.includes('.')) {
+                    if (currencyPrecision === 0) return;
+                    const decPart = valueAsString.split('.')[1] || '';
+                    if (decPart.length > currencyPrecision) return;
+                  }
                   if (valueAsString === "") {
                     onShippingChargesChange(0);
                     return;
@@ -74,8 +79,8 @@ function TotalsBox({
             </InputGroup>
           </Flex>
         ) : null}
-        <AmountField amount={totalTax.toFixed(2)} label={t("quote_ui.totals.total_tax")} />
-        <AmountField amount={grandTotal.toFixed(2)} label={t("quote_ui.totals.grand_total")} />
+        <AmountField amount={totalTax.toFixed(currencyPrecision)} label={t("quote_ui.totals.total_tax")} />
+        <AmountField amount={grandTotal.toFixed(currencyPrecision)} label={t("quote_ui.totals.grand_total")} />
       </Stack>
     </Flex>
   );

@@ -89,6 +89,8 @@ export default function ProductsPage() {
   const onOpenDrawerForEditingProduct = (product) => {
     formik.setValues({
       ...product,
+      costPrice: fromSmallestUnit(product.costPrice),
+      sellingPrice: fromSmallestUnit(product.sellingPrice),
       categoryProps: product.category,
       category: product.category ? product.category._id : "",
       um: product.um?._id,
@@ -117,12 +119,12 @@ export default function ProductsPage() {
     closeDeleteModal();
     setProductStatus("idle");
   });
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol, fromSmallestUnit } = useCurrentOrgCurrency();
   const productsMapper = (product) => ({
     ...product,
     um: product.um.name,
-    costPrice: getAmountWithSymbol(product.costPrice),
-    sellingPrice: getAmountWithSymbol(product.sellingPrice),
+    costPrice: formatSmallestUnitWithSymbol(product.costPrice),
+    sellingPrice: formatSmallestUnitWithSymbol(product.sellingPrice),
     type: (
       <Tag
         textTransform={"capitalize"}
@@ -196,8 +198,8 @@ export default function ProductsPage() {
             item={{
               ...selectedToShowProduct,
               um: selectedToShowProduct.um.name,
-              costPrice: getAmountWithSymbol(selectedToShowProduct.costPrice),
-              sellingPrice: getAmountWithSymbol(selectedToShowProduct.sellingPrice),
+              costPrice: formatSmallestUnitWithSymbol(selectedToShowProduct.costPrice),
+              sellingPrice: formatSmallestUnitWithSymbol(selectedToShowProduct.sellingPrice),
               type: selectedToShowProduct.type?.toUpperCase(),
               createdAt: moment(selectedToShowProduct.createdAt).format("LL"),
             }}

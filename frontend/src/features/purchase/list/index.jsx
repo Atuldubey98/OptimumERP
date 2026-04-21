@@ -53,7 +53,7 @@ export default function PurchasePage() {
   });
   const loading = status === "loading";
 
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
 
   const navigate = useNavigate();
   const purchaseTableMapper = (purchase) => ({
@@ -68,7 +68,7 @@ export default function PurchasePage() {
     ...purchase,
     num: purchase.num,
     date: moment(purchase.date).format("LL"),
-    grandTotal: getAmountWithSymbol(getBillGrandTotal(purchase)),
+    grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(purchase)),
     status: <Status status={purchase.status} statusList={purchaseStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

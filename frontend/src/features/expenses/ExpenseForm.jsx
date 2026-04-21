@@ -15,8 +15,10 @@ import instance from "../../instance";
 import { Select } from "chakra-react-select";
 import { useParams } from "react-router-dom";
 import NumberInputInteger from "../common/NumberInputInteger";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 export default function ExpenseForm({ formik, isOpen, onClose }) {
   const { t } = useTranslation("expense");
+  const { currencyPrecision, currencyStep } = useCurrentOrgCurrency();
   const { requestAsyncHandler } = useAsyncCall();
   const [expenseCategories, setExpenseCategories] = useState([]);
   const [status, setStatus] = useState("idle");
@@ -55,7 +57,7 @@ export default function ExpenseForm({ formik, isOpen, onClose }) {
           isRequired
         >
           <FormLabel>{t("expense_ui.form.labels.amount")}</FormLabel>
-          <NumberInputInteger formik={formik} name={"amount"} />
+          <NumberInputInteger precision={currencyPrecision} step={currencyStep} formik={formik} name={"amount"} />
           <FormErrorMessage>{formik.errors.amount}</FormErrorMessage>
         </FormControl>
         <FormControl

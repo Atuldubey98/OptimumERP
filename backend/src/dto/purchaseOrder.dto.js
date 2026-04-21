@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const itemSchema = Joi.object({
   name: Joi.string().required(),
-  price: Joi.number().required(),
+  price: Joi.number().integer().required(),
   quantity: Joi.number().required(),
   um: Joi.string().default("none"),
   code: Joi.string().label("HSN/SAC Code").allow(""),
@@ -23,7 +23,7 @@ const purchaseOrderDto = Joi.object({
   description: Joi.string().allow("").label("Description"),
   billingAddress: Joi.string().required().label("Billing Address"),
   items: Joi.array().items(itemSchema).required().label("Items"),
-  shippingCharges: Joi.number().min(0).default(0).label("Shipping Charges"),
+  shippingCharges: Joi.number().integer().min(0).default(0).label("Shipping Charges"),
   terms: Joi.string().allow("").label("Terms"),
   num: Joi.string().default("").allow(""),
   status: Joi.string()

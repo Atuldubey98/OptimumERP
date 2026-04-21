@@ -60,7 +60,7 @@ export default function PayoutModal({
     onSubmit: requestAsyncHandler(async (data, { setSubmitting }) => {
       const { data: responseData } = await instance.post(
         `/api/v1/organizations/${orgId}/purchases/${purchase._id}/payment`,
-        data
+        { ...data, amount: toSmallestUnit(data.amount) }
       );
       toast({
         title: t("purchase_ui.payout.success_title"),
@@ -78,13 +78,14 @@ export default function PayoutModal({
     if (purchase.payment) {
       formik.setValues({
         ...purchase.payment,
+        amount: fromSmallestUnit(purchase.payment.amount),
         date: moment(purchase.payment.date).format("YYYY-MM-DD"),
       });
     } else {
       formik.setValues(defaultPayment);
     }
   }, [purchase]);
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol, currencyPrecision, currencyStep, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const grandTotal = getBillGrandTotal(purchase);
   const shippingCharges = getShippingChargesValue(purchase);
   return (
@@ -99,7 +100,7 @@ export default function PayoutModal({
               <Divider />
               <Text fontSize={"xl"}>
                 <strong>{t("purchase_ui.payout.grand_total")} : </strong>
-                {getAmountWithSymbol(grandTotal)}
+                {formatSmallestUnitWithSymbol(grandTotal)}
               </Text>
               <Divider />
               <Text>
@@ -108,7 +109,7 @@ export default function PayoutModal({
               </Text>
               <Text>
                 <strong>{t("purchase_ui.payout.sub_total")} : </strong>
-                {getAmountWithSymbol(purchase.total)}
+                {formatSmallestUnitWithSymbol(purchase.total)}
               </Text>
               <Text>
                 <strong>
@@ -117,11 +118,11 @@ export default function PayoutModal({
                   })}
                   {" : "}
                 </strong>
-                {getAmountWithSymbol(shippingCharges)}
+                {formatSmallestUnitWithSymbol(shippingCharges)}
               </Text>
               <Text>
                 <strong> {t("purchase_ui.payout.total_tax")}: </strong>
-                {getAmountWithSymbol(purchase.totalTax)}
+                {formatSmallestUnitWithSymbol(purchase.totalTax)}
               </Text>
               <Divider />
               <FormControl
@@ -130,17 +131,19 @@ export default function PayoutModal({
                 <FormLabel>{t("purchase_ui.payout.amount")}</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
                   <NumberInputInteger
+                    precision={currencyPrecision}
+                    step={currencyStep}
                     formik={formik}
                     name={"amount"}
                     min={0}
-                    max={grandTotal}
+                    max={fromSmallestUnit(grandTotal)}
                   />
                   <Button
                     colorScheme="green"
                     onClick={() =>
                       formik.setFieldValue(
                         "amount",
-                        parseFloat(grandTotal.toFixed(2))
+                        parseFloat(fromSmallestUnit(grandTotal).toFixed(currencyPrecision))
                       )
                     }
                     type="button"

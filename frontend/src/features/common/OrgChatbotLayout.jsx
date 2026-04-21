@@ -6,12 +6,11 @@ import MainLayout from "./main-layout";
 const OrgChatbotLayout = () => {
   const { user } = useAuth();
 
-  const currentPlan = user?.currentPlan || {};
-  const limits = currentPlan?.limits || {};
-  const bot = limits?.bot ?? false;
+  const currentPlan = user?.limits || {};
+  const bot = currentPlan?.bot ?? false;
   return (
     <MainLayout>
-      <ChatWidget />
+      {bot && <ChatWidget />}
       <Outlet />
     </MainLayout>
   );

@@ -17,6 +17,7 @@ exports.makeReportExcelBuffer = async ({
   reportType,
   isReport = true,
   selectedHeaderRows,
+  decimalDigits,
 }) => {
   const reportTypes = isReport ? reportDataByType : exportDataByReceiptType;
   const reportMapper = reportTypes[reportType];
@@ -32,7 +33,7 @@ exports.makeReportExcelBuffer = async ({
       : headerRow
     : selectedHeaderRows;
   const reportItems = reportData.map((item) =>
-    bodyMapper(item, { reportData, taxCategoryKeys }),
+    bodyMapper(item, { reportData, taxCategoryKeys, decimalDigits }),
   );
   const wb = new xl.Workbook();
   const ws = wb.addWorksheet();

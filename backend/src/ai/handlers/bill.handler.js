@@ -22,6 +22,7 @@ const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
 const partyService = require("../../services/party.service");
 const billTypes = require("../../constants/billTypes");
+const { moneyUtils } = require("../../utils");
 const {
   ProformaInvoiceDuplicate,
   ProformaInvoiceNotFound,
@@ -95,6 +96,12 @@ const upsertBill = async (params) => {
 
       const party = await partyService.upsert(params);
       const setting = await settingService.getDetailedSettingForOrg(params.org);
+      const displaySetting = await settingService.getDisplaySettingForOrg(params.org);
+      const currencyConfig = displaySetting
+        ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)
+        : null;
+      const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+      const toSmallest = (val) => moneyUtils.toSmallestUnit(val, decimalDigits);
       const items = [];
       const ums = await getUmListForOrg(params.org);
       const taxes = await getTaxListForOrg(params.org);
@@ -159,7 +166,7 @@ const upsertBill = async (params) => {
 
         items.push({
           name: item.name,
-          price: item.price,
+          price: toSmallest(item.price),
           quantity: item?.quantity || 1,
           code: item?.code,
           um,
@@ -176,9 +183,12 @@ const upsertBill = async (params) => {
         org: params.org,
         sequence,
         createdBy: params.createdBy,
-        poNo: params?.poNo,
-        poDate: params?.poDate,
-        num : params?.num,
+        ...(params?.poNo && { poNo: params.poNo }),
+        ...(params?.poDate && { poDate: params.poDate }),
+        ...(params?.num && { num: params.num }),
+        ...(params?.shippingCharges && {
+          shippingCharges: toSmallest(params.shippingCharges),
+        }),
       };
     };
 
@@ -208,7 +218,12 @@ const upsertBill = async (params) => {
     });
 
     logger.info("Bill created");
-    return bill;
+    return billService.getBillDetail({
+      Bill,
+      filter: { _id: bill._id, org: params.org },
+      NotFound: modelProps.NotFound,
+      minimal: true,
+    });
   } catch (error) {
     throw error;
   }
@@ -221,7 +236,12 @@ const billHandler = {
     const filter = { org: params.org };
     if (params.billId) filter._id = params.billId;
     if (params.billNumber) filter.num = params.billNumber;
-    return billService.getBill({ Bill, filter });
+    return billService.getBillDetail({
+      Bill,
+      filter,
+      NotFound: modelProps.NotFound,
+      minimal: true,
+    });
   },
   create_bill: upsertBill,
 };

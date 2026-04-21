@@ -62,6 +62,9 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
         tool_call_id: tool.id,
       };
     } catch (error) {
+      if(process.env.NODE_ENV === "development"){
+        console.log(error)
+      }
       logger.error(`Tool Execution Error [${toolName}]: ${error.message}`);
       throw error;
     }

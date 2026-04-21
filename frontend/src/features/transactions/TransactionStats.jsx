@@ -7,13 +7,13 @@ export default function TransactionStats({ transactionTotalByType }) {
     (total, prev) => prev.total + total,
     0
   );
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
 
   return (
     <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
       <Text fontSize={"sm"}>Total Transactions</Text>
       <Heading>
-        {getAmountWithSymbol(grandTotal)}
+        {formatSmallestUnitWithSymbol(grandTotal)}
       </Heading>
       <Box w={"100%"}>
         <Flex
@@ -25,7 +25,7 @@ export default function TransactionStats({ transactionTotalByType }) {
         >
           {transactionTotalByType.map((transactionType, index) => (
             <Tooltip
-              label={`${transactionType._id.toUpperCase()} - ${getAmountWithSymbol(transactionType.total)}`}
+              label={`${transactionType._id.toUpperCase()} - ${formatSmallestUnitWithSymbol(transactionType.total)}`}
               key={transactionType._id}
             >
               <Box

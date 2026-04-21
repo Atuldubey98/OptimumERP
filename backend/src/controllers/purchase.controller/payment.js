@@ -5,7 +5,7 @@ const Joi = require("joi");
 
 const paymentDto = Joi.object({
   description: Joi.string().allow("").required().label("Description"),
-  amount: Joi.number().required().label("Amount"),
+  amount: Joi.number().integer().required().label("Amount"),
   paymentMode: Joi.string().allow("").label("Payment Mode"),
   date: Joi.string().required().label("Date"),
 });

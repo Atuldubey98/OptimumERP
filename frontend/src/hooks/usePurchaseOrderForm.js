@@ -13,7 +13,7 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function usePurchaseOrderForm({ saveAndNew }) {
   const [status, setStatus] = useState("loading");
   const { t } = useTranslation("common");
-  const { getDefaultReceiptItem, receiptDefaults } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, receiptDefaults, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseOrderSchema = Yup.object().shape({
     party: Yup.string()
@@ -77,11 +77,12 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...purchaseOrder } = values;
       
-      const items = values.items.map(({ _id, ...item }) => item);
+      const items = values.items.map(({ _id, ...item }) => ({ ...item, price: toSmallestUnit(item.price) }));
      const res = await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/purchaseOrders/${_id || ""}`,
         {
           ...purchaseOrder,
+          shippingCharges: toSmallestUnit(purchaseOrder.shippingCharges),
           items,
         }
       );
@@ -152,6 +153,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
         partyDetails: party,
         items: items.map((item) => ({
           ...item,
+          price: fromSmallestUnit(item.price),
           tax: item.tax._id,
           um: item.um._id,
         })),
@@ -159,7 +161,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
         poDate: poDate ? poDate.split("T")[0] : "",
         sequence,
         billingAddress,
-        shippingCharges: data.data.shippingCharges || 0,
+        shippingCharges: fromSmallestUnit(data.data.shippingCharges || 0),
         createdBy: data.data.createdBy._id,
       });
       setStatus("success");

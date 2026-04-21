@@ -1,3 +1,4 @@
+const propertyService = require("./services/property.service");
 const dateUtils = {
   formatterBySetting: (setting) => {
     const dateOptions = {
@@ -16,7 +17,7 @@ const dateUtils = {
 
 const moneyUtils = {
   getCurrencyFormatter: ({ locale, currency, decimalDigits = 2 }) => {
-    return Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
       currencyDisplay: "narrowSymbol",
@@ -24,6 +25,25 @@ const moneyUtils = {
       minimumFractionDigits: decimalDigits,
     });
   },
-};
 
+  getAmountFormatter: ({ locale, decimalDigits }) => {
+    return new Intl.NumberFormat(locale, {
+      maximumFractionDigits: decimalDigits,
+      minimumFractionDigits: decimalDigits,
+      useGrouping: false,
+    });
+  },
+
+  toSmallestUnit: (value, decimalDigits) => {
+    return Math.round(Number(value) * Math.pow(10, decimalDigits));
+  },
+
+  fromSmallestUnit: (amount, decimalDigits) => {
+    return amount / Math.pow(10, decimalDigits);
+  },
+  getCurrencyConfigByCode: async (code)=>{
+    const currencyConfig = await propertyService.getCurrencyConfig();
+    return currencyConfig.value[code];
+  }
+};
 module.exports = { dateUtils, moneyUtils };

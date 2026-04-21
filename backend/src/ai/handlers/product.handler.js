@@ -1,7 +1,8 @@
 const { productDto } = require("../../dto/product.dto");
 const productService = require("../../services/product.service");
-const { getDetailedSettingForOrg } = require("../../services/setting.service");
+const { getDetailedSettingForOrg, getDisplaySettingForOrg } = require("../../services/setting.service");
 const { getUmListForOrg } = require("../../services/um.service");
+const { moneyUtils } = require("../../utils");
 const productHandlers = {
   get_product_details: async (params) => {
     try {
@@ -17,7 +18,21 @@ const productHandlers = {
   },
   create_product: async ({ org, ...params }) => {
     try {
-      const body = await productDto.validateAsync(params);
+      // Convert decimal prices from AI to smallest-unit integers
+      const displaySetting = await getDisplaySettingForOrg(org);
+      const currencyConfig = displaySetting
+        ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)
+        : null;
+      const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+      const toSmallest = (val) => moneyUtils.toSmallestUnit(val, decimalDigits);
+
+      const rawParams = {
+        ...params,
+        ...(params.costPrice != null && { costPrice: toSmallest(params.costPrice) }),
+        ...(params.sellingPrice != null && { sellingPrice: toSmallest(params.sellingPrice) }),
+      };
+
+      const body = await productDto.validateAsync(rawParams);
       const setting = await getDetailedSettingForOrg(org);
       let um = setting?.receiptDefaults?.um?._id?.toString();
       if (body?.um) {

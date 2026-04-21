@@ -2,8 +2,8 @@ const Joi = require("joi");
 
 const productDto = Joi.object({
   name: Joi.string().required().label("Name").max(150),
-  costPrice: Joi.number().label("Cost Price"),
-  sellingPrice: Joi.number().label("Selling Price"),
+  costPrice: Joi.number().integer().label("Cost Price"),
+  sellingPrice: Joi.number().integer().label("Selling Price"),
   description: Joi.string().max(200).allow(""),
   um: Joi.string().optional(),
   type: Joi.string()

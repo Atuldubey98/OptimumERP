@@ -49,7 +49,7 @@ function QuoteItem({
       }),
     },
   };
-  const { symbol } = useCurrentOrgCurrency();
+  const { symbol, currencyPrecision, currencyStep } = useCurrentOrgCurrency();
   const { handleChange: handleQuoteItemChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const subtotal = isNaN(parseFloat(quoteItem.price * quoteItem.quantity))
@@ -63,7 +63,7 @@ function QuoteItem({
   const totalTax = isNaN(parseFloat((subtotal * gstPercentage) / 100))
     ? 0
     : parseFloat((subtotal * gstPercentage) / 100);
-  const total = (subtotal + totalTax).toFixed(2);
+  const total = (subtotal + totalTax).toFixed(currencyPrecision);
   const errors =
     errorsQuoteItems && errorsQuoteItems[index] ? errorsQuoteItems[index] : {};
   const onOpenSearchProduct = () => {
@@ -228,8 +228,15 @@ function QuoteItem({
             <FormLabel>{tCommon("common_ui.receipt.price")}</FormLabel>
             <NumberInput
               min={0}
+              precision={currencyPrecision}
+              step={currencyStep}
               value={quoteItem.price}
               onChange={(value) => {
+                if (currencyPrecision !== undefined && value.includes('.')) {
+                  if (currencyPrecision === 0) return;
+                  const decPart = value.split('.')[1] || '';
+                  if (decPart.length > currencyPrecision) return;
+                }
                 formik.setFieldValue(`items[${index}].price`, value);
               }}
             >

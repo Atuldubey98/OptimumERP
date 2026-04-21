@@ -14,7 +14,7 @@ exports.calculateTaxes = async (items = [], orgId) => {
     const itemSubtotal = item.price * item.quantity;
     total += itemSubtotal;
 
-    const currentItemTax = (itemSubtotal * itemTax.percentage) / 100;
+    const currentItemTax = Math.round((itemSubtotal * itemTax.percentage) / 100);
     totalTax += currentItemTax;
     updateTaxCategories({
       itemTax,
@@ -24,8 +24,8 @@ exports.calculateTaxes = async (items = [], orgId) => {
   }
 
   return {
-    total: parseFloat(total.toFixed(2)),
-    totalTax: parseFloat(totalTax.toFixed(2)),
+    total: Math.round(total),
+    totalTax: Math.round(totalTax),
     taxCategories,
   };
 };
@@ -43,7 +43,7 @@ exports.calculateTaxesForBillItemsWithCurrency = async (
     const itemTax = taxIdItemMap[item.tax];
     const price = formatCurrency.format(item.price);
     const itemSubtotal = item.price * item.quantity;
-    const tax = (itemSubtotal * itemTax.percentage) / 100;
+    const tax = Math.round((itemSubtotal * itemTax.percentage) / 100);
     const total = formatCurrency.format(itemSubtotal + tax);
     const um = umIdsMap[item.um];
     return {
@@ -79,7 +79,7 @@ const makeCategoryKey = (category, percentage) => `${category}@${percentage}%`;
 
 function updateTaxCategory(category, percentage, taxCategories, itemSubtotal) {
   const key = makeCategoryKey(category, percentage);
-  const taxAmount = (itemSubtotal * percentage) / 100;
+  const taxAmount = Math.round((itemSubtotal * percentage) / 100);
   taxCategories[key] = (taxCategories[key] || 0) + taxAmount;
 }
 

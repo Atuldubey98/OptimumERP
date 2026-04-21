@@ -13,8 +13,10 @@ import NumberInputInteger from "../common/NumberInputInteger";
 import ProductCategoryAsyncSelect from "./ProductCategoryAsyncSelect";
 import useUms from "../../hooks/useUms";
 import { useTranslation } from "react-i18next";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 export default function ProductFormDrawer({ isOpen, onClose, formik }) {
   const { t } = useTranslation("product");
+  const { currencyPrecision, currencyStep } = useCurrentOrgCurrency();
   const typeOfProducts = [
     { value: "service", label: t("product_ui.form.type_service") },
     { value: "goods", label: t("product_ui.form.type_goods") },
@@ -97,7 +99,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
             isInvalid={formik.errors.costPrice && formik.touched.costPrice}
           >
             <FormLabel>{t("product_ui.form.cost_price_label")}</FormLabel>
-            <NumberInputInteger name={"costPrice"} formik={formik} />
+            <NumberInputInteger precision={currencyPrecision} step={currencyStep} name={"costPrice"} formik={formik} />
             <FormErrorMessage>{formik.errors.costPrice}</FormErrorMessage>
           </FormControl>
           <FormControl
@@ -107,7 +109,7 @@ export default function ProductFormDrawer({ isOpen, onClose, formik }) {
             }
           >
             <FormLabel>{t("product_ui.form.selling_price_label")}</FormLabel>
-            <NumberInputInteger name={"sellingPrice"} formik={formik} />
+            <NumberInputInteger precision={currencyPrecision} step={currencyStep} name={"sellingPrice"} formik={formik} />
             <FormErrorMessage>{formik.errors.sellingPrice}</FormErrorMessage>
           </FormControl>
         </SimpleGrid>

@@ -37,11 +37,18 @@ const exportData = async (options = {}, req, res) => {
     },
     org: new Types.ObjectId(req.params.orgId),
   };
+  const { getDisplaySettingForOrg } = require("../../services/setting.service");
+  const { moneyUtils } = require("../../utils");
+  const setting = await getDisplaySettingForOrg(req.params.orgId);
+  const currencyConfig = await moneyUtils.getCurrencyConfigByCode(setting.currency);
+  const decimalDigits = currencyConfig?.decimal_digits || 2;
+
   const buffer = await generateBuffer({
     Bill,
     project,
     exportType,
     filter,
+    decimalDigits,
   });
   res.setHeader(
     "Content-Type",
@@ -57,7 +64,7 @@ const exportData = async (options = {}, req, res) => {
 
 module.exports = exportData;
 
-async function generateBuffer({ Bill, filter, project, exportType }) {
+async function generateBuffer({ Bill, filter, project, exportType, decimalDigits }) {
   const bills = await makeBillsForExport({
     Bill,
     filter,
@@ -72,16 +79,18 @@ async function generateBuffer({ Bill, filter, project, exportType }) {
     bills,
     headerRow: headers,
     reportType: Bill.modelName,
+    decimalDigits,
   });
   return buffer;
 }
 
-function prepareExcelReport({ bills = [], headerRow, reportType }) {
+function prepareExcelReport({ bills = [], headerRow, reportType, decimalDigits }) {
   return makeReportExcelBuffer({
     reportData: bills,
     reportType,
     selectedHeaderRows: headerRow,
     isReport: false,
+    decimalDigits,
   });
 }
 function prepareHeader(project = {}) {

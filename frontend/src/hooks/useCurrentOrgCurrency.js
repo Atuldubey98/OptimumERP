@@ -37,6 +37,23 @@ export default function useCurrentOrgCurrency() {
       currencyDisplay : "narrowSymbol"
     }).format(amount);
   };
+  const currencyPrecision = setting?.currency?.decimal_digits ?? 2;
+  const currencyStep = 1 / Math.pow(10, currencyPrecision);
+  
+  const toSmallestUnit = (amount) => {
+    if (amount === null || amount === undefined || amount === "") return 0;
+    return Math.round(Number(amount) * Math.pow(10, currencyPrecision));
+  };
+
+  const fromSmallestUnit = (amount) => {
+    if (amount === null || amount === undefined || amount === "") return 0;
+    return Number(amount) / Math.pow(10, currencyPrecision);
+  };
+
+  const formatSmallestUnitWithSymbol = (amount) => {
+    return getAmountWithSymbol(fromSmallestUnit(amount));
+  };
+
   return {
     symbol,
     setting,
@@ -48,5 +65,10 @@ export default function useCurrentOrgCurrency() {
     financialYear,
     getAmountWithSymbol,
     receiptDefaults,
+    currencyPrecision,
+    currencyStep,
+    toSmallestUnit,
+    fromSmallestUnit,
+    formatSmallestUnitWithSymbol,
   };
 }

@@ -24,6 +24,7 @@ import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 import moment from "moment";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -42,8 +43,8 @@ const PREFERRED_TAX_CATEGORY_ORDER = [
   "none",
 ];
 
-const formatTaxCategoryAmount = (taxCategories, category) =>
-  taxCategories?.[category]?.toFixed(2) || "0.00";
+const getTaxCategoryAmount = (taxCategories, category) =>
+  taxCategories?.[category] || 0;
 
 const getOrderedTaxCategoryKeys = (items = [], defaultCategories = []) => {
   const taxCategoryKeys = new Set(defaultCategories);
@@ -62,12 +63,12 @@ const getOrderedTaxCategoryKeys = (items = [], defaultCategories = []) => {
   });
 };
 
-const formatAmount = (value = 0) => Number(value || 0).toFixed(2);
 const formatReportDate = (value) => (value ? moment(value).format("LL") : "");
 
 export default function ReportItem() {
   const { t } = useTranslation(["report", "tax"]);
   const { reportType } = useParams();
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const { onSetDateFilter, ...response } = useDateFilterFetch({
     entity: `reports/${reportType}`,
   });
@@ -111,11 +112,11 @@ export default function ReportItem() {
         ...Object.fromEntries(
           taxCategoryKeys.map((key) => [
             key,
-            formatTaxCategoryAmount(item.taxCategories, key),
+            formatSmallestUnitWithSymbol(getTaxCategoryAmount(item.taxCategories, key)),
           ])
         ),
-        grandTotal: formatAmount(getBillGrandTotal(item)),
-        totalTax: formatAmount(item.totalTax),
+        grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
+        totalTax: formatSmallestUnitWithSymbol(item.totalTax),
       }),
     };
   };
@@ -134,8 +135,8 @@ export default function ReportItem() {
         partyName: item.party?.name,
         num: item.num,
         date: formatReportDate(item.date),
-        totalTax: formatAmount(item.totalTax),
-        grandTotal: formatAmount(getBillGrandTotal(item)),
+        totalTax: formatSmallestUnitWithSymbol(item.totalTax),
+        grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
         status: (item?.status || "").toLocaleUpperCase(),
       }),
     },
@@ -154,8 +155,8 @@ export default function ReportItem() {
         partyName: item.party?.name,
         num: item.num,
         date: formatReportDate(item.date),
-        totalTax: formatAmount(item.totalTax),
-        grandTotal: formatAmount(getBillGrandTotal(item)),
+        totalTax: formatSmallestUnitWithSymbol(item.totalTax),
+        grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
         status: (item?.status || "").toLocaleUpperCase(),
       }),
     },
@@ -171,7 +172,7 @@ export default function ReportItem() {
         _id: item._id,
         num: item.doc?.num,
         type: transactionTypes[item?.docModel],
-        amount: formatAmount(getBillGrandTotal(item)),
+        amount: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
         relatedTo: item?.party?.name || item.doc?.description || "",
         createdAt: new Date(item.createdAt).toLocaleDateString(),
       }),

@@ -11,7 +11,7 @@ const PREFERRED_TAX_CATEGORY_ORDER = [
   "none",
 ];
 
-const formatAmount = (value = 0) => Number(value || 0).toFixed(2);
+const formatAmount = (value = 0, decimalDigits = 2) => (Number(value || 0) / Math.pow(10, decimalDigits)).toFixed(decimalDigits);
 
 const getGrandTotal = (item = {}) =>
   Number(item.total || 0) +
@@ -59,9 +59,9 @@ const buildGstrHeader = ({ dateLabel, numberLabel, taxCategoryKeys }) => {
   return header;
 };
 
-const mapTaxCategoryValues = (taxCategoryKeys, taxCategories = {}) =>
+const mapTaxCategoryValues = (taxCategoryKeys, taxCategories = {}, decimalDigits = 2) =>
   Object.fromEntries(
-    taxCategoryKeys.map((key) => [key, formatAmount(taxCategories[key])])
+    taxCategoryKeys.map((key) => [key, formatAmount(taxCategories[key], decimalDigits)])
   );
 
 const reportDataByType = {
@@ -77,7 +77,7 @@ const reportDataByType = {
       grandTotal: "Grand Total",
       status: "Status",
     },
-    bodyMapper: (item) => ({
+    bodyMapper: (item, { decimalDigits = 2 } = {}) => ({
       _id: item._id,
       partyName: item.party?.name,
       address: item.party?.billingAddress,
@@ -85,8 +85,8 @@ const reportDataByType = {
       poDate: item.poDate ? new Date(item.poDate).toLocaleDateString() : "",
       num: item.num,
       date: formatDate(item.date),
-      totalTax: formatAmount(item.totalTax),
-      grandTotal: formatAmount(getGrandTotal(item)),
+      totalTax: formatAmount(item.totalTax, decimalDigits),
+      grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
       status: (item?.status || "").toLocaleUpperCase(),
     }),
   },
@@ -100,13 +100,13 @@ const reportDataByType = {
       status: "Status",
     },
 
-    bodyMapper: (item) => ({
+    bodyMapper: (item, { decimalDigits = 2 } = {}) => ({
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
       date: formatDate(item.date),
-      totalTax: formatAmount(item.totalTax),
-      grandTotal: formatAmount(getGrandTotal(item)),
+      totalTax: formatAmount(item.totalTax, decimalDigits),
+      grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
       status: (item?.status || "").toLocaleUpperCase(),
     }),
   },
@@ -118,12 +118,12 @@ const reportDataByType = {
       createdAt: "Done at",
       num: "Num",
     },
-    bodyMapper: (item) => ({
+    bodyMapper: (item, { decimalDigits = 2 } = {}) => ({
       _id: item._id,
       num: item.doc?.num,
       type: item?.docModel,
       relatedTo: item?.party?.name || item.doc?.description || "",
-      amount: formatAmount(getGrandTotal(item)),
+      amount: formatAmount(getGrandTotal(item), decimalDigits),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   },
@@ -136,15 +136,15 @@ const reportDataByType = {
         numberLabel: "Invoice No.",
         taxCategoryKeys,
       }),
-    bodyMapper: (item, { taxCategoryKeys = DEFAULT_GSTR_TAX_CATEGORIES } = {}) => ({
+    bodyMapper: (item, { taxCategoryKeys = DEFAULT_GSTR_TAX_CATEGORIES, decimalDigits = 2 } = {}) => ({
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
       date: formatDate(item.date),
       gstNo: item.party?.gstNo,
-      ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
-      totalTax: formatAmount(item.totalTax),
-      grandTotal: formatAmount(getGrandTotal(item)),
+      ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories, decimalDigits),
+      totalTax: formatAmount(item.totalTax, decimalDigits),
+      grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
     }),
   },
   gstr2: {
@@ -156,15 +156,15 @@ const reportDataByType = {
         numberLabel: "Purchase No.",
         taxCategoryKeys,
       }),
-    bodyMapper: (item, { taxCategoryKeys = DEFAULT_GSTR_TAX_CATEGORIES } = {}) => ({
+    bodyMapper: (item, { taxCategoryKeys = DEFAULT_GSTR_TAX_CATEGORIES, decimalDigits = 2 } = {}) => ({
       _id: item._id,
       partyName: item.party?.name,
       num: item.num,
       gstNo: item.party?.gstNo,
       date: formatDate(item.date),
-      ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories),
-      totalTax: formatAmount(item.totalTax),
-      grandTotal: formatAmount(getGrandTotal(item)),
+      ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories, decimalDigits),
+      totalTax: formatAmount(item.totalTax, decimalDigits),
+      grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
     }),
   },
 };

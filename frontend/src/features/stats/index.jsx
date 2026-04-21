@@ -61,7 +61,7 @@ export default function StatsPage() {
     (total, prev) => prev.total + total,
     0,
   );
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const periods = [
     {
       label: t("stats_ui.periods.this_week"),
@@ -126,7 +126,7 @@ export default function StatsPage() {
                   icon={<PiMoneyDuotone size={40} color="green" />}
                   dashType={t("stats_ui.cards.sales")}
                   period={currentPeriodLabel}
-                  dashTotal={getAmountWithSymbol(totalSales)}
+                  dashTotal={formatSmallestUnitWithSymbol(totalSales)}
                 />
               </Box>
               <Box w={"100%"} maxW={350}>
@@ -134,7 +134,7 @@ export default function StatsPage() {
                   icon={<FaMoneyBillTrendUp size={40} color="gray" />}
                   dashType={t("stats_ui.cards.purchase")}
                   period={currentPeriodLabel}
-                  dashTotal={getAmountWithSymbol(totalPurchase)}
+                  dashTotal={formatSmallestUnitWithSymbol(totalPurchase)}
                 />
               </Box>
               <Box w={"100%"} maxW={350}>
@@ -142,7 +142,7 @@ export default function StatsPage() {
                   icon={<GiExpense size={40} color="brown" />}
                   dashType={t("stats_ui.cards.expenses")}
                   period={currentPeriodLabel}
-                  dashTotal={getAmountWithSymbol(expensesTotal)}
+                  dashTotal={formatSmallestUnitWithSymbol(expensesTotal)}
                 />
               </Box>
             </Flex>
@@ -156,8 +156,8 @@ export default function StatsPage() {
                     {stats.topFiveClientTotal.map((client, index) => (
                       <StatProgress
                         key={index}
-                        value={`${client.party.name} (${getAmountWithSymbol(getBillGrandTotal(client))})`}
-                        label={getAmountWithSymbol(getBillGrandTotal(client))}
+                        value={`${client.party.name} (${formatSmallestUnitWithSymbol(getBillGrandTotal(client))})`}
+                        label={formatSmallestUnitWithSymbol(getBillGrandTotal(client))}
                         progress={
                           (getBillGrandTotal(client) /
                             getBillGrandTotal(stats.invoicesTotal)) *
@@ -195,10 +195,10 @@ export default function StatsPage() {
                         key={index}
                         value={
                           expeseCategory?._id
-                            ? `${expeseCategory.category.name} (${getAmountWithSymbol(expeseCategory.total)})`
-                            : `${t("stats_ui.labels.miscellaneous")} (${getAmountWithSymbol(expeseCategory.total)})`
+                            ? `${expeseCategory.category.name} (${formatSmallestUnitWithSymbol(expeseCategory.total)})`
+                            : `${t("stats_ui.labels.miscellaneous")} (${formatSmallestUnitWithSymbol(expeseCategory.total)})`
                         }
-                        label={getAmountWithSymbol(expeseCategory.total)}
+                        label={formatSmallestUnitWithSymbol(expeseCategory.total)}
                         progress={(expeseCategory.total / expensesTotal) * 100}
                       />
                     ))}

@@ -23,6 +23,7 @@ import BalanceStats from "./BalanceStats";
 import BillStatsByStatus from "./BillStatsByStatus";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -31,6 +32,7 @@ const getBillGrandTotal = (bill) =>
 
 export default function TransactionsPage() {
   const { t } = useTranslation("transactions");
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const { partyId, orgId } = useParams();
   const query = useQuery();
   const currentPage = query.get("page") || 1;
@@ -225,7 +227,7 @@ export default function TransactionsPage() {
               totalItems: item.doc.items.length,
               status: item.doc.status,
               num: item.doc.num,
-              grandTotal: getBillGrandTotal(item).toFixed(2),
+              grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
               type: (
                 <Tag
                   size={"md"}

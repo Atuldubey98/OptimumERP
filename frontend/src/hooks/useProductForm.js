@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { useParams } from "react-router-dom";
 import instance from "../instance";
+import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 const createProductDto = (t) =>
   Yup.object({
     name: Yup.string()
@@ -32,6 +33,7 @@ const createProductDto = (t) =>
 export default function useProductForm(onAddedFetch, onCloseDrawer) {
   const { t } = useTranslation("common");
   const { requestAsyncHandler } = useAsyncCall();
+  const { toSmallestUnit } = useCurrentOrgCurrency();
   const { orgId = "" } = useParams();
   const formik = useFormik({
     validateOnChange: false,
@@ -63,9 +65,15 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
         productId
           ? {
               ...product,
+              costPrice: toSmallestUnit(product.costPrice),
+              sellingPrice: toSmallestUnit(product.sellingPrice),
               category: values.category ? values.category : null,
             }
-          : product
+          : {
+              ...product,
+              costPrice: toSmallestUnit(product.costPrice),
+              sellingPrice: toSmallestUnit(product.sellingPrice),
+            }
       );
 
       if (onAddedFetch) onAddedFetch(response.data.data);

@@ -13,9 +13,13 @@ export default function NumberInputInteger({
   min = 0,
   placeholder = "",
   max ,
+  precision,
+  step,
 }) {
   return (
     <NumberInput
+      precision={precision}
+      step={step}
       min={min}
       max={max}
       isRequired
@@ -25,6 +29,11 @@ export default function NumberInputInteger({
           const currentValue = isNaN(parseInt(value)) ? min : parseInt(value);
           formik.setFieldValue(name, currentValue);
         } else {
+          if (precision !== undefined && value.includes('.')) {
+            if (precision === 0) return;
+            const decPart = value.split('.')[1] || '';
+            if (decPart.length > precision) return;
+          }
           formik.setFieldValue(name, value);
         }
       }}

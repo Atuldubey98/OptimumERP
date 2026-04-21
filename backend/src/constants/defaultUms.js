@@ -10,6 +10,11 @@ const defaultUms = [
     unit: "NOS",
   },
   {
+    name: "No.",
+    description: "Number",
+    unit: "No.",
+  },
+  {
     name: "AU",
     description: "Atomic Unit",
     unit: "AU",

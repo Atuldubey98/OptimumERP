@@ -3,7 +3,7 @@ const recurringInvoicesPeriods = require("../constants/recurringInvoicesPeriods"
 const ums = require("../constants/um");
 const itemSchema = Joi.object({
   name: Joi.string().required().label("Item name"),
-  price: Joi.number().required().label("Price"),
+  price: Joi.number().integer().required().label("Price"),
   quantity: Joi.number().required().label("Quantity"),
   code: Joi.string().allow("").optional().label("Code"),
   um: Joi.string()

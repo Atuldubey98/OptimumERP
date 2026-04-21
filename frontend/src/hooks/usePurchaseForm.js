@@ -13,7 +13,7 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function usePurchaseForm({ saveAndNew }) {
   const [status, setStatus] = useState("loading");
   const { t } = useTranslation("common");
-  const { getDefaultReceiptItem } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseSchema = Yup.object().shape({
     num: Yup.string().required(t("common_ui.validation.messages.purchase_number_required")),
@@ -62,7 +62,7 @@ export default function usePurchaseForm({ saveAndNew }) {
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, autoItems, ...purchase } = values;
-      const items = values.items.map(({ _id, ...item }) => item);
+      const items = values.items.map(({ _id, ...item }) => ({ ...item, price: toSmallestUnit(item.price) }));
       if (!_id && values.autoItems) {
         await instance.post(`/api/v1/organizations/${orgId}/products/bulk`, {
           items: items.map((item) => ({
@@ -81,6 +81,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         `/api/v1/organizations/${orgId}/purchases/${_id || ""}`,
         {
           ...purchase,
+          shippingCharges: toSmallestUnit(purchase.shippingCharges),
           items,
         }
       );
@@ -139,13 +140,14 @@ export default function usePurchaseForm({ saveAndNew }) {
         status,
         items: items.map((item) => ({
           ...item,
+          price: fromSmallestUnit(item.price),
           tax: item.tax._id,
           um: item.um._id,
         })),
         description,
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,
-        shippingCharges: data.data.shippingCharges || 0,
+        shippingCharges: fromSmallestUnit(data.data.shippingCharges || 0),
         createdBy: data.data.createdBy._id,
       });
       setStatus("success");

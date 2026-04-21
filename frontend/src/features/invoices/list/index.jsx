@@ -52,7 +52,7 @@ export default function InvoicesPage() {
   });
   const loading = status === "loading";
   const navigate = useNavigate();
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
 
   const invoiceTableMapper = (invoice) => ({
     partyName: (
@@ -65,7 +65,7 @@ export default function InvoicesPage() {
     ),
     ...invoice,
     date: moment(invoice.date).format("LL"),
-    grandTotal: getAmountWithSymbol(getBillGrandTotal(invoice)),
+    grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(invoice)),
     status: <Status status={invoice.status} statusList={invoiceStatusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

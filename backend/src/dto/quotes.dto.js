@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const itemSchema = Joi.object({
   name: Joi.string().required(),
-  price: Joi.number().required(),
+  price: Joi.number().integer().required(),
   quantity: Joi.number().required(),
   um: Joi.string().default("none"),
   code : Joi.string().default("HSN/SAC Code").allow(""),

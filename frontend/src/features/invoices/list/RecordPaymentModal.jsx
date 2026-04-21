@@ -57,7 +57,7 @@ export default function RecordPaymentModal({
     onSubmit: requestAsyncHandler(async (data, { setSubmitting }) => {
       const { data: responseData } = await instance.post(
         `/api/v1/organizations/${orgId}/invoices/${invoice._id}/payment`,
-        data
+        { ...data, amount: toSmallestUnit(data.amount) }
       );
       toast({
         title: "Success",
@@ -75,13 +75,14 @@ export default function RecordPaymentModal({
     if (invoice.payment) {
       formik.setValues({
         ...invoice.payment,
+        amount: fromSmallestUnit(invoice.payment.amount),
         date: moment(invoice.payment.date).format("YYYY-MM-DD"),
       });
     } else {
       formik.setValues(defaultPayment);
     }
   }, [invoice]);
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol, currencyPrecision, currencyStep, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const grandTotal = getBillGrandTotal(invoice);
   const shippingCharges = getShippingChargesValue(invoice);
   return (
@@ -96,7 +97,7 @@ export default function RecordPaymentModal({
               <Divider />
               <Text fontSize={"xl"}>
                 <strong>Grand Total : </strong>
-                {getAmountWithSymbol(grandTotal)}
+                {formatSmallestUnitWithSymbol(grandTotal)}
               </Text>
               <Divider />
               <Text>
@@ -105,15 +106,15 @@ export default function RecordPaymentModal({
               </Text>
               <Text>
                 <strong>Sub Total : </strong>
-                {getAmountWithSymbol(invoice.total)}
+                {formatSmallestUnitWithSymbol(invoice.total)}
               </Text>
               <Text>
                 <strong>Shipping Charges : </strong>
-                {getAmountWithSymbol(shippingCharges)}
+                {formatSmallestUnitWithSymbol(shippingCharges)}
               </Text>
               <Text>
                 <strong> Total Tax: </strong>
-                {getAmountWithSymbol(invoice.totalTax)}
+                {formatSmallestUnitWithSymbol(invoice.totalTax)}
               </Text>
               <Divider />
               <FormControl
@@ -121,13 +122,13 @@ export default function RecordPaymentModal({
               >
                 <FormLabel>Amount</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
-                  <NumberInputInteger formik={formik} name={"amount"} min={0} max={grandTotal} />
+                  <NumberInputInteger precision={currencyPrecision} step={currencyStep} formik={formik} name={"amount"} min={0} max={fromSmallestUnit(grandTotal)} />
                   <Button
                     colorScheme="green"
                     onClick={() =>
                       formik.setFieldValue(
                         "amount",
-                        parseFloat(grandTotal.toFixed(2))
+                        parseFloat(fromSmallestUnit(grandTotal).toFixed(currencyPrecision))
                       )
                     }
                     type="button"

@@ -22,7 +22,7 @@ import ExporterModal from "../../common/ExporterModal";
 
 export default function EstimatesPage() {
   const { t, i18n } = useTranslation("quote");
-  const {  getAmountWithSymbol } = useCurrentOrgCurrency();
+  const {  formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
 
   const navigate = useNavigate();
   const onClickAddNewQuote = useCallback(() => {
@@ -47,7 +47,7 @@ export default function EstimatesPage() {
     partyName: estimate.party.name,
     ...estimate,
     date: moment(estimate.date).format("LL"),
-    grandTotal: getAmountWithSymbol(estimate.total + estimate.totalTax),
+    grandTotal: formatSmallestUnitWithSymbol(estimate.total + estimate.totalTax),
     status: <Status status={estimate.status} statusList={statusList} />,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();

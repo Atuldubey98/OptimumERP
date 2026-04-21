@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const itemSchema = Joi.object({
   name: Joi.string().required().label("Item name"),
-  price: Joi.number().required().label("Price"),
+  price: Joi.number().integer().required().label("Price"),
   quantity: Joi.number().required().label("Quantity"),
   code: Joi.string().allow("").optional().label("Code"),
   um: Joi.string().label("Unit of measurement"),
@@ -19,7 +19,7 @@ const proformaInvoiceDto = Joi.object({
   date: Joi.date().required().label("Invoice date"),
   poNo: Joi.string().label("PO Number").allow("").optional(),
   poDate: Joi.string().label("PO Date").allow("").optional(),
-  shippingCharges: Joi.number().min(0).default(0).label("Shipping Charges"),
+  shippingCharges: Joi.number().integer().min(0).default(0).label("Shipping Charges"),
   status: Joi.string()
     .default("draft")
     .valid("draft", "sent", "pending")

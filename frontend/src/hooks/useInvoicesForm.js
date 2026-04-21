@@ -11,7 +11,7 @@ import useSetting from "./useCurrentOrgCurrency";
 export default function useInvoicesForm({ saveAndNew = false }) {
   const [status, setStatus] = useState("loading");
   const { t } = useTranslation("common");
-  const { getDefaultReceiptItem, receiptDefaults } = useSetting();
+  const { getDefaultReceiptItem, receiptDefaults, toSmallestUnit, fromSmallestUnit } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
 
   const invoiceSchema = Yup.object().shape({
@@ -78,11 +78,12 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...invoice } = values;
-      const items = values.items.map(({ _id, ...item }) => item);
+      const items = values.items.map(({ _id, ...item }) => ({...item, price: toSmallestUnit(item.price)}));
       const response = await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/invoices/${_id || ""}`,
         {
           ...invoice,
+          shippingCharges: toSmallestUnit(invoice.shippingCharges),
           items,
         },
       );
@@ -157,6 +158,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         partyDetails: party,
         items: items.map((item) => ({
           ...item,
+          price: fromSmallestUnit(item.price),
           tax: item.tax._id,
           um: item.um._id,
         })),
@@ -164,7 +166,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         poDate: poDate ? poDate.split("T")[0] : "",
         poNo,
         billingAddress,
-        shippingCharges: data.data.shippingCharges || 0,
+        shippingCharges: fromSmallestUnit(data.data.shippingCharges || 0),
         createdBy: data.data.createdBy._id,
       });
       setStatus("success");

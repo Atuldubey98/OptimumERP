@@ -79,7 +79,7 @@ export default function ExpensesPage() {
       const { _id, ...expense } = values;
       await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/expenses${_id ? `/${_id}` : ``}`,
-        { ...expense, category: expense.category || null }
+        { ...expense, amount: toSmallestUnit(expense.amount), category: expense.category || null }
       );
       fetchFn();
       closeExpenseForm();
@@ -112,7 +112,7 @@ export default function ExpensesPage() {
     setExpenseStatus("idle");
   });
   const deleting = expenseStatus === "deleting";
-  const { getAmountWithSymbol } = useCurrentOrgCurrency();
+  const { formatSmallestUnitWithSymbol, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
 
   return (
     
@@ -134,7 +134,7 @@ export default function ExpensesPage() {
             heading={heading}
             tableData={expenses.map((expense) => ({
               ...expense,
-              amount: getAmountWithSymbol(expense.amount),
+              amount: formatSmallestUnitWithSymbol(expense.amount),
               category: expense.category
                 ? expense.category.name
                 : t("expense_ui.messages.miscellaneous"),
@@ -147,7 +147,7 @@ export default function ExpensesPage() {
                   formik.setValues({
                     _id: expense._id,
                     description: expense.description,
-                    amount: expense.amount,
+                    amount: fromSmallestUnit(expense.amount),
                     category: expense.category ? expense.category._id : "",
                     date: moment(expense.date).format("YYYY-MM-DD"),
                   });
@@ -187,7 +187,7 @@ export default function ExpensesPage() {
             item={{
               ...expenseSelected,
               date: moment(expenseSelected.date).format("DD-MM-YYYY"),
-              amount: getAmountWithSymbol(expenseSelected.amount),
+              amount: formatSmallestUnitWithSymbol(expenseSelected.amount),
               category: expenseSelected.category
                 ? expenseSelected.category.name
                 : t("expense_ui.messages.miscellaneous"),

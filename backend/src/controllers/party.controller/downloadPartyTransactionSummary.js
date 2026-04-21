@@ -12,6 +12,14 @@ const downloadPartyTransactionSummary = async (req, res) => {
     org: req.params.orgId,
     party: req.params.partyId,
   };
+  const { getDisplaySettingForOrg } = require("../../services/setting.service");
+  const { moneyUtils } = require("../../utils");
+  
+  const setting = await getDisplaySettingForOrg(req.params.orgId);
+  const currencyConfig = setting ? await moneyUtils.getCurrencyConfigByCode(setting.currency) : null;
+  const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+  const precisionFactor = Math.pow(10, decimalDigits);
+
   const search = req.query.search;
   const party = await Party.findOne({
             total: {
@@ -84,12 +92,12 @@ const downloadPartyTransactionSummary = async (req, res) => {
       num: item.doc?.num || item.doc?.purchaseNo || "",
       type: item?.docModel,
       relatedTo: item?.doc?.party?.name || item.doc?.description || "",
-      totalTax: (item.totalTax || 0).toFixed(2),
-      amount: (
+      totalTax: ((item.totalTax || 0) / precisionFactor).toFixed(decimalDigits),
+      amount: ((
         Number(item.total || 0) +
         Number(item.totalTax || 0) +
         Number(item.shippingCharges || 0)
-      ).toFixed(2),
+      ) / precisionFactor).toFixed(decimalDigits),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   };
@@ -128,12 +136,12 @@ const downloadPartyTransactionSummary = async (req, res) => {
   ws.cell(reportTransactions.length + 4, 1)
     .string("Total Sale")
     .style(headerStyle);
-  ws.cell(reportTransactions.length + 4, 2).number(invoiceBalance.total);
+  ws.cell(reportTransactions.length + 4, 2).number(invoiceBalance.total / precisionFactor);
 
   ws.cell(reportTransactions.length + 5, 1)
     .string("Total Purchase")
     .style(headerStyle);
-  ws.cell(reportTransactions.length + 5, 2).number(purchaseBalance.total);
+  ws.cell(reportTransactions.length + 5, 2).number(purchaseBalance.total / precisionFactor);
 
   ws.cell(reportTransactions.length + 6, 1)
     .string("Period")
