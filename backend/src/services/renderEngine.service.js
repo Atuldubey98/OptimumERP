@@ -124,6 +124,7 @@ exports.convertPdfToImages = async (base64Content) => {
     for await (const page of pages) {
       logger.info(`Converting ${i} of ${pages.length}`);
       imageList.push(page.toString("base64"));
+      i++;
     }
 
     return imageList;

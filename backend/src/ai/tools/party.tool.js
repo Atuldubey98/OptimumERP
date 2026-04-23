@@ -48,11 +48,11 @@ const partyTools = [
     type: "function",
     function: {
       name: "create_party",
-      description: "Create a new party/customer record.",
+      description: "Create a new party/customer record. The party's name may appear anywhere in the user's message — including on the very next line after the request. Always extract and include the name, even if it is on a separate line.",
       parameters: {
         type: "object",
         properties: {
-          name: { type: "string", description: "Full name of the party" },
+          name: { type: "string", description: "Full name of the party. Look carefully — it may appear on a new line immediately after the request." },
           billingAddress: { type: "string" },
           shippingAddress: { type: "string" },
           gstNo: { type: "string" },
