@@ -10,6 +10,7 @@ import { GoPeople, GoTag } from "react-icons/go";
 import { ImStatsBars2 } from "react-icons/im";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { TiContacts } from "react-icons/ti";
+import { MdOutlinePayments } from "react-icons/md";
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard", labelKey: "common_ui.sidebar.links.dashboard" },
   { icon: ImStatsBars2, link: "/stats", label: "Stats", labelKey: "common_ui.sidebar.links.stats" },
@@ -31,6 +32,7 @@ const headerLinks = [
   { icon: FaFileInvoice, link: "/estimates", label: "Quotations", labelKey: "common_ui.sidebar.links.quotations" },
   { icon: GiExpense, link: "/expenses", label: "Expenses", labelKey: "common_ui.sidebar.links.expenses" },
   { icon: FaMoneyBillTrendUp, link: "/purchases", label: "Purchase", labelKey: "common_ui.sidebar.links.purchase" },
+  { icon: MdOutlinePayments, link: "/paymentVouchers", label: "Payment Vouchers", labelKey: "common_ui.sidebar.links.payment_vouchers" },
   { icon: GoTag, link: "/products", label: "Items", labelKey: "common_ui.sidebar.links.items" },
 ];
 

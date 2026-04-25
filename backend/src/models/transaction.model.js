@@ -28,6 +28,7 @@ const transactionSchema = new Schema(
         "quotes",
         "proforma_invoice",
         "purchase_order",
+        "payment_voucher",
       ],
       required: true,
     },
@@ -71,11 +72,17 @@ const transactionSchema = new Schema(
       required: true,
       default: getTodayDate,
     },
+    voucherType: {
+      type: String,
+      enum: ["receipt", "payment"],
+    },
   },
   { timestamps: true, versionKey: false }
 );
 
 transactionSchema.index({ org: 1, createdAt: -1 });
+transactionSchema.index({ org: 1, party: 1, date: -1 });
+transactionSchema.index({ org: 1, date: -1 });
 transactionSchema.index(
   { org: 1, docModel: 1, doc: 1 },
   { unique: true, name: "transaction_org_doc_model_doc_unique" }

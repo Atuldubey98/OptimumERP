@@ -12,34 +12,10 @@ const purchaseInvoice = new Schema(
       type: String,
       required: true,
     },
-    payment: {
-      _id: false,
-      type: {
-        amount: {
-          type: Number,
-        },
-        paymentMode: {
-          type: String,
-        },
-        description: {
-          type: String,
-        },
-        date: {
-          type: Date,
-        },
-      },
-      validate: {
-        validator: async (value) => {
-          if (!value) return true;
-          const payment = await Property.findOne({
-            name: "PAYMENT_METHODS",
-            "value.value": value.paymentMode,
-          });
-          return Boolean(payment);
-        },
-        message: () => `Payment method does not exist`,
-      },
-    },
+    paymentVouchers: [{
+      type: Types.ObjectId,
+      ref: "payment_voucher",
+    }],
     total: {
       type: Number,
       default: 0,

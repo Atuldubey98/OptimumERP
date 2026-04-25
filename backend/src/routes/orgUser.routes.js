@@ -13,6 +13,7 @@ const purchaseOrderRouter = require("./purchaseOrder.routes");
 const contactRouter = require("./contact.routes");
 const statsRouter = require("./stats.routes");
 const proformaInvoiceRouter = require("./proformaInvoice.routes");
+const paymentVoucherRouter = require("./paymentVoucher.routes");
 const {
   closeFinanialYear,
   createOrgUser,
@@ -66,6 +67,7 @@ orgUserRouter.use("/expenseCategories", expenseCategoryRouter);
 orgUserRouter.use("/purchaseOrders", purchaseOrderRouter);
 orgUserRouter.use("/contacts", contactRouter);
 orgUserRouter.use("/proformaInvoices", proformaInvoiceRouter);
+orgUserRouter.use("/paymentVouchers", paymentVoucherRouter);
 orgUserRouter.use("/stats", statsRouter);
 
 module.exports = orgUserRouter;

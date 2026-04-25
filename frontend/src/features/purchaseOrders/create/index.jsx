@@ -175,7 +175,7 @@ export default function PurchaseOrderEditPage() {
                 <TotalsBox
                   quoteItems={deferredItems}
                   taxes={taxes}
-                  shippingCharges={formik.values.shippingCharges || 0}
+                  shippingCharges={formik.values.shippingCharges ?? ""}
                   onShippingChargesChange={(value) => {
                     formik.setFieldValue("shippingCharges", value);
                   }}

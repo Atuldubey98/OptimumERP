@@ -3,6 +3,7 @@ const { PartyNotFound } = require("../../errors/party.error");
 const Party = require("../../models/party.model");
 const partyService = require("../../services/party.service");
 const settingService = require("../../services/setting.service")
+const { moneyUtils } = require("../../utils");
 
 const getDateFilterFromDuration = (duration) => {
   const now = new Date();
@@ -119,10 +120,27 @@ const partyHandler = {
         dateFilter
       );
 
+      const currencyConfig = await moneyUtils.getCurrencyConfigByCode(setting?.currency || "INR");
+      const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+      const fromSmallest = (val) => moneyUtils.fromSmallestUnit(val, decimalDigits);
+
+      const formattedLedger = {
+        invoiceBalance: {
+          total: fromSmallest(ledgerDetails.invoiceBalance.total),
+          payment: fromSmallest(ledgerDetails.invoiceBalance.payment),
+          due: fromSmallest(ledgerDetails.invoiceBalance.total - ledgerDetails.invoiceBalance.payment)
+        },
+        purchaseBalance: {
+          total: fromSmallest(ledgerDetails.purchaseBalance.total),
+          payment: fromSmallest(ledgerDetails.purchaseBalance.payment),
+          due: fromSmallest(ledgerDetails.purchaseBalance.total - ledgerDetails.purchaseBalance.payment)
+        }
+      };
+
       return {
         success: true,
         filter: params?.duration ? `last ${params.duration}` : "financial_year",
-        ...ledgerDetails
+        ...formattedLedger
       };
 
     } catch (error) {

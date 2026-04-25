@@ -44,47 +44,106 @@ exports.upsert = async (params) => {
         return existingParty;
     }
 
-    return await exports.create({ ...body, org: params.org });
+    return await exports.create({ ...params, org: params.org });
 };
 
 exports.getLedgerTotals = async (partyId, orgId, date) => {
-    const entities = [Invoice, Purchase];
+    const Transaction = require("../models/transaction.model");
     const match = {
         org: new mongoose.Types.ObjectId(orgId),
         party: new mongoose.Types.ObjectId(partyId),
+        docModel: { $in: ["invoice", "purchase", "payment_voucher"] }
     };
-    if (date)
+    if (date) {
         match.date = date;
+    }
+
     const aggregator = [
+        { $match: match },
         {
-            $match: match,
+            $lookup: {
+                from: "payment_vouchers",
+                localField: "doc",
+                foreignField: "_id",
+                as: "voucherDetails"
+            }
+        },
+        {
+            $addFields: {
+                vType: { 
+                    $ifNull: ["$voucherType", { $arrayElemAt: ["$voucherDetails.voucherType", 0] }] 
+                }
+            }
         },
         {
             $group: {
                 _id: null,
-                total: {
+                invoiceTotal: {
                     $sum: {
-                        $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
-                    },
+                        $cond: [
+                            { $eq: ["$docModel", "invoice"] },
+                            { $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }] },
+                            0
+                        ]
+                    }
                 },
-                payment: { $sum: "$payment.amount" },
-            },
-        },
+                invoicePayment: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $and: [
+                                    { $eq: ["$docModel", "payment_voucher"] },
+                                    { $eq: ["$vType", "receipt"] }
+                                ]
+                            },
+                            "$total",
+                            0
+                        ]
+                    }
+                },
+                purchaseTotal: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$docModel", "purchase"] },
+                            { $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }] },
+                            0
+                        ]
+                    }
+                },
+                purchasePayment: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $and: [
+                                    { $eq: ["$docModel", "payment_voucher"] },
+                                    { $eq: ["$vType", "payment"] }
+                                ]
+                            },
+                            "$total",
+                            0
+                        ]
+                    }
+                }
+            }
+        }
     ];
-    const [invoiceBalanceCalculator, purchaseBalanceCalculator] =
-        await Promise.all(
-            entities.map((model) =>
-                model.aggregate(aggregator)
-            )
-        );
-    const invoiceBalance = invoiceBalanceCalculator.length
-        ? invoiceBalanceCalculator[0]
-        : { total: 0, payment: 0 };
-    const purchaseBalance = purchaseBalanceCalculator.length
-        ? purchaseBalanceCalculator[0]
-        : { total: 0, payment: 0 };
-    return {
-        invoiceBalance,
-        purchaseBalance
+
+    const result = await Transaction.aggregate(aggregator);
+    const summary = result.length > 0 ? result[0] : {
+        invoiceTotal: 0,
+        invoicePayment: 0,
+        purchaseTotal: 0,
+        purchasePayment: 0
     };
-}
+
+    return {
+        invoiceBalance: {
+            total: summary.invoiceTotal,
+            payment: summary.invoicePayment
+        },
+        purchaseBalance: {
+            total: summary.purchaseTotal,
+            payment: summary.purchasePayment
+        }
+    };
+};

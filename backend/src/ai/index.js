@@ -25,6 +25,8 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     create_product: "Creating item...",
     create_contact: "Creating contact...",
     get_product_details: "Fetching product details...",
+    create_payment_voucher: "Creating payment voucher...",
+    find_payment_voucher: "Fetching payment voucher...",
   };
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;

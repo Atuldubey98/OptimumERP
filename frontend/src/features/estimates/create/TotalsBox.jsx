@@ -24,9 +24,7 @@ function TotalsBox({
 }) {
   const { t } = useTranslation("quote");
   const { symbol, currencyPrecision, currencyStep } = useCurrentOrgCurrency();
-  const formattedShippingCharges = Number(
-    Number.isFinite(shippingCharges) ? shippingCharges : 0,
-  ).toFixed(currencyPrecision);
+
 
   const { grandTotal, total, totalTax } = useMemo(
     () =>
@@ -41,7 +39,7 @@ function TotalsBox({
     <Flex justifyContent={"flex-end"} alignItems={"center"}>
       <Stack spacing={2} width={"100%"} maxW={450}>
         <AmountField amount={total.toFixed(currencyPrecision)} label={t("quote_ui.totals.sub_total")} />
-        {typeof shippingCharges === "number" && typeof onShippingChargesChange === "function" ? (
+        {shippingCharges !== undefined && typeof onShippingChargesChange === "function" ? (
           <Flex justifyContent={"center"} alignItems={"center"}>
             <Text flex={4}>{t("quote_ui.totals.shipping_charges")}</Text>
             <InputGroup flex={8}>
@@ -50,23 +48,14 @@ function TotalsBox({
                 min={0}
                 precision={currencyPrecision}
                 step={currencyStep}
-                value={formattedShippingCharges}
-                onChange={(valueAsString, valueAsNumber) => {
-                  if (currencyPrecision !== undefined && valueAsString.includes('.')) {
+                value={shippingCharges}
+                onChange={(value) => {
+                  if (currencyPrecision !== undefined && value.includes('.')) {
                     if (currencyPrecision === 0) return;
-                    const decPart = valueAsString.split('.')[1] || '';
+                    const decPart = value.split('.')[1] || '';
                     if (decPart.length > currencyPrecision) return;
                   }
-                  if (valueAsString === "") {
-                    onShippingChargesChange(0);
-                    return;
-                  }
-
-                  onShippingChargesChange(
-                    Number.isFinite(valueAsNumber) && valueAsNumber >= 0
-                      ? valueAsNumber
-                      : 0,
-                  );
+                  onShippingChargesChange(value);
                 }}
               >
                 <NumberInputField textAlign={"right"} pr={12} />

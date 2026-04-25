@@ -23,6 +23,7 @@ const settingSchema = new Schema({
       purchaseOrder: String,
       proformaInvoice: String,
       saleOrder: String,
+      paymentVoucher : String,
     },
     default: {
       invoice: "",
@@ -30,6 +31,7 @@ const settingSchema = new Schema({
       purchaseOrder: "",
       proformaInvoice: "",
       saleOrder: "",
+      paymentVoucher : ""
     },
   },
   prefixes: {
@@ -38,12 +40,14 @@ const settingSchema = new Schema({
       quotation: [String],
       purchaseOrder: [String],
       proformaInvoice: [String],
+      paymentVoucher: [String],
     },
     default: {
       invoice: [""],
       quotation: [""],
       purchaseOrder: [""],
       proformaInvoice: [""],
+      paymentVoucher: [""],
     },
   },
   currency: {
@@ -78,6 +82,7 @@ const settingSchema = new Schema({
       purchaseOrder: sequenceCounterSchema,
       proformaInvoice: sequenceCounterSchema,
       saleOrder: sequenceCounterSchema,
+      paymentVoucher : sequenceCounterSchema,
     },
     default: {
       invoice: 0,
@@ -85,6 +90,7 @@ const settingSchema = new Schema({
       purchaseOrder: 0,
       proformaInvoice: 0,
       saleOrder: 0,
+      paymentVoucher : 0,
     },
   },
   printSettings: {

@@ -8,6 +8,7 @@ const {
   PURCHASE_ORDERS,
   QUOTATION,
   TRANSACTIONS,
+  PAYMENT_VOUCHERS,
 } = require("../constants/entities");
 const { isValidObjectId, default: mongoose } = require("mongoose");
 
@@ -49,6 +50,7 @@ exports.getPaginationParams = async ({
     case QUOTATION:
     case PURCHASE_INVOICES:
     case PURCHASE_ORDERS:
+    case PAYMENT_VOUCHERS:
       if (query.startDate && query.endDate)
         filter.date = {
           $gte: new Date(query.startDate),

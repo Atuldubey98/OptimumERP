@@ -11,4 +11,5 @@ module.exports = {
   PURCHASE_ORDERS: "purchaseOrder",
   TRANSACTIONS: "transaction",
   TAXES: "tax",
+  PAYMENT_VOUCHERS: "paymentVoucher",
 };

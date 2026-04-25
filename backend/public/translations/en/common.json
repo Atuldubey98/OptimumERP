@@ -223,6 +223,7 @@
         "quotations": "Quotations",
         "expenses": "Expenses",
         "purchase": "Purchase",
+        "payment_vouchers": "Payment Vouchers",
         "items": "Items"
       },
       "settings_links": {
