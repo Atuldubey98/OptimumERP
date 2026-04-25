@@ -309,7 +309,8 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
   const bill = await Bill.findOne(filter)
     .populate("party")
     .populate("createdBy", "name email _id")
-    .populate("org");
+    .populate("org")
+    .lean();
   if (!bill) throw new NotFound();
   const setting = await getDisplaySettingForOrg(filter.org);
   const code = setting.currency;

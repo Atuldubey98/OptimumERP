@@ -22,9 +22,9 @@ const organizationPrompt = ({ organization, preferences }) => {
             edit: "/:orgId/invoices/:invoiceId/edit"
         },
         purchases: {
-            list: "/:orgId/purchaseOrders",
-            create: "/:orgId/purchaseOrders/create",
-            edit: "/:orgId/purchaseOrders/:purchaseId/edit"
+            list: "/:orgId/purchases",
+            create: "/:orgId/purchases/create",
+            edit: "/:orgId/purchases/:purchaseId/edit"
         },
         purchaseOrders: {
             list: "/:orgId/purchaseOrders",

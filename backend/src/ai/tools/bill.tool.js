@@ -2,6 +2,38 @@ const billTools = [
   {
     type: "function",
     function: {
+      name: "download_bill",
+      description: "Generate a download link for a specific invoice, purchase, or other billing document by its number or ID.",
+      parameters: {
+        type: "object",
+        properties: {
+          type: {
+            type: "string",
+            enum: [
+              "invoices",
+              "purchases",
+              "proformaInvoices",
+              "estimates",
+              "purchaseOrders",
+            ],
+            description: "The category of the document.",
+          },
+          billNumber: {
+            type: "string",
+            description: "The human-readable number of the bill (e.g., 'INV-001').",
+          },
+          billId: {
+            type: "string",
+            description: "The MongoDB _id of the bill.",
+          },
+        },
+        required: ["type"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "find_bills",
       description: "Search for multiple documents (invoices, purchases, etc.) using the transaction registry. Supports filtering by party, type, amount, and date.",
       parameters: {

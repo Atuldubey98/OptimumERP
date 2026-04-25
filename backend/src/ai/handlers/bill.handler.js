@@ -233,6 +233,36 @@ const upsertBill = async (params) => {
   }
 };
 const billHandler = {
+  download_bill: async (params) => {
+    try {
+      const modelProps = models[params.type];
+      const { Bill } = modelProps;
+      if (!Bill) throw new Error("Invalid bill type");
+
+      const filter = { org: params.org };
+      if (params.billId) filter._id = params.billId;
+      if (params.billNumber) filter.num = params.billNumber;
+
+      const bill = await Bill.findOne(filter).lean();
+      if (!bill) throw new modelProps.NotFound();
+
+      const downloadUrl = `/api/v1/organizations/${params.org}/${params.type}/${bill._id}/download`;
+      const docTypeLabel = params.type.slice(0, -1);
+      return {
+        message: `I've prepared the download for ${docTypeLabel} ${bill.num}.`,
+        aiResponse: `I have found the ${docTypeLabel} ${bill.num} and generated a download link for it. Please do not include the download link in your text response, as I will provide a dedicated download button for it.`,
+        downloads: [
+          {
+            name: `${docTypeLabel}_${bill.num}.pdf`,
+            url: downloadUrl,
+            type: "file",
+          },
+        ],
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
   find_bills: async (params) => {
     try {
       const filter = { org: params.org };

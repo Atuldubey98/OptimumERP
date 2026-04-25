@@ -53,6 +53,7 @@ export const useChatSocket = (orgId) => {
                 role: "ai",
                 content: data.message || data.content,
                 timestamp: new Date().toISOString(),
+                downloads: data.downloads || [],
               },
             ]);
             setIsTyping(false);

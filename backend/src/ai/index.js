@@ -15,6 +15,8 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     `Processing ${toolCalls.length} tool(s): ${toolCalls.map((t) => `${t.function.name} - ${JSON.stringify(t.function.arguments)}`).join(", ")} `,
   );
   const toolDisplayMap = {
+    download_report: "Generating report link...",
+    download_bill: "Preparing document download...",
     find_bills: "Searching documents...",
     find_bill: "Retrieving document details...",
     create_bill: "Generating billing document...",
@@ -65,7 +67,8 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
       logger.info("Results from handler ", result);
       return {
         role: "tool",
-        content: JSON.stringify({ success: true, data: result }),
+        content: JSON.stringify({ success: true, data: result.aiResponse || result }),
+        fullData: result, // Keep full data for aggregation
         tool_call_id: tool.id,
       };
     } catch (error) {
@@ -82,6 +85,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
 
 const chat = async (model, { messages = [], body, onProgress }) => {
   try {
+    const allDownloads = [];
     while (true) {
       if (onProgress) {
         onProgress({ type: "status", message: "Thinking..." });
@@ -106,6 +110,13 @@ const chat = async (model, { messages = [], body, onProgress }) => {
 
         messages.push(...toolResults);
 
+        toolResults.forEach((res) => {
+          if (res.fullData?.downloads) {
+            allDownloads.push(...res.fullData.downloads);
+          }
+        });
+        logger.info(`Extracted ${allDownloads.length} downloads from tools`);
+
         const hasError = toolResults.some(
           (res) => !JSON.parse(res.content).success,
         );
@@ -127,12 +138,18 @@ const chat = async (model, { messages = [], body, onProgress }) => {
             options: { temperature: 0.3 },
           });
 
+          if (allDownloads.length > 0) {
+            finalAiExplanation.message.downloads = allDownloads;
+          }
           return finalAiExplanation.message;
         }
 
         continue;
       }
 
+      if (allDownloads.length > 0) {
+        aiMessage.downloads = allDownloads;
+      }
       return aiMessage;
     }
   } catch (error) {

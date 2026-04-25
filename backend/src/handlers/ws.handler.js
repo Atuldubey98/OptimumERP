@@ -94,6 +94,7 @@ function getWsHandlers(wss) {
         JSON.stringify({
           event: "ai_response",
           message: response.content,
+          downloads: response.downloads || [],
         }),
       );
       cacheService.set(

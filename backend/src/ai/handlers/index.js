@@ -4,6 +4,7 @@ const productHandlers = require("./product.handler");
 const contactHandlers = require("./contact.handler");
 const paymentVoucherHandler = require("./paymentVoucher.handler");
 const expenseHandlers = require("./expense.handler");
+const reportHandlers = require("./report.handler");
 const getHandler = (handlerName) => {
   const handlers = {
     ...billHandler,
@@ -12,6 +13,7 @@ const getHandler = (handlerName) => {
     ...contactHandlers,
     ...paymentVoucherHandler,
     ...expenseHandlers,
+    ...reportHandlers,
   };
   return handlers[handlerName];
 };
