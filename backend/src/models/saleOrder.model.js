@@ -117,6 +117,10 @@ const saleOrderSchema = new Schema(
           type: String,
           default: "none",
         },
+        product: {
+          type: Types.ObjectId,
+          ref: "product",
+        },
       },
     ],
     financialYear: {

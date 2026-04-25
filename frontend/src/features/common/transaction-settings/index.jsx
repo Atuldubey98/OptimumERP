@@ -73,6 +73,7 @@ export default function TransactionSettingsPage() {
         quotation: [""],
         purchaseOrder: [""],
         proformaInvoice: [""],
+        paymentVoucher: [""],
       },
     },
     onSubmit: async (values, { setSubmitting }) => {
@@ -84,6 +85,7 @@ export default function TransactionSettingsPage() {
           quotation: values.quotation,
           purchaseOrder: values.purchaseOrder,
           proformaInvoice: values.proformaInvoice || "",
+          paymentVoucher: values.paymentVoucher || "",
         },
         currency: values.currency,
         localeCode: values.localeCode,

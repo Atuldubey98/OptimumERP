@@ -35,7 +35,7 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedProductId, setSelectedProductId] = useState();
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const { getDefaultReceiptItem, formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const defaultItem = getDefaultReceiptItem();
@@ -104,33 +104,60 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
     if (!isOpen) {
       return;
     }
-    const selectedProduct = products.find(
-      (product) => product.name === formik.values.items[index].name
+    const currentItem = formik.values.items[index];
+    const initialProduct = products.find(
+      (product) => product.name === currentItem.name
     );
-    setSelectedProductId(selectedProduct?._id);
+    if (initialProduct && !selectedProductIds.includes(initialProduct._id)) {
+      setSelectedProductIds([initialProduct._id]);
+    }
   }, [formik.values.items, index, isOpen, products]);
 
-  const selectedProduct = useMemo(
-    () => products.find((product) => product._id === selectedProductId),
-    [products, selectedProductId],
+  const selectedProducts = useMemo(
+    () => products.filter((product) => selectedProductIds.includes(product._id)),
+    [products, selectedProductIds],
   );
 
+  const toggleProductSelection = (productId) => {
+    setSelectedProductIds((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
   const applyProductSelection = useCallback(
-    (product) => {
-      if (!product) {
+    () => {
+      if (selectedProducts.length === 0) {
         return;
       }
-      formik.setFieldValue(`items[${index}]`, {
-        name: product.name,
-        quantity: formik.values.items[index].quantity || 1,
-        um: product.um?._id || defaultItem.um,
-        code: product.code,
-        tax: defaultItem.tax,
-        price: product.sellingPrice || 0,
+
+      const newItems = [...formik.values.items];
+      
+      selectedProducts.forEach((product, i) => {
+        const itemData = {
+          name: product.name,
+          quantity: 1,
+          um: product.um?._id || defaultItem.um,
+          code: product.code,
+          tax: defaultItem.tax,
+          price: product.sellingPrice || 0,
+          product: product._id,
+        };
+
+        if (i === 0) {
+          // Replace current item at index
+          newItems[index] = itemData;
+        } else {
+          // Add as new items
+          newItems.push(itemData);
+        }
       });
+
+      formik.setFieldValue("items", newItems);
       onClose();
     },
-    [defaultItem.tax, defaultItem.um, formik, index, onClose],
+    [defaultItem.tax, defaultItem.um, formik, index, onClose, selectedProducts],
   );
 
   return (
@@ -185,7 +212,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                 <ButtonGroup flexWrap="wrap" justifyContent="flex-end">
                   <Button
                     onClick={() => {
-                      setSelectedProductId(undefined);
+                      setSelectedProductIds([]);
                       formik.setFieldValue(`items[${index}]`, defaultItem);
                       onClose();
                     }}
@@ -214,9 +241,9 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                 <Text fontSize="sm">
                   {response.total || products.length} product{(response.total || products.length) === 1 ? "" : "s"}
                 </Text>
-                {selectedProduct ? (
+                {selectedProductIds.length > 0 ? (
                   <Badge colorScheme="blue" borderRadius="full" px={3} py={1}>
-                    Selected: {selectedProduct.name}
+                    Selected: {selectedProductIds.length} items
                   </Badge>
                 ) : null}
               </HStack>
@@ -237,8 +264,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
             ) : products.length ? (
               <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={4}>
                 {products.map((product) => {
-                  const isSelected = product._id === selectedProductId;
-
+                  const isSelected = selectedProductIds.includes(product._id);
                   return (
                     <Box
                       key={product._id}
@@ -250,7 +276,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                       cursor="pointer"
                       p={4}
                       transition="0.2s ease"
-                      onClick={() => setSelectedProductId(product._id)}
+                      onClick={() => toggleProductSelection(product._id)}
                     >
                       <Stack spacing={4}>
                         <Flex justify="space-between" gap={3} align="flex-start">
@@ -291,10 +317,10 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
                           variant={isSelected ? "solid" : "outline"}
                           onClick={(event) => {
                             event.stopPropagation();
-                            setSelectedProductId(product._id);
+                            toggleProductSelection(product._id);
                           }}
                         >
-                          {isSelected ? "Selected" : "Select product"}
+                          {isSelected ? "Remove" : "Select product"}
                         </Button>
                       </Stack>
                     </Box>
@@ -328,10 +354,10 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={() => applyProductSelection(selectedProduct)}
-            isDisabled={!selectedProduct}
+            onClick={applyProductSelection}
+            isDisabled={selectedProductIds.length === 0}
           >
-            Use selected product
+            Use selected products ({selectedProductIds.length})
           </Button>
         </ModalFooter>
       </ModalContent>

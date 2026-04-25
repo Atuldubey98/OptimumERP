@@ -20,7 +20,8 @@
       "expense": "Despesa",
       "quotes": "Orçamentos",
       "proforma_invoice": "Fatura Proforma",
-      "purchase_order": "Pedido de Compra"
+      "purchase_order": "Pedido de Compra",
+      "payment_voucher": "Comprovante de Pagamento"
     },
     "filters": {
       "custom": "Personalizado",

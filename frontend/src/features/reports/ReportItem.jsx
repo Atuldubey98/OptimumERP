@@ -79,6 +79,7 @@ export default function ReportItem() {
     quotes: t("report_ui.transaction_types.quotes"),
     proforma_invoice: t("report_ui.transaction_types.proforma_invoice"),
     purchase_order: t("report_ui.transaction_types.purchase_order"),
+    payment_voucher: t("report_ui.transaction_types.payment_voucher"),
   };
   const buildGstrReportConfig = ({ items, dateLabel, numberLabel }) => {
     const taxCategoryKeys = getOrderedTaxCategoryKeys(

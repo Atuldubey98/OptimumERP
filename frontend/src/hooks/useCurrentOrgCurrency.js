@@ -26,6 +26,7 @@ export default function useCurrentOrgCurrency() {
       code: "",
       quantity: 1,
       price: 0,
+      product: "",
     };
   };
   const getAmountWithSymbol = (amount) => {

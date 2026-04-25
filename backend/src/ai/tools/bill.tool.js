@@ -98,6 +98,10 @@ const billTools = [
                 quantity: { type: "number" },
                 price: { type: "number" },
                 um: { type: "string" },
+                productId: {
+                  type: "string",
+                  description: "The MongoDB _id of the product if known.",
+                },
                 tax: {
                   type: "array",
                   items: {

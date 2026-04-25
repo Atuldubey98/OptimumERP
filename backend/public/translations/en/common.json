@@ -360,6 +360,8 @@
       "quotation_prefix": "Quotation Prefix",
       "proforma_invoice_prefix": "Proforma Invoice Prefix",
       "purchase_order": "Purchase Order",
+      "sale_order_prefix": "Sale Order Prefix",
+      "payment_voucher_prefix": "Payment Voucher Prefix",
       "currency": "Currency",
       "prefix_list": "Prefix list",
       "prefix": "Prefix",

@@ -6,6 +6,7 @@ const itemSchema = Joi.object({
   code: Joi.string().allow("").optional().label("Code"),
   um: Joi.string().label("Unit of measurement"),
   tax: Joi.string().label("GST applicable"),
+  product: Joi.string().allow("", null).optional().label("Product ID"),
 });
 
 const invoiceDto = Joi.object({

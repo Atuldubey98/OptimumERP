@@ -6,6 +6,7 @@ const itemSchema = Joi.object({
   um: Joi.string().default("none"),
   code : Joi.string().default("HSN/SAC Code").allow(""),
   tax: Joi.string().default("none"),
+  product: Joi.string().allow("", null).optional().label("Product ID"),
 });
 
 const quoteDto = Joi.object({

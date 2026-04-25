@@ -20,7 +20,8 @@
       "expense": "Expense",
       "quotes": "Quotes",
       "proforma_invoice": "Proforma Invoice",
-      "purchase_order": "Purchase Order"
+      "purchase_order": "Purchase Order",
+      "payment_voucher": "Payment Voucher"
     },
     "filters": {
       "custom": "Custom",

@@ -173,6 +173,7 @@ const upsertBill = async (params) => {
           code: item?.code,
           um,
           tax: taxId || setting?.receiptDefaults?.tax?._id?.toString(),
+          product: item.productId,
         });
       });
       const terms = (setting?.receiptDefaults?.terms||{})[prefixType]

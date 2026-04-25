@@ -88,6 +88,10 @@ const purchaseInvoice = new Schema(
           ref: "taxes",
           required: true,
         },
+        product: {
+          type: Types.ObjectId,
+          ref: "product",
+        },
       },
     ],
     date: {

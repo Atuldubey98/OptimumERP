@@ -37,6 +37,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
             quotation: [""],
             purchaseOrder: [""],
             proformaInvoice: [""],
+            paymentVoucher: [""],
           },
         });
         printFormik.setValues({ bank: false, upiQr: false });
@@ -53,8 +54,16 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         purchaseOrder: data.data.setting.transactionPrefix.purchaseOrder || "",
         localeCode: data.data.setting.localeCode,
         proformaInvoice: data.data.setting.transactionPrefix.proformaInvoice || "",
+        paymentVoucher: data.data.setting.transactionPrefix.paymentVoucher || "",
         currency: data.data.currency.code,
-        prefixes: data.data.setting.prefixes,
+        prefixes: {
+          invoice: [""],
+          quotation: [""],
+          purchaseOrder: [""],
+          proformaInvoice: [""],
+          paymentVoucher: [""],
+          ...data.data.setting.prefixes,
+        },
       });
 
       data?.data.setting.printSettings && printFormik.setValues(data.data.setting.printSettings);
@@ -69,6 +78,7 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
   const quotationPrefixOptions = getPrefixOptions("quotation");
   const proformaInvoicePrefixOptions = getPrefixOptions("proformaInvoice");
   const purchaseOrderPrefixOptions = getPrefixOptions("purchaseOrder");
+  const paymentVoucherPrefixOptions = getPrefixOptions("paymentVoucher");
   const [currentSelectedPrefix, setCurrentSelectedPrefix] = useState("invoice");
   const { isOpen, onClose, onOpen } = useDisclosure();
   const onOpenPrefixForm = (prefixType) => {
@@ -181,6 +191,28 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                   value={purchaseOrderPrefixOptions.find(
                     (prefixOption) =>
                       prefixOption.value === formik.values.purchaseOrder
+                  )}
+                />
+              </FormControl>
+              <FormControl isDisabled={!formik.values.organization}>
+                <FormLabel>
+                  {t("common_ui.transaction_settings.payment_voucher_prefix")}{" "}
+                  <IconButton
+                    icon={<IoAdd />}
+                    size={"xs"}
+                    isRound
+                    onClick={() => onOpenPrefixForm("paymentVoucher")}
+                  />
+                </FormLabel>
+                <Select
+                  onChange={({ value }) =>
+                    formik.setFieldValue("paymentVoucher", value)
+                  }
+                  name="paymentVoucher"
+                  options={paymentVoucherPrefixOptions}
+                  value={paymentVoucherPrefixOptions.find(
+                    (prefixOption) =>
+                      prefixOption.value === formik.values.paymentVoucher
                   )}
                 />
               </FormControl>
