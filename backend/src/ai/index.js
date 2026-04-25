@@ -15,6 +15,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     `Processing ${toolCalls.length} tool(s): ${toolCalls.map((t) => `${t.function.name} - ${JSON.stringify(t.function.arguments)}`).join(", ")} `,
   );
   const toolDisplayMap = {
+    find_bills: "Searching documents...",
     find_bill: "Retrieving document details...",
     create_bill: "Generating billing document...",
     get_party: "Fetching customer details...",
@@ -27,6 +28,10 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     get_product_details: "Fetching product details...",
     create_payment_voucher: "Creating payment voucher...",
     find_payment_voucher: "Fetching payment voucher...",
+    list_expenses: "Listing expenses...",
+    create_expense: "Creating expense...",
+    list_expense_categories: "Listing expense categories...",
+    create_expense_category: "Creating expense category...",
   };
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;

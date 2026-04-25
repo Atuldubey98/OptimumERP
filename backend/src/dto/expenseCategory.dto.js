@@ -5,6 +5,7 @@ const expenseCategoryDto = Joi.object({
   enabled: Joi.boolean().label("Enabled").optional(),
   createdBy: Joi.string().label("Created By").required(),
   updatedBy: Joi.string().optional(),
-});
+  org: Joi.string().optional(),
+}).options({ stripUnknown: true });
 
 module.exports = { expenseCategoryDto };

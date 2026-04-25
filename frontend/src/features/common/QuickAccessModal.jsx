@@ -213,6 +213,16 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       },
       icon: <IoCreateOutline size={50} />,
     },
+    {
+      label: t("common_ui.sidebar.links.payment_vouchers"),
+      description: t("common_ui.quick_access.descriptions.payment_vouchers", {
+        defaultValue: "Track your incoming and outgoing payments and vouchers",
+      }),
+      onClick: () => {
+        navigate(`/${orgId}/paymentVouchers`);
+      },
+      icon: <FaFileInvoiceDollar size={50} />,
+    },
   ];
   const [search, setSearch] = useState("");
   const {

@@ -7,6 +7,7 @@ const expenseDto = Joi.object({
   date: Joi.string().optional(),
   createdBy: Joi.string().optional(),
   updatedBy: Joi.string().optional(),
-});
+  org: Joi.string().optional(),
+}).options({ stripUnknown: true });
 
 module.exports = { expenseDto };

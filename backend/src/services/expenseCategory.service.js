@@ -47,7 +47,8 @@ const create = async (data) => {
     const category = new ExpenseCategory(data);
     await category.save({ session });
     logger.info(`created expense category ${category.id}`);
-    await changeOrgExpCategoryCount(data.orgs, session, 1);
+    await changeOrgExpCategoryCount(data.org, session, 1);
+    return category;
   });
   return category;
 };

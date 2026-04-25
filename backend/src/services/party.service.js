@@ -1,9 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const logger = require("../logger");
-const Invoice = require("../models/invoice.model");
 const OrgModel = require("../models/org.model");
-const Party = require("../models/party.model");
-const Purchase = require("../models/purchase.model");
+const Party = require("../models/party.model"); 
 const { executeMongoDbTransaction } = require("./crud.service");
 
 
@@ -28,6 +26,17 @@ exports.findOne = async (params) => {
     const party = await Party.findOne(filter).select(params?.select).lean().exec();
     return party;
 }
+exports.getPartiesForAI = async (query, type, orgId) => {
+    const filter = { org: orgId };
+    if (query) {
+        filter.$or = [
+            { name: { $regex: query, $options: "i" } },
+            { email: { $regex: query, $options: "i" } },
+        ];
+    }
+    if (type) filter.type = type;
+    return await Party.find(filter).limit(5).lean().exec();
+};
 
 exports.upsert = async (params) => {
     const filter = { org: params.org };

@@ -2,6 +2,55 @@ const billTools = [
   {
     type: "function",
     function: {
+      name: "find_bills",
+      description: "Search for multiple documents (invoices, purchases, etc.) using the transaction registry. Supports filtering by party, type, amount, and date.",
+      parameters: {
+        type: "object",
+        properties: {
+          type: {
+            type: "string",
+            enum: [
+              "invoice",
+              "purchase",
+              "expense",
+              "quotes",
+              "proforma_invoice",
+              "purchase_order",
+              "payment_voucher",
+            ],
+            description: "Filter by document type.",
+          },
+          partyName: {
+            type: "string",
+            description: "Filter by party name (customer or vendor).",
+          },
+          minAmount: {
+            type: "number",
+            description: "Minimum total amount in decimal.",
+          },
+          maxAmount: {
+            type: "number",
+            description: "Maximum total amount in decimal.",
+          },
+          startDate: {
+            type: "string",
+            description: "Start date (YYYY-MM-DD).",
+          },
+          endDate: {
+            type: "string",
+            description: "End date (YYYY-MM-DD).",
+          },
+          date: {
+            type: "string",
+            description: "Specific date (YYYY-MM-DD).",
+          },
+        },
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "find_bill",
       description:
         "Retrieve details of a specific bill or invoice using its number or unique ID.",

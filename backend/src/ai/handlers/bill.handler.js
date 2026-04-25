@@ -20,6 +20,7 @@ const { executeMongoDbTransaction } = require("../../services/crud.service");
 const settingService = require("../../services/setting.service");
 const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
+const Transaction = require("../../models/transaction.model");
 const partyService = require("../../services/party.service");
 const billTypes = require("../../constants/billTypes");
 const { moneyUtils } = require("../../utils");
@@ -232,6 +233,92 @@ const upsertBill = async (params) => {
   }
 };
 const billHandler = {
+  find_bills: async (params) => {
+    try {
+      const filter = { org: params.org };
+
+      if (params.type) {
+        filter.docModel = params.type;
+      }
+
+      if (params.partyName) {
+        const parties = await partyService.getPartiesForAI(
+          params.partyName,
+          null,
+          params.org,
+        );
+        if (parties.length > 0) {
+          filter.party = parties[0]._id;
+        }
+      }
+
+      const displaySetting = await settingService.getDisplaySettingForOrg(
+        params.org,
+      );
+      const currencyConfig = displaySetting
+        ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)
+        : null;
+      const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+      const toSmallest = (val) =>
+        moneyUtils.toSmallestUnit(val, decimalDigits);
+      const fromSmallest = (val) =>
+        moneyUtils.fromSmallestUnit(val, decimalDigits);
+
+      if (params.minAmount != null || params.maxAmount != null) {
+        filter.$expr = { $and: [] };
+        const sumExpr = {
+          $add: [
+            { $ifNull: ["$total", 0] },
+            { $ifNull: ["$totalTax", 0] },
+            { $ifNull: ["$shippingCharges", 0] },
+          ],
+        };
+        if (params.minAmount != null) {
+          filter.$expr.$and.push({
+            $gte: [sumExpr, toSmallest(params.minAmount)],
+          });
+        }
+        if (params.maxAmount != null) {
+          filter.$expr.$and.push({
+            $lte: [sumExpr, toSmallest(params.maxAmount)],
+          });
+        }
+      }
+
+      if (params.date) {
+        const start = new Date(params.date);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(params.date);
+        end.setHours(23, 59, 59, 999);
+        filter.date = { $gte: start, $lte: end };
+      } else if (params.startDate || params.endDate) {
+        filter.date = {};
+        if (params.startDate) filter.date.$gte = new Date(params.startDate);
+        if (params.endDate) filter.date.$lte = new Date(params.endDate);
+      }
+
+      const transactions = await Transaction.find(filter)
+        .populate("party")
+        .populate("doc")
+        .sort({ date: -1 })
+        .limit(20)
+        .lean();
+
+      return transactions.map((t) => ({
+        _id: t.doc?._id || t._id,
+        num: t.doc?.num || "N/A",
+        type: t.docModel,
+        date: t.date,
+        party: t.party?.name || "N/A",
+        grandTotal: fromSmallest(
+          (t.total || 0) + (t.totalTax || 0) + (t.shippingCharges || 0),
+        ),
+        status: t.doc?.status || "N/A",
+      }));
+    } catch (error) {
+      throw error;
+    }
+  },
   find_bill: async (params) => {
     const modelProps = models[params.type];
     const { Bill } = modelProps;
