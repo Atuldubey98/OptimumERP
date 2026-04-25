@@ -10,35 +10,26 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Grid,
   Heading,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SimpleGrid,
   Stack,
   Text,
   Textarea,
   useColorModeValue,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import moment from "moment";
 import React, { useContext, useState } from "react";
-import { FaGoogle } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import SettingContext from "../../contexts/SettingContext";
 import useAuth from "../../hooks/useAuth";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
 import GoogleIcon from "../common/GoogleIcon";
-import { GoPeople } from "react-icons/go";
+import ImportTasks from "./ImportTasks";
+
 function FinancialYearCloseForm(props) {
   const { t } = useTranslation("admin");
 
@@ -226,122 +217,6 @@ function DefaultTermsForReceiptsForm({ formik }) {
   );
 }
 
-function MigrateFromOtherSoftware({ organization }) {
-  const { t } = useTranslation("admin");
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  return (
-    <AccordionItem>
-      <h2>
-        <AccordionButton>
-          <Box fontWeight={"bold"} flex="1" textAlign="left">
-            {t("tasks.import.title")}
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-      </h2>
-      <AccordionPanel pb={4}>
-        <Button onClick={onOpen} leftIcon={<GoPeople />} variant={"primary"}>
-          {t("tasks.import.party")}
-        </Button>
-        <PartyImportModal
-          organization={organization}
-          isOpen={isOpen}
-          onClose={onClose}
-        />
-      </AccordionPanel>
-    </AccordionItem>
-  );
-}
-function PartyImportModal({ organization, isOpen, onClose }) {
-  const { t } = useTranslation("admin");
-  const toast = useToast();
-  const [file, setFile] = useState(null);
-  const handleDownloadSample = () => {
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      encodeURIComponent(
-        `Name,"Billing Address","Shipping Address","GST No","PAN No"`,
-      );
-    const link = document.createElement("a");
-    link.setAttribute("href", csvContent);
-    link.setAttribute("download", "party_sample.csv");
-    link.click();
-    toast({
-      title: t("tasks.import.download_started"),
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
-  };
-  const onUpload = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      toast({
-        title: t("tasks.import.no_file_selected"),
-        description: t("tasks.import.select_csv_prompt"),
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await instance.post(
-      `/api/v1/organizations/${organization}/parties/import`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
-    );
-    toast({
-      title: t("tasks.import.success_title"),
-      description: response.data.message,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-  };
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <form onSubmit={onUpload}>
-        <ModalContent>
-          <ModalHeader>{t("tasks.import.modal_title")}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Stack spacing={4}>
-              <Text>{t("tasks.import.download_help")}</Text>
-              <Button onClick={handleDownloadSample} variant="outline">
-                {t("tasks.import.download_sample")}
-              </Button>
-              <Text>{t("tasks.import.upload_help")}</Text>
-              <Input
-                onChange={(e) => {
-                  setFile(e.currentTarget.files[0]);
-                }}
-                type="file"
-                accept=".csv"
-                placeholder={t("tasks.import.select_csv_placeholder")}
-              />
-            </Stack>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              {t("actions.cancel")}
-            </Button>
-            <Button type="submit" colorScheme="blue">
-              {t("tasks.import.submit")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </form>
-    </Modal>
-  );
-}
 export default function AdminTasks({ organization }) {
   const { t } = useTranslation("admin");
   const bg = useColorModeValue("gray.100", "gray.700");
@@ -408,7 +283,7 @@ export default function AdminTasks({ organization }) {
   const isCurrentPlanGreaterThanFreePlan =
     auth?.user.currentPlan?.plan !== "free";
   return (
-    <Box>
+    <Box pt={2}>
       <Box bg={bg} p={3}>
         <Heading fontSize={"lg"}>{t("tasks.heading")}</Heading>
       </Box>
@@ -419,7 +294,19 @@ export default function AdminTasks({ organization }) {
         isCurrentPlanGreaterThanFreePlan ? (
           <SMTPSetup />
         ) : null}
-        <MigrateFromOtherSoftware organization={organization} />
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box fontWeight={"bold"} flex="1" textAlign="left">
+                {t("tasks.import.title")}
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <ImportTasks organization={organization} />
+          </AccordionPanel>
+        </AccordionItem>
       </Accordion>
     </Box>
   );

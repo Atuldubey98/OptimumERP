@@ -4,6 +4,8 @@ const bulkCreate = require("./bulkCreate");
 const paginate = require("./paginate");
 const remove = require("./remove");
 const update = require("./update");
+const importProducts = require("./importProducts");
+
 module.exports = {
   read,
   create,
@@ -11,4 +13,5 @@ module.exports = {
   remove,
   paginate,
   update,
+  importProducts,
 };

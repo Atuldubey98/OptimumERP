@@ -9,14 +9,19 @@ const {
   bulkCreate,
   remove,
   update,
+  importProducts,
 } = require("../controllers/product.controller");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 const productRouter = Router({
   mergeParams: true,
 });
 
 productRouter.get("/", requestAsyncHandler(paginate));
+productRouter.post("/import", upload.single("file"), requestAsyncHandler(importProducts));
 productRouter.post("/bulk", createModel, requestAsyncHandler(bulkCreate));
 productRouter.post(
   "/",

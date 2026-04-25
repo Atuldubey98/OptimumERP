@@ -8,6 +8,8 @@ const JobModel = require("./models/job.model");
 const csvParser = require("csv-parser");
 const dbService = require("./services/db.service");
 const partyService = require("./services/party.service");
+const productService = require("./services/product.service");
+const umService = require("./services/um.service");
 const { Readable } = require("stream");
 const logger = require("./logger");
 
@@ -61,9 +63,32 @@ const importCron = new CronJob(
             },
             create: async (data) => partyService.create(data),
           },
+          product: {
+            mapper: async (data) => {
+              const ums = await umService.getUmListForOrg(jobDoc.org);
+              const umName = data["Unit"] || data["UM"];
+              const matchedUm = ums.find(u => 
+                u.name.toLowerCase() === umName?.toLowerCase() || 
+                u.unit.toLowerCase() === umName?.toLowerCase()
+              );
+
+              return {
+                name: data["Name"],
+                code: data["Code"] || data["SKU"],
+                type: (data["Type"] || "goods").toLowerCase(),
+                costPrice: parseFloat(data["Cost Price"] || 0),
+                sellingPrice: parseFloat(data["Selling Price"] || 0),
+                description: data["Description"] || "",
+                um: matchedUm?._id || ums[0]?._id, // Fallback to first UM if not found
+                createdBy: jobDoc.createdBy,
+                org: jobDoc.org,
+              };
+            },
+            create: async (data) => productService.create(data),
+          },
         };
 
-        const {mapper, create} = entityCreationFns[entity];
+        const { mapper, create } = entityCreationFns[entity];
 
         const stream = Readable.from(fileBuffer.buffer);
         let successCount = 0;
@@ -74,9 +99,9 @@ const importCron = new CronJob(
             try {
               data.createdBy = jobDoc.createdBy;
               data.org = jobDoc.org;
-              successCount++;
-              const mappedData = mapper(data);
+              const mappedData = await mapper(data);
               await create(mappedData);
+              successCount++;
             } catch (error) {
               failureCount++;
               logger.error("Error creating entity:", error);

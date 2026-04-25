@@ -313,12 +313,12 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
     .lean();
   if (!bill) throw new NotFound();
   const setting = await getDisplaySettingForOrg(filter.org);
-  const code = setting.currency;
-  const currencyConfig = await moneyUtils.getCurrencyConfigByCode(code);
+  const code = setting.currency || "INR";
+  const currencyConfig = (await moneyUtils.getCurrencyConfigByCode(code)) || { decimal_digits: 2 };
   const formatter = moneyUtils.getCurrencyFormatter({
     locale: setting.localeCode || "en-IN",
     currency: code,
-    decimalDigits: currencyConfig?.decimal_digits,
+    decimalDigits: currencyConfig.decimal_digits,
   });
   const formatCurrency = {
     format: (val) => formatter.format(moneyUtils.fromSmallestUnit(val, currencyConfig?.decimal_digits))

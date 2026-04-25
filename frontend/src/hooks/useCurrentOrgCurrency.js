@@ -30,11 +30,13 @@ export default function useCurrentOrgCurrency() {
     };
   };
   const getAmountWithSymbol = (amount) => {
-    return Intl.NumberFormat(setting?.locale, {
-      currency: setting?.currency?.code,
+    const currencyCode = setting?.currency?.code || "INR";
+    const decimalDigits = setting?.currency?.decimal_digits ?? 2;
+    return Intl.NumberFormat(setting?.locale || "en-IN", {
+      currency: currencyCode,
       style: "currency",
-      minimumFractionDigits: setting?.currency?.decimal_digits,
-      maximumFractionDigits: setting?.currency?.decimal_digits,
+      minimumFractionDigits: decimalDigits,
+      maximumFractionDigits: decimalDigits,
       currencyDisplay : "narrowSymbol"
     }).format(amount);
   };

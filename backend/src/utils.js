@@ -19,7 +19,7 @@ const moneyUtils = {
   getCurrencyFormatter: ({ locale, currency, decimalDigits = 2 }) => {
     return new Intl.NumberFormat(locale, {
       style: "currency",
-      currency,
+      currency: currency || "INR",
       currencyDisplay: "narrowSymbol",
       maximumFractionDigits: decimalDigits,
       minimumFractionDigits: decimalDigits,

@@ -43,7 +43,8 @@
   },
   "tabs": {
     "organization": "Organization",
-    "users": "Users"
+    "users": "Users",
+    "import": "Import"
   },
   "users": {
     "registered_heading": "Registered Users",
@@ -111,14 +112,17 @@
     "import": {
       "title": "Import",
       "party": "Party",
+      "product": "Product",
       "download_started": "Download started",
       "no_file_selected": "No file selected",
       "select_csv_prompt": "Please select a CSV file to upload.",
       "success_title": "Import Successful",
-      "modal_title": "Import Parties",
+      "modal_title_party": "Import Parties",
+      "modal_title_product": "Import Products",
       "download_help": "Using the below button download the sample csv",
       "download_sample": "Download Sample CSV",
-      "upload_help": "Upload a CSV file to import parties into your system.",
+      "upload_help_party": "Upload a CSV file to import parties into your system.",
+      "upload_help_product": "Upload a CSV file to import products into your system.",
       "select_csv_placeholder": "Select CSV file",
       "submit": "Import"
     }
