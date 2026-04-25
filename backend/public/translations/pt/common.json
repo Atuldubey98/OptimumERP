@@ -293,7 +293,8 @@
       "products": "Produtos",
       "contacts": "Contatos",
       "payment_in": "Pagamento recebido",
-      "transactions": "Transações"
+      "transactions": "Transações",
+      "vouchers": "Vouchers"
     },
     "fields": {
       "description": "Descrição",

@@ -111,6 +111,7 @@ export default function App() {
             <Route element={<InvoicesPage />} path="" />
             <Route element={<CreateInvoicePage />} path="create" />
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
+            <Route element={<VouchersPage />} path=":invoiceId/vouchers" />
           </Route>
           <Route path="proformaInvoices">
             <Route element={<ProformaInvoicesPage />} path="" />
@@ -124,6 +125,7 @@ export default function App() {
             <Route element={<PurchasePage />} path="" />
             <Route element={<CreatePurchasePage />} path="create" />
             <Route element={<CreatePurchasePage />} path=":purchaseId/edit" />
+            <Route element={<VouchersPage />} path=":purchaseId/vouchers" />
           </Route>
           <Route path="reports">
             <Route path="" element={<ReportsPage />} />

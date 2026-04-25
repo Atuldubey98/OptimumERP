@@ -294,7 +294,8 @@
       "products": "Products",
       "contacts": "Contacts",
       "payment_in": "Payment In",
-      "transactions": "Transactions"
+      "transactions": "Transactions",
+      "vouchers": "Vouchers"
     },
     "fields": {
       "description": "Description",

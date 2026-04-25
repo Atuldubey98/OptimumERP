@@ -70,6 +70,28 @@ const paymentVoucherTools = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "list_document_vouchers",
+      description: "List all payment vouchers for a specific invoice or purchase number.",
+      parameters: {
+        type: "object",
+        properties: {
+          docNumber: {
+            type: "string",
+            description: "The invoice or purchase number (e.g., 'INV-1' or 'PUR-1').",
+          },
+          docModel: {
+            type: "string",
+            enum: ["invoice", "purchase"],
+            description: "Whether the document is an 'invoice' or 'purchase'.",
+          },
+        },
+        required: ["docNumber", "docModel"],
+      },
+    },
+  },
 ];
 
 module.exports = paymentVoucherTools;

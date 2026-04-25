@@ -56,6 +56,8 @@ exports.getPaginationParams = async ({
           $gte: new Date(query.startDate),
           $lte: new Date(query.endDate),
         };
+      if (isValidObjectId(query.refDoc)) filter.refDoc = query.refDoc;
+      if (query.refDocModel) filter.refDocModel = query.refDocModel;
       break;
     default:
       break;

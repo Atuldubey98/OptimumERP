@@ -27,8 +27,18 @@ import useProperty from "../../hooks/useProperty";
 
 export default function VouchersPage() {
   const { t } = useTranslation("invoice");
-  const { orgId } = useParams();
+  const { orgId, invoiceId, purchaseId } = useParams();
   const { value: paymentMethods = [] } = useProperty("PAYMENT_METHODS");
+  
+  const extraParams = {};
+  if (invoiceId) {
+    extraParams.refDoc = invoiceId;
+    extraParams.refDocModel = "invoice";
+  } else if (purchaseId) {
+    extraParams.refDoc = purchaseId;
+    extraParams.refDocModel = "purchase";
+  }
+
   const {
     items: vouchers,
     dateFilter,
@@ -41,6 +51,7 @@ export default function VouchersPage() {
   } = useDateFilterFetch({
     entity: "paymentVouchers",
     storageKey: "dateFilter:vouchers",
+    extraParams,
   });
   
   const loading = status === "loading";

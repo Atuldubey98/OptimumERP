@@ -80,9 +80,37 @@ const findPaymentVoucher = async (params) => {
   return voucher;
 };
 
+const listDocumentVouchers = async (params) => {
+  const { org, docNumber, docModel } = params;
+  
+  const Model = docModel === "invoice" ? Invoice : Purchase;
+  const doc = await Model.findOne({ num: docNumber, org }).lean();
+  
+  if (!doc) {
+    throw new Error(`${docModel} not found`);
+  }
+
+  const vouchers = await PaymentVoucher.find({
+    org,
+    refDoc: doc._id,
+    refDocModel: docModel
+  }).populate("party", "name").lean();
+
+  const displaySetting = await settingService.getDisplaySettingForOrg(org);
+  const currencyConfig = await moneyUtils.getCurrencyConfigByCode(displaySetting?.currency || "INR");
+  
+  const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+
+  return vouchers.map(v => ({
+    ...v,
+    amount: moneyUtils.fromSmallestUnit(v.amount, decimalDigits)
+  }));
+};
+
 const paymentVoucherHandler = {
   create_payment_voucher: createPaymentVoucher,
   find_payment_voucher: findPaymentVoucher,
+  list_document_vouchers: listDocumentVouchers,
 };
 
 module.exports = paymentVoucherHandler;

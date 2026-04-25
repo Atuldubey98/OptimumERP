@@ -4,7 +4,7 @@ import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
 import useQuery from "./useQuery";
 import moment from "moment";
-export default function useDateFilterFetch({ entity, storageKey }) {
+export default function useDateFilterFetch({ entity, storageKey, extraParams = {} }) {
   const [billItems, setBillItems] = useState({
     totalPages: 0,
     totalCount: 0,
@@ -42,12 +42,12 @@ export default function useDateFilterFetch({ entity, storageKey }) {
         parsedDateFilter?.startDate,
         "YYYY-MM-DD",
         true,
-      ).isValid();
+        ).isValid();
       const hasValidEndDate = moment(
         parsedDateFilter?.endDate,
         "YYYY-MM-DD",
         true,
-      ).isValid();
+        ).isValid();
       if (!hasValidStartDate || !hasValidEndDate) return defaultDateFilter;
       return {
         startDate: parsedDateFilter.startDate,
@@ -67,6 +67,7 @@ export default function useDateFilterFetch({ entity, storageKey }) {
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
           page,
+          ...extraParams,
         },
         signal: controller.signal,
       }
@@ -82,7 +83,7 @@ export default function useDateFilterFetch({ entity, storageKey }) {
     return () => {
       controller.abort();
     };
-  }, [searchQuery, dateFilter, page, entity]);
+  }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
   const onChangeDateFilter = (e) =>
     setDateFilter({
       ...dateFilter,
@@ -100,7 +101,7 @@ export default function useDateFilterFetch({ entity, storageKey }) {
   }, [scopedStorageKey, dateFilter]);
   useEffect(() => {
     if (entity) fetchItems();
-  }, [searchQuery, dateFilter, page, entity]);
+  }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
   const { items, currentPage, totalCount, totalPages, reachedLimit } =
     billItems;
   return {

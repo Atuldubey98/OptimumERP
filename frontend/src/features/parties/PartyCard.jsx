@@ -49,9 +49,11 @@ export default function PartyCard({ party, actions }) {
         <Stack spacing={4}>
           <Flex justify="space-between" align="flex-start" gap={3}>
             <Box minW={0}>
-              <Heading fontSize="lg" noOfLines={2} lineHeight="short">
-                {party.name}
-              </Heading>
+              <CopyableText value={party._id}>
+                <Heading fontSize="lg" noOfLines={2} lineHeight="short">
+                  {party.name}
+                </Heading>
+              </CopyableText>
             </Box>
             {party.gstNo ? (
               <CopyableText value={party.gstNo}>

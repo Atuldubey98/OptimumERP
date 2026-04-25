@@ -5,6 +5,14 @@ require("../../models/invoice.model");
 require("../../models/purchase.model");
 
 const getAll = async (req, res) => {
+  if (req.params.invoiceId) {
+    req.query.refDoc = req.params.invoiceId;
+    req.query.refDocModel = "invoice";
+  } else if (req.params.purchaseId) {
+    req.query.refDoc = req.params.purchaseId;
+    req.query.refDocModel = "purchase";
+  }
+
   const { filter, skip, limit, total, totalPages, page } =
     await getPaginationParams({
       query: req.query,

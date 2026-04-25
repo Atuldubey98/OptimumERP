@@ -20,7 +20,7 @@ import { RxDotsVertical } from "react-icons/rx";
 import { TiContacts } from "react-icons/ti";
 import { GrOverview } from "react-icons/gr";
 import { BsShare } from "react-icons/bs";
-import { MdOutlineFileOpen } from "react-icons/md";
+import { MdOutlineFileOpen, MdOutlinePayments } from "react-icons/md";
 export default function VertIconMenu({
   showItem,
   editItem,
@@ -37,6 +37,7 @@ export default function VertIconMenu({
   payoutPurchase,
   onOverviewItem,
   openItem,
+  showVouchers,
 }) {
   const { t } = useTranslation("common");
 
@@ -139,6 +140,15 @@ export default function VertIconMenu({
             onClick={showTransactions}
           >
             {t("common_ui.menu.transactions")}
+          </MenuItem>
+        ) : null}
+        {showVouchers ? (
+          <MenuItem
+            command="⌘V"
+            icon={<MdOutlinePayments size={20} />}
+            onClick={showVouchers}
+          >
+            {t("common_ui.menu.vouchers")}
           </MenuItem>
         ) : null}
         {editItem ? (

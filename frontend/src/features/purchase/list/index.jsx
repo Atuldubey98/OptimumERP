@@ -164,6 +164,9 @@ export default function PurchasePage() {
                 editItem={() => {
                   navigate(`${purchase._id}/edit`);
                 }}
+                showVouchers={() => {
+                  navigate(`${purchase._id}/vouchers`);
+                }}
                 deleteItem={() => {
                   setInvoice(purchase);
                   onOpenDeleteModal();
