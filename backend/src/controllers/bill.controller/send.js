@@ -1,14 +1,9 @@
 const { isValidObjectId } = require("mongoose");
-const { sendEmail } = require("../../services/gmail.service");
-const UserModel = require("../../models/user.model");
-const { getOAuth2Client } = require("../../services/googleAuth.service");
-const {
-  getPdfBufferUsingHtml,
-} = require("../../services/renderEngine.service");
+const transporter = require("../../mailer");
+const { convertBillToPdfByTemplate } = require("../../services/bill.service");
 const Joi = require("joi");
-const { convertBillToHtmlByTemplate } = require("../../services/bill.service");
 const Contact = require("../../models/contacts.model");
-const UserActivatedPlan = require("../../models/userActivatedPlans.model");
+const logger = require("../../logger");
 const mailBodyDto = Joi.object({
   to: Joi.array().items(Joi.string()).default([]),
   cc: Joi.array().items(Joi.string()).default([]),
@@ -20,8 +15,7 @@ const send = async (options = {}, req, res) => {
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
   const body = await mailBodyDto.validateAsync(req.body);
-  const purchasedBy = req.session?.user?.currentPlan?.purchasedBy;
-  const oAuth2Client = await setupAuth2ClientByOrgOwnedBy(purchasedBy);
+
   if (!body.to.length)
     return res
       .status(200)
@@ -36,7 +30,7 @@ const send = async (options = {}, req, res) => {
   const t = language && req.i18n
     ? (key, options = {}) => req.i18n.t(key, { ...options, lng: language })
     : req.t;
-  const { html } = await convertBillToHtmlByTemplate({
+  const { pdfBuffer } = await convertBillToPdfByTemplate({
     Bill,
     filter,
     NotFound,
@@ -44,16 +38,22 @@ const send = async (options = {}, req, res) => {
     t,
     language,
   });
-  const pdfBuffer = await getPdfBufferUsingHtml(html);
-
-  await sendEmail({
-    auth: oAuth2Client,
-    body: body.body,
-    subject: body.subject,
+  const info = await transporter.sendMail({
+    from: `"OptimumERP" <${transporter.options.auth.user}>`,
     to: toEmails.join(","),
     cc: ccEmails.join(","),
-    attachmentBuffer: pdfBuffer,
+    subject: body.subject,
+    text: body.body,
+    attachments: [
+      {
+        filename: "Bill.pdf",
+        content: pdfBuffer,
+      },
+    ],
   });
+  logger.info("Email sent: " + info.messageId);
+  logger.info("Sending emails to", toEmails)
+
   return res.status(201).json({ message: req.t("common:api.attachment_sent") });
 };
 
@@ -70,17 +70,7 @@ async function getEmailsFromContactIds(body) {
   return { toEmails, ccEmails };
 }
 
-async function setupAuth2ClientByOrgOwnedBy(purchasedBy) {
-  const user = await UserModel.findById(purchasedBy)
-    .select("attributes googleId")
-    .lean();
-  const oAuth2Client = getOAuth2Client();
-  oAuth2Client.setCredentials({
-    access_token: user.attributes.googleAccessToken,
-    refresh_token: user.attributes.googleRefreshToken,
-  });
-  return oAuth2Client;
-}
+
 
 function getContactEmailsByIds(contactIds = []) {
   return Contact.find({

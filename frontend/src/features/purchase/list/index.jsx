@@ -28,6 +28,7 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import PayoutModal from "./PayoutModal";
 import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
+import ShareBillModal from "../../common/ShareBillModal";
 import { useTranslation } from "react-i18next";
 
 const getBillGrandTotal = (bill) =>
@@ -124,6 +125,8 @@ export default function PurchasePage() {
   } = useDisclosure();
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
   useDisclosure();
+  const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
+    useDisclosure();
   return (
     
       <Box p={4}>
@@ -150,6 +153,10 @@ export default function PurchasePage() {
             caption={`${t("purchase_ui.page.total_found")} : ${totalCount}`}
             operations={purchases.map((purchase) => (
               <VertIconMenu
+                shareItem={() => {
+                  setInvoice(purchase);
+                  toggleShareModal();
+                }}
                 payoutPurchase={() => {
                   setInvoice(purchase);
                   openPayout();
@@ -191,6 +198,14 @@ export default function PurchasePage() {
             heading={t("purchase_ui.bill_modal.heading")}
             isOpen={isOpen}
             onClose={onClose}
+          />
+        ) : null}
+        {purchase ? (
+          <ShareBillModal
+            bill={purchase}
+            isOpen={isShareModalOpen}
+            onClose={toggleShareModal}
+            billType={"purchases"}
           />
         ) : null}
         {purchase ? (

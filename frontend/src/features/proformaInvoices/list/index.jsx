@@ -24,6 +24,7 @@ import { invoiceStatusList } from "../../../constants/invoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
+import ShareBillModal from "../../common/ShareBillModal";
 import { useTranslation } from "react-i18next";
 
 const getBillGrandTotal = (bill) =>
@@ -163,6 +164,8 @@ export default function ProformaInvoicesPage() {
   };
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
     useDisclosure();
+  const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
+    useDisclosure();
   const makeProformaListMapper = (item) => ({
     ...item,
     date: moment(item.date).format("LL"),
@@ -199,6 +202,10 @@ export default function ProformaInvoicesPage() {
                 key={item._id}
                 convertToInvoice={() => {
                   onOpenConvertToInvoiceConfirmationModal(item);
+                }}
+                shareItem={() => {
+                  setProformaInvoiceSelected(item);
+                  toggleShareModal();
                 }}
                 onDownloadItem={() => onSaveBill(item)}
                 showItem={() => {
@@ -260,6 +267,14 @@ export default function ProformaInvoicesPage() {
           heading={t("proforma_invoice_ui.bill_modal.heading")}
           isOpen={IsBillModalOpen}
           onClose={closeBillModal}
+        />
+      ) : null}
+      {proformaInvoiceSelected ? (
+        <ShareBillModal
+          bill={proformaInvoiceSelected}
+          isOpen={isShareModalOpen}
+          onClose={toggleShareModal}
+          billType={"proformaInvoices"}
         />
       ) : null}
       {isExportModalOpen ? (

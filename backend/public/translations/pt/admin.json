@@ -63,7 +63,6 @@
     "register_user": "Cadastrar Usuário",
     "user_role": "Função do usuário",
     "is_user_active": "O usuário está ativo?",
-    "can_use_my_smtp": "Pode usar meu SMTP?",
     "roles": {
       "user": "Usuário",
       "admin": "Admin"
@@ -94,12 +93,6 @@
       "end_date": "Data de término",
       "closing": "Fechamento",
       "done": "Concluído"
-    },
-    "smtp": {
-      "title": "Configuração SMTP",
-      "info": "O SMTP atualmente suporta apenas o Google. O botão abaixo pode ser usado para conectar a conta do Google e enviar recibos pelo painel.",
-      "reconnect": "Reconectar",
-      "connect": "Conectar"
     },
     "default_terms": {
       "title": "Termos e Condições Padrão",

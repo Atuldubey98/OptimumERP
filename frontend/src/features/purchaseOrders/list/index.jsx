@@ -23,6 +23,7 @@ import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import ExporterModal from "../../common/ExporterModal";
+import ShareBillModal from "../../common/ShareBillModal";
 import { useTranslation } from "react-i18next";
 
 const getBillGrandTotal = (bill) =>
@@ -131,6 +132,8 @@ export default function PurchaseOrderPage() {
   };
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
     useDisclosure();
+  const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
+    useDisclosure();
   return (
     
       <Box p={4}>
@@ -156,6 +159,10 @@ export default function PurchaseOrderPage() {
               operations={purchaseOrderItems.map((item) => (
                 <VertIconMenu
                   key={item._id}
+                  shareItem={() => {
+                    setSelectedPo(item);
+                    toggleShareModal();
+                  }}
                   editItem={() => {
                     navigate(`${item._id}/edit`);
                   }}
@@ -219,6 +226,14 @@ export default function PurchaseOrderPage() {
             bill={selectedPo}
             entity={"purchaseOrders"}
             heading={t("purchase_order_ui.bill_modal.heading")}
+          />
+        ) : null}
+        {selectedPo ? (
+          <ShareBillModal
+            bill={selectedPo}
+            isOpen={isShareModalOpen}
+            onClose={toggleShareModal}
+            billType={"purchaseOrders"}
           />
         ) : null}
         {isExportModalOpen ? (

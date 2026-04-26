@@ -27,7 +27,6 @@ import SettingContext from "../../contexts/SettingContext";
 import useAuth from "../../hooks/useAuth";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
-import GoogleIcon from "../common/GoogleIcon";
 import ImportTasks from "./ImportTasks";
 
 function FinancialYearCloseForm(props) {
@@ -120,47 +119,6 @@ function FinancialYearCloseForm(props) {
   );
 }
 
-function SMTPSetup() {
-  const { t } = useTranslation("admin");
-  const auth = useAuth();
-  const redirectUri = `${window.origin}/auth/google/admin`;
-  const [status, setStatus] = useState("idle");
-  const onConnectToGoogle = async () => {
-    setStatus("connecting");
-    const { data } = await instance.get("/api/v1/users/googleAuth");
-    window.open(`${data.data}${redirectUri}`, "_self");
-    setStatus("idle");
-  };
-  return (
-    <AccordionItem>
-      <h2>
-        <AccordionButton>
-          <Box fontWeight={"bold"} flex="1" textAlign="left">
-            {t("tasks.smtp.title")}
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-      </h2>
-      <AccordionPanel pb={4}>
-        <Box marginBottom={2}>
-          <Alert status="info">
-            <AlertIcon />
-            {t("tasks.smtp.info")}
-          </Alert>
-        </Box>
-        <Button
-          isLoading={status === "connecting"}
-          onClick={onConnectToGoogle}
-          leftIcon={<GoogleIcon />}
-        >
-          {auth?.user?.googleId
-            ? t("tasks.smtp.reconnect")
-            : t("tasks.smtp.connect")}
-        </Button>
-      </AccordionPanel>
-    </AccordionItem>
-  );
-}
 function DefaultTermsForReceiptsForm({ formik }) {
   const { t } = useTranslation("admin");
 
@@ -290,10 +248,6 @@ export default function AdminTasks({ organization }) {
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
         <DefaultTermsForReceiptsForm formik={termsFormik} />
-        {isCurrentUserOwnerOfOrganization &&
-        isCurrentPlanGreaterThanFreePlan ? (
-          <SMTPSetup />
-        ) : null}
         <AccordionItem>
           <h2>
             <AccordionButton>

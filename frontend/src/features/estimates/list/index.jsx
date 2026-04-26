@@ -19,6 +19,7 @@ import BillModal from "./BillModal";
 import Status from "./Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import ExporterModal from "../../common/ExporterModal";
+import ShareBillModal from "../../common/ShareBillModal";
 
 export default function EstimatesPage() {
   const { t, i18n } = useTranslation("quote");
@@ -131,6 +132,8 @@ export default function EstimatesPage() {
   const deleting = estimateStatus === "deleting";
   const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
     useDisclosure();
+  const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
+    useDisclosure();
   return (
     
       <Box p={4}>
@@ -159,6 +162,10 @@ export default function EstimatesPage() {
               <VertIconMenu
                 convertToInvoice={() => {
                   convertToInvoice(estimate);
+                }}
+                shareItem={() => {
+                  setQuotation(estimate);
+                  toggleShareModal();
                 }}
                 openItem={() => {
                   navigate(`/${orgId}/receipt/quotes/${estimate._id}`);
@@ -194,6 +201,14 @@ export default function EstimatesPage() {
             bill={quotation}
             entity={"quotes"}
             heading={"Quotation"}
+          />
+        ) : null}
+        {quotation ? (
+          <ShareBillModal
+            bill={quotation}
+            isOpen={isShareModalOpen}
+            onClose={toggleShareModal}
+            billType={"quotes"}
           />
         ) : null}
         <AlertModal

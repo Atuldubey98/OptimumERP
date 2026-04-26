@@ -166,7 +166,7 @@ export default function VertIconMenu({
           </MenuItem>
         ) : null}
         <Divider />
-        {shareItem ? (
+        {shareItem && import.meta.env.VITE_SMTP_ENABLED === "true" ? (
           <MenuItem
             icon={<BsShare size={20} />}
             onClick={shareItem}

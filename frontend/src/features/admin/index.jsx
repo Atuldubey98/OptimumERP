@@ -84,7 +84,6 @@ export default function AdminPage() {
       email: "",
       password: "",
       role: "user",
-      useAdminSMTP: false,
     },
     validateOnChange: false,
     validationSchema: registerSchema,
@@ -429,7 +428,6 @@ export default function AdminPage() {
                                   email: "",
                                   password: "",
                                   role: "user",
-                                  useAdminSMTP: false,
                                 });
                                 onOpen();
                               }}

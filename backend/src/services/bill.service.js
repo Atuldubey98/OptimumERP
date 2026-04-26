@@ -3,7 +3,9 @@ const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
 const { currencyToWordConverter } = require("./currencyToWord.service");
 const propertyService = require("./property.service");
-const { promiseQrCode, renderHtml } = require("./renderEngine.service");
+const { promiseQrCode, renderHtml, getPdfBufferFromDocDefinition } = require("./renderEngine.service");
+const templator = require("../views/templates/templator");
+
 const {
   calculateTaxes,
   calculateTaxesForBillItemsWithCurrency,
@@ -547,4 +549,24 @@ exports.convertBillToHtmlByTemplate = async ({
   );
   const html = await renderHtml(pdfTemplateLocation, data);
   return { html, data };
+};
+
+exports.convertBillToPdfByTemplate = async ({
+  Bill,
+  filter,
+  NotFound,
+  template,
+  t,
+  language,
+}) => {
+  const data = await this.getBillDetail({
+    Bill,
+    filter,
+    NotFound,
+    t,
+    language,
+  });
+  const docDefinition = templator(template)(data);
+  const pdfBuffer = await getPdfBufferFromDocDefinition(docDefinition);
+  return { pdfBuffer, data };
 };

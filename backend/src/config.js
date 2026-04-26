@@ -8,4 +8,8 @@ module.exports = {
   IMPORT_CRON_SCHEDULE: process.env.IMPORT_CRON_SCHEDULE,
   LOG_FILE_PATH: process.env.LOG_FILE_PATH,
   NODE_ENV: process.env.NODE_ENV || "development",
+  NODE_MAILER_PORT : Number(process.env.NODE_MAILER_PORT) || 587,
+  NODE_MAILER_HOST : process.env.NODE_MAILER_HOST,
+  NODE_MAILER_USER_NAME : process.env.NODE_MAILER_USER_NAME,
+  NODE_MAILER_APP_PASSWORD : process.env.NODE_MAILER_APP_PASSWORD,
 };

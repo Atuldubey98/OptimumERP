@@ -64,7 +64,6 @@
     "register_user": "Register User",
     "user_role": "User role",
     "is_user_active": "Is the user active ?",
-    "can_use_my_smtp": "Can user my SMTP?",
     "roles": {
       "user": "User",
       "admin": "Admin"
@@ -95,12 +94,6 @@
       "end_date": "End date",
       "closing": "Closing",
       "done": "Done"
-    },
-    "smtp": {
-      "title": "SMTP Setup",
-      "info": "SMTP currently supports only Google. Button below can be used to connect the google account to send receipts from the dashboard.",
-      "reconnect": "Re-Connect",
-      "connect": "Connect"
     },
     "default_terms": {
       "title": "Default Terms & Conditions",
