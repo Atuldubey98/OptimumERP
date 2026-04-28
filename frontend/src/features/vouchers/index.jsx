@@ -1,18 +1,31 @@
 import {
   Box,
-  Link as ChakraLink,
   Flex,
   Spinner,
   useDisclosure,
   useToast,
   Badge,
   Text,
+  Stack,
+  Card,
+  CardHeader,
+  CardBody,
+  HStack,
+  VStack,
+  Icon,
+  SimpleGrid,
+  Divider,
+  Link as ChakraLink
 } from "@chakra-ui/react";
+
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import moment from "moment";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
+import { FiFileText, FiCalendar, FiDollarSign, FiArrowUpCircle, FiArrowDownCircle } from "react-icons/fi";
+
+
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import instance from "../../instance";
@@ -28,7 +41,23 @@ import useProperty from "../../hooks/useProperty";
 export default function VouchersPage() {
   const { t } = useTranslation("invoice");
   const { orgId, invoiceId, purchaseId } = useParams();
+  const location = useLocation();
+
+  // Log navigation state if present
+  const doc = location.state?.invoice || location.state?.purchase;
+  const docType = location.state?.invoice ? "invoice" : location.state?.purchase ? "purchase" : null;
+
+  if (doc) {
+    console.log("VouchersPage Navigated with state:", doc);
+  }
+
+  const grandTotal = doc ? (Number(doc.total || 0) + Number(doc.totalTax || 0) + Number(doc.shippingCharges || 0)) : 0;
+  const balance = doc ? (grandTotal - Number(doc.paymentVoucherBalance || 0)) : 0;
+
   const { value: paymentMethods = [] } = useProperty("PAYMENT_METHODS");
+
+
+
   
   const extraParams = {};
   if (invoiceId) {
@@ -162,7 +191,69 @@ export default function VouchersPage() {
             <Spinner size={"md"} />
           </Flex>
         ) : (
-          <TableLayout
+          <Stack spacing={6}>
+            {doc && (
+              <Card variant="outline" shadow="sm">
+                <CardBody>
+                  <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4} divider={<Divider orientation="vertical" />}>
+                    <HStack>
+                      <Icon as={FiFileText} color="blue.500" boxSize={5} />
+                      <VStack align="start" spacing={0}>
+                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                          {docType?.toUpperCase()} #
+                        </Text>
+                        <Text fontSize="md" fontWeight="bold">
+                          {doc.num}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <HStack>
+                      <Icon as={FiCalendar} color="orange.500" boxSize={5} />
+                      <VStack align="start" spacing={0}>
+                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                          DATE
+                        </Text>
+                        <Text fontSize="md">
+                          {moment(doc.date).format("LL")}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <HStack>
+                      <Icon as={FiDollarSign} color="green.500" boxSize={5} />
+                      <VStack align="start" spacing={0}>
+                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                          TOTAL AMOUNT
+                        </Text>
+                        <Text fontSize="md" fontWeight="bold">
+                          {formatSmallestUnitWithSymbol(grandTotal)}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <HStack>
+                      <Icon 
+                        as={balance <= 0 ? (docType === "invoice" ? FiArrowUpCircle : FiArrowDownCircle) : FiDollarSign} 
+                        color={balance <= 0 ? "purple.500" : "red.500"} 
+                        boxSize={5} 
+                      />
+                      <VStack align="start" spacing={0}>
+                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                          {balance <= 0 ? (docType === "invoice" ? "EXTRA RECEIVED" : "EXTRA PAID") : "BALANCE DUE"}
+                        </Text>
+                        <Text fontSize="md" fontWeight="bold" color={balance <= 0 ? "purple.600" : "red.600"}>
+                          {formatSmallestUnitWithSymbol(Math.abs(balance))}
+                        </Text>
+                      </VStack>
+                    </HStack>
+                  </SimpleGrid>
+                </CardBody>
+              </Card>
+            )}
+
+            <TableLayout
+
             filter={
               <TableDateFilter
                 dateFilter={dateFilter}
@@ -192,7 +283,9 @@ export default function VouchersPage() {
             }}
             onAddNewItem={handleAdd}
           />
-        )}
+        </Stack>
+      )}
+
 
         <VoucherModal
           isOpen={isVoucherModalOpen}

@@ -183,8 +183,9 @@ export default function InvoicesPage() {
                   navigate(`${invoice._id}/edit`);
                 }}
                 showVouchers={() => {
-                  navigate(`${invoice._id}/vouchers`);
+                  navigate(`${invoice._id}/vouchers`, { state: { invoice } });
                 }}
+
                 deleteItem={() => {
                   setInvoice(invoice);
                   onOpenDeleteModal();
