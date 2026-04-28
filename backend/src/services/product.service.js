@@ -1,3 +1,4 @@
+const logger = require("../logger");
 const OrgModel = require("../models/org.model");
 const Product = require("../models/product.model");
 const { executeMongoDbTransaction } = require("./crud.service");
@@ -43,7 +44,8 @@ const create = async (body) => {
       { $inc: { "relatedDocsCount.products": 1 } },
       { session },
     );
-    return product;
+    logger.info("created product for org ", body.org, "with id", newProduct._id)
+    return newProduct;
   });
   return product;
 };

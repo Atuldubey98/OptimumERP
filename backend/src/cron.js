@@ -1,6 +1,5 @@
 require("dotenv").config({
-  path:
-    process.env.NODE_ENV === "development" ? "../.env.development" : "../.env",
+  path: process.env.NODE_ENV === "development" ? "../.env.development" : "../.env",
 });
 
 const { CronJob } = require("cron");
@@ -20,13 +19,13 @@ if (!process.env.IMPORT_CRON_SCHEDULE) {
   logger.warn("IMPORT_CRON_SCHEDULE not set. Cron job will not run.");
   process.exit(0);
 }
-logger.info("Starting cron job with schedule");
+
 const importCron = new CronJob(
   process.env.IMPORT_CRON_SCHEDULE,
   async function () {
     if (isRunning) return;
     isRunning = true;
-    
+
     try {
       if (!dbConnection) {
         dbConnection = await dbService.connectDatabase(process.env.MONGO_URI);
@@ -35,40 +34,37 @@ const importCron = new CronJob(
       const jobs = await JobModel.find({
         type: "bulk_upload",
         status: "pending",
-      });      
+      });
+
       for (const jobDoc of jobs) {
         jobDoc.status = "in_progress";
         await jobDoc.save();
 
         const { entity, fileBuffer } = jobDoc.metadata;
 
+        let cachedUms = [];
+        if (entity === "product") {
+          cachedUms = await umService.getUmListForOrg(jobDoc.org);
+        }
+
         const entityCreationFns = {
           party: {
-            mapper: (data) => {
-              const name = data["Name"];
-              const billingAddress = data["Billing Address"];
-              const shippingAddress = data["Shipping Address"];
-              const gstNo = data["GST No"];
-              const panNo = data["PAN No"];
-
-              return {
-                name,
-                billingAddress,
-                shippingAddress,
-                gstNo,
-                panNo,
-                createdBy: jobDoc.createdBy,
-                org: jobDoc.org,
-              };
-            },
+            mapper: (data) => ({
+              name: data["Name"],
+              billingAddress: data["Billing Address"],
+              shippingAddress: data["Shipping Address"],
+              gstNo: data["GST No"],
+              panNo: data["PAN No"],
+              createdBy: jobDoc.createdBy,
+              org: jobDoc.org,
+            }),
             create: async (data) => partyService.create(data),
           },
           product: {
-            mapper: async (data) => {
-              const ums = await umService.getUmListForOrg(jobDoc.org);
+            mapper: (data) => {
               const umName = data["Unit"] || data["UM"];
-              const matchedUm = ums.find(u => 
-                u.name.toLowerCase() === umName?.toLowerCase() || 
+              const matchedUm = cachedUms.find(u =>
+                u.name.toLowerCase() === umName?.toLowerCase() ||
                 u.unit.toLowerCase() === umName?.toLowerCase()
               );
 
@@ -79,7 +75,7 @@ const importCron = new CronJob(
                 costPrice: parseFloat(data["Cost Price"] || 0),
                 sellingPrice: parseFloat(data["Selling Price"] || 0),
                 description: data["Description"] || "",
-                um: matchedUm?._id || ums[0]?._id, // Fallback to first UM if not found
+                um: matchedUm?._id || cachedUms[0]?._id,
                 createdBy: jobDoc.createdBy,
                 org: jobDoc.org,
               };
@@ -89,35 +85,34 @@ const importCron = new CronJob(
         };
 
         const { mapper, create } = entityCreationFns[entity];
-
-        const stream = Readable.from(fileBuffer.buffer);
         let successCount = 0;
         let failureCount = 0;
-        stream
-          .pipe(csvParser())
-          .on("data", async (data) => {
+
+        try {
+          const stream = Readable.from(fileBuffer.buffer).pipe(csvParser());
+
+          for await (const row of stream) {
             try {
-              data.createdBy = jobDoc.createdBy;
-              data.org = jobDoc.org;
-              const mappedData = await mapper(data);
+              row.createdBy = jobDoc.createdBy;
+              row.org = jobDoc.org;
+              const mappedData = await mapper(row);
               await create(mappedData);
               successCount++;
             } catch (error) {
               failureCount++;
-              logger.error("Error creating entity:", error);
+              logger.error("Row error:", error);
             }
-          })
-          .on("end", async () => {
-            jobDoc.metadata.successCount = successCount;
-            jobDoc.metadata.failureCount = failureCount;
-            jobDoc.status = "completed";
-            await jobDoc.save();
-          })
-          .on("error", async (err) => {
-            logger.error("Error processing CSV:", err);
-            jobDoc.status = "failed";
-            await jobDoc.save();
-          });
+          }
+
+          jobDoc.metadata.successCount = successCount;
+          jobDoc.metadata.failureCount = failureCount;
+          jobDoc.status = "completed";
+          await jobDoc.save();
+        } catch (streamErr) {
+          logger.error("Stream error:", streamErr);
+          jobDoc.status = "failed";
+          await jobDoc.save();
+        }
       }
     } catch (error) {
       logger.error(error);
@@ -127,6 +122,7 @@ const importCron = new CronJob(
   },
   null,
   false,
-  "UTC",
+  "UTC"
 );
+
 importCron.start();

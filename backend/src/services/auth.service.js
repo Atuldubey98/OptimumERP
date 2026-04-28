@@ -8,6 +8,7 @@ const { renderHtml } = require("./renderEngine.service");
 const transporter = require("../mailer");
 const OrgUser = require("../models/orgUser.model");
 const logger = require("../logger");
+const { isValidObjectId } = require("mongoose");
 exports.registerUser = async ({
   email,
   password,
@@ -57,7 +58,7 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
       productCategories: 100,
     },
     platinum: {
-      bot : Boolean(process.env.OLLAMA_API_KEY) && Boolean(process.env.OLLAMA_TEXT_MODEL),
+      bot: Boolean(process.env.OLLAMA_API_KEY) && Boolean(process.env.OLLAMA_TEXT_MODEL),
     },
   };
   const limits = planLimits[activatedPlan.plan];
@@ -82,6 +83,7 @@ exports.sendOtpEmailToUser = async ({ user, typeOfOtp, subject }) => {
 };
 
 exports.findOrgUser = async (userId, orgId) => {
+  if (!isValidObjectId(orgId) || !isValidObjectId(userId)) return null;
   const orgUser = await OrgUser.findOne({ user: userId, org: orgId }).lean().exec();
   logger.info(`Authorized org user for orgId: ${orgId} - userId: ${userId}`);
   return orgUser;

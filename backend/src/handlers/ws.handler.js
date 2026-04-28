@@ -13,11 +13,13 @@ function getWsHandlers(wss) {
   const ORG_USER_MESSAGES_CACHE_TTL_SECONDS = Number(
     process.env.EXPENSE_CATEGORY_CACHE_TTL_SECONDS || 20 * 60,
   );
-  const buildOrgUserMessagesCacheKey = (userId, orgId) =>
-    cacheService.buildKey("orgUserMessages", userId, orgId);
+  const buildOrgUserMessagesCacheKey = (userId) =>
+    cacheService.buildKey("orgUserMessages", userId);
+
 
   const getSessionMessage = async (userId, orgId) => {
-    const key = buildOrgUserMessagesCacheKey(userId, orgId);
+    const key = buildOrgUserMessagesCacheKey(userId);
+
     return cacheService.getOrSet(
       key,
       async () => {
@@ -98,9 +100,10 @@ function getWsHandlers(wss) {
         }),
       );
       cacheService.set(
-        buildOrgUserMessagesCacheKey(request.session.user._id, orgId),
+        buildOrgUserMessagesCacheKey(request.session.user._id),
         trimMessages([...messages, response]),
       );
+
     } catch (error) {
       if (config.NODE_ENV === "development") {
         console.log(error);

@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import useAuth from "./useAuth";
+
 
 export const useChatSocket = (orgId) => {
-  const [messages, setMessages] = useState(() => {
-    try {
-      const saved = localStorage.getItem(`chat_history_${orgId}`);
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  const { user } = useAuth();
+  const userId = user?._id;
+  const [messages, setMessages] = useState([]);
+  const loadedId = useRef(null);
+
+
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [statusMsg, setStatusMsg] = useState("Assistant is thinking...");
@@ -18,8 +18,28 @@ export const useChatSocket = (orgId) => {
   const isProcessingQueue = useRef(false);
 
   useEffect(() => {
-    localStorage.setItem(`chat_history_${orgId}`, JSON.stringify(messages.slice(-20)));
-  }, [messages, orgId]);
+    if (!userId) {
+      setMessages([]);
+      loadedId.current = null;
+      return;
+    }
+    try {
+      const saved = localStorage.getItem(`chat_history_${userId}`);
+      setMessages(saved ? JSON.parse(saved) : []);
+      loadedId.current = userId;
+    } catch (e) {
+      setMessages([]);
+      loadedId.current = userId;
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId && loadedId.current === userId) {
+      localStorage.setItem(`chat_history_${userId}`, JSON.stringify(messages.slice(-20)));
+    }
+  }, [messages, userId]);
+
+
 
   const processStatusQueue = () => {
     if (isProcessingQueue.current || statusQueue.current.length === 0) return;
@@ -75,9 +95,14 @@ export const useChatSocket = (orgId) => {
 
     connect();
     return () => {
-      if (socket.current) socket.current.close();
+      if (socket.current) {
+        socket.current.onclose = null;
+        socket.current.onerror = null;
+        socket.current.close();
+      }
       clearTimeout(reconnectionTimer);
     };
+
   }, [orgId]);
 
   const sendMessage = (payload, userMessage) => {

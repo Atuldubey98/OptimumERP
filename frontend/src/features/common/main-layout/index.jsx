@@ -6,17 +6,13 @@ import {
   Link,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
-import { Link as ReactRouterLink, useLocation } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 import PrivateRoute from "../PrivateRoute";
 import Sidebar from "../sidebar";
 import Header from "./Header";
 import NavDrawer from "./NavDrawer";
-import SettingContextProvider from "../../../contexts/SettingContextProvider";
-import ChatWidget from "../../bot";
-import FullLoader from "../FullLoader";
 export default function MainLayout({ children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { t } = useTranslation("common");

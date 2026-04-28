@@ -11,13 +11,16 @@ import { useSpeechToText } from "../../hooks/useSpeechToText";
 import ChatHeader from "./ChatHeader";
 import MessageItem from "./MessageItem";
 import ChatInput from "./ChatInput";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import { useParams } from "react-router-dom";
 
-const ChatWidget = ({ orgId = localStorage.getItem("organization") }) => {
+const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [historyIndex, setHistoryIndex] = useState(-1);
   const scrollRef = useRef(null);
   const fileInputRef = useRef(null);
+  const  {orgId} = useParams();
 
   const { messages, isConnected, isTyping, statusMsg, sendMessage } = useChatSocket(orgId);
   const { attachment, handleFileChange, clearAttachment } = useFileUpload();
@@ -92,10 +95,12 @@ const ChatWidget = ({ orgId = localStorage.getItem("organization") }) => {
   }, [messages, formatTime]);
 
   const toggleOpen = useCallback(() => setIsOpen(prev => !prev), []);
-
+  if(!isConnected){
+    return null;
+  }
   return (
     <Portal>
-      <Box position="fixed" bottom={{ base: "0", md: "20px" }} right={{ base: "0", md: "20px" }} zIndex="9999">
+      <Box position="fixed" bottom={{ base: "0", md: "20px" }} right={{ base: "0", md: "20px" }}>
         <AnimatePresence>
           {isOpen && (
             <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}>
