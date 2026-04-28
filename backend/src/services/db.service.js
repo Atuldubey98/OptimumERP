@@ -37,17 +37,19 @@ function softDeletePlugin(schema) {
     });
   };
 
-  schema.statics.softDelete = function (filter) {
+  schema.statics.softDelete = function (filter, options) {
     return this.findOneAndUpdate(filter, {
       $set: { deletedAt: new Date() },
-    });
+    }, options);
   };
 
-  schema.statics.softDeleteMany = function (filter) {
+
+  schema.statics.softDeleteMany = function (filter, options) {
     return this.updateMany(filter, {
       $set: { deletedAt: new Date() },
-    });
+    }, options);
   };
+
 
 
   function excludeDeleted() {

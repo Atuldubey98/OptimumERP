@@ -5,6 +5,8 @@ const OrgModel = require("../models/org.model");
 const ProformaInvoice = require("../models/proformaInvoice.model");
 const Quotes = require("../models/quotes.model");
 const PaymentVoucher = require("../models/paymentVoucher.model");
+const { executeMongoDbTransaction } = require("./crud.service");
+
 
 const { currencyToWordConverter } = require("./currencyToWord.service");
 const propertyService = require("./property.service");
@@ -236,32 +238,36 @@ exports.saveBill = async ({
 };
 
 exports.deleteBill = async ({ Bill, NotFound, filter, relatedDocTypeKey }) => {
-  const bill = await Bill.softDelete(filter);
-  if (!bill) throw new NotFound();
-  await Transaction.softDelete({
-    org: filter.org,
-    docModel: Bill.modelName,
-    doc: filter._id,
-  });
-  await PaymentVoucher.softDeleteMany({
-    org: filter.org,
-    refDoc: filter._id,
-    refDocModel: Bill.modelName,
-  });
-  await Promise.all(
-    [ProformaInvoice, Quotes].map((Model) =>
-      Model.updateMany({ converted: filter._id }, { $set: { converted: null } })
-    )
-  );
-
-  if (relatedDocTypeKey) {
-    await OrgModel.updateOne(
-      { _id: filter.org },
-      { $inc: { [relatedDocTypeKey]: -1 } }
+  return await executeMongoDbTransaction(async (session) => {
+    const bill = await Bill.softDelete(filter, { session });
+    if (!bill) throw new NotFound();
+    await Transaction.softDelete({
+      org: filter.org,
+      docModel: Bill.modelName,
+      doc: filter._id,
+    }, { session });
+    await PaymentVoucher.softDeleteMany({
+      org: filter.org,
+      refDoc: filter._id,
+      refDocModel: Bill.modelName,
+    }, { session });
+    await Promise.all(
+      [ProformaInvoice, Quotes].map((Model) =>
+        Model.updateMany({ converted: filter._id }, { $set: { converted: null } }, { session })
+      )
     );
-  }
-  return bill;
+
+    if (relatedDocTypeKey) {
+      await OrgModel.updateOne(
+        { _id: filter.org },
+        { $inc: { [relatedDocTypeKey]: -1 } },
+        { session }
+      );
+    }
+    return bill;
+  });
 };
+
 
 
 
