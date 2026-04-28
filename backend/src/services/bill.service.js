@@ -1,6 +1,11 @@
 const { OrgNotFound } = require("../errors/org.error");
 const Setting = require("../models/settings.model");
 const Transaction = require("../models/transaction.model");
+const OrgModel = require("../models/org.model");
+const ProformaInvoice = require("../models/proformaInvoice.model");
+const Quotes = require("../models/quotes.model");
+const PaymentVoucher = require("../models/paymentVoucher.model");
+
 const { currencyToWordConverter } = require("./currencyToWord.service");
 const propertyService = require("./property.service");
 const { promiseQrCode, renderHtml, getPdfBufferFromDocDefinition } = require("./renderEngine.service");
@@ -230,17 +235,35 @@ exports.saveBill = async ({
   }
 };
 
-exports.deleteBill = async ({ Bill, NotFound, filter }) => {
+exports.deleteBill = async ({ Bill, NotFound, filter, relatedDocTypeKey }) => {
   const bill = await Bill.softDelete(filter);
   if (!bill) throw new NotFound();
-  const transaction = await Transaction.softDelete({
+  await Transaction.softDelete({
     org: filter.org,
     docModel: Bill.modelName,
     doc: filter._id,
   });
-  if (!transaction) throw new NotFound();
+  await PaymentVoucher.softDeleteMany({
+    org: filter.org,
+    refDoc: filter._id,
+    refDocModel: Bill.modelName,
+  });
+  await Promise.all(
+    [ProformaInvoice, Quotes].map((Model) =>
+      Model.updateMany({ converted: filter._id }, { $set: { converted: null } })
+    )
+  );
+
+  if (relatedDocTypeKey) {
+    await OrgModel.updateOne(
+      { _id: filter.org },
+      { $inc: { [relatedDocTypeKey]: -1 } }
+    );
+  }
   return bill;
 };
+
+
 
 exports.getNextSequence = async ({ Bill, org, prefixType, session }) => {
   const { currentCounter } = await getCurrentSequenceCounter({

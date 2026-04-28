@@ -43,6 +43,13 @@ function softDeletePlugin(schema) {
     });
   };
 
+  schema.statics.softDeleteMany = function (filter) {
+    return this.updateMany(filter, {
+      $set: { deletedAt: new Date() },
+    });
+  };
+
+
   function excludeDeleted() {
     this.where({ deletedAt: { $exists: false } });
   }

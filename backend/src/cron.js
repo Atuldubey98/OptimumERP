@@ -11,6 +11,9 @@ const productService = require("./services/product.service");
 const umService = require("./services/um.service");
 const { Readable } = require("stream");
 const logger = require("./logger");
+const settingService = require("./services/setting.service");
+const { moneyUtils } = require("./utils");
+
 
 let isRunning = false;
 let dbConnection = null;
@@ -43,9 +46,14 @@ const importCron = new CronJob(
         const { entity, fileBuffer } = jobDoc.metadata;
 
         let cachedUms = [];
+        const setting = await settingService.getDisplaySettingForOrg(jobDoc.org);
+        const currencyConfig = await moneyUtils.getCurrencyConfigByCode(setting.currency || "INR");
+        const decimalDigits = currencyConfig?.decimal_digits || 2;
+
         if (entity === "product") {
           cachedUms = await umService.getUmListForOrg(jobDoc.org);
         }
+
 
         const entityCreationFns = {
           party: {
@@ -72,8 +80,8 @@ const importCron = new CronJob(
                 name: data["Name"],
                 code: data["Code"] || data["SKU"],
                 type: (data["Type"] || "goods").toLowerCase(),
-                costPrice: parseFloat(data["Cost Price"] || 0),
-                sellingPrice: parseFloat(data["Selling Price"] || 0),
+                costPrice: moneyUtils.toSmallestUnit(data["Cost Price"] || 0, decimalDigits),
+                sellingPrice: moneyUtils.toSmallestUnit(data["Selling Price"] || 0, decimalDigits),
                 description: data["Description"] || "",
                 um: matchedUm?._id || cachedUms[0]?._id,
                 createdBy: jobDoc.createdBy,
