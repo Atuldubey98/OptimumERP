@@ -21,6 +21,10 @@ const purchaseInvoice = new Schema(
       default: 0,
       required: true,
     },
+    paymentVoucherBalance: {
+      type: Number,
+      default: 0,
+    },
     totalTax: {
       type: Number,
       default: 0,

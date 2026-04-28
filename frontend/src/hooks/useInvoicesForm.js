@@ -27,7 +27,17 @@ export default function useInvoicesForm({ saveAndNew = false }) {
       .label(t("common_ui.validation.labels.billing_address")),
     date: Yup.date()
       .required(t("common_ui.validation.messages.date_required"))
+      .test(
+        "is-greater-than-po-date",
+        t("common_ui.validation.messages.date_min_po_date"),
+        function (value) {
+          const { poDate } = this.parent;
+          if (!value || !poDate) return true;
+          return moment(value).isSameOrAfter(moment(poDate), "day");
+        },
+      )
       .label(t("common_ui.validation.labels.date")),
+
     status: Yup.string().required(t("common_ui.validation.messages.status_required")),
     poNo: Yup.string().optional(),
     poDate: Yup.string().optional(),

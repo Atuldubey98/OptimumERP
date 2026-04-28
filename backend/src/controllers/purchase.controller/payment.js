@@ -40,11 +40,12 @@ const payment = async (req, res) => {
 
     const grandTotal = purchase.total + purchase.totalTax + (purchase.shippingCharges || 0);
     const isPurchaseFullyPaid = grandTotal <= body.amount;
-    
+
     purchase.status = isPurchaseFullyPaid ? "paid" : "unpaid";
     purchase.updatedBy = userId;
     if (!purchase.paymentVouchers) purchase.paymentVouchers = [];
     purchase.paymentVouchers.push(voucher._id);
+    purchase.paymentVoucherBalance += voucher.amount;
     await purchase.save({ session });
   });
 

@@ -16,7 +16,6 @@ const payment = async (req, res) => {
   const id = req.params.id;
   const orgId = req.params.orgId;
   const userId = req.session.user._id;
-
   if (!isValidObjectId(id)) throw new InvoiceNotFound();
   const body = await paymentDto.validateAsync(req.body);
 
@@ -35,6 +34,7 @@ const payment = async (req, res) => {
 
     if (!invoice.paymentVouchers) invoice.paymentVouchers = [];
     invoice.paymentVouchers.push(voucher._id);
+    invoice.paymentVoucherBalance += voucher.amount;
     invoice.updatedBy = userId;
     invoice.status = "sent";
     await invoice.save({ session });

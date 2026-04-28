@@ -19,6 +19,8 @@ import { IoAdd } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import instance from "../../../instance";
 import PrefixForm from "./PrefixForm";
+import SequenceCounters from "./SequenceCounters";
+
 export default function TransactionPrefix({ formik, loading, printFormik }) {
   const { t } = useTranslation("common");
   useEffect(() => {
@@ -39,8 +41,16 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
             proformaInvoice: [""],
             paymentVoucher: [""],
           },
+          sequenceCounters: {
+            invoice: 0,
+            quotation: 0,
+            purchaseOrder: 0,
+            proformaInvoice: 0,
+            paymentVoucher: 0,
+          },
         });
         printFormik.setValues({ bank: false, upiQr: false });
+
         return;
       }
       const { data } = await instance.get(
@@ -56,15 +66,24 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
         proformaInvoice: data.data.setting.transactionPrefix.proformaInvoice || "",
         paymentVoucher: data.data.setting.transactionPrefix.paymentVoucher || "",
         currency: data.data.currency.code,
-        prefixes: {
-          invoice: [""],
-          quotation: [""],
-          purchaseOrder: [""],
-          proformaInvoice: [""],
-          paymentVoucher: [""],
-          ...data.data.setting.prefixes,
-        },
-      });
+          prefixes: {
+            invoice: [""],
+            quotation: [""],
+            purchaseOrder: [""],
+            proformaInvoice: [""],
+            paymentVoucher: [""],
+            ...data.data.setting.prefixes,
+          },
+          sequenceCounters: {
+            invoice: 0,
+            quotation: 0,
+            purchaseOrder: 0,
+            proformaInvoice: 0,
+            paymentVoucher: 0,
+            ...data.data.setting.sequenceCounters,
+          },
+        });
+
 
       data?.data.setting.printSettings && printFormik.setValues(data.data.setting.printSettings);
     })();
@@ -218,7 +237,10 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
               </FormControl>
             </SimpleGrid>
             <Divider />
+            <SequenceCounters formik={formik} loading={loading} />
+            <Divider />
           </Stack>
+
         </form>
       </Skeleton>
       <PrefixForm

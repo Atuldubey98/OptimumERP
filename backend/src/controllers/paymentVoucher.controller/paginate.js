@@ -28,12 +28,12 @@ const getAll = async (req, res) => {
     .populate("refDoc", "num")
     .lean();
 
-  return res.status(200).json({ 
-    data: vouchers, 
-    total, 
-    page, 
-    limit, 
-    totalPages 
+  return res.status(200).json({
+    data: vouchers,
+    total,
+    page,
+    limit,
+    totalPages
   });
 };
 

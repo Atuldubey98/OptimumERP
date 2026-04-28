@@ -19,6 +19,10 @@ const invoiceSchema = new Schema(
       type: Types.ObjectId,
       ref: "payment_voucher",
     }],
+    paymentVoucherBalance: {
+      type: Number,
+      default: 0,
+    },
     billingAddress: {
       type: String,
       required: true,

@@ -368,8 +368,16 @@
       "already_exists": "Already exists",
       "default": "Default",
       "current_used": "Current used",
-      "none": "NONE"
+      "none": "NONE",
+      "sequence_counters": "Sequence Counters",
+      "invoice_counter": "Last Invoice Count",
+      "quotation_counter": "Last Quotation Count",
+      "proforma_invoice_counter": "Last Proforma Invoice Count",
+      "purchase_order_counter": "Last Purchase Order Count",
+      "payment_voucher_counter": "Last Payment Voucher Count",
+      "current_count": "Current Stored Count"
     },
+
     "print_settings": {
       "title": "Print Settings",
       "default_template": "Default Template",

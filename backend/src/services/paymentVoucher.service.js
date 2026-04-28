@@ -4,7 +4,7 @@ const Setting = require("../models/settings.model");
 
 exports.createPaymentVoucherForDoc = async ({ doc, docModel, voucherType, body, userId, session }) => {
   const orgId = doc.org;
-  
+
   const setting = await Setting.findOne({ org: orgId }).session(session);
   if (!setting) {
     throw new Error("Organization settings not found");
@@ -40,7 +40,7 @@ exports.createPaymentVoucherForDoc = async ({ doc, docModel, voucherType, body, 
     refDoc: doc._id,
     refDocModel: docModel
   });
-  
+
   await voucher.save({ session });
 
   const transaction = new Transaction({
@@ -153,18 +153,18 @@ exports.deletePaymentVoucher = async ({ id, orgId, session }) => {
     const doc = await Model.findOne({ _id: voucher.refDoc }).session(session);
     if (doc && doc.paymentVouchers) {
       doc.paymentVouchers.pull(voucher._id);
-      
+
       if (voucher.refDocModel === "purchase") {
         const grandTotal = doc.total + doc.totalTax + (doc.shippingCharges || 0);
-        const otherVouchers = await PaymentVoucher.find({ 
+        const otherVouchers = await PaymentVoucher.find({
           _id: { $in: doc.paymentVouchers },
-          org: orgId 
+          org: orgId
         }).session(session);
-        
+
         const totalPaid = otherVouchers.reduce((acc, v) => acc + v.amount, 0);
         doc.status = grandTotal <= totalPaid ? "paid" : "unpaid";
       }
-      
+      doc.paymentVoucherBalance -= voucher.amount;
       await doc.save({ session });
     }
   }

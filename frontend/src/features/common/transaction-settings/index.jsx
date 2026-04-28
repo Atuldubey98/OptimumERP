@@ -75,7 +75,15 @@ export default function TransactionSettingsPage() {
         proformaInvoice: [""],
         paymentVoucher: [""],
       },
+      sequenceCounters: {
+        invoice: 0,
+        quotation: 0,
+        purchaseOrder: 0,
+        proformaInvoice: 0,
+        paymentVoucher: 0,
+      },
     },
+
     onSubmit: async (values, { setSubmitting }) => {
       if (!values.organization) return;
       const settingsUrl = `/api/v1/organizations/${values.organization}/settings`;
@@ -90,7 +98,9 @@ export default function TransactionSettingsPage() {
         currency: values.currency,
         localeCode: values.localeCode,
         prefixes: values.prefixes,
+        sequenceCounters: values.sequenceCounters,
       });
+
 
       const currentOrg = localStorage.getItem("organization");
       if (
