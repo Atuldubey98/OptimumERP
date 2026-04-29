@@ -187,7 +187,7 @@ export default function VouchersPage() {
             {doc && (
               <Card variant="outline" shadow="sm">
                 <CardBody>
-                  <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4} divider={<Divider orientation="vertical" />}>
+                  <SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing={6}>
                     <HStack>
                       <Icon as={FiFileText} color="blue.500" boxSize={5} />
                       <VStack align="start" spacing={0}>
@@ -225,17 +225,29 @@ export default function VouchersPage() {
                     </HStack>
 
                     <HStack>
+                      <Icon as={FiArrowDownCircle} color="purple.500" boxSize={5} />
+                      <VStack align="start" spacing={0}>
+                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                          {docType === "invoice" ? "AMOUNT RECEIVED" : "AMOUNT PAID"}
+                        </Text>
+                        <Text fontSize="md" fontWeight="bold" color="purple.600">
+                          {formatSmallestUnitWithSymbol(doc.paymentVoucherBalance || 0)}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <HStack>
                       <Icon 
                         as={balance <= 0 ? (docType === "invoice" ? FiArrowUpCircle : FiArrowDownCircle) : FiDollarSign} 
-                        color={balance <= 0 ? "purple.500" : "red.500"} 
+                        color={balance <= 0 ? "green.500" : "red.500"} 
                         boxSize={5} 
                       />
                       <VStack align="start" spacing={0}>
                         <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                          {balance <= 0 ? (docType === "invoice" ? "EXTRA RECEIVED" : "EXTRA PAID") : "BALANCE DUE"}
+                          {balance === 0 ? "STATUS" : (balance < 0 ? (docType === "invoice" ? "EXTRA RECEIVED" : "EXTRA PAID") : "BALANCE DUE")}
                         </Text>
-                        <Text fontSize="md" fontWeight="bold" color={balance <= 0 ? "purple.600" : "red.600"}>
-                          {formatSmallestUnitWithSymbol(Math.abs(balance))}
+                        <Text fontSize="md" fontWeight="bold" color={balance <= 0 ? "green.600" : "red.600"}>
+                          {balance === 0 ? "SETTLED" : formatSmallestUnitWithSymbol(Math.abs(balance))}
                         </Text>
                       </VStack>
                     </HStack>

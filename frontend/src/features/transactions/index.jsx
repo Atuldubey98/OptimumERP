@@ -85,7 +85,20 @@ export default function TransactionsPage() {
       label: t("transactions_ui.types.purchase_order"),
       colorScheme: "cyan",
     },
+    {
+      value: "payment_voucher",
+      label: t("transactions_ui.types.payment_voucher"),
+      colorScheme: "pink",
+    },
   ];
+  const labels = {
+    invoice: t("transactions_ui.types.invoice"),
+    purchase: t("transactions_ui.types.purchase"),
+    quotation: t("transactions_ui.types.quotation"),
+    proforma_invoice: t("transactions_ui.types.proforma_invoice"),
+    purchase_order: t("transactions_ui.types.purchase_order"),
+    payment_voucher: t("transactions_ui.types.payment_voucher"),
+  };
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
     typeOfTransactions.slice(0, 2)
   );
@@ -224,7 +237,7 @@ export default function TransactionsPage() {
             tableData={transactionsResponse.items.map((item) => ({
               _id: item._id,
               date: new Date(item.doc.date).toLocaleDateString(),
-              totalItems: item.doc.items.length,
+              totalItems: item.doc.items ?  item.doc.items.length : "--",
               status: item.doc.status,
               num: item.doc.num,
               grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
@@ -238,7 +251,7 @@ export default function TransactionsPage() {
                     ).colorScheme || "cyan"
                   }
                 >
-                  <TagLabel>{item.docModel.toUpperCase()}</TagLabel>
+                  <TagLabel>{labels[item.docModel]}</TagLabel>
                 </Tag>
               ),
             }))}

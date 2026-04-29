@@ -22,11 +22,6 @@ const downloadPartyTransactionSummary = async (req, res) => {
 
   const search = req.query.search;
   const party = await Party.findOne({
-            total: {
-              $sum: {
-                $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
-              },
-            },
     _id: req.params.partyId,
   }).exec();
   const transactionTypes = req.query.transactionTypes;

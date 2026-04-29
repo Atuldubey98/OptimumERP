@@ -5,7 +5,8 @@
       "purchase": "Purchase",
       "quotation": "Quotation",
       "proforma_invoice": "Proforma Invoice",
-      "purchase_order": "Purchase order"
+      "purchase_order": "Purchase order",
+      "payment_voucher": "Vouchers"
     },
     "stats": {
       "invoices": "Invoices",
