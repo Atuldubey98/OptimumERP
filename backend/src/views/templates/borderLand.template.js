@@ -155,6 +155,12 @@ const borderLandTemplate = (data, color) => {
                     ],
                   }
                 : {},
+              ...(data.countryMeta?.org || []).map((meta) => ({
+                text: [
+                  { text: `${meta.key}: `, style: "billingMetaLabel" },
+                  { text: meta.value, style: "billingMetaValue" },
+                ],
+              })),
             ],
           },
           {
@@ -179,6 +185,12 @@ const borderLandTemplate = (data, color) => {
                     ],
                   }
                 : {},
+              ...(data.countryMeta?.party || []).map((meta) => ({
+                text: [
+                  { text: `${meta.key}: `, style: "billingMetaLabel" },
+                  { text: meta.value, style: "billingMetaValue" },
+                ],
+              })),
             ],
           },
         ],

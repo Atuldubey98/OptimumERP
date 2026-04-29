@@ -93,6 +93,10 @@ const buzyTemplate = (data, color) => {
                     style: "inline",
                   }
                 : {},
+              ...(data.countryMeta?.org || []).map((meta) => ({
+                text: `${meta.key}: ${meta.value}`,
+                style: "inlineBold",
+              })),
             ],
           },
           {
@@ -202,6 +206,10 @@ const buzyTemplate = (data, color) => {
               data.entity.party.panNo
                 ? { text: `${labels.pan || "PAN"}: ${data.entity.party.panNo}`, style: "inline" }
                 : {},
+              ...(data.countryMeta?.party || []).map((meta) => ({
+                text: `${meta.key}: ${meta.value}`,
+                style: "inlineBold",
+              })),
             ],
           },
           {

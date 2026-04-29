@@ -68,6 +68,12 @@ const simpleTemplate = (data, color) => {
                     ],
                   }
                 : {},
+              ...(data.countryMeta?.org || []).map((meta) => ({
+                text: [
+                  { text: `${meta.key}: `, style: "metaLabel" },
+                  { text: meta.value, style: "companyMetaStrong" },
+                ],
+              })),
             ],
             alignment: "right",
           },
@@ -99,6 +105,12 @@ const simpleTemplate = (data, color) => {
                     ],
                   }
                 : {},
+              ...(data.countryMeta?.party || []).map((meta) => ({
+                text: [
+                  { text: `${meta.key}: `, style: "metaLabel" },
+                  { text: meta.value, style: "bodyTextStrong" },
+                ],
+              })),
             ],
           },
           {

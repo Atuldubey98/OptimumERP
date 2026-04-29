@@ -17,7 +17,7 @@ const {
   calculateTaxes,
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
-const { getDisplaySettingForOrg } = require("./setting.service");
+const { getDisplaySettingForOrg, getDetailedSettingForOrg } = require("./setting.service");
 const path = require("path");
 const logger = require("../logger");
 const { moneyUtils } = require("../utils");
@@ -395,9 +395,10 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
     .populate("org")
     .lean();
   if (!bill) throw new NotFound();
-  const setting = await getDisplaySettingForOrg(filter.org);
+  const setting = await getDetailedSettingForOrg(filter.org);
   const code = setting.currency || "INR";
   const currencyConfig = (await moneyUtils.getCurrencyConfigByCode(code)) || { decimal_digits: 2 };
+
   const formatter = moneyUtils.getCurrencyFormatter({
     locale: setting.localeCode || "en-IN",
     currency: code,
@@ -425,6 +426,41 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
     t ? t(`billing:template_labels.${key}`, { defaultValue }) : defaultValue;
 
   const metaLabels = minimal ? {} : makeMetaLabels(translateTemplateLabel);
+  const countryMetaEnrichers = {
+    IND: async () => {
+      const countriesConfigs = await propertyService.getByName("COUNTRIES_CONFIG");
+      const countryConfig = countriesConfigs.value.find((country) => country.code3 === "IND");
+      const state = (countryConfig?.states || []).find((currentState) => currentState.code === setting?.org?.location?.stateCode);
+      const taxCode = state?.taxCode;
+      const partyState = (countryConfig?.states || []).find((currentState) => currentState?.taxCode === bill?.party?.gstNo?.slice(0, 2));
+      const partyTaxCode = partyState?.taxCode;
+      const orgBuilder = [];
+      const partyBuilder = [];
+      if (state) {
+        orgBuilder.push({
+          key: "State",
+          value: `${state?.name}(${taxCode})`
+        })
+      }
+      if (partyState) {
+        partyBuilder.push({
+          key: "State",
+          value: `${partyState?.name}(${partyTaxCode})`
+        })
+      }
+      return {
+        org: orgBuilder,
+        party: partyBuilder
+      }
+    },
+    DEFAULT: () => {
+      return {}
+    }
+  };
+  logger.info("Country code", setting?.org?.location?.countryCode3);
+  const countryMetaEnricher = countryMetaEnrichers[setting.org?.location?.countryCode3] || countryMetaEnrichers.DEFAULT;
+  const countryMeta = await countryMetaEnricher();
+  console.log(`Country meta`, countryMeta);
 
   const data = {
     entity: bill,
@@ -441,7 +477,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
     currencyTaxCategories,
     dateLocale,
     fontFamily,
-    ...(minimal ? {} : { metaLabels }),
+    ...(minimal ? {} : { metaLabels, countryMeta }),
   };
 
   const billMetaMapping = {
