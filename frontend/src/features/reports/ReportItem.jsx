@@ -211,7 +211,7 @@ export default function ReportItem() {
     },
   ];
   return (
-    <Box>
+    <Box maxW="100%" overflowX="hidden">
       <Stack spacing={1} boxShadow={"md"} p={5}>
         <SimpleGrid minChildWidth={300} gap={3} width={"100%"}>
           <FormControl>
@@ -247,7 +247,7 @@ export default function ReportItem() {
           <Spinner />
         </Flex>
       ) : (
-        <Box p={2}>
+        <Box p={2} width="100%" overflowX="hidden">
           {reportType && currentReport ? (
             <TableContainer>
               <Table size={"sm"} variant="simple">
@@ -261,7 +261,7 @@ export default function ReportItem() {
                   <Tr>
                     {Object.entries(currentReport.header).map(
                       ([key, value]) => (
-                        <Th key={key}>{value}</Th>
+                        <Th key={key} whiteSpace="nowrap">{value}</Th>
                       )
                     )}
                   </Tr>
@@ -272,7 +272,7 @@ export default function ReportItem() {
                     .map(({ _id, ...reportItem }) => (
                       <Tr key={_id}>
                         {Object.keys(currentReport.header).map((key) => (
-                          <Td key={key}>{reportItem[key]}</Td>
+                          <Td key={key} whiteSpace="nowrap">{reportItem[key]}</Td>
                         ))}
                       </Tr>
                     ))}

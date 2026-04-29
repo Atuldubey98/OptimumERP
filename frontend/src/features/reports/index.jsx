@@ -26,7 +26,7 @@ export default function Reportspage() {
   const reportName = reportTypes[reportType];
   return (
     <>
-      <Box>
+      <Box maxW="100vw" overflowX="hidden">
         <Box p={2} width={"100%"} boxShadow={"md"}>
           <Flex justifyContent={"flex-start"} gap={5} alignItems={"center"}>
             <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />

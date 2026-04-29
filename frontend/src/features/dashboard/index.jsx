@@ -78,11 +78,10 @@ export default function DashboardPage() {
   });
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
-  const [currentPeriod, setCurrentPeriod] = useState("lastMonth");
-  const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [currentPeriod, setCurrentPeriod] = useState("thisMonth");
   const [statPeriod, setStatPeriod] = useState({
     endDate: moment().format("YYYY-MM-DD"),
-    startDate: moment().subtract(1, "M").format("YYYY-MM-DD"),
+    startDate: moment().startOf("month").format("YYYY-MM-DD"),
   });
   const [status, setStatus] = useState("idle");
   const fetchDashboard = useCallback(
@@ -102,17 +101,6 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchDashboard();
   }, [fetchDashboard]);
-  useEffect(() => {
-    const currentDate = new Date();
-    const millisecondsUntilNextMinute =
-      (60 - currentDate.getSeconds()) * 1000 - currentDate.getMilliseconds();
-
-    const timeoutId = setTimeout(() => {
-      setCurrentTime(new Date());
-    }, millisecondsUntilNextMinute || 60 * 1000);
-
-    return () => clearTimeout(timeoutId);
-  }, [currentTime]);
   const loading = status === "loading";
   const { isOpen: isGuideTourOpen, onClose: closeGuideTour } = useDisclosure({
     defaultIsOpen: !localStorage.getItem("guide"),
@@ -121,28 +109,40 @@ export default function DashboardPage() {
     closeGuideTour();
     localStorage.setItem("guide", false);
   };
-  const periods = [
+  const periods = useMemo(() => [
     {
       label: t("dashboard_ui.periods.this_week"),
-      value: "lastWeek",
-      params: [7, "D"],
+      value: "thisWeek",
+      getDates: () => ({
+        startDate: moment().startOf("week").format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD"),
+      }),
     },
     {
       label: t("dashboard_ui.periods.this_month"),
-      value: "lastMonth",
-      params: [1, "M"],
+      value: "thisMonth",
+      getDates: () => ({
+        startDate: moment().startOf("month").format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD"),
+      }),
     },
     {
       label: t("dashboard_ui.periods.this_year"),
-      value: "lastYear",
-      params: [1, "Y"],
+      value: "thisYear",
+      getDates: () => ({
+        startDate: moment().startOf("year").format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD"),
+      }),
     },
-  ];
-  const currentPeriodLabel = periods.find(
-    (period) => period.value === currentPeriod
-  ).label;
+  ], [t]);
+
+  const currentPeriodOption = useMemo(() => 
+    periods.find((period) => period.value === currentPeriod) || periods[1]
+  , [periods, currentPeriod]);
+
+  const currentPeriodLabel = currentPeriodOption.label;
   const timeGreeting = useMemo(() => {
-    const currentHour = currentTime.getHours();
+    const currentHour = new Date().getHours();
 
     if (currentHour < 12) {
       return t("dashboard_ui.greeting.morning", {
@@ -154,10 +154,15 @@ export default function DashboardPage() {
         defaultValue: "Good afternoon",
       });
     }
-    return t("dashboard_ui.greeting.evening", {
-      defaultValue: "Good evening",
+    if (currentHour < 22) {
+      return t("dashboard_ui.greeting.evening", {
+        defaultValue: "Good evening",
+      });
+    }
+    return t("dashboard_ui.greeting.night", {
+      defaultValue: "Good night",
     });
-  }, [currentTime, t]);
+  }, [t]);
   const auth = useAuth();
   const navigate = useNavigate();
   const dashboardReceiptTableMapper = (itemStatusList) => (item) => ({
@@ -183,16 +188,11 @@ export default function DashboardPage() {
             actions={
               <Select
                 options={periods}
-                onChange={({ params, value }) => {
-                  setStatPeriod({
-                    startDate: moment()
-                      .subtract(...params)
-                      .format("YYYY-MM-DD"),
-                    endDate: moment().format("YYYY-MM-DD"),
-                  });
-                  setCurrentPeriod(value);
+                onChange={(option) => {
+                  setStatPeriod(option.getDates());
+                  setCurrentPeriod(option.value);
                 }}
-                value={periods.find((period) => period.value === currentPeriod)}
+                value={currentPeriodOption}
               />
             }
           />
