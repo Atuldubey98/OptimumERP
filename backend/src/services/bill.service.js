@@ -40,7 +40,7 @@ exports.getBill = async ({ Bill, filter }) => {
   if (["proforma_invoice", "quotes"].includes(Bill.modelName))
     billQuery = billQuery.populate("converted", "num date");
   const bill = await billQuery.lean().exec();
-    return bill;
+  return bill;
 };
 
 const getUpiQrCodeByPrintSettings = async ({
@@ -189,16 +189,16 @@ exports.saveBill = async ({
   }
   const bill = billId
     ? await Bill.findOneAndUpdate(
-        {
-          _id: billId,
-          org: body.org,
-        },
-        billBody,
-        {
-          new: true,
-          session,
-        },
-      )
+      {
+        _id: billId,
+        org: body.org,
+      },
+      billBody,
+      {
+        new: true,
+        session,
+      },
+    )
     : await new Bill(billBody).save({ session });
   if (billId && !bill) throw new NotFound();
   transaction.doc = bill.id;
@@ -336,6 +336,58 @@ const getBillGrandTotal = (bill = {}) =>
   Number(bill.totalTax || 0) +
   Number(bill.shippingCharges || 0);
 
+const makeMetaLabels = (translateTemplateLabel) => ({
+  tax_invoice: translateTemplateLabel("tax_invoice", "Tax Invoice"),
+  phone: translateTemplateLabel("phone", "Phone"),
+  email: translateTemplateLabel("email", "Email"),
+  state: translateTemplateLabel("state", "State"),
+  gstin: translateTemplateLabel("gstin", "GSTIN"),
+  pan: translateTemplateLabel("pan", "PAN"),
+  invoice_no: translateTemplateLabel("invoice_no", "Invoice No."),
+  invoice_date: translateTemplateLabel("invoice_date", "Invoice Date"),
+  po_number: translateTemplateLabel("po_number", "PO Number"),
+  po_date: translateTemplateLabel("po_date", "PO Date"),
+  date: translateTemplateLabel("date", "Date"),
+  number: translateTemplateLabel("number", "Number"),
+  po_no: translateTemplateLabel("po_no", "PO No"),
+  item_details: translateTemplateLabel("item_details", "Item Details"),
+  serial_no: translateTemplateLabel("serial_no", "Sno."),
+  item: translateTemplateLabel("item", "Item"),
+  items: translateTemplateLabel("items", "Items"),
+  hsn_sac_code: translateTemplateLabel("hsn_sac_code", "HSN/SAC Code"),
+  um: translateTemplateLabel("um", "UM"),
+  rate: translateTemplateLabel("rate", "Rate"),
+  qty: translateTemplateLabel("qty", "Qty"),
+  tax: translateTemplateLabel("tax", "Tax"),
+  amount: translateTemplateLabel("amount", "Amount"),
+  product: translateTemplateLabel("product", "Product"),
+  price: translateTemplateLabel("price", "Price"),
+  total: translateTemplateLabel("total", "Total"),
+  subtotal: translateTemplateLabel("subtotal", "Subtotal"),
+  shipping_charges: translateTemplateLabel("shipping_charges", "Shipping Charges"),
+  grand_total: translateTemplateLabel("grand_total", "Grand Total"),
+  amount_in_words: translateTemplateLabel("amount_in_words", "Amount in words"),
+  terms_and_conditions: translateTemplateLabel("terms_and_conditions", "Terms and Conditions"),
+  company_bank_details: translateTemplateLabel("company_bank_details", "Company Bank details"),
+  bank_account_details: translateTemplateLabel("bank_account_details", "Bank Account Details"),
+  bank_name: translateTemplateLabel("bank_name", "Bank Name"),
+  bank_account_no: translateTemplateLabel("bank_account_no", "Bank Account No."),
+  bank_ifsc_code: translateTemplateLabel("bank_ifsc_code", "Bank IFSC code"),
+  account_holder_name: translateTemplateLabel("account_holder_name", "Account holder name"),
+  account_holder: translateTemplateLabel("account_holder", "Account Holder"),
+  account_number: translateTemplateLabel("account_number", "Account Number"),
+  ifsc_code: translateTemplateLabel("ifsc_code", "IFSC Code"),
+  upi_qr_code: translateTemplateLabel("upi_qr_code", "UPI QR Code"),
+  authorized_signatory: translateTemplateLabel("authorized_signatory", "Authorized Signatory"),
+  invoice_hash: translateTemplateLabel("invoice_hash", "Invoice #"),
+  date_issued: translateTemplateLabel("date_issued", "Date Issued"),
+  billing_from: translateTemplateLabel("billing_from", "Billing From"),
+  billing_to: translateTemplateLabel("billing_to", "Billing To"),
+  address: translateTemplateLabel("address", "Address"),
+  tax_upper: translateTemplateLabel("tax_upper", "TAX"),
+  total_upper: translateTemplateLabel("total_upper", "TOTAL"),
+});
+
 exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) => {
   const bill = await Bill.findOne(filter)
     .populate("party")
@@ -371,6 +423,9 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
   logger.info("Selected font family for bill generation" + fontFamily);
   const translateTemplateLabel = (key, defaultValue) =>
     t ? t(`billing:template_labels.${key}`, { defaultValue }) : defaultValue;
+
+  const metaLabels = minimal ? {} : makeMetaLabels(translateTemplateLabel);
+
   const data = {
     entity: bill,
     num: bill.num,
@@ -386,59 +441,7 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
     currencyTaxCategories,
     dateLocale,
     fontFamily,
-    ...(minimal ? {} : {
-      metaLabels: {
-        tax_invoice: translateTemplateLabel("tax_invoice", "Tax Invoice"),
-        phone: translateTemplateLabel("phone", "Phone"),
-        email: translateTemplateLabel("email", "Email"),
-        state: translateTemplateLabel("state", "State"),
-        gstin: translateTemplateLabel("gstin", "GSTIN"),
-        pan: translateTemplateLabel("pan", "PAN"),
-        invoice_no: translateTemplateLabel("invoice_no", "Invoice No."),
-        invoice_date: translateTemplateLabel("invoice_date", "Invoice Date"),
-        po_number: translateTemplateLabel("po_number", "PO Number"),
-        po_date: translateTemplateLabel("po_date", "PO Date"),
-        date: translateTemplateLabel("date", "Date"),
-        number: translateTemplateLabel("number", "Number"),
-        po_no: translateTemplateLabel("po_no", "PO No"),
-        item_details: translateTemplateLabel("item_details", "Item Details"),
-        serial_no: translateTemplateLabel("serial_no", "Sno."),
-        item: translateTemplateLabel("item", "Item"),
-        items: translateTemplateLabel("items", "Items"),
-        hsn_sac_code: translateTemplateLabel("hsn_sac_code", "HSN/SAC Code"),
-        um: translateTemplateLabel("um", "UM"),
-        rate: translateTemplateLabel("rate", "Rate"),
-        qty: translateTemplateLabel("qty", "Qty"),
-        tax: translateTemplateLabel("tax", "Tax"),
-        amount: translateTemplateLabel("amount", "Amount"),
-        product: translateTemplateLabel("product", "Product"),
-        price: translateTemplateLabel("price", "Price"),
-        total: translateTemplateLabel("total", "Total"),
-        subtotal: translateTemplateLabel("subtotal", "Subtotal"),
-        shipping_charges: translateTemplateLabel("shipping_charges", "Shipping Charges"),
-        grand_total: translateTemplateLabel("grand_total", "Grand Total"),
-        amount_in_words: translateTemplateLabel("amount_in_words", "Amount in words"),
-        terms_and_conditions: translateTemplateLabel("terms_and_conditions", "Terms and Conditions"),
-        company_bank_details: translateTemplateLabel("company_bank_details", "Company Bank details"),
-        bank_account_details: translateTemplateLabel("bank_account_details", "Bank Account Details"),
-        bank_name: translateTemplateLabel("bank_name", "Bank Name"),
-        bank_account_no: translateTemplateLabel("bank_account_no", "Bank Account No."),
-        bank_ifsc_code: translateTemplateLabel("bank_ifsc_code", "Bank IFSC code"),
-        account_holder_name: translateTemplateLabel("account_holder_name", "Account holder name"),
-        account_holder: translateTemplateLabel("account_holder", "Account Holder"),
-        account_number: translateTemplateLabel("account_number", "Account Number"),
-        ifsc_code: translateTemplateLabel("ifsc_code", "IFSC Code"),
-        upi_qr_code: translateTemplateLabel("upi_qr_code", "UPI QR Code"),
-        authorized_signatory: translateTemplateLabel("authorized_signatory", "Authorized Signatory"),
-        invoice_hash: translateTemplateLabel("invoice_hash", "Invoice #"),
-        date_issued: translateTemplateLabel("date_issued", "Date Issued"),
-        billing_from: translateTemplateLabel("billing_from", "Billing From"),
-        billing_to: translateTemplateLabel("billing_to", "Billing To"),
-        address: translateTemplateLabel("address", "Address"),
-        tax_upper: translateTemplateLabel("tax_upper", "TAX"),
-        total_upper: translateTemplateLabel("total_upper", "TOTAL"),
-      },
-    }),
+    ...(minimal ? {} : { metaLabels }),
   };
 
   const billMetaMapping = {
@@ -446,18 +449,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
       return {
         title: t
           ? t("billing:bill_metadata:quotation_title", {
-              defaultValue: "Quotation",
-            })
+            defaultValue: "Quotation",
+          })
           : "Quotation",
         billMetaHeading: t
           ? t("billing:bill_metadata:quotation_meta_heading", {
-              defaultValue: "Estimate Details",
-            })
+            defaultValue: "Estimate Details",
+          })
           : "Estimate Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:quotation_party_heading", {
-              defaultValue: "Estimate to",
-            })
+            defaultValue: "Estimate to",
+          })
           : "Estimate to",
       };
     },
@@ -465,18 +468,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
       return {
         title: t
           ? t("billing:bill_metadata:purchase_title", {
-              defaultValue: "Purchase",
-            })
+            defaultValue: "Purchase",
+          })
           : "Purchase",
         billMetaHeading: t
           ? t("billing:bill_metadata:purchase_meta_heading", {
-              defaultValue: "Purchase Details",
-            })
+            defaultValue: "Purchase Details",
+          })
           : "Purchase Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:purchase_party_heading", {
-              defaultValue: "Bill From",
-            })
+            defaultValue: "Bill From",
+          })
           : "Bill From",
       };
     },
@@ -484,18 +487,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
       return {
         title: t
           ? t("billing:bill_metadata:proforma_invoice_title", {
-              defaultValue: "Proforma Invoice",
-            })
+            defaultValue: "Proforma Invoice",
+          })
           : "Proforma Invoice",
         billMetaHeading: t
           ? t("billing:bill_metadata:proforma_invoice_meta_heading", {
-              defaultValue: "Proforma Invoice Details",
-            })
+            defaultValue: "Proforma Invoice Details",
+          })
           : "Proforma Invoice Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:proforma_invoice_party_heading", {
-              defaultValue: "Bill To",
-            })
+            defaultValue: "Bill To",
+          })
           : "Bill To",
       };
     },
@@ -503,18 +506,18 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
       return {
         title: t
           ? t("billing:bill_metadata:purchase_order_title", {
-              defaultValue: "Purchase Order",
-            })
+            defaultValue: "Purchase Order",
+          })
           : "Purchase Order",
         billMetaHeading: t
           ? t("billing:bill_metadata:purchase_order_meta_heading", {
-              defaultValue: "PO Details",
-            })
+            defaultValue: "PO Details",
+          })
           : "PO Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:purchase_order_party_heading", {
-              defaultValue: "PO to",
-            })
+            defaultValue: "PO to",
+          })
           : "PO to",
       };
     },
@@ -530,25 +533,25 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
       return {
         title: t
           ? t("billing:bill_metadata:invoice_title", {
-              defaultValue: "Tax Invoice",
-            })
+            defaultValue: "Tax Invoice",
+          })
           : "Tax Invoice",
         billMetaHeading: t
           ? t("billing:bill_metadata:invoice_meta_heading", {
-              defaultValue: "Invoice Details",
-            })
+            defaultValue: "Invoice Details",
+          })
           : "Invoice Details",
         partyMetaHeading: t
           ? t("billing:bill_metadata:invoice_party_heading", {
-              defaultValue: "Bill To",
-            })
+            defaultValue: "Bill To",
+          })
           : "Bill To",
         bank,
         upiQr,
       };
     },
   };
-  // In minimal mode, skip UPI QR, bank details, and template title/heading.
+
   if (minimal) return data;
 
   const getBillMeta = billMetaMapping[Bill.modelName];
