@@ -183,7 +183,7 @@ export default function InvoicesPage() {
                   navigate(`${invoice._id}/edit`);
                 }}
                 showVouchers={() => {
-                  navigate(`${invoice._id}/vouchers`, { state: { invoice } });
+                  navigate(`${invoice._id}/vouchers`, { state: { type: "invoice", data: invoice } });
                 }}
 
                 deleteItem={() => {

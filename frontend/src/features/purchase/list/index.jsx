@@ -172,7 +172,7 @@ export default function PurchasePage() {
                   navigate(`${purchase._id}/edit`);
                 }}
                 showVouchers={() => {
-                  navigate(`${purchase._id}/vouchers`, { state: { purchase } });
+                  navigate(`${purchase._id}/vouchers`, { state: { type: "purchase", data: purchase } });
                 }}
 
                 deleteItem={() => {

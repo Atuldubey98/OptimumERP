@@ -43,22 +43,14 @@ export default function VouchersPage() {
   const { orgId, invoiceId, purchaseId } = useParams();
   const location = useLocation();
 
-  // Log navigation state if present
-  const doc = location.state?.invoice || location.state?.purchase;
-  const docType = location.state?.invoice ? "invoice" : location.state?.purchase ? "purchase" : null;
+  const doc = location.state?.data;
+  const docType = location.state?.type;
 
-  if (doc) {
-    console.log("VouchersPage Navigated with state:", doc);
-  }
 
   const grandTotal = doc ? (Number(doc.total || 0) + Number(doc.totalTax || 0) + Number(doc.shippingCharges || 0)) : 0;
   const balance = doc ? (grandTotal - Number(doc.paymentVoucherBalance || 0)) : 0;
 
   const { value: paymentMethods = [] } = useProperty("PAYMENT_METHODS");
-
-
-
-  
   const extraParams = {};
   if (invoiceId) {
     extraParams.refDoc = invoiceId;
