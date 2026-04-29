@@ -247,9 +247,9 @@ export default function ReportItem() {
           <Spinner />
         </Flex>
       ) : (
-        <Box p={2} width="100%" overflowX="hidden">
+        <Box p={2} width="100%" overflowX="auto">
           {reportType && currentReport ? (
-            <TableContainer>
+            <TableContainer overflowX="auto" width="100%">
               <Table size={"sm"} variant="simple">
                 <TableCaption>
                   {t("report_ui.table.total_found", {
