@@ -18,8 +18,7 @@ const download = async (options = {}, req, res) => {
   const template =
     req.query.template || setting?.printSettings?.defaultTemplate || "simple";
   logger.info(`Using template: ${template}`);
-  const paramsColor = req.query.color;
-  const color = `#${paramsColor}`;
+  const color = req.query.color ? `#${req.query.color.replace(/^#/, "")}` : null;
   const filter = {
     _id: id,
     org: orgId,

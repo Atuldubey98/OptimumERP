@@ -26,9 +26,10 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
   const templateColors = [
-    { name: "Dark Purple", hex: "3f51b5" },
+    { name: "Transparent", hex: "" },
+    { name: "Indigo", hex: "3f51b5" },
     { name: "Dark Green", hex: "388e3c" },
-    { name: "Dark Purple", hex: "7b1fa2" },
+    { name: "Deep Purple", hex: "7b1fa2" },
     { name: "Dark Red", hex: "d32f2f" },
     { name: "Dark Gray", hex: "616161" },
   ];
@@ -102,13 +103,15 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
                       setColor(templateColor.hex);
                     }}
                     cursor={"pointer"}
-                    bg={`#${templateColor.hex}`}
+                    bg={templateColor.hex ? `#${templateColor.hex}` : "transparent"}
+                    border={templateColor.hex ? "none" : "1px solid"}
+                    borderColor="gray.300"
                     width={"40px"}
                     height={"40px"}
                     borderRadius={"50%"}
                   >
                     {color === templateColor.hex && (
-                      <IoCheckmark size={20} color="white" />
+                      <IoCheckmark size={20} color={templateColor.hex ? "white" : "black"} />
                     )}
                   </Flex>
                 </Tooltip>

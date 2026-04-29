@@ -3,10 +3,10 @@ const simpleTemplate = (data, color) => {
   const dateLocale = data?.dateLocale || "en-IN";
   const hasColor = !!color;
   const palette = {
-    accent: color || "#1F2937",
-    accentSoft: "#EEF4F8",
-    text: "#1F2937",
-    muted: "#6B7280",
+    accent: color || "#000000",
+    accentSoft: "#F1F5F9",
+    text: "#000000",
+    muted: "#475569",
     border: "#000000",
     surface: "#F8FAFC",
   };
@@ -188,7 +188,7 @@ const simpleTemplate = (data, color) => {
           },
           hLineColor: () => palette.border,
           vLineColor: () => palette.border,
-          hLineWidth: (index) => (index === 0 ? 0 : 0.75),
+          hLineWidth: (index) => (index === 0 ? (hasColor ? 0 : 0.75) : 0.75),
           vLineWidth: () => 0.75,
           paddingLeft: () => 5,
           paddingRight: () => 5,
