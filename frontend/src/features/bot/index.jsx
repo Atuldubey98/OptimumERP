@@ -13,9 +13,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FiMessageSquare } from "react-icons/fi";
 import { useParams } from "react-router-dom";
-import useChatSocket from "../../hooks/useChatSocket";
-import useFileUpload from "../../hooks/useFileUpload";
-import useSpeechToText from "../../hooks/useSpeechToText";
+import { useChatSocket } from "../../hooks/useChatSocket";
+import { useFileUpload } from "../../hooks/useFileUpload";
+import { useSpeechToText } from "../../hooks/useSpeechToText";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import MessageItem from "./MessageItem";
@@ -102,8 +102,6 @@ const ChatWidget = () => {
 
   const toggleOpen = useCallback(() => setIsOpen(prev => !prev), []);
 
-  const botBtnBg = useColorModeValue("indigo.500", "indigo.600");
-  const botBtnHoverBg = useColorModeValue("indigo.600", "indigo.700");
   const widgetBg = useColorModeValue("white", "gray.800");
   const widgetBorder = useColorModeValue("gray.200", "whiteAlpha.200");
   const messageAreaBg = useColorModeValue("gray.50", "#131720");
@@ -112,25 +110,25 @@ const ChatWidget = () => {
 
   return (
     <Portal>
-      <Box position="fixed" bottom="10px" right="10px" zIndex={1000}>
+      <Box 
+        position="fixed" 
+        bottom={{ base: isOpen ? "0" : "8px", md: "20px" }} 
+        right={{ base: isOpen ? "0" : "8px", md: "20px" }} 
+        zIndex={1000}
+      >
         <AnimatePresence>
           {isOpen && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8, y: 20 }} 
-              animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}>
               <Flex 
                 flexDirection="column" 
-                width={{ base: "calc(100vw - 40px)", md: "400px" }} 
-                height={{ base: "60vh", md: "600px" }} 
+                width={{ base: "100vw", md: "400px" }} 
+                height={{ base: "100dvh", md: "600px" }} 
                 bg={widgetBg} 
-                borderRadius="2xl" 
-                borderWidth="1px" 
+                borderRadius={{ base: "0", md: "2xl" }} 
+                borderWidth={{ base: "0", md: "1px" }} 
                 borderColor={widgetBorder} 
                 overflow="hidden" 
-                mb={4} 
+                mb={{ base: 0, md: 4 }} 
                 boxShadow="2xl"
               >
                 <ChatHeader isConnected={isConnected} onToggle={toggleOpen} />
@@ -143,7 +141,7 @@ const ChatWidget = () => {
                       <Flex justify="flex-start">
                         <Box p={3} borderRadius="xl" bg={useColorModeValue("white", "gray.700")} borderWidth={useColorModeValue("1px", "0px")} borderColor="gray.200">
                           <HStack spacing={2}>
-                            <Spinner size="xs" color="indigo.400" />
+                            <Spinner size="xs" color="blue.400" />
                             <AnimatePresence mode="wait">
                               <motion.div key={statusMsg} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.2 }}>
                                 <Text fontSize="12px" color="gray.400" _light={{ color: "gray.500" }}>{statusMsg}</Text>
@@ -178,21 +176,19 @@ const ChatWidget = () => {
         </AnimatePresence>
         
         {!isOpen && (
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Flex justify="flex-end">
             <IconButton 
               aria-label="Open Chat" 
               onClick={toggleOpen} 
-              size="sm" 
-              bg={botBtnBg}
-              color="white"
-              _hover={{ bg: botBtnHoverBg }}
+              size="md" 
+              colorScheme="blue"
               borderRadius="full" 
-              width="60px" 
-              height="60px" 
+              width="50px" 
+              height="50px" 
               boxShadow="2xl" 
-              icon={<FiMessageSquare size={20} />} 
+              icon={<FiMessageSquare size={22} />} 
             />
-          </motion.div>
+          </Flex>
         )}
       </Box>
     </Portal>
