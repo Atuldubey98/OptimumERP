@@ -14,17 +14,17 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { Select } from "chakra-react-select";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import DateFilter from "../../features/estimates/list/DateFilter";
 import useDateFilterFetch from "../../hooks/useDateFilterFetch";
 import Pagination from "../common/main-layout/Pagination";
 import ReportOperation from "./ReportOperation";
 import moment from "moment";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import MonthYearFilter from "./MonthYearFilter";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -72,6 +72,7 @@ export default function ReportItem() {
   const { onSetDateFilter, ...response } = useDateFilterFetch({
     entity: `reports/${reportType}`,
   });
+
   const transactionTypes = {
     invoice: t("report_ui.transaction_types.invoice"),
     purchase: t("report_ui.transaction_types.purchase"),
@@ -191,57 +192,25 @@ export default function ReportItem() {
   };
   const { status, totalCount, totalPages, currentPage } = response;
   const currentReport = reportDataByType[reportType];
-  const [partyFilter, setPartyFilter] = useState({ lastDays: 0 });
-  const lastDaysOptions = [
-    {
-      value: 0,
-      label: t("report_ui.filters.select"),
-    },
-    {
-      value: 30,
-      label: t("report_ui.filters.last_30_days"),
-    },
-    {
-      value: 180,
-      label: t("report_ui.filters.last_6_months"),
-    },
-    {
-      value: 360,
-      label: t("report_ui.filters.last_365_days"),
-    },
-  ];
+
   return (
     <Box maxW="100%" overflowX="hidden">
-      <Stack spacing={1} boxShadow={"md"} p={5}>
-        <SimpleGrid minChildWidth={300} gap={3} width={"100%"}>
-          <FormControl>
-            <FormLabel fontWeight={"bold"}>{t("report_ui.filters.custom")}</FormLabel>
-            <Select
-              value={lastDaysOptions.find(
-                (option) => option.value === partyFilter.lastDays
-              )}
-              options={lastDaysOptions}
-              onChange={({ value }) => {
-                setPartyFilter({ lastDays: value });
-                const newEndDate = new Date();
-                const newStartDate = new Date();
-                newStartDate.setDate(newEndDate.getDate() - value);
-                onSetDateFilter({
-                  start: moment(newStartDate).format("YYYY-MM-DD"),
-                  end: moment(newEndDate).format("YYYY-MM-DD"),
-                });
-              }}
-            />
-          </FormControl>
-          <DateFilter
-            dateFilter={response.dateFilter}
-            onChangeDateFilter={response.onChangeDateFilter}
+      <Flex 
+        flexDir="column"
+        gap={2} 
+        mb={4}
+        px={4}
+        alignItems="center"
+      >
+        <Box width="100%">
+          <MonthYearFilter 
+            onChangeDateFilter={onSetDateFilter}
           />
-        </SimpleGrid>
-        <Flex justifyContent={"center"} alignItems={"center"}>
+        </Box>
+        <Box>
           <ReportOperation dateFilter={response.dateFilter} />
-        </Flex>
-      </Stack>
+        </Box>
+      </Flex>
       {status === "loading" ? (
         <Flex marginBlock={5} justifyContent={"center"} alignItems={"center"}>
           <Spinner />

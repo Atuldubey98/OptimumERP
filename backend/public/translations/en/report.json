@@ -28,7 +28,13 @@
       "select": "Select",
       "last_30_days": "Last 30 Days",
       "last_6_months": "Last 6 Months",
-      "last_365_days": "Last 365 Days"
+      "last_365_days": "Last 365 Days",
+      "start_month": "Start Month",
+      "start_year": "Start Year",
+      "end_month": "End Month",
+      "end_year": "End Year",
+      "start_range": "From",
+      "end_range": "To"
     },
     "table": {
       "total_found": "Total {{reportType}} Found : {{count}}",

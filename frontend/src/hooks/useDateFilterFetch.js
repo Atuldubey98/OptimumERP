@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
 import { useParams } from "react-router-dom";
@@ -84,17 +84,20 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
       controller.abort();
     };
   }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
-  const onChangeDateFilter = (e) =>
-    setDateFilter({
-      ...dateFilter,
+  
+  const onChangeDateFilter = useCallback((e) =>
+    setDateFilter((prev) => ({
+      ...prev,
       [e.currentTarget.name]: e.currentTarget.value,
-    });
-  const onSetDateFilter = ({ start, end }) => {
+    })), []);
+
+  const onSetDateFilter = useCallback(({ start, end }) => {
     setDateFilter({
       endDate: end,
       startDate: start,
     });
-  };
+  }, []);
+
   useEffect(() => {
     if (!scopedStorageKey || typeof window === "undefined") return;
     window.localStorage.setItem(scopedStorageKey, JSON.stringify(dateFilter));

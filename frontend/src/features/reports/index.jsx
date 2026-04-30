@@ -27,7 +27,7 @@ export default function Reportspage() {
   return (
     <>
       <Box maxW="100vw" overflowX="hidden">
-        <Box p={2} width={"100%"} boxShadow={"md"}>
+        <Box p={3} width={"100%"}>
           <Flex justifyContent={"flex-start"} gap={5} alignItems={"center"}>
             <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />
             <Heading textTransform={"capitalize"} fontSize={"xl"}>

@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
-  Box, VStack, HStack, IconButton, Text, Flex, Portal,
+  Box,
+  Flex,
+  HStack, IconButton,
+  Portal,
   Spinner,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FiMessageSquare } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
-import { useFileUpload } from "../../hooks/useFileUpload";
+import { useParams } from "react-router-dom";
 import { useChatSocket } from "../../hooks/useChatSocket";
+import { useFileUpload } from "../../hooks/useFileUpload";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
 import ChatHeader from "./ChatHeader";
-import MessageItem from "./MessageItem";
 import ChatInput from "./ChatInput";
-import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-import { useParams } from "react-router-dom";
+import MessageItem from "./MessageItem";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
