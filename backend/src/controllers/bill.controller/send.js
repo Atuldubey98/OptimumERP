@@ -39,7 +39,7 @@ const send = async (options = {}, req, res) => {
     language,
   });
   const info = await transporter.sendMail({
-    from: `"OptimumERP" <${transporter.options.auth.user}>`,
+    from: `"OptimumERP" <${req?.session?.user?.email}>`,
     to: toEmails.join(","),
     cc: ccEmails.join(","),
     subject: body.subject,

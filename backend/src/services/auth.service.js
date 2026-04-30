@@ -74,7 +74,7 @@ exports.sendOtpEmailToUser = async ({ user, typeOfOtp, subject }) => {
     expirationTime: 10,
   });
   const mail = await transporter.sendMail({
-    from: `"OptimumERP" <${process.env.NODE_MAILER_USER_NAME}>`,
+    from: `"OptimumERP" <${process.env.NODE_MAILER_EMAIL}>`,
     to: user.email,
     subject,
     html,
