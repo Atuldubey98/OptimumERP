@@ -17,6 +17,8 @@ import {
   Radio,
   RadioGroup,
   HStack,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -34,7 +36,10 @@ export default function VoucherModal({
   isOpen,
   onClose,
   voucher,
-  fetchVouchers,
+  onVoucherSaved,
+  refDocId,
+  refDocModel,
+  doc,
 }) {
   const { requestAsyncHandler } = useAsyncCall();
   const { value: paymentMethods = [] } = useProperty("PAYMENT_METHODS");
@@ -43,6 +48,7 @@ export default function VoucherModal({
   const { toSmallestUnit, fromSmallestUnit, currencyPrecision, currencyStep } = useCurrentOrgCurrency();
 
   const isUpdate = !!voucher;
+  const isLinked = !!refDocId;
 
   const formik = useFormik({
     initialValues: {
@@ -58,6 +64,8 @@ export default function VoucherModal({
         ...data,
         party: data.party?._id,
         amount: toSmallestUnit(data.amount),
+        refDoc: refDocId,
+        refDocModel: refDocModel,
       };
 
       if (isUpdate) {
@@ -80,7 +88,7 @@ export default function VoucherModal({
         isClosable: true,
       });
       
-      if (fetchVouchers) fetchVouchers();
+      if (onVoucherSaved) onVoucherSaved();
       onClose();
       setSubmitting(false);
     }),
@@ -99,9 +107,16 @@ export default function VoucherModal({
     } else {
       formik.resetForm();
       formik.setFieldValue("date", moment().format("YYYY-MM-DD"));
-      formik.setFieldValue("voucherType", "receipt");
+      if (isLinked) {
+        formik.setFieldValue("voucherType", refDocModel === "invoice" ? "receipt" : "payment");
+        if (doc?.party) {
+          formik.setFieldValue("party", doc.party);
+        }
+      } else {
+        formik.setFieldValue("voucherType", "receipt");
+      }
     }
-  }, [voucher, isOpen]);
+  }, [voucher, isOpen, doc]);
 
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
@@ -114,21 +129,31 @@ export default function VoucherModal({
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing={4}>
-              <FormControl>
-                <FormLabel>Voucher Type</FormLabel>
-                <RadioGroup
-                  value={formik.values.voucherType}
-                  onChange={(v) => formik.setFieldValue("voucherType", v)}
-                  isDisabled={isUpdate}
-                >
-                  <HStack spacing={4}>
-                    <Radio value="receipt">Receipt (Inward)</Radio>
-                    <Radio value="payment">Payment (Outward)</Radio>
-                  </HStack>
-                </RadioGroup>
-              </FormControl>
+              {isLinked && !isUpdate && (
+                <Box p={3} bg="blue.50" borderRadius="md" border="1px" borderColor="blue.100">
+                  <Text fontSize="sm" color="blue.700" fontWeight="medium">
+                    Recording payment for <strong>{refDocModel.toUpperCase()} #{doc?.num}</strong>
+                  </Text>
+                </Box>
+              )}
 
-              <ReceiptPartySelect formik={formik} partyNameLabel="Select Party" />
+              {!isLinked && (
+                <FormControl>
+                  <FormLabel>Voucher Type</FormLabel>
+                  <RadioGroup
+                    value={formik.values.voucherType}
+                    onChange={(v) => formik.setFieldValue("voucherType", v)}
+                    isDisabled={isUpdate}
+                  >
+                    <HStack spacing={4}>
+                      <Radio value="receipt">Receipt (Inward)</Radio>
+                      <Radio value="payment">Payment (Outward)</Radio>
+                    </HStack>
+                  </RadioGroup>
+                </FormControl>
+              )}
+
+              {!isLinked && <ReceiptPartySelect formik={formik} partyNameLabel="Select Party" />}
               
               <FormControl isInvalid={formik.errors.amount && formik.touched.amount}>
                 <FormLabel>Amount</FormLabel>

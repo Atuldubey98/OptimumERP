@@ -16,7 +16,9 @@ import {
   Stack,
   Text,
   Textarea,
-  useToast
+  useToast,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -84,7 +86,10 @@ export default function RecordPaymentModal({
   }, [invoice]);
   const { formatSmallestUnitWithSymbol, currencyPrecision, currencyStep, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const grandTotal = getBillGrandTotal(invoice);
+  const paidAmount = Number(invoice?.paymentVoucherBalance || 0);
+  const balanceDue = grandTotal - paidAmount;
   const shippingCharges = getShippingChargesValue(invoice);
+
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -98,6 +103,10 @@ export default function RecordPaymentModal({
               <Text fontSize={"xl"}>
                 <strong>Grand Total : </strong>
                 {formatSmallestUnitWithSymbol(grandTotal)}
+              </Text>
+              <Text fontSize={"md"} color="red.500">
+                <strong>Balance Due : </strong>
+                {formatSmallestUnitWithSymbol(balanceDue)}
               </Text>
               <Divider />
               <Text>
@@ -116,22 +125,27 @@ export default function RecordPaymentModal({
                 <strong> Total Tax: </strong>
                 {formatSmallestUnitWithSymbol(invoice.totalTax)}
               </Text>
+              <Text fontSize="sm" color="green.600" fontWeight="medium">
+                <strong>Already Paid: </strong>
+                {formatSmallestUnitWithSymbol(paidAmount)}
+              </Text>
               <Divider />
               <FormControl
                 isInvalid={formik.errors.amount && formik.touched.amount}
               >
-                <FormLabel>Amount</FormLabel>
+                <FormLabel>Amount to Pay</FormLabel>
                 <Grid gap={2} gridTemplateColumns={"1fr auto"}>
-                  <NumberInputInteger precision={currencyPrecision} step={currencyStep} formik={formik} name={"amount"} min={0} max={fromSmallestUnit(grandTotal)} />
+                  <NumberInputInteger precision={currencyPrecision} step={currencyStep} formik={formik} name={"amount"} min={0} max={fromSmallestUnit(balanceDue)} />
                   <Button
                     colorScheme="green"
                     onClick={() =>
                       formik.setFieldValue(
                         "amount",
-                        parseFloat(fromSmallestUnit(grandTotal).toFixed(currencyPrecision))
+                        parseFloat(fromSmallestUnit(balanceDue).toFixed(currencyPrecision))
                       )
                     }
                     type="button"
+                    isDisabled={balanceDue <= 0}
                   >
                     Settle
                   </Button>

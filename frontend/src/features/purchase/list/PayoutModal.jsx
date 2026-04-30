@@ -17,6 +17,8 @@ import {
   Text,
   Textarea,
   useToast,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -87,7 +89,10 @@ export default function PayoutModal({
   }, [purchase]);
   const { formatSmallestUnitWithSymbol, currencyPrecision, currencyStep, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const grandTotal = getBillGrandTotal(purchase);
+  const paidAmount = Number(purchase?.paymentVoucherBalance || 0);
+  const balanceDue = grandTotal - paidAmount;
   const shippingCharges = getShippingChargesValue(purchase);
+
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -101,6 +106,10 @@ export default function PayoutModal({
               <Text fontSize={"xl"}>
                 <strong>{t("purchase_ui.payout.grand_total")} : </strong>
                 {formatSmallestUnitWithSymbol(grandTotal)}
+              </Text>
+              <Text fontSize={"md"} color="red.500">
+                <strong>BALANCE DUE : </strong>
+                {formatSmallestUnitWithSymbol(balanceDue)}
               </Text>
               <Divider />
               <Text>
@@ -124,6 +133,10 @@ export default function PayoutModal({
                 <strong> {t("purchase_ui.payout.total_tax")}: </strong>
                 {formatSmallestUnitWithSymbol(purchase.totalTax)}
               </Text>
+              <Text fontSize="sm" color="green.600" fontWeight="medium">
+                <strong>Already Paid: </strong>
+                {formatSmallestUnitWithSymbol(paidAmount)}
+              </Text>
               <Divider />
               <FormControl
                 isInvalid={formik.errors.amount && formik.touched.amount}
@@ -136,17 +149,18 @@ export default function PayoutModal({
                     formik={formik}
                     name={"amount"}
                     min={0}
-                    max={fromSmallestUnit(grandTotal)}
+                    max={fromSmallestUnit(balanceDue)}
                   />
                   <Button
                     colorScheme="green"
                     onClick={() =>
                       formik.setFieldValue(
                         "amount",
-                        parseFloat(fromSmallestUnit(grandTotal).toFixed(currencyPrecision))
+                        parseFloat(fromSmallestUnit(balanceDue).toFixed(currencyPrecision))
                       )
                     }
                     type="button"
+                    isDisabled={balanceDue <= 0}
                   >
                     {t("purchase_ui.payout.settle")}
                   </Button>

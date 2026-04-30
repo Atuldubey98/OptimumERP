@@ -1,16 +1,15 @@
-const { createStandalonePaymentVoucher, createPaymentVoucherForDoc } = require("../../services/paymentVoucher.service");
+const { createStandalonePaymentVoucher, createPaymentVoucherForDoc, addPaymentToDoc } = require("../../services/paymentVoucher.service");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 const partyService = require("../../services/party.service");
 const PaymentVoucher = require("../../models/paymentVoucher.model");
 const Invoice = require("../../models/invoice.model");
 const Purchase = require("../../models/purchase.model");
-const logger = require("../../logger");
 const { moneyUtils } = require("../../utils");
 const settingService = require("../../services/setting.service");
 
 const createPaymentVoucher = async (params) => {
   const { org, createdBy, ...body } = params;
-  
+
   const party = await partyService.upsert({
     org,
     partyId: body.partyId,
@@ -32,29 +31,15 @@ const createPaymentVoucher = async (params) => {
 
   const voucher = await executeMongoDbTransaction(async (session) => {
     if (body.refDocId && body.refDocModel) {
-      const Model = body.refDocModel === "invoice" ? Invoice : Purchase;
-      const doc = await Model.findOne({ _id: body.refDocId, org }).session(session);
-      if (!doc) throw new Error(`${body.refDocModel} not found`);
-
-      const v = await createPaymentVoucherForDoc({
-        doc,
+      return await addPaymentToDoc({
+        id: body.refDocId,
+        orgId: org,
+        userId: createdBy,
+        body: voucherData,
         docModel: body.refDocModel,
         voucherType: body.voucherType,
-        body: voucherData,
-        userId: createdBy,
         session,
       });
-
-      if (!doc.paymentVouchers) doc.paymentVouchers = [];
-      doc.paymentVouchers.push(v._id);
-      if (body.refDocModel === "purchase") {
-        const grandTotal = doc.total + doc.totalTax + (doc.shippingCharges || 0);
-        const allVouchers = await PaymentVoucher.find({ _id: { $in: doc.paymentVouchers }, org }).session(session);
-        const totalPaid = allVouchers.reduce((acc, curr) => acc + curr.amount, 0);
-        doc.status = grandTotal <= totalPaid ? "paid" : "unpaid";
-      }
-      await doc.save({ session });
-      return v;
     }
 
     return await createStandalonePaymentVoucher({
@@ -82,10 +67,10 @@ const findPaymentVoucher = async (params) => {
 
 const listDocumentVouchers = async (params) => {
   const { org, docNumber, docModel } = params;
-  
+
   const Model = docModel === "invoice" ? Invoice : Purchase;
   const doc = await Model.findOne({ num: docNumber, org }).lean();
-  
+
   if (!doc) {
     throw new Error(`${docModel} not found`);
   }
@@ -98,7 +83,7 @@ const listDocumentVouchers = async (params) => {
 
   const displaySetting = await settingService.getDisplaySettingForOrg(org);
   const currencyConfig = await moneyUtils.getCurrencyConfigByCode(displaySetting?.currency || "INR");
-  
+
   const decimalDigits = currencyConfig?.decimal_digits ?? 2;
 
   return vouchers.map(v => ({

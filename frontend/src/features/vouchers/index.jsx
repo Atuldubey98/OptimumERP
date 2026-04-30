@@ -21,7 +21,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import moment from "moment";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { FiFileText, FiCalendar, FiDollarSign, FiArrowUpCircle, FiArrowDownCircle } from "react-icons/fi";
 
@@ -43,9 +43,19 @@ export default function VouchersPage() {
   const { orgId, invoiceId, purchaseId } = useParams();
   const location = useLocation();
 
-  const doc = location.state?.data;
-  const docType = location.state?.type;
+  const [doc, setDoc] = useState(location.state?.data);
+  const docType = location.state?.type || (invoiceId ? "invoice" : purchaseId ? "purchase" : null);
 
+  const fetchDoc = async () => {
+    if (!invoiceId && !purchaseId) return;
+    const path = invoiceId ? `invoices/${invoiceId}` : `purchases/${purchaseId}`;
+    try {
+      const { data } = await instance.get(`/api/v1/organizations/${orgId}/${path}`);
+      setDoc(data.data);
+    } catch (error) {
+      console.error("Failed to fetch document", error);
+    }
+  };
 
   const grandTotal = doc ? (Number(doc.total || 0) + Number(doc.totalTax || 0) + Number(doc.shippingCharges || 0)) : 0;
   const balance = doc ? (grandTotal - Number(doc.paymentVoucherBalance || 0)) : 0;
@@ -111,6 +121,7 @@ export default function VouchersPage() {
       });
       onCloseDeleteModal();
       fetchVouchers();
+      fetchDoc();
     } catch (error) {
       toast({
         title: isAxiosError(error) ? error.response.data.name : "Error",
@@ -134,6 +145,15 @@ export default function VouchersPage() {
   const handleAdd = () => {
     setSelectedVoucher(null);
     onOpenVoucherModal();
+  };
+
+  useEffect(() => {
+    fetchDoc();
+  }, [invoiceId, purchaseId]);
+
+  const onVoucherSaved = () => {
+    fetchVouchers();
+    fetchDoc();
   };
 
   const voucherTableMapper = (voucher) => {
@@ -295,7 +315,10 @@ export default function VouchersPage() {
           isOpen={isVoucherModalOpen}
           onClose={onCloseVoucherModal}
           voucher={selectedVoucher}
-          fetchVouchers={fetchVouchers}
+          onVoucherSaved={onVoucherSaved}
+          refDocId={invoiceId || purchaseId}
+          refDocModel={invoiceId ? "invoice" : purchaseId ? "purchase" : null}
+          doc={doc}
         />
 
         <AlertModal

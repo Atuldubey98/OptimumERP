@@ -15,7 +15,7 @@ const TTL = Object.freeze({
 const cache = new NodeCache({
   stdTTL: DEFAULT_TTL_SECONDS,
   checkperiod: CHECK_PERIOD_SECONDS,
-  useClones: true,
+  useClones: false,
   deleteOnExpire: true,
 });
 
