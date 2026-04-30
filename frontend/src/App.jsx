@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 import OrgChatbotLayout from "./features/common/OrgChatbotLayout";
 const ReceiptPreview = lazy(() => import("./features/common/receipt-preview"));
-const GoogleAuthAdminPage = lazy(() => import("./features/login/GoogleAuthPage"));
+
 const TaxesPage = lazy(() => import("./features/taxes"));
 const UmsPage = lazy(() => import("./features/ums"));
 const VerifyEmailPage = lazy(() => import("./features/verify-email"));
@@ -53,11 +53,7 @@ export default function App() {
     <Suspense fallback={<FullLoader />}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route
-          path="/auth/google/admin"
-          element={<GoogleAuthAdminPage authenticated={true} />}
-        />
-        <Route path="/auth/google" element={<GoogleAuthAdminPage />} />
+
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/:orgId" element={<OrgChatbotLayout/>}>

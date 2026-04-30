@@ -9,9 +9,7 @@ const {
   resetPassword,
   register,
   update,
-  updateGoogleAuth,
-  getGoogleAuthorizationUri,
-  googleAuth,
+
   resendVerificationLink,
   verifyForgotPasswordOtp,
   verifyRegisteredUserOtp,
@@ -31,13 +29,7 @@ userRoutes.post(
 );
 
 userRoutes.post("/login", requestAsyncHandler(login));
-userRoutes.patch(
-  "/googleAuth",
-  authenticate,
-  requestAsyncHandler(updateGoogleAuth)
-);
-userRoutes.post("/googleAuth", requestAsyncHandler(googleAuth));
-userRoutes.get("/googleAuth", requestAsyncHandler(getGoogleAuthorizationUri));
+
 userRoutes.get("/", authenticate, requestAsyncHandler(currentUser));
 userRoutes.patch("/", authenticate, requestAsyncHandler(update));
 userRoutes.post("/logout", authenticate, requestAsyncHandler(logout));

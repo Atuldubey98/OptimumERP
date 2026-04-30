@@ -40,7 +40,6 @@ exports.createLoggedInUserWithPlanAndLimits = ({
     email: user.email,
     name: user.name,
     _id: user._id,
-    googleId: user.googleId,
     currentPlan: activatedPlan,
     avatar: user?.avatar,
     limits,

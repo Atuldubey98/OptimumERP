@@ -25,7 +25,7 @@
       "password_max_length": "O comprimento máximo pode ser 20",
       "password_required": "A senha é obrigatória",
       "login_button": "Login",
-      "continue_google": "Continuar com Google",
+
       "register_link": "Cadastrar agora?",
       "forgot_password_link": "Esqueceu a senha?",
       "network_error": "Ocorreu um erro de rede"

@@ -20,7 +20,6 @@ export default function AuthContextProvider({ children }) {
     }
   };
   useEffect(() => {
-    if (location.pathname === "/auth/google") return;
     fetchUserDetails();
   }, []);
   const onSetCurrentUser = (user) => setUser(user);

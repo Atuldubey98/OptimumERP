@@ -3,9 +3,7 @@ class UserRepository {
   static findByEmailId(email) {
     return this.findOne({ email });
   }
-  static findByGoogleId(googleId) {
-    return this.findOne({ googleId });
-  }
+
 }
 const userSchema = new Schema(
   {
@@ -40,21 +38,13 @@ const userSchema = new Schema(
       default: false,
       required: true,
     },
-    googleId: {
-      type: String,
-      index: true,
-    },
+
     avatar: {
       type: String,
     },
     attributes: {
-      type: {
-        googleAccessToken: String,
-        googleRefreshToken: String,
-        picture: String,
-      },
+      type: Schema.Types.Mixed,
       default: {},
-      _id: false,
     },
   },
   {

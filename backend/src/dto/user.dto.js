@@ -16,13 +16,10 @@ const loginUserDto = Joi.object({
   password: Joi.string().min(6).max(30).required(),
 });
 
-const googleAuthBodyDto = Joi.object({
-  code: Joi.string().required(),
-  redirectUri: Joi.string().required(),
-});
+
 module.exports = {
   registerUserDto,
   loginUserDto,
-  googleAuthBodyDto,
+
   orgUserDto,
 };

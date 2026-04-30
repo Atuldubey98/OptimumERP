@@ -25,7 +25,7 @@
       "password_max_length": "Maximum length can be 20",
       "password_required": "Password is required",
       "login_button": "Login",
-      "continue_google": "Continue with Google",
+
       "register_link": "Register Now ?",
       "forgot_password_link": "Forgot Password ?",
       "network_error": "Network error occured"

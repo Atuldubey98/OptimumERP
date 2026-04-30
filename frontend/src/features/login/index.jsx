@@ -8,7 +8,6 @@ import useAuth from "../../hooks/useAuth";
 import instance from "../../instance";
 import AuthLayout from "../common/auth-layout";
 import AuthFields from "./AuthFields";
-import GoogleIcon from "../common/GoogleIcon";
 import { useState } from "react";
 export default function LoginPage() {
   const { t } = useTranslation("user");
@@ -39,15 +38,7 @@ export default function LoginPage() {
       }
     }),
   });
-  const redirectUri = `${window.origin}/auth/google`;
-  const [status, setStatus] = useState("idle");
-  const onConnectToGoogle = async () => {
-    setStatus("connecting");
-    const { data } = await instance.get("/api/v1/users/googleAuth");
-    window.open(`${data.data}${redirectUri}`, "_self");
-    setStatus("idle");
-  };
-  const isLoading = status === "connecting";
+
   return (
     <AuthLayout formHeading={t("user_ui.login.page_heading")}>
       <form onSubmit={formik.handleSubmit}>
@@ -67,15 +58,7 @@ export default function LoginPage() {
           >
             {t("user_ui.login.login_button")}
           </Button>
-          {import.meta.env.VITE_GOOGLE_SSO_ENABLED === "true" ? (
-            <Button
-              onClick={onConnectToGoogle}
-              isLoading={isLoading}
-              leftIcon={<GoogleIcon />}
-            >
-              {t("user_ui.login.continue_google")}
-            </Button>
-          ) : null}
+
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
             {t("user_ui.login.register_link")}
           </ChakraLink>
