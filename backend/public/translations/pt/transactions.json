@@ -5,7 +5,8 @@
       "purchase": "Compra",
       "quotation": "Orçamento",
       "proforma_invoice": "Fatura Proforma",
-      "purchase_order": "Pedido de compra"
+      "purchase_order": "Pedido de compra",
+      "payment_voucher": "Comprovantes"
     },
     "stats": {
       "invoices": "Faturas",
@@ -14,7 +15,7 @@
       "owe": "Você deve {{symbol}} {{amount}}.",
       "receive": "Você receberá {{symbol}} {{amount}}",
       "all_settled": "Tudo liquidado",
-      "bill_label": "{{count}} Fatura {{status}}"
+      "bill_label": "{{count}} Conta {{status}}"
     },
     "page": {
       "heading": "Transações-{{partyName}}",

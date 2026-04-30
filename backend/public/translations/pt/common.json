@@ -223,6 +223,7 @@
         "quotations": "Orçamentos",
         "expenses": "Despesas",
         "purchase": "Compra",
+        "payment_vouchers": "Comprovantes de Pagamento",
         "items": "Itens"
       },
       "settings_links": {
@@ -359,13 +360,22 @@
       "quotation_prefix": "Prefixo do Orçamento",
       "proforma_invoice_prefix": "Prefixo da Fatura Proforma",
       "purchase_order": "Pedido de Compra",
+      "sale_order_prefix": "Prefixo do Pedido de Venda",
+      "payment_voucher_prefix": "Prefixo do Comprovante de Pagamento",
       "currency": "Moeda",
       "prefix_list": "Lista de prefixos",
       "prefix": "Prefixo",
       "already_exists": "Já existe",
       "default": "Padrão",
       "current_used": "Usado atualmente",
-      "none": "NENHUM"
+      "none": "NENHUM",
+      "sequence_counters": "Contadores de Sequência",
+      "invoice_counter": "Última Contagem de Faturas",
+      "quotation_counter": "Última Contagem de Orçamentos",
+      "proforma_invoice_counter": "Última Contagem de Faturas Proforma",
+      "purchase_order_counter": "Última Contagem de Pedidos de Compra",
+      "payment_voucher_counter": "Última Contagem de Comprovantes de Pagamento",
+      "current_count": "Contagem Atual Armazenada"
     },
     "print_settings": {
       "title": "Configurações de Impressão",

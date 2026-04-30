@@ -28,7 +28,13 @@
       "select": "Selecionar",
       "last_30_days": "Últimos 30 Dias",
       "last_6_months": "Últimos 6 Meses",
-      "last_365_days": "Últimos 365 Dias"
+      "last_365_days": "Últimos 365 Dias",
+      "start_month": "Mês de Início",
+      "start_year": "Ano de Início",
+      "end_month": "Mês de Término",
+      "end_year": "Ano de Término",
+      "start_range": "De",
+      "end_range": "Até"
     },
     "table": {
       "total_found": "Total de {{reportType}} Encontrados: {{count}}",

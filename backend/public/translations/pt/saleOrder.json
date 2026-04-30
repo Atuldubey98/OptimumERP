@@ -1,10 +1,12 @@
 {
   "sale_order": {
-    "not_found": "O pedido de venda não existe",
-    "not_deleted": "O pedido de venda não foi excluído",
-    "already_exists": "Já existe um pedido de venda com este ID",
-    "created": "Pedido de venda criado com sucesso",
-    "updated": "Pedido de venda atualizado com sucesso",
-    "deleted": "Pedido de venda excluído com sucesso"
+    "sale_order": {
+      "not_found": "Pedido de venda não encontrado",
+      "not_deleted": "Fatura não excluída",
+      "already_exists": "Fatura já existe com o ID informado",
+      "created": "Pedido de venda criado com sucesso",
+      "updated": "Pedido de venda atualizado com sucesso",
+      "deleted": "Pedido de venda excluído com sucesso"
+    }
   }
 }

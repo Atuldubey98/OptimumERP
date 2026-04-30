@@ -43,7 +43,8 @@
   },
   "tabs": {
     "organization": "Organização",
-    "users": "Usuários"
+    "users": "Usuários",
+    "import": "Importar"
   },
   "users": {
     "registered_heading": "Usuários Cadastrados",
@@ -104,14 +105,17 @@
     "import": {
       "title": "Importar",
       "party": "Cliente/Fornecedor",
+      "product": "Produto",
       "download_started": "Download iniciado",
       "no_file_selected": "Nenhum arquivo selecionado",
       "select_csv_prompt": "Por favor, selecione um arquivo CSV para enviar.",
       "success_title": "Importação Bem-sucedida",
-      "modal_title": "Importar Partes",
+      "modal_title_party": "Importar Contatos",
+      "modal_title_product": "Importar Produtos",
       "download_help": "Use o botão abaixo para baixar o CSV de exemplo",
       "download_sample": "Baixar CSV de Exemplo",
-      "upload_help": "Envie um arquivo CSV para importar partes para o seu sistema.",
+      "upload_help_party": "Envie um arquivo CSV para importar contatos para o seu sistema.",
+      "upload_help_product": "Envie um arquivo CSV para importar produtos para o seu sistema.",
       "select_csv_placeholder": "Selecionar arquivo CSV",
       "submit": "Importar"
     }
