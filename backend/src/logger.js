@@ -19,7 +19,13 @@ const logFormat = winston.format.printf(({ level, message, timestamp, ...metadat
 const logger = winston.createLogger({
   level: config.NODE_ENV === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.timestamp({
+      format: () => {
+        return new Date().toLocaleString('sv-SE', {
+          timeZone: 'Asia/Kolkata',
+        });
+      }
+    }),
     winston.format.splat(), // This enables the "comma syntax"
     logFormat
   ),

@@ -8,10 +8,11 @@ import {
   Text,
   VStack,
   useColorModeValue,
+  Icon,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FiMessageSquare } from "react-icons/fi";
+import { FiMessageSquare, FiCpu } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import { useChatSocket } from "../../hooks/useChatSocket";
 import { useFileUpload } from "../../hooks/useFileUpload";
@@ -135,8 +136,24 @@ const ChatWidget = () => {
 
                 {/* Messages Area */}
                 <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>
-                  <VStack align="stretch" spacing={4}>
-                    {memoizedMessages}
+                  <VStack align="stretch" spacing={4} minHeight="100%">
+                    {messages.length === 0 ? (
+                      <Flex 
+                        direction="column" 
+                        align="center" 
+                        justify="center" 
+                        flex="1" 
+                        py={20}
+                        opacity={0.6}
+                      >
+                        <Icon as={FiCpu} fontSize="4xl" color="blue.500" mb={4} />
+                        <Text fontWeight="600" fontSize="md">Say Hi 👋 !</Text>
+                        <Text fontSize="sm">Start a conversation with OptiBot!</Text>
+                      </Flex>
+                    ) : (
+                      memoizedMessages
+                    )}
+                    
                     {isTyping && (
                       <Flex justify="flex-start">
                         <Box p={3} borderRadius="xl" bg={useColorModeValue("white", "gray.700")} borderWidth={useColorModeValue("1px", "0px")} borderColor="gray.200">

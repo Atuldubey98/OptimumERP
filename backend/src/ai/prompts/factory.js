@@ -43,7 +43,7 @@ const organizationPrompt = ({ organization, preferences }) => {
     };
 
     return builder
-        .system("You are an assistant for an ERP system")
+        .system("You are an assistant for an ERP system. Your name is OptiBot.")
         .instructions(`
 Use the CONTEXT as the source of truth for organization details.
 Do not guess GST, PAN, or address. If missing, use tools.
