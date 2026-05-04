@@ -8,13 +8,23 @@ const Party = require("../../models/party.model");
 const paginate = async (req, res) => {
   const { skip, limit, total, totalPages, filter, page } =
     await getPaginationParams({
-      query : req.query,
-      params :req.params,
+      query: req.query,
+      params: req.params,
       model: Party,
       modelName: PARTIES,
-    });      
-  const parties = await Party.find(filter)
-    .sort({ createdAt: -1 })
+    });
+
+  let query = Party.find(filter);
+
+  if (filter && filter.$text) {
+    query = query
+      .select({ score: { $meta: "textScore" } })
+      .sort({ score: { $meta: "textScore" } });
+  } else {
+    query = query.sort({ createdAt: -1 });
+  }
+
+  const parties = await query
     .skip(skip)
     .limit(limit)
     .populate("createdBy", "name active")

@@ -124,7 +124,7 @@ const partyHandler = {
       filter.$text = { $search: query.trim() };
     }
     const [parties, total] = await Promise.all([
-      Party.find(filter)
+      Party.find(filter, { score: { $meta: "textScore" } })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parsedLimit).lean(),

@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const logger = require("../logger");
 const OrgModel = require("../models/org.model");
-const Party = require("../models/party.model"); 
+const Party = require("../models/party.model");
 const { executeMongoDbTransaction } = require("./crud.service");
 
 
@@ -23,7 +23,7 @@ exports.findOne = async (params) => {
     const filter = { org: params.org };
     if (mongoose.Types.ObjectId.isValid(params.partyId)) filter._id = params.partyId;
     if (params.name) filter["$text"] = { $search: params.name };
-    const party = await Party.findOne(filter).select(params?.select).lean().exec();
+    const party = await Party.findOne(filter, { score: { $meta: "textScore" } }).select(params?.select).lean().exec();
     return party;
 }
 exports.getPartiesForAI = async (query, type, orgId) => {
@@ -40,7 +40,7 @@ exports.getPartiesForAI = async (query, type, orgId) => {
 
 exports.upsert = async (params) => {
     const filter = { org: params.org };
-    
+
     if (mongoose.Types.ObjectId.isValid(params.partyId)) {
         filter._id = params.partyId;
     } else if (params.name) {
@@ -79,8 +79,8 @@ exports.getLedgerTotals = async (partyId, orgId, date) => {
         },
         {
             $addFields: {
-                vType: { 
-                    $ifNull: ["$voucherType", { $arrayElemAt: ["$voucherDetails.voucherType", 0] }] 
+                vType: {
+                    $ifNull: ["$voucherType", { $arrayElemAt: ["$voucherDetails.voucherType", 0] }]
                 }
             }
         },

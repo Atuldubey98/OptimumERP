@@ -1,6 +1,5 @@
 const ejs = require("ejs");
 const QRCode = require("qrcode");
-const fetch = require("node-fetch");
 const PdfMake = require("pdfmake");
 const path = require("path");
 const i18 = require("../i18");
@@ -29,28 +28,6 @@ exports.promiseQrCode = (value) => {
       res(url);
     });
   });
-};
-
-exports.getPdfBufferUsingHtml = async (html) => {
-  try {
-    const apiKey = process.env.PDF_SHIFT_API_KEY;
-    const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
-      method: "POST",
-      headers: {
-        Authorization: "Basic " + Buffer.from(apiKey).toString("base64"),
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        source: html,
-      }),
-    });
-    if (!response.ok)
-      throw new Error(i18.t("common:common.pdf_generation_failed"));
-    const buffer = await response.buffer();
-    return buffer;
-  } catch (error) {
-    throw error;
-  }
 };
 
 exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
@@ -117,8 +94,8 @@ exports.convertPdfToImages = async (base64Content) => {
 
     const pdfBuffer = Buffer.from(rawPdfData, "base64");
     const imageList = [];
-    const pages = await pdfToImg(pdfBuffer,{
-      renderParams : "viewport"
+    const pages = await pdfToImg(pdfBuffer, {
+      renderParams: "viewport"
     });
     let i = 1;
     for await (const page of pages) {
