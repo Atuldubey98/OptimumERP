@@ -23,7 +23,7 @@ exports.findOne = async (params) => {
     const filter = { org: params.org };
     if (mongoose.Types.ObjectId.isValid(params.partyId)) filter._id = params.partyId;
     if (params.name) filter["$text"] = { $search: params.name };
-    const party = await Party.findOne(filter, { score: { $meta: "textScore" } }).select(params?.select).lean().exec();
+    const party = await Party.findOne(filter).select(params?.select).lean().exec();
     return party;
 }
 exports.getPartiesForAI = async (query, type, orgId) => {

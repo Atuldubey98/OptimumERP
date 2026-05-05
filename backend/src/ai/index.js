@@ -10,6 +10,19 @@ const ollama = new Ollama({
   },
 });
 
+const cleanMessages = (messages) => {
+  return messages.map((msg) => {
+    const cleaned = {
+      role: msg.role,
+      content: msg.content,
+    };
+    if (msg.tool_calls) cleaned.tool_calls = msg.tool_calls;
+    if (msg.tool_call_id) cleaned.tool_call_id = msg.tool_call_id;
+    if (msg.images) cleaned.images = msg.images;
+    return cleaned;
+  });
+};
+
 const executeTools = async ({ toolCalls, body, onProgress }) => {
   logger.info(
     `Processing ${toolCalls.length} tool(s): ${toolCalls.map((t) => `${t.function.name} - ${JSON.stringify(t.function.arguments)}`).join(", ")} `,
@@ -67,16 +80,26 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
       logger.info("Results from handler ", result);
       return {
         role: "tool",
-        content: JSON.stringify({ success: true, data: result.aiResponse || result }),
-        fullData: result, // Keep full data for aggregation
+        content: JSON.stringify({
+          success: true,
+          data: result,
+        }),
+        fullData: result,
         tool_call_id: tool.id,
       };
     } catch (error) {
-      if(process.env.NODE_ENV === "development"){
-        console.log(error)
+      if (process.env.NODE_ENV === "development") {
+        console.log(error);
       }
       logger.error(`Tool Execution Error [${toolName}]: ${error.message}`);
-      throw error;
+      return {
+        role: "tool",
+        content: JSON.stringify({
+          success: false,
+          message: error.message,
+        }),
+        tool_call_id: tool.id,
+      };
     }
   });
 
@@ -93,7 +116,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
 
       const response = await ollama.chat({
         model,
-        messages,
+        messages: cleanMessages(messages),
         tools,
         options: { temperature: 0 },
       });
@@ -123,7 +146,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
 
         if (hasError) {
           messages.push({
-            role: "system",
+            role: "user",
             content:
               "A tool error occurred. Please explain the issue to the user politely based on the error message provided in the tool results. Suggest how they can adjust their prompt to fix it.",
           });
@@ -134,7 +157,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
 
           const finalAiExplanation = await ollama.chat({
             model,
-            messages,
+            messages: cleanMessages(messages),
             options: { temperature: 0.3 },
           });
 
@@ -161,7 +184,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
         messages: [
           ...messages,
           {
-            role: "system",
+            role: "user",
             content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
           },
         ],

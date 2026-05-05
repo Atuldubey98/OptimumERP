@@ -97,7 +97,11 @@ const upsertBill = async (params) => {
       logger.info("Bill details ", params);
       logger.info(`Executing ${params?.billId ? "Edit" : "Create"} flow`);
 
-      const party = await partyService.upsert(params);
+      const party = await partyService.upsert({
+        ...params,
+        ...(params.partyDetails || {}),
+      });
+      params.partyId = party._id.toString();
       const setting = await settingService.getDetailedSettingForOrg(params.org);
       const displaySetting = await settingService.getDisplaySettingForOrg(params.org);
       const currencyConfig = displaySetting

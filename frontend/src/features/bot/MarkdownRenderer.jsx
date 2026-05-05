@@ -66,15 +66,65 @@ const MarkdownRenderer = memo(({ content }) => {
       );
     },
     table: ({ children }) => (
-      <TableContainer my={3} maxW="100%" borderRadius="md" borderWidth="1px" borderColor="whiteAlpha.200" _light={{ borderColor: "gray.200" }} overflowX="auto">
-        <Table variant="simple" size="sm" layout="fixed" width="full">{children}</Table>
+      <TableContainer 
+        my={3} 
+        maxW="100%" 
+        borderRadius="md" 
+        borderWidth="1px" 
+        borderColor="whiteAlpha.200" 
+        _light={{ borderColor: "gray.200" }} 
+        overflowX="auto"
+        css={{
+          "&::-webkit-scrollbar": { height: "4px" },
+          "&::-webkit-scrollbar-thumb": { background: "rgba(255,255,255,0.1)", borderRadius: "2px" },
+          "&::-webkit-scrollbar-track": { background: "transparent" }
+        }}
+      >
+        <Table variant="simple" size="sm">{children}</Table>
       </TableContainer>
     ),
     thead: ({ children }) => <Thead bg="whiteAlpha.100" _light={{ bg: "gray.50" }}>{children}</Thead>,
     th: ({ children }) => <Th color="whiteAlpha.700" _light={{ color: "gray.600" }} textTransform="none" fontSize="10px" py={2} px={2} wordBreak="break-word" whiteSpace="normal">{children}</Th>,
     td: ({ children }) => <Td fontSize="11px" py={2} px={2} color="whiteAlpha.800" _light={{ color: "gray.700" }} wordBreak="break-word" whiteSpace="normal">{children}</Td>,
     hr: () => <Divider my={4} borderColor="whiteAlpha.300" />,
-    code: ({ children }) => <Box as="code" px={1.5} py={0.5} borderRadius="sm" bg="whiteAlpha.200" fontSize="12px" _light={{ bg: "gray.100", color: "red.600" }}>{children}</Box>,
+    pre: ({ children }) => (
+      <Box 
+        as="pre" 
+        p={3} 
+        my={3} 
+        borderRadius="md" 
+        bg="blackAlpha.400" 
+        _light={{ bg: "gray.800", color: "gray.100" }} 
+        overflowX="auto" 
+        fontSize="12px"
+        width="100%"
+        css={{
+          "&::-webkit-scrollbar": { height: "4px" },
+          "&::-webkit-scrollbar-thumb": { background: "rgba(255,255,255,0.2)", borderRadius: "2px" },
+          "&::-webkit-scrollbar-track": { background: "transparent" }
+        }}
+      >
+        {children}
+      </Box>
+    ),
+    code: ({ inline, children }) => {
+      if (inline) {
+        return (
+          <Box 
+            as="code" 
+            px={1.5} 
+            py={0.5} 
+            borderRadius="sm" 
+            bg="whiteAlpha.200" 
+            fontSize="12px" 
+            _light={{ bg: "gray.100", color: "red.600" }}
+          >
+            {children}
+          </Box>
+        );
+      }
+      return <Box as="code" display="block">{children}</Box>;
+    },
   };
 
   return (

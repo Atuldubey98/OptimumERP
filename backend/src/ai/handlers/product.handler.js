@@ -18,7 +18,6 @@ const productHandlers = {
   },
   create_product: async ({ org, ...params }) => {
     try {
-      // Convert decimal prices from AI to smallest-unit integers
       const displaySetting = await getDisplaySettingForOrg(org);
       const currencyConfig = displaySetting
         ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)

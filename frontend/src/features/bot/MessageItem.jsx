@@ -32,6 +32,8 @@ const MessageItem = memo(({ msg, formatTime }) => {
             borderWidth: msg.role === "ai" ? "1px" : "0px", 
             borderColor: "gray.200" 
           }}
+          maxW="100%"
+          overflow="hidden"
         >
           <MarkdownRenderer content={msg.content} />
           {msg.downloads && msg.downloads.length > 0 && (

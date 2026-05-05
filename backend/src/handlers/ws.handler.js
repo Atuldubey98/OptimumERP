@@ -101,7 +101,7 @@ function getWsHandlers(wss) {
       );
       cacheService.set(
         buildOrgUserMessagesCacheKey(request.session.user._id),
-        trimMessages([...messages, response]),
+        trimMessages(messages),
       );
 
     } catch (error) {
@@ -117,7 +117,9 @@ function getWsHandlers(wss) {
     }
   };
 
-  const onClose = () => {};
+  const onClose = (ws, request) => {
+    logger.info("Client disconnected");
+  };
 
   const onUpgrade = (request, socket, head) => {
     sessionHandler(request, {}, async () => {
@@ -141,9 +143,9 @@ function getWsHandlers(wss) {
       if (!orgUser) {
         logger.error(
           "Org user not found for userId: " +
-            request.session.user._id +
-            " and orgId: " +
-            orgId,
+          request.session.user._id +
+          " and orgId: " +
+          orgId,
         );
         socket.write("HTTP/1.1 401 UnAuthenticated\r\n\r\n");
         socket.destroy();
