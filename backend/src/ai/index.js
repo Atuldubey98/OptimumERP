@@ -1,13 +1,10 @@
-const { Ollama } = require("ollama");
 const getHandler = require("./handlers");
 const tools = require("./tools");
 const logger = require("../logger");
-
-const ollama = new Ollama({
+const { getProvider } = require("./providers");
+const aiProvider = getProvider(process.env.AI_PROVIDER || "ollama", {
   host: process.env.OLLAMA_HOST,
-  headers: {
-    Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`,
-  },
+  apiKey: process.env.AI_PROVIDER === "grok" ? process.env.GROK_API_KEY : process.env.OLLAMA_API_KEY,
 });
 
 const cleanMessages = (messages) => {
@@ -50,7 +47,9 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
   };
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;
-    const args = tool.function.arguments;
+    const args = typeof tool.function.arguments === "string" 
+      ? JSON.parse(tool.function.arguments) 
+      : tool.function.arguments;
     const handler = getHandler(toolName);
 
     if (onProgress) {
@@ -114,7 +113,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
         onProgress({ type: "status", message: "Thinking..." });
       }
 
-      const response = await ollama.chat({
+      const response = await aiProvider.chat({
         model,
         messages: cleanMessages(messages),
         tools,
@@ -155,7 +154,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
             onProgress({ type: "status", message: "Resolving error..." });
           }
 
-          const finalAiExplanation = await ollama.chat({
+          const finalAiExplanation = await aiProvider.chat({
             model,
             messages: cleanMessages(messages),
             options: { temperature: 0.3 },
@@ -179,7 +178,7 @@ const chat = async (model, { messages = [], body, onProgress }) => {
     logger.error(`Critical Chat Flow Error: ${error.message}`);
 
     try {
-      const errorSummary = await ollama.chat({
+      const errorSummary = await aiProvider.chat({
         model,
         messages: [
           ...messages,

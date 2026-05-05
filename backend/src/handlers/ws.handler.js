@@ -81,7 +81,11 @@ function getWsHandlers(wss) {
         content: body.message,
         images,
       });
-      const response = await ai.chat(process.env.OLLAMA_TEXT_MODEL, {
+      const model =
+        process.env.AI_PROVIDER === "grok"
+          ? process.env.GROK_MODEL || "llama-3.3-70b-versatile"
+          : process.env.OLLAMA_TEXT_MODEL;
+      const response = await ai.chat(model, {
         messages,
         body: {
           org: orgId,

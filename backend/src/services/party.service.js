@@ -39,15 +39,7 @@ exports.getPartiesForAI = async (query, type, orgId) => {
 };
 
 exports.upsert = async (params) => {
-    const filter = { org: params.org };
-
-    if (mongoose.Types.ObjectId.isValid(params.partyId)) {
-        filter._id = params.partyId;
-    } else if (params.name) {
-        filter.name = { $regex: new RegExp(`^${params.name}$`, "i") };
-    }
-
-    const existingParty = await Party.findOne(filter).lean().exec();
+    const existingParty = await exports.findOne(params);
 
     if (existingParty) {
         return existingParty;
