@@ -20,6 +20,7 @@ import { useSpeechToText } from "../../hooks/useSpeechToText";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import MessageItem from "./MessageItem";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,23 @@ const ChatWidget = () => {
   const { orgId } = useParams();
 
   const { messages, isConnected, isTyping, statusMsg, sendMessage } = useChatSocket(orgId);
+  const { setting } = useCurrentOrgCurrency();
+  const [selectedModel, setSelectedModel] = useState("");
+
+  const activeProvider = useMemo(() => {
+    return setting?.aiProviders?.find((p) => p.isActive);
+  }, [setting]);
+
+  const availableModels = useMemo(() => {
+    return activeProvider?.models || [];
+  }, [activeProvider]);
+
+  useEffect(() => {
+    if (availableModels.length > 0 && !selectedModel) {
+      setSelectedModel(availableModels[0]);
+    }
+  }, [availableModels, selectedModel]);
+
   const { attachment, handleFileChange, clearAttachment } = useFileUpload();
   const { isListening, isSupported, startListening, stopListening } = useSpeechToText((transcript) => {
     setInput(transcript);
@@ -53,6 +71,7 @@ const ChatWidget = () => {
     const now = new Date().toISOString();
     const payload = {
       message: input.trim(),
+      model: selectedModel,
       attachment: attachment ? {
         name: attachment.name,
         type: attachment.type,
@@ -186,6 +205,9 @@ const ChatWidget = () => {
                   handleFileChange={handleFileChange}
                   isConnected={isConnected}
                   isTyping={isTyping}
+                  selectedModel={selectedModel}
+                  setSelectedModel={setSelectedModel}
+                  availableModels={availableModels}
                 />
               </Flex>
             </motion.div>

@@ -23,7 +23,7 @@ const settingSchema = new Schema({
       purchaseOrder: String,
       proformaInvoice: String,
       saleOrder: String,
-      paymentVoucher : String,
+      paymentVoucher: String,
     },
     default: {
       invoice: "",
@@ -31,7 +31,7 @@ const settingSchema = new Schema({
       purchaseOrder: "",
       proformaInvoice: "",
       saleOrder: "",
-      paymentVoucher : ""
+      paymentVoucher: ""
     },
   },
   prefixes: {
@@ -82,7 +82,7 @@ const settingSchema = new Schema({
       purchaseOrder: sequenceCounterSchema,
       proformaInvoice: sequenceCounterSchema,
       saleOrder: sequenceCounterSchema,
-      paymentVoucher : sequenceCounterSchema,
+      paymentVoucher: sequenceCounterSchema,
     },
     default: {
       invoice: 0,
@@ -90,7 +90,7 @@ const settingSchema = new Schema({
       purchaseOrder: 0,
       proformaInvoice: 0,
       saleOrder: 0,
-      paymentVoucher : 0,
+      paymentVoucher: 0,
     },
   },
   printSettings: {
@@ -106,15 +106,15 @@ const settingSchema = new Schema({
       defaultTemplate: {
         type: String,
         default: "simple",
-        required : true,
+        required: true,
       },
     },
-    validate : {
-      validator : async function(v){
-        const property = await Property.findOne({name : "TEMPLATES_CONFIG", "value.value" : v.defaultTemplate}).lean();
+    validate: {
+      validator: async function (v) {
+        const property = await Property.findOne({ name: "TEMPLATES_CONFIG", "value.value": v.defaultTemplate }).lean();
         return property != null;
       },
-      message : props => `${props.value} is not a valid print setting`
+      message: props => `${props.value} is not a valid print setting`
     }
   },
   receiptDefaults: {
@@ -135,7 +135,29 @@ const settingSchema = new Schema({
       proformaInvoice: termsSchema,
     },
   },
+  aiProviders: [
+    {
+      provider: {
+        type: String,
+        enum: ["grok", "ollama"]
+      },
+      fields: {
+        apiKey: String,
+      },
+      models: [String],
+      name: {
+        type: String,
+        required: true,
+      },
+      isActive: {
+        type: Boolean,
+        default: false
+      }
+    }
+  ]
 });
+
+settingSchema.index({ org: 1, "aiProviders.name": 1 }, { unique: true });
 
 const Setting = model("setting", settingSchema);
 

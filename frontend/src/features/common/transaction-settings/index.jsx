@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -22,10 +23,10 @@ import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../../contexts/SettingContext";
 import useOrganizations from "../../../hooks/useOrganizations";
 import instance from "../../../instance";
-import MainLayout from "../main-layout";
+import AdminLayout from "../auth-layout/AdminLayout";
+import AiProviders from "./AiProviders";
 import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
-import AdminLayout from "../auth-layout/AdminLayout";
 export default function TransactionSettingsPage() {
   const { t } = useTranslation("common");
   const { authorizedOrgs: organizations, loading } = useOrganizations();
@@ -156,11 +157,15 @@ export default function TransactionSettingsPage() {
                 <TabPanels>
                   <TabPanel>
                     <Box>
-                      <PrintSettings
-                        printFormik={printFormik}
-                        formik={formik}
-                        loading={loading}
-                      />
+                      <Stack spacing={6}>
+                        <PrintSettings
+                          printFormik={printFormik}
+                          formik={formik}
+                          loading={loading}
+                        />
+                        <Divider />
+                        <AiProviders formik={formik} />
+                      </Stack>
                     </Box>
                   </TabPanel>
                   <TabPanel>

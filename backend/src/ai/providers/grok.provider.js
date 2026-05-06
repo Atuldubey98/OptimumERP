@@ -2,15 +2,20 @@ const axios = require("axios");
 
 const createGrokProvider = (config) => {
   const apiKey = config.apiKey;
-  const baseUrl = "https://api.groq.com/openai/v1";
-
+  const baseURL = config.host || process.env.GROK_PROVIDER_URL;
+  const instance = axios.create({
+    baseURL,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
   const chat = async ({ model, messages, tools, options }) => {
     if (!apiKey) {
       throw new Error("Grok API Key is missing. Please set GROK_API_KEY in your .env file.");
     }
     try {
       const payload = {
-        model: model || "llama-3.3-70b-versatile",
+        model,
         messages: messages.map((msg) => {
           const cleaned = {
             role: msg.role,
@@ -24,15 +29,9 @@ const createGrokProvider = (config) => {
         temperature: options?.temperature ?? 0,
       };
 
-      const response = await axios.post(
-        `${baseUrl}/chat/completions`,
+      const response = await instance.post(
+        `/openai/v1/chat/completions`,
         payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-        },
       );
 
       const choice = response.data.choices[0];
@@ -50,7 +49,18 @@ const createGrokProvider = (config) => {
     }
   };
 
-  return { chat };
+  const listModels = async () => {
+    try {
+      const response = await instance.get(`/openai/v1/models`);
+      return response.data.data.map((m) => m.id);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message || error.message;
+      throw new Error(`Grok Provider Error: ${errorMessage}`);
+    }
+  };
+
+  return { chat, listModels };
 };
 
 module.exports = createGrokProvider;

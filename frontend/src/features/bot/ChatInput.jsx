@@ -1,5 +1,5 @@
-import React, { memo } from "react";
-import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes } from "@chakra-ui/react";
+import { memo } from "react";
+import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select } from "@chakra-ui/react";
 import TextareaAutosize from "react-textarea-autosize";
 import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText } from "react-icons/fi";
 
@@ -23,7 +23,10 @@ const ChatInput = memo(({
   fileInputRef, 
   handleFileChange,
   isConnected,
-  isTyping
+  isTyping,
+  selectedModel,
+  setSelectedModel,
+  availableModels
 }) => {
   return (
     <Box p={3} bg="gray.800" borderTopWidth="1px" borderColor="whiteAlpha.100" _light={{ bg: "white", borderColor: "gray.100" }}>
@@ -100,18 +103,41 @@ const ChatInput = memo(({
               />
             </HStack>
 
-            <IconButton 
-              aria-label="Send" 
-              colorScheme="blue" 
-              size="sm"
-              icon={<FiSend size={14} />} 
-              onClick={handleSend} 
-              isDisabled={!isConnected || (!input.trim() && !attachment) || isTyping} 
-              borderRadius="lg" 
-              boxShadow="md"
-              _hover={{ transform: "scale(1.05)" }}
-              _active={{ transform: "scale(0.95)" }}
-            />
+            <HStack spacing={2}>
+              {availableModels.length > 0 && (
+                <Select 
+                  size="xs" 
+                  width="auto" 
+                  variant="unstyled" 
+                  borderRadius="md" 
+                  value={selectedModel} 
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  fontSize="11px"
+                  color="whiteAlpha.600"
+                  _light={{ color: "gray.500" }}
+                  fontWeight="600"
+                  textAlign="right"
+                  cursor="pointer"
+                  iconSize="0"
+                >
+                  {availableModels.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </Select>
+              )}
+              <IconButton 
+                aria-label="Send" 
+                colorScheme="blue" 
+                size="sm"
+                icon={<FiSend size={14} />} 
+                onClick={handleSend} 
+                isDisabled={!isConnected || (!input.trim() && !attachment) || isTyping} 
+                borderRadius="lg" 
+                boxShadow="md"
+                _hover={{ transform: "scale(1.05)" }}
+                _active={{ transform: "scale(0.95)" }}
+              />
+            </HStack>
           </Flex>
         </Flex>
       </VStack>

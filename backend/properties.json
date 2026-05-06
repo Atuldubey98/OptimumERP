@@ -795,5 +795,30 @@
         ]
       }
     ]
+  },
+  {
+    "name": "AI_PROVIDERS",
+    "value": [
+      {
+        "name": "Ollama",
+        "value": "ollama",
+        "fields": [
+          {
+            "name": "API Key",
+            "label": "apiKey"
+          }
+        ]
+      },
+      {
+        "name": "Grok",
+        "value": "grok",
+        "fields": [
+          {
+            "name": "API Key",
+            "value": "apiKey"
+          }
+        ]
+      }
+    ]
   }
 ]

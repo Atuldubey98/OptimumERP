@@ -1,5 +1,5 @@
 const sessionHandler = require("./session.handler");
-const ai = require("../ai");
+const aiFactory = require("../ai");
 const authService = require("../services/auth.service");
 const logger = require("../logger");
 const config = require("../config");
@@ -9,6 +9,7 @@ const url = require("url");
 const factory = require("../ai/prompts/factory");
 const renderEngineService = require("../services/renderEngine.service.js");
 const { dateUtils } = require("../utils.js");
+const { decrypt } = require("../services/hashing.service");
 function getWsHandlers(wss) {
   const ORG_USER_MESSAGES_CACHE_TTL_SECONDS = Number(
     process.env.EXPENSE_CATEGORY_CACHE_TTL_SECONDS || 20 * 60,
@@ -64,9 +65,32 @@ function getWsHandlers(wss) {
   const onMessage = async (ws, data, request) => {
     try {
       const body = JSON.parse(data);
+
       const { query } = url.parse(request.url, true);
       const orgId = request.headers["orgid"] || query.orgId;
       const messages = await getSessionMessage(request.session.user._id, orgId);
+
+      const settings = await settingService.getDetailedSettingForOrg(orgId);
+      const activeProvider = settings?.aiProviders?.find((p) => p.isActive);
+
+      if (!ws.ai || ws.activeProviderId !== activeProvider?._id?.toString()) {
+        if (activeProvider) {
+          const providerType = activeProvider.provider;
+          const apiKey = decrypt(activeProvider.fields.apiKey);
+          ws.ai = aiFactory({ provider: providerType, apiKey });
+          ws.activeProviderId = activeProvider._id.toString();
+        } else {
+          ws.ai = null;
+          ws.activeProviderId = null;
+          return ws.send(
+            JSON.stringify({
+              role: "assistant",
+              content:
+                "Please set up your AI provider keys in organization settings to use the AI features.",
+            }),
+          );
+        }
+      }
       let images = [];
       const attachment = body?.attachment;
       if (attachment?.type === "application/pdf") {
@@ -81,11 +105,9 @@ function getWsHandlers(wss) {
         content: body.message,
         images,
       });
-      const model =
-        process.env.AI_PROVIDER === "grok"
-          ? process.env.GROK_MODEL || "llama-3.3-70b-versatile"
-          : process.env.OLLAMA_TEXT_MODEL;
-      const response = await ai.chat(model, {
+      const model = body.model;
+
+      const response = await ws.ai.chat(model, {
         messages,
         body: {
           org: orgId,

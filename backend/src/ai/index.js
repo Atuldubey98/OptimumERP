@@ -2,11 +2,6 @@ const getHandler = require("./handlers");
 const tools = require("./tools");
 const logger = require("../logger");
 const { getProvider } = require("./providers");
-const aiProvider = getProvider(process.env.AI_PROVIDER || "ollama", {
-  host: process.env.OLLAMA_HOST,
-  apiKey: process.env.AI_PROVIDER === "grok" ? process.env.GROK_API_KEY : process.env.OLLAMA_API_KEY,
-});
-
 const cleanMessages = (messages) => {
   return messages.map((msg) => {
     const cleaned = {
@@ -47,8 +42,8 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
   };
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;
-    const args = typeof tool.function.arguments === "string" 
-      ? JSON.parse(tool.function.arguments) 
+    const args = typeof tool.function.arguments === "string"
+      ? JSON.parse(tool.function.arguments)
       : tool.function.arguments;
     const handler = getHandler(toolName);
 
@@ -105,99 +100,113 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
   return await Promise.all(toolPromises);
 };
 
-const chat = async (model, { messages = [], body, onProgress }) => {
-  try {
-    const allDownloads = [];
-    while (true) {
-      if (onProgress) {
-        onProgress({ type: "status", message: "Thinking..." });
-      }
 
-      const response = await aiProvider.chat({
-        model,
-        messages: cleanMessages(messages),
-        tools,
-        options: { temperature: 0 },
-      });
 
-      const aiMessage = response.message;
-      messages.push(aiMessage);
-
-      if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
-        const toolResults = await executeTools({
-          toolCalls: aiMessage.tool_calls,
-          body,
-          onProgress,
-        });
-
-        messages.push(...toolResults);
-
-        toolResults.forEach((res) => {
-          if (res.fullData?.downloads) {
-            allDownloads.push(...res.fullData.downloads);
-          }
-        });
-        logger.info(`Extracted ${allDownloads.length} downloads from tools`);
-
-        const hasError = toolResults.some(
-          (res) => !JSON.parse(res.content).success,
-        );
-
-        if (hasError) {
-          messages.push({
-            role: "user",
-            content:
-              "A tool error occurred. Please explain the issue to the user politely based on the error message provided in the tool results. Suggest how they can adjust their prompt to fix it.",
-          });
-
-          if (onProgress) {
-            onProgress({ type: "status", message: "Resolving error..." });
-          }
-
-          const finalAiExplanation = await aiProvider.chat({
-            model,
-            messages: cleanMessages(messages),
-            options: { temperature: 0.3 },
-          });
-
-          if (allDownloads.length > 0) {
-            finalAiExplanation.message.downloads = allDownloads;
-          }
-          return finalAiExplanation.message;
+module.exports = ({ provider, apiKey }) => {
+  const hosts = {
+    ollama: process.env.OLLAMA_HOST,
+    grok: process.env.GROK_HOST,
+  }
+  const host = hosts[provider]
+  const aiProvider = getProvider(provider, {
+    apiKey,
+    host
+  });
+  const chat = async (model, { messages = [], body, onProgress }) => {
+    try {
+      const allDownloads = [];
+      while (true) {
+        if (onProgress) {
+          onProgress({ type: "status", message: "Thinking..." });
         }
 
-        continue;
-      }
+        const response = await aiProvider.chat({
+          model,
+          messages: cleanMessages(messages),
+          tools,
+          options: { temperature: 0 },
+        });
 
-      if (allDownloads.length > 0) {
-        aiMessage.downloads = allDownloads;
-      }
-      return aiMessage;
-    }
-  } catch (error) {
-    logger.error(`Critical Chat Flow Error: ${error.message}`);
+        const aiMessage = response.message;
+        messages.push(aiMessage);
 
-    try {
-      const errorSummary = await aiProvider.chat({
-        model,
-        messages: [
-          ...messages,
-          {
-            role: "user",
-            content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
-          },
-        ],
-        options: { temperature: 0.3 },
-      });
-      return errorSummary.message;
-    } catch (innerError) {
-      return {
-        role: "assistant",
-        content:
-          "I encountered a critical error while processing your request. Please try again later.",
-      };
+        if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
+          const toolResults = await executeTools({
+            toolCalls: aiMessage.tool_calls,
+            body,
+            onProgress,
+          });
+
+          messages.push(...toolResults);
+
+          toolResults.forEach((res) => {
+            if (res.fullData?.downloads) {
+              allDownloads.push(...res.fullData.downloads);
+            }
+          });
+          logger.info(`Extracted ${allDownloads.length} downloads from tools`);
+
+          const hasError = toolResults.some(
+            (res) => !JSON.parse(res.content).success,
+          );
+
+          if (hasError) {
+            messages.push({
+              role: "user",
+              content:
+                "A tool error occurred. Please explain the issue to the user politely based on the error message provided in the tool results. Suggest how they can adjust their prompt to fix it.",
+            });
+
+            if (onProgress) {
+              onProgress({ type: "status", message: "Resolving error..." });
+            }
+
+            const finalAiExplanation = await aiProvider.chat({
+              model,
+              messages: cleanMessages(messages),
+              options: { temperature: 0.3 },
+            });
+
+            if (allDownloads.length > 0) {
+              finalAiExplanation.message.downloads = allDownloads;
+            }
+            return finalAiExplanation.message;
+          }
+
+          continue;
+        }
+
+        if (allDownloads.length > 0) {
+          aiMessage.downloads = allDownloads;
+        }
+        return aiMessage;
+      }
+    } catch (error) {
+      logger.error(`Critical Chat Flow Error: ${error.message}`);
+
+      try {
+        const errorSummary = await aiProvider.chat({
+          model,
+          messages: [
+            ...messages,
+            {
+              role: "user",
+              content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
+            },
+          ],
+          options: { temperature: 0.3 },
+        });
+        return errorSummary.message;
+      } catch (innerError) {
+        return {
+          role: "assistant",
+          content:
+            "I encountered a critical error while processing your request. Please try again later.",
+        };
+      }
     }
-  }
+  };
+  return Object.freeze({
+    chat,
+  });
 };
-
-module.exports = { chat };
