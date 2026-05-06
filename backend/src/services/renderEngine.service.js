@@ -85,6 +85,8 @@ exports.getPdfBufferFromDocDefinition = async (docDefinition) => {
   });
 };
 
+const toDataUri = (data, type = "image/png") => `data:${type};base64,${data.toString("base64")}`;
+
 exports.convertPdfToImages = async (base64Content) => {
   try {
     const { pdf: pdfToImg } = require("pdf-to-img");
@@ -100,7 +102,7 @@ exports.convertPdfToImages = async (base64Content) => {
     let i = 1;
     for await (const page of pages) {
       logger.info(`Converting ${i} of ${pages.length}`);
-      imageList.push(page.toString("base64"));
+      imageList.push(toDataUri(page));
       i++;
     }
 

@@ -72,7 +72,7 @@ function getWsHandlers(wss) {
 
       const settings = await settingService.getDetailedSettingForOrg(orgId);
       const activeProvider = settings?.aiProviders?.find((p) => p.isActive);
-
+      logger.info(`active provider for org ${orgId}: ${activeProvider?.provider}`)
       if (!ws.ai || ws.activeProviderId !== activeProvider?._id?.toString()) {
         if (activeProvider) {
           const providerType = activeProvider.provider;

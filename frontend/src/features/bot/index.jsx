@@ -75,7 +75,7 @@ const ChatWidget = () => {
       attachment: attachment ? {
         name: attachment.name,
         type: attachment.type,
-        content: attachment.base64,
+        content: attachment.content,
       } : null,
     };
     const userMessage = {

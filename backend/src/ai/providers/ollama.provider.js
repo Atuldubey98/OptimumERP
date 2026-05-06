@@ -8,19 +8,40 @@ const createOllamaProvider = (config) => {
       Authorization: `Bearer ${config.apiKey}`
     }
   })
+  const processImage = (img) => (img.includes(",") ? img.split(",")[1] : img);
+
+  const formatMessages = (messages) => {
+    return messages.map((msg) => {
+      const cleaned = {
+        role: msg.role,
+        content: msg.content,
+      };
+      if (msg.tool_calls) cleaned.tool_calls = msg.tool_calls;
+      if (msg.tool_call_id) cleaned.tool_call_id = msg.tool_call_id;
+      if (msg.images && msg.images.length > 0) {
+        cleaned.images = msg.images.map((img) => processImage(img));
+      }
+      return cleaned;
+    });
+  };
+
   const chat = async ({ model, messages, tools, options }) => {
     try {
-      const response = await instance.post(`/api/chat`, {
-        model,
-        messages,
-        tools,
-        options,
-        stream: false,
-      }, {
-        headers: {
-          "Content-Type": "application/json",
+      const response = await instance.post(
+        `/api/chat`,
+        {
+          model,
+          messages,
+          tools,
+          options,
+          stream: false,
         },
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
       return response.data;
     } catch (error) {
@@ -39,7 +60,7 @@ const createOllamaProvider = (config) => {
     }
   };
 
-  return { chat, listModels };
+  return { chat, listModels, processImage, formatMessages };
 };
 
 module.exports = createOllamaProvider;

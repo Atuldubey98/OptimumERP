@@ -9,6 +9,35 @@ const createGrokProvider = (config) => {
       Authorization: `Bearer ${apiKey}`,
     },
   });
+  const formatMessages = (messages) => {
+    return messages.map((msg) => {
+      if (msg.role === "user" && msg.images && msg.images.length > 0) {
+        const content = [
+          { type: "text", text: msg.content || "" }
+        ];
+        msg.images.forEach(img => {
+          content.push({
+            type: "image_url",
+            image_url: { url: img }
+          });
+        });
+        return {
+          role: msg.role,
+          content,
+          ...(msg.tool_calls && { tool_calls: msg.tool_calls }),
+          ...(msg.tool_call_id && { tool_call_id: msg.tool_call_id })
+        };
+      }
+      const cleaned = {
+        role: msg.role,
+        content: msg.content || "",
+      };
+      if (msg.tool_calls) cleaned.tool_calls = msg.tool_calls;
+      if (msg.tool_call_id) cleaned.tool_call_id = msg.tool_call_id;
+      return cleaned;
+    });
+  };
+
   const chat = async ({ model, messages, tools, options }) => {
     if (!apiKey) {
       throw new Error("Grok API Key is missing. Please set GROK_API_KEY in your .env file.");
@@ -16,15 +45,7 @@ const createGrokProvider = (config) => {
     try {
       const payload = {
         model,
-        messages: messages.map((msg) => {
-          const cleaned = {
-            role: msg.role,
-            content: msg.content || "",
-          };
-          if (msg.tool_calls) cleaned.tool_calls = msg.tool_calls;
-          if (msg.tool_call_id) cleaned.tool_call_id = msg.tool_call_id;
-          return cleaned;
-        }),
+        messages,
         ...(tools && tools.length > 0 && { tools }),
         temperature: options?.temperature ?? 0,
       };
@@ -60,7 +81,9 @@ const createGrokProvider = (config) => {
     }
   };
 
-  return { chat, listModels };
+  const processImage = (img) => img;
+
+  return { chat, listModels, processImage, formatMessages };
 };
 
 module.exports = createGrokProvider;

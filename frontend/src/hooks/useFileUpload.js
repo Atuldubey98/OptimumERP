@@ -25,7 +25,7 @@ export const useFileUpload = () => {
         name: file.name,
         type: file.type,
         preview: reader.result,
-        base64: reader.result.split(",")[1],
+        content: reader.result,
       });
     };
     reader.readAsDataURL(file);

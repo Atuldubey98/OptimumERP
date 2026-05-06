@@ -122,7 +122,7 @@ module.exports = ({ provider, apiKey }) => {
 
         const response = await aiProvider.chat({
           model,
-          messages: cleanMessages(messages),
+          messages: aiProvider.formatMessages ? aiProvider.formatMessages(messages) : cleanMessages(messages),
           tools,
           options: { temperature: 0 },
         });

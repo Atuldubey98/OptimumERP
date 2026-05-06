@@ -228,6 +228,7 @@ export default function AiProviders({ formik }) {
                       colorScheme="red"
                       variant="ghost"
                       onClick={() => handleDelete(provider._id)}
+                      isDisabled={provider.isActive}
                     />
                   </Td>
                 </Tr>
