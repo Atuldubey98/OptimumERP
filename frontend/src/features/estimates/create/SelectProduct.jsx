@@ -37,7 +37,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { getDefaultReceiptItem, formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
+  const { getDefaultReceiptItem, formatSmallestUnitWithSymbol, fromSmallestUnit } = useCurrentOrgCurrency();
   const defaultItem = getDefaultReceiptItem();
   const emptyStateBg = useColorModeValue("gray.100", "gray.700");
   const cardBg = useColorModeValue("white", "gray.800");
@@ -141,7 +141,7 @@ export default function SelectProduct({ isOpen, onClose, formik, index }) {
           um: product.um?._id || defaultItem.um,
           code: product.code,
           tax: defaultItem.tax,
-          price: product.sellingPrice || 0,
+          price: fromSmallestUnit(product.sellingPrice || 0),
           product: product._id,
         };
 
