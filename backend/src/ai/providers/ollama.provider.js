@@ -12,10 +12,21 @@ const createOllamaProvider = (config) => {
 
   const formatMessages = (messages) => {
     return messages.map((msg) => {
+      let textContent = "";
+      if (typeof msg.content === "string") {
+        textContent = msg.content;
+      } else if (Array.isArray(msg.content)) {
+        textContent = msg.content
+          .filter((c) => c.type === "text")
+          .map((c) => c.text)
+          .join("\n");
+      }
+
       const cleaned = {
         role: msg.role,
-        content: msg.content,
+        content: textContent,
       };
+
       if (msg.tool_calls) cleaned.tool_calls = msg.tool_calls;
       if (msg.tool_call_id) cleaned.tool_call_id = msg.tool_call_id;
       if (msg.images && msg.images.length > 0) {
@@ -27,15 +38,18 @@ const createOllamaProvider = (config) => {
 
   const chat = async ({ model, messages, tools, options }) => {
     try {
+      const payload = {
+        model,
+        messages,
+        stream: false,
+      };
+
+      if (tools && tools.length > 0) payload.tools = tools;
+      if (options && Object.keys(options).length > 0) payload.options = options;
+
       const response = await instance.post(
         `/api/chat`,
-        {
-          model,
-          messages,
-          tools,
-          options,
-          stream: false,
-        },
+        payload,
         {
           headers: {
             "Content-Type": "application/json",

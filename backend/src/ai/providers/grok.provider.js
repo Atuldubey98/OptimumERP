@@ -16,9 +16,11 @@ const createGrokProvider = (config) => {
           { type: "text", text: msg.content || "" }
         ];
         msg.images.forEach(img => {
+          // Ensure it has the data URI prefix for Grok/OpenAI
+          const imageUrl = img.startsWith("data:") ? img : `data:image/jpeg;base64,${img}`;
           content.push({
             type: "image_url",
-            image_url: { url: img }
+            image_url: { url: imageUrl }
           });
         });
         return {
@@ -81,7 +83,7 @@ const createGrokProvider = (config) => {
     }
   };
 
-  const processImage = (img) => img;
+  const processImage = (img) => (img.includes(",") ? img.split(",")[1] : img);
 
   return { chat, listModels, processImage, formatMessages };
 };

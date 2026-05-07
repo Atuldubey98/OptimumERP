@@ -100,6 +100,11 @@ function getWsHandlers(wss) {
       } else if (attachment?.type.startsWith("image/")) {
         images = [attachment.content];
       }
+
+      if (ws.ai && images.length > 0) {
+        images = images.map((img) => ws.ai.processImage(img));
+        logger.info('images', images[0]?.substring(0, 10));
+      }
       messages.push({
         role: "user",
         content: body.message,

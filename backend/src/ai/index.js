@@ -123,7 +123,8 @@ module.exports = ({ provider, apiKey }) => {
         const response = await aiProvider.chat({
           model,
           messages: aiProvider.formatMessages ? aiProvider.formatMessages(messages) : cleanMessages(messages),
-          tools
+          tools,
+          options: { temperature: 0 }
         });
 
         const aiMessage = response.message;
@@ -162,7 +163,7 @@ module.exports = ({ provider, apiKey }) => {
 
             const finalAiExplanation = await aiProvider.chat({
               model,
-              messages: cleanMessages(messages),
+              messages: aiProvider.formatMessages ? aiProvider.formatMessages(messages) : cleanMessages(messages),
             });
 
             if (allDownloads.length > 0) {
@@ -185,13 +186,20 @@ module.exports = ({ provider, apiKey }) => {
       try {
         const errorSummary = await aiProvider.chat({
           model,
-          messages: [
+          messages: aiProvider.formatMessages ? aiProvider.formatMessages([
             ...messages,
             {
               role: "user",
               content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
             },
-          ],
+          ]) : cleanMessages([
+            ...messages,
+            {
+              role: "user",
+              content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
+            },
+          ]),
+          options: { temperature: 0.3 },
         });
         return errorSummary.message;
       } catch (innerError) {
@@ -205,5 +213,6 @@ module.exports = ({ provider, apiKey }) => {
   };
   return Object.freeze({
     chat,
+    processImage: (img) => aiProvider.processImage ? aiProvider.processImage(img) : img,
   });
 };
