@@ -12,6 +12,7 @@ import {
   Spinner,
   Switch,
   Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { useDeferredValue } from "react";
@@ -33,6 +34,8 @@ import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
 import { useTranslation } from "react-i18next";
+import { BsStars } from "react-icons/bs";
+import AIPrefillModal from "../../common/AIPrefillModal";
 export default function CreatePurchasePage() {
   const { t } = useTranslation("purchase");
   const { saveAndNew, onToggleSaveAndNew } =
@@ -42,6 +45,14 @@ export default function CreatePurchasePage() {
   const { formik, status } = usePurchaseForm({
     saveAndNew,
   });
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handlePrefill = (data) => {
+    formik.setValues({
+      ...formik.values,
+      ...data,
+    });
+  };
   const deferredItems = useDeferredValue(formik.values.items);
   const loading = status === "loading";
   const { disable } = useLimitsInFreePlan({
@@ -65,22 +76,34 @@ export default function CreatePurchasePage() {
             <form onSubmit={formik.handleSubmit}>
               <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
                 {formik.values._id ? null : (
-                  <FormControl
-                    display="flex"
-                    justifyContent={"flex-end"}
-                    alignItems="center"
-                  >
-                    <FormLabel htmlFor="save-and-new" mb="0">
-                      {t("purchase_ui.form.save_new")}
-                    </FormLabel>
-                    <Switch
-                      onChange={(e) => {
-                        onToggleSaveAndNew(e.currentTarget.checked);
-                      }}
-                      isChecked={saveAndNew}
-                      id="save-and-new"
-                    />
-                  </FormControl>
+                  <>
+                    <Button
+                      colorScheme="teal"
+                      size="md"
+                      leftIcon={<BsStars />}
+                      onClick={onOpen}
+                    >
+                      Smart Fill
+                    </Button>
+                    <FormControl
+                      display="flex"
+                      justifyContent={"flex-end"}
+                      alignItems="center"
+                      w="auto"
+                    >
+                      <FormLabel htmlFor="save-and-new" mb="0" fontSize="sm" fontWeight="medium">
+                        {t("purchase_ui.form.save_new")}
+                      </FormLabel>
+                      <Switch
+                        colorScheme="teal"
+                        onChange={(e) => {
+                          onToggleSaveAndNew(e.currentTarget.checked);
+                        }}
+                        isChecked={saveAndNew}
+                        id="save-and-new"
+                      />
+                    </FormControl>
+                  </>
                 )}
                 <Button
                   isDisabled={formik.values._id ? false : disable}
@@ -169,6 +192,12 @@ export default function CreatePurchasePage() {
               </Grid>
             </form>
           )}
+          <AIPrefillModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onPrefill={handlePrefill}
+            type="purchases"
+          />
         </FormikProvider>
       </Box>
     

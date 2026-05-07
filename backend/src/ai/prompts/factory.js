@@ -76,8 +76,24 @@ TOOL USAGE RULES:
         });
 };
 
+const prefillPrompt = ({ type, organization }) => {
+    const builder = createPromptBuilder();
+    return builder
+        .system(`You are a professional data extraction assistant for an ERP system. 
+        Your goal is to extract billing information from the provided document accurately.`)
+        .instructions(`
+        STRICT RULES:
+        1. Use the 'create_bill' tool with 'dryRun: true' to return the extracted data.
+        2. Identify the document type correctly (invoice, purchase, etc.) based on the context, or use the suggested type: '${type}'.
+        3. Do not guess information. If something is not clear, leave it blank or null.
+        4. Return ONLY the tool call. Do not provide conversational text.
+        5. IGNORE YOUR OWN ORGANIZATION: The user's organization is '${organization?.name}'. When extracting 'partyDetails' or 'partyName', ensure you extract the OTHER party mentioned in the document (the customer if this is an invoice, or the vendor if this is a purchase). NEVER extract the user's own organization as the party.
+        `);
+};
+
 const factory = {
     organizationPrompt,
+    prefillPrompt,
 };
 
 module.exports = factory;

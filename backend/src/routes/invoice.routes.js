@@ -16,6 +16,7 @@ const {
   paginate,
   send,
   read,
+  aiPrefill,
 } = require("../controllers/invoice.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
@@ -29,6 +30,7 @@ invoiceRouter.post(
   limitFreePlanOnCreateEntityForOrganization("invoices"),
   requestAsyncHandler(create)
 );
+invoiceRouter.post("/ai-prefill", requestAsyncHandler(aiPrefill));
 
 invoiceRouter.get("/nextSequence", requestAsyncHandler(nextSequence));
 invoiceRouter.get("/export", requestAsyncHandler(exportData));

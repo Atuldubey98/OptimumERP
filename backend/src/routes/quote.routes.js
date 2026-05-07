@@ -20,6 +20,7 @@ const {
   exportData,
   remove,
   update,
+  aiPrefill,
 } = require("../controllers/quotes.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const quoteRouter = Router({
@@ -32,6 +33,7 @@ quoteRouter.post(
   limitFreePlanOnCreateEntityForOrganization("quotes"),
   requestAsyncHandler(create)
 );
+quoteRouter.post("/ai-prefill", requestAsyncHandler(aiPrefill));
 
 quoteRouter.get("/nextQuoteNo", requestAsyncHandler(nextSequence));
 quoteRouter.get("/export", requestAsyncHandler(exportData));
