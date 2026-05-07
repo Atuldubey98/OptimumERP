@@ -57,6 +57,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       poNo: "",
       poDate: "",
       shippingCharges: 0,
+      paymentVouchers: [],
     },
     validationSchema: purchaseSchema,
     validateOnChange: false,
@@ -149,6 +150,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         poNo,
         shippingCharges: fromSmallestUnit(data.data.shippingCharges || 0),
         createdBy: data.data.createdBy._id,
+        paymentVouchers: data.data?.paymentVouchers || [],
       });
       setStatus("success");
     } catch (error) {

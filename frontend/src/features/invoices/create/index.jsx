@@ -103,7 +103,7 @@ export default function CreateInvoicePage() {
                   isRequired
                 >
                   <FormLabel>{t("invoice_ui.form.bill_to")}</FormLabel>
-                  <PartySelectBill formik={formik} />
+                  <PartySelectBill formik={formik} isDisabled={(formik.values?.paymentVouchers||[]).length} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
                 {formik.values.party ? (

@@ -97,7 +97,7 @@ export default function CreatePurchasePage() {
                 <Heading fontSize={"xl"}>{t("purchase_ui.form.party_section")}</Heading>
                 <FormControl isRequired>
                   <FormLabel>{t("purchase_ui.form.bill_from")}</FormLabel>
-                  <PartySelectBill formik={formik} />
+                  <PartySelectBill formik={formik} isDisabled={(formik.values?.paymentVouchers || []).length > 0} />
                   <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
                 </FormControl>
                 {formik.values.party ? (

@@ -6,7 +6,7 @@ import usePartyForm from "../../../hooks/usePartyForm";
 import instance from "../../../instance";
 import PartyFormDrawer from "../../parties/PartyFormDrawer";
 
-function PartySelectBill({ formik }) {
+function PartySelectBill({ formik, isDisabled =false }) {
   const { orgId } = useParams();
   const selectRef = useRef(null);
   const promiseOptions = useCallback(async (searchQuery) => {
@@ -91,6 +91,7 @@ function PartySelectBill({ formik }) {
           }
         }
         createOptionPosition="first"
+        isDisabled={isDisabled}
         onChange={onChange}
         onCreateOption={onCreateOption}
         isClearable

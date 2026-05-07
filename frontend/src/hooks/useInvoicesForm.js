@@ -88,7 +88,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     validateOnChange: false,
     onSubmit: requestAsyncHandler(async (values, { setSubmitting }) => {
       const { _id, ...invoice } = values;
-      const items = values.items.map(({ _id, ...item }) => ({...item, price: toSmallestUnit(item.price)}));
+      const items = values.items.map(({ _id, ...item }) => ({ ...item, price: toSmallestUnit(item.price) }));
       const response = await instance[_id ? "patch" : "post"](
         `/api/v1/organizations/${orgId}/invoices/${_id || ""}`,
         {
@@ -178,6 +178,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
         billingAddress,
         shippingCharges: fromSmallestUnit(data.data.shippingCharges || 0),
         createdBy: data.data.createdBy._id,
+        paymentVouchers: data.data?.paymentVouchers || []
       });
       setStatus("success");
     } catch (error) {
