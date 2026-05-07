@@ -23,8 +23,6 @@ const create = async (req, res) => {
         apiKey: fields.apiKey,
     });
 
-    const models = await aiProvider.listModels();
-
     const encryptedApiKey = encrypt(fields.apiKey);
 
     const currentSetting = await Setting.findOne({ org });
@@ -38,7 +36,6 @@ const create = async (req, res) => {
                 fields: {
                     apiKey: encryptedApiKey
                 },
-                models,
                 isActive
             }
         }

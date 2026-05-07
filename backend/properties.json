@@ -820,5 +820,454 @@
         ]
       }
     ]
+  },
+  {
+    "name": "AI_MODELS",
+    "value": {
+      "ollama": [
+        {
+          "id": "ministral-3:8b",
+          "name": "ministral-3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "ministral-3:14b",
+          "name": "ministral-3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "devstral-2:123b",
+          "name": "devstral-2",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "glm-5",
+          "name": "glm-5",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "qwen3-coder:480b",
+          "name": "qwen3-coder",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "qwen3-next:80b",
+          "name": "qwen3-next",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "deepseek-v4-pro",
+          "name": "deepseek-v4-pro",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "qwen3-vl:235b-instruct",
+          "name": "qwen3-vl",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "minimax-m2.1",
+          "name": "minimax-m2.1",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "minimax-m2.7",
+          "name": "minimax-m2.7",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "ministral-3:3b",
+          "name": "ministral-3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "glm-5.1",
+          "name": "glm-5.1",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "kimi-k2:1t",
+          "name": "kimi-k2",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "deepseek-v3.2",
+          "name": "deepseek-v3.2",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "deepseek-v3.1:671b",
+          "name": "deepseek-v3.1",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "devstral-small-2:24b",
+          "name": "devstral-small-2",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "gemini-3-flash-preview",
+          "name": "gemini-3-flash-preview",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "gemma3:4b",
+          "name": "gemma3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": false,
+          "vision": true
+        },
+        {
+          "id": "glm-4.6",
+          "name": "glm-4.6",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "nemotron-3-nano:30b",
+          "name": "nemotron-3-nano",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "gpt-oss:20b",
+          "name": "gpt-oss",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "minimax-m2",
+          "name": "minimax-m2",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "mistral-large-3:675b",
+          "name": "mistral-large-3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "gemma3:12b",
+          "name": "gemma3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": false,
+          "vision": true
+        },
+        {
+          "id": "rnj-1:8b",
+          "name": "rnj-1",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "kimi-k2-thinking",
+          "name": "kimi-k2-thinking",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "gemma3:27b",
+          "name": "gemma3",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": false,
+          "vision": true
+        },
+        {
+          "id": "qwen3.5:397b",
+          "name": "qwen3.5",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "nemotron-3-super",
+          "name": "nemotron-3-super",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "kimi-k2.5",
+          "name": "kimi-k2.5",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "minimax-m2.5",
+          "name": "minimax-m2.5",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "gemma4:31b",
+          "name": "gemma4",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "glm-4.7",
+          "name": "glm-4.7",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "qwen3-vl:235b",
+          "name": "qwen3-vl",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": true
+        },
+        {
+          "id": "qwen3-coder-next",
+          "name": "qwen3-coder-next",
+          "provider": "ollama",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "deepseek-v4-flash",
+          "name": "deepseek-v4-flash",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "gpt-oss:120b",
+          "name": "gpt-oss",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "cogito-2.1:671b",
+          "name": "cogito-2.1",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "kimi-k2.6",
+          "name": "kimi-k2.6",
+          "provider": "ollama",
+          "thinking": true,
+          "tools": true,
+          "vision": true
+        }
+      ],
+      "grok": [
+        {
+          "id": "groq/compound-mini",
+          "name": "groq/compound-mini",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "groq/compound",
+          "name": "groq/compound",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "llama-3.1-8b-instant",
+          "name": "llama-3.1-8b-instant",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "llama-3.3-70b-versatile",
+          "name": "llama-3.3-70b-versatile",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "openai/gpt-oss-safeguard-20b",
+          "name": "openai/gpt-oss-safeguard-20b",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "whisper-large-v3",
+          "name": "whisper-large-v3",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "meta-llama/llama-prompt-guard-2-22m",
+          "name": "meta-llama/llama-prompt-guard-2-22m",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "meta-llama/llama-prompt-guard-2-86m",
+          "name": "meta-llama/llama-prompt-guard-2-86m",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "whisper-large-v3-turbo",
+          "name": "whisper-large-v3-turbo",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "allam-2-7b",
+          "name": "allam-2-7b",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "qwen/qwen3-32b",
+          "name": "qwen/qwen3-32b",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "openai/gpt-oss-120b",
+          "name": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "name": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "openai/gpt-oss-20b",
+          "name": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "canopylabs/orpheus-v1-english",
+          "name": "canopylabs/orpheus-v1-english",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        },
+        {
+          "id": "canopylabs/orpheus-arabic-saudi",
+          "name": "canopylabs/orpheus-arabic-saudi",
+          "provider": "groq",
+          "thinking": false,
+          "tools": true,
+          "vision": false
+        }
+      ]
+    }
   }
 ]

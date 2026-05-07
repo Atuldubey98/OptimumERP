@@ -1,7 +1,8 @@
 import { memo } from "react";
-import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select } from "@chakra-ui/react";
+import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select, Icon } from "@chakra-ui/react";
 import TextareaAutosize from "react-textarea-autosize";
-import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText } from "react-icons/fi";
+import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 const pulse = keyframes`
   0% { transform: scale(1); opacity: 1; }
@@ -28,6 +29,7 @@ const ChatInput = memo(({
   setSelectedModel,
   availableModels
 }) => {
+  const currentModel = availableModels.find(m => m.id === selectedModel);
   return (
     <Box p={3} bg="gray.800" borderTopWidth="1px" borderColor="whiteAlpha.100" _light={{ bg: "white", borderColor: "gray.100" }}>
       <VStack align="stretch" spacing={2}>
@@ -90,17 +92,21 @@ const ChatInput = memo(({
                   />
                 </Box>
               )}
-              <input type="file" hidden ref={fileInputRef} accept="application/pdf,image/*" onChange={handleFileChange} />
-              <IconButton 
-                aria-label="Attach file" 
-                variant="ghost" 
-                size="sm"
-                icon={<FiPaperclip size={16} />} 
-                onClick={() => fileInputRef.current.click()} 
-                color="whiteAlpha.600" 
-                _light={{ color: "gray.400" }}
-                _hover={{ bg: "whiteAlpha.200" }}
-              />
+              {currentModel?.vision && (
+                <>
+                  <input type="file" hidden ref={fileInputRef} accept="application/pdf,image/*" onChange={handleFileChange} />
+                  <IconButton 
+                    aria-label="Attach file" 
+                    variant="ghost" 
+                    size="sm"
+                    icon={<FiPaperclip size={16} />} 
+                    onClick={() => fileInputRef.current.click()} 
+                    color="whiteAlpha.600" 
+                    _light={{ color: "gray.400" }}
+                    _hover={{ bg: "whiteAlpha.200" }}
+                  />
+                </>
+              )}
             </HStack>
 
             <HStack spacing={2}>
@@ -121,9 +127,20 @@ const ChatInput = memo(({
                   iconSize="0"
                 >
                   {availableModels.map((m) => (
-                    <option key={m} value={m}>{m}</option>
+                    <option key={m.id} value={m.id}>{m.name}</option>
                   ))}
                 </Select>
+              )}
+              {currentModel?.thinking && (
+                <Flex align="center" px={1}>
+                  <Box 
+                    as={motion.div}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Icon as={FiCpu} size="xs" color="purple.400" />
+                  </Box>
+                </Flex>
               )}
               <IconButton 
                 aria-label="Send" 

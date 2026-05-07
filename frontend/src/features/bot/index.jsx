@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { useChatSocket } from "../../hooks/useChatSocket";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
+import useProperty from "../../hooks/useProperty";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import MessageItem from "./MessageItem";
@@ -34,17 +35,20 @@ const ChatWidget = () => {
   const { setting } = useCurrentOrgCurrency();
   const [selectedModel, setSelectedModel] = useState("");
 
+  const { value: AI_MODELS } = useProperty("AI_MODELS");
+
   const activeProvider = useMemo(() => {
     return setting?.aiProviders?.find((p) => p.isActive);
   }, [setting]);
 
   const availableModels = useMemo(() => {
-    return activeProvider?.models || [];
-  }, [activeProvider]);
+    if (!AI_MODELS || !activeProvider) return [];
+    return AI_MODELS[activeProvider.provider] || [];
+  }, [activeProvider, AI_MODELS]);
 
   useEffect(() => {
     if (availableModels.length > 0 && !selectedModel) {
-      setSelectedModel(availableModels[0]);
+      setSelectedModel(availableModels[0].id);
     }
   }, [availableModels, selectedModel]);
 

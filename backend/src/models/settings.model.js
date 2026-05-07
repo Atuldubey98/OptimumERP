@@ -144,7 +144,6 @@ const settingSchema = new Schema({
       fields: {
         apiKey: String,
       },
-      models: [String],
       name: {
         type: String,
         required: true,
