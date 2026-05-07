@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select, Icon } from "@chakra-ui/react";
+import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select, Icon, Tooltip } from "@chakra-ui/react";
 import TextareaAutosize from "react-textarea-autosize";
 import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu } from "react-icons/fi";
 import { motion } from "framer-motion";
@@ -132,15 +132,17 @@ const ChatInput = memo(({
                 </Select>
               )}
               {currentModel?.thinking && (
-                <Flex align="center" px={1}>
-                  <Box 
-                    as={motion.div}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Icon as={FiCpu} size="xs" color="purple.400" />
-                  </Box>
-                </Flex>
+                <Tooltip label="Thinking Model" fontSize="xs" placement="top" hasArrow>
+                  <Flex align="center" px={1} cursor="help">
+                    <Box 
+                      as={motion.div}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Icon as={FiCpu} size="xs" color="purple.400" />
+                    </Box>
+                  </Flex>
+                </Tooltip>
               )}
               <IconButton 
                 aria-label="Send" 
