@@ -115,7 +115,11 @@ module.exports = ({ provider, apiKey }) => {
   const chat = async (model, { messages = [], body, onProgress }) => {
     try {
       const allDownloads = [];
-      while (true) {
+      let iterations = 0;
+      const MAX_ITERATIONS = 10;
+
+      while (iterations < MAX_ITERATIONS) {
+        iterations++;
         if (onProgress) {
           onProgress({ type: "status", message: "Thinking..." });
         }
@@ -180,6 +184,10 @@ module.exports = ({ provider, apiKey }) => {
         }
         return aiMessage;
       }
+      return {
+        role: "assistant",
+        content: "I reached my response limit. Please try simplifying your request.",
+      };
     } catch (error) {
       logger.error(`Critical Chat Flow Error: ${error.message}`);
 
