@@ -1,6 +1,6 @@
 const createPromptBuilder = require("./builder");
 
-const organizationPrompt = ({ organization, preferences }) => {
+const organizationPrompt = ({ organization, preferences, user }) => {
     const builder = createPromptBuilder();
     const routeMap = {
         dashboard: "/:orgId/dashboard",
@@ -72,6 +72,7 @@ TOOL USAGE RULES:
             organization,
             preferences,
             routeMap,
+            currentUser: user,
         });
 };
 

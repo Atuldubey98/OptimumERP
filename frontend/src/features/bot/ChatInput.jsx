@@ -127,7 +127,7 @@ const ChatInput = memo(({
                   iconSize="0"
                 >
                   {availableModels.map((m) => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
+                    <option key={m.id} value={m.id}>{`${m.name}${m.vision ? "-(v)" : ""}`}</option>
                   ))}
                 </Select>
               )}

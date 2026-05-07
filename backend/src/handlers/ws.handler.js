@@ -18,14 +18,14 @@ function getWsHandlers(wss) {
     cacheService.buildKey("orgUserMessages", userId);
 
 
-  const getSessionMessage = async (userId, orgId) => {
-    const key = buildOrgUserMessagesCacheKey(userId);
+  const getSessionMessage = async (user, orgId) => {
+    const key = buildOrgUserMessagesCacheKey(user._id);
 
     return cacheService.getOrSet(
       key,
       async () => {
         logger.debug(
-          `Messages cache miss for org ${orgId} and user ${userId}; returning empty array`,
+          `Messages cache miss for org ${orgId} and user ${user?._id}; returning empty array`,
         );
         const setting = await settingService.getDetailedSettingForOrg(orgId);
         const formattedDate = dateUtils.formatterBySetting(new Date());
@@ -37,6 +37,7 @@ function getWsHandlers(wss) {
               timeZone: setting.timeZone,
               date: formattedDate,
             },
+            user,
           })
           .build();
 
@@ -51,7 +52,7 @@ function getWsHandlers(wss) {
         ttl: ORG_USER_MESSAGES_CACHE_TTL_SECONDS,
         onHit: () => {
           logger.debug(
-            `Messages cache hit for org ${orgId} and user ${userId}`,
+            `Messages cache hit for org ${orgId} and user ${user?._id}`,
           );
         },
       },
@@ -68,7 +69,7 @@ function getWsHandlers(wss) {
 
       const { query } = url.parse(request.url, true);
       const orgId = request.headers["orgid"] || query.orgId;
-      const messages = await getSessionMessage(request.session.user._id, orgId);
+      const messages = await getSessionMessage(request.session?.user, orgId);
 
       const settings = await settingService.getDetailedSettingForOrg(orgId);
       const activeProvider = settings?.aiProviders?.find((p) => p.isActive);

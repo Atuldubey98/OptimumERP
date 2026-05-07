@@ -29,7 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GoOrganization } from "react-icons/go";
 import { IoAdd } from "react-icons/io5";
@@ -56,6 +56,7 @@ import {
 } from "@chakra-ui/react";
 import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 import useStorageUtil from "../../hooks/useStorageUtil";
+import { useParams } from "react-router-dom";
 export default function AdminPage() {
   const { t } = useTranslation("admin");
   const {t : tCommon} = useTranslation("common");
@@ -73,7 +74,8 @@ export default function AdminPage() {
   });
   const { authorizedOrgs, loading, fetchOrgs } = useOrganizations();
   const setting = useContext(SettingContext);
-  const [organization, setOrganization] = useState("");
+  const  { orgId } = useParams();
+  const [organization, setOrganization] = useState(orgId);
   const [orgUsers, setOrgUsers] = useState([]);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { requestAsyncHandler } = useAsyncCall();
@@ -114,8 +116,14 @@ export default function AdminPage() {
         })),
       );
     }),
-    [],
+    [requestAsyncHandler],
   );
+
+  useEffect(() => {
+    if (orgId) {
+      setOrganization(orgId);
+    }
+  }, [orgId]);
 
   const defaultOrganization = {
     name: "",
@@ -149,6 +157,7 @@ export default function AdminPage() {
       if (setting.fetchSetting) setting.fetchSetting();
     },
   });
+
   const bankFormik = useFormik({
     initialValues: {
       name: "",
@@ -181,6 +190,27 @@ export default function AdminPage() {
       setSubmitting(false);
     },
   });
+
+  useEffect(() => {
+    if (organization && authorizedOrgs.length > 0) {
+      const authorizedOrg = authorizedOrgs.find(
+        (authorizedOrg) => authorizedOrg.org._id === organization,
+      );
+      if (authorizedOrg) {
+        const currentOrg = authorizedOrg.org;
+        setValues({
+          ...defaultOrganization,
+          ...currentOrg,
+        });
+        if (currentOrg.bank) {
+          bankFormik.setValues(currentOrg.bank);
+        } else {
+          bankFormik.resetForm();
+        }
+        fetchOrgUsers(organization);
+      }
+    }
+  }, [organization, authorizedOrgs, setValues, fetchOrgUsers]);
   const organizationsOptions = authorizedOrgs.map(({ org, role }) => {
     return {
       label: org.name,
@@ -225,15 +255,6 @@ export default function AdminPage() {
                   )}
                   onChange={({ value }) => {
                     setOrganization(value);
-                    const currentOrg = authorizedOrgs.find(
-                      (authorizedOrg) => authorizedOrg.org._id === value,
-                    ).org;
-                    setValues({
-                      ...defaultOrganization,
-                      ...currentOrg,
-                    });
-                    if (currentOrg.bank) bankFormik.setValues(currentOrg.bank);
-                    fetchOrgUsers(value);
                   }}
                 />
               </FormControl>

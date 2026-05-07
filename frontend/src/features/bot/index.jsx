@@ -50,8 +50,11 @@ const ChatWidget = () => {
   }, [activeProvider, AI_MODELS]);
 
   useEffect(() => {
-    if (availableModels.length > 0 && !selectedModel) {
-      setSelectedModel(availableModels[0].id);
+    if (availableModels.length > 0) {
+      const isValid = availableModels.some(m => m.id === selectedModel);
+      if (!selectedModel || !isValid) {
+        setSelectedModel(availableModels[0].id);
+      }
     }
   }, [availableModels, selectedModel]);
 
