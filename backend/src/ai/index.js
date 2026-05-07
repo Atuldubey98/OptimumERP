@@ -123,8 +123,7 @@ module.exports = ({ provider, apiKey }) => {
         const response = await aiProvider.chat({
           model,
           messages: aiProvider.formatMessages ? aiProvider.formatMessages(messages) : cleanMessages(messages),
-          tools,
-          options: { temperature: 0 },
+          tools
         });
 
         const aiMessage = response.message;
@@ -164,7 +163,6 @@ module.exports = ({ provider, apiKey }) => {
             const finalAiExplanation = await aiProvider.chat({
               model,
               messages: cleanMessages(messages),
-              options: { temperature: 0.3 },
             });
 
             if (allDownloads.length > 0) {
@@ -194,7 +192,6 @@ module.exports = ({ provider, apiKey }) => {
               content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
             },
           ],
-          options: { temperature: 0.3 },
         });
         return errorSummary.message;
       } catch (innerError) {
