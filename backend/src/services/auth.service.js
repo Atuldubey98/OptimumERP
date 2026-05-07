@@ -57,11 +57,7 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
       productCategories: 100,
     },
     platinum: {
-      bot:
-        (Boolean(process.env.OLLAMA_API_KEY) &&
-          Boolean(process.env.OLLAMA_TEXT_MODEL)) ||
-        (process.env.AI_PROVIDER === "grok" &&
-          Boolean(process.env.GROK_API_KEY)),
+      bot: true
     },
   };
   const limits = planLimits[activatedPlan.plan];

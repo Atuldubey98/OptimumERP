@@ -19,6 +19,7 @@ import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 import { GoOrganization } from "react-icons/go";
 import SettingContext from "../../../contexts/SettingContext";
 import useOrganizations from "../../../hooks/useOrganizations";
@@ -29,6 +30,7 @@ import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
 export default function TransactionSettingsPage() {
   const { t } = useTranslation("common");
+  const { orgId } = useParams();
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
   const toast = useToast();
@@ -60,8 +62,9 @@ export default function TransactionSettingsPage() {
     disabled: authOrg.role !== "admin",
   }));
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      organization: "",
+      organization: orgId || "",
       invoice: "",
       quotation: "",
       proformaInvoice: "",

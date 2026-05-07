@@ -13,7 +13,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FiMessageSquare, FiCpu } from "react-icons/fi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useChatSocket } from "../../hooks/useChatSocket";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
@@ -22,6 +22,8 @@ import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import MessageItem from "./MessageItem";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import { FiSettings, FiAlertTriangle } from "react-icons/fi";
+import { Button } from "@chakra-ui/react";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +32,7 @@ const ChatWidget = () => {
   const scrollRef = useRef(null);
   const fileInputRef = useRef(null);
   const { orgId } = useParams();
+  const navigate = useNavigate();
 
   const { messages, isConnected, isTyping, statusMsg, sendMessage } = useChatSocket(orgId);
   const { setting } = useCurrentOrgCurrency();
@@ -160,7 +163,34 @@ const ChatWidget = () => {
                 {/* Messages Area */}
                 <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>
                   <VStack align="stretch" spacing={4} minHeight="100%">
-                    {messages.length === 0 ? (
+                    {!activeProvider ? (
+                      <Flex 
+                        direction="column" 
+                        align="center" 
+                        justify="center" 
+                        flex="1" 
+                        py={20}
+                        px={10}
+                        textAlign="center"
+                      >
+                        <Icon as={FiAlertTriangle} fontSize="4xl" color="orange.400" mb={4} />
+                        <Text fontWeight="600" fontSize="md" mb={2}>AI Setup Required</Text>
+                        <Text fontSize="xs" color="gray.500" mb={6}>
+                          No AI providers are configured or active for this organization. Please set up a provider to start chatting.
+                        </Text>
+                        <Button 
+                          leftIcon={<FiSettings />} 
+                          colorScheme="blue" 
+                          size="sm" 
+                          onClick={() => {
+                            setIsOpen(false);
+                            navigate(`/${orgId}/application`);
+                          }}
+                        >
+                          Go to Settings
+                        </Button>
+                      </Flex>
+                    ) : messages.length === 0 ? (
                       <Flex 
                         direction="column" 
                         align="center" 
@@ -207,7 +237,7 @@ const ChatWidget = () => {
                   stopListening={stopListening}
                   fileInputRef={fileInputRef}
                   handleFileChange={handleFileChange}
-                  isConnected={isConnected}
+                  isConnected={isConnected && !!activeProvider}
                   isTyping={isTyping}
                   selectedModel={selectedModel}
                   setSelectedModel={setSelectedModel}
