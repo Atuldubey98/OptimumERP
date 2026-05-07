@@ -51,6 +51,9 @@ export default function ProformaInvoicesPage() {
   } = useDateFilterFetch({
     entity: "proformaInvoices",
     storageKey: "dateFilter:proformaInvoices",
+    extraParams: {
+      select: "num date party status total totalTax shippingCharges org",
+    },
   });
   const loading = status === "loading";
   const navigate = useNavigate();

@@ -49,6 +49,9 @@ export default function InvoicesPage() {
   } = useDateFilterFetch({
     entity: "invoices",
     storageKey: "dateFilter:invoices",
+    extraParams: {
+      select: "num date party status total totalTax shippingCharges org",
+    },
   });
   const loading = status === "loading";
   const navigate = useNavigate();

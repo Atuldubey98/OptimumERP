@@ -82,7 +82,10 @@ export default function VouchersPage() {
   } = useDateFilterFetch({
     entity: "paymentVouchers",
     storageKey: "dateFilter:vouchers",
-    extraParams,
+    extraParams: {
+      ...extraParams,
+      select: "num date party voucherType refDoc refDocModel amount paymentMode org",
+    },
   });
   
   const loading = status === "loading";

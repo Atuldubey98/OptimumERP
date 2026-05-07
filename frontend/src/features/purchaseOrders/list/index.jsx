@@ -47,6 +47,9 @@ export default function PurchaseOrderPage() {
   } = useDateFilterFetch({
     entity: "purchaseOrders",
     storageKey: "dateFilter:purchaseOrders",
+    extraParams: {
+      select: "num date party status total totalTax shippingCharges org",
+    },
   });
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const loading = status === "loading";

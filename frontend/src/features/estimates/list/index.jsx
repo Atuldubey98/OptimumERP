@@ -42,6 +42,9 @@ export default function EstimatesPage() {
   } = useDateFilterFetch({
     entity: "quotes",
     storageKey: "dateFilter:quotes",
+    extraParams: {
+      select: "num date party status total totalTax org",
+    },
   });
   const loading = status === "loading";
   const estimateTableMapper = (estimate) => ({
