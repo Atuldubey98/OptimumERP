@@ -17,7 +17,7 @@ import React, { useRef } from "react";
 import { CiFilter } from "react-icons/ci";
 import { useTranslation } from "react-i18next";
 
-export default function FilterPopoverWrapper({ children, title }) {
+export default function FilterPopoverWrapper({ children, title, isFiltered }) {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const filterRef = useRef(null);
   const { t } = useTranslation("common");
@@ -36,14 +36,30 @@ export default function FilterPopoverWrapper({ children, title }) {
         isLazy
       >
         <PopoverTrigger>
-          <IconButton 
-            size="sm" 
-            icon={<CiFilter size={20} />} 
-            onClick={onToggle}
-            colorScheme={isOpen ? "blue" : "gray"}
-            variant={isOpen ? "solid" : "outline"}
-            aria-label="Toggle Filters"
-          />
+          <Box position="relative" display="inline-block" cursor="pointer">
+            <IconButton 
+              size="sm" 
+              icon={<CiFilter size={20} />} 
+              onClick={onToggle}
+              colorScheme={isOpen ? "blue" : "gray"}
+              variant={isOpen ? "solid" : "outline"}
+              aria-label="Toggle Filters"
+              as="div"
+            />
+            {isFiltered && (
+              <Box
+                position="absolute"
+                top="-2px"
+                right="-2px"
+                width="10px"
+                height="10px"
+                bg="red.500"
+                borderRadius="full"
+                border="2px solid white"
+                zIndex="docked"
+              />
+            )}
+          </Box>
         </PopoverTrigger>
         <PopoverContent 
           p={0} 

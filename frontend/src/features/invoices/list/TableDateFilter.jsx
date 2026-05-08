@@ -52,7 +52,10 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
         <SearchItem />
       </Box>
       <Box>
-        <FilterPopoverWrapper title={t("common_ui.filters")}>
+        <FilterPopoverWrapper 
+          title={t("common_ui.filters")}
+          isFiltered={!!dateFilter.num}
+        >
           <Stack spacing={4}>
             <FormControl size="sm">
               <FormLabel fontSize="xs" fontWeight="bold" mb={1}>
