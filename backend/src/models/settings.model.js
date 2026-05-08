@@ -162,6 +162,36 @@ const settingSchema = new Schema({
       message: (props) => `${props.path} exceeds the limit of 3 AI providers`,
     },
   },
+  smtpProviders: {
+    type: [
+      {
+        provider: {
+          type: String,
+          enum: ["gmail", "brevo"],
+        },
+        fields: {
+          user: String,
+          pass: String,
+          port: Number,
+          secure: Boolean,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        isActive: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
+    validate: {
+      validator: function (v) {
+        return v.length <= 3;
+      },
+      message: (props) => `${props.path} exceeds the limit of 3 SMTP providers`,
+    },
+  },
 });
 
 settingSchema.index({ org: 1, "aiProviders.name": 1 }, { unique: true });

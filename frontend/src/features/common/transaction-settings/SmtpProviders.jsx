@@ -29,17 +29,18 @@ import {
   Divider,
   Switch,
   Tooltip,
+  Checkbox,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { FiPlus, FiTrash2, FiCpu, FiKey } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMail, FiKey } from "react-icons/fi";
 import instance from "../../../instance";
 import useProperty from "../../../hooks/useProperty";
 import SettingContext from "../../../contexts/SettingContext";
 
-export default function AiProviders({ formik }) {
+export default function SmtpProviders({ formik }) {
   const { t } = useTranslation("common");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,7 +52,7 @@ export default function AiProviders({ formik }) {
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
 
-  const { value: availableProviders = [] } = useProperty("AI_PROVIDERS");
+  const { value: availableProviders = [] } = useProperty("SMTP_PROVIDERS");
 
   const fetchOrgSettings = async () => {
     if (!formik.values.organization) return;
@@ -64,7 +65,7 @@ export default function AiProviders({ formik }) {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to fetch AI providers",
+        description: "Failed to fetch SMTP providers",
         status: "error",
       });
     } finally {
@@ -79,11 +80,11 @@ export default function AiProviders({ formik }) {
   const handleToggleActive = async (providerId) => {
     try {
       await instance.patch(
-        `/api/v1/organizations/${formik.values.organization}/settings/ai-providers/${providerId}/active`
+        `/api/v1/organizations/${formik.values.organization}/settings/smtp-providers/${providerId}/active`
       );
       toast({
         title: "Success",
-        description: "Active provider switched",
+        description: "Active SMTP provider switched",
         status: "success",
       });
       fetchOrgSettings();
@@ -93,7 +94,7 @@ export default function AiProviders({ formik }) {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to switch provider",
+        description: "Failed to switch SMTP provider",
         status: "error",
       });
     }
@@ -108,7 +109,7 @@ export default function AiProviders({ formik }) {
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
         await instance.post(
-          `/api/v1/organizations/${formik.values.organization}/settings/ai-providers`,
+          `/api/v1/organizations/${formik.values.organization}/settings/smtp-providers`,
           {
             name: values.name,
             provider: values.provider,
@@ -117,7 +118,7 @@ export default function AiProviders({ formik }) {
         );
         toast({
           title: "Success",
-          description: "AI Provider added successfully",
+          description: "SMTP Provider added successfully",
           status: "success",
         });
         resetForm();
@@ -129,7 +130,7 @@ export default function AiProviders({ formik }) {
       } catch (error) {
         toast({
           title: "Error",
-          description: error.response?.data?.message || "Failed to add provider",
+          description: error.response?.data?.message || "Failed to add SMTP provider",
           status: "error",
         });
       } finally {
@@ -141,11 +142,11 @@ export default function AiProviders({ formik }) {
   const handleDelete = async (providerId) => {
     try {
       await instance.delete(
-        `/api/v1/organizations/${formik.values.organization}/settings/ai-providers/${providerId}`
+        `/api/v1/organizations/${formik.values.organization}/settings/smtp-providers/${providerId}`
       );
       toast({
         title: "Success",
-        description: "AI Provider removed successfully",
+        description: "SMTP Provider removed successfully",
         status: "success",
       });
       fetchOrgSettings();
@@ -155,7 +156,7 @@ export default function AiProviders({ formik }) {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to remove provider",
+        description: "Failed to remove SMTP provider",
         status: "error",
       });
     }
@@ -163,20 +164,21 @@ export default function AiProviders({ formik }) {
 
   const providerOptions = availableProviders.map((p) => ({
     label: p.name,
-    value: p.value,
+    value: p.provider,
   }));
 
-  const providers = currentSettings?.setting?.aiProviders || [];
+  
+  const providers = currentSettings?.setting?.smtpProviders || [];
 
   return (
     <Stack spacing={4}>
       <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">
         <HStack spacing={3}>
-          <FiCpu size={20} />
-          <Heading fontSize={"lg"}>AI Providers</Heading>
+          <FiMail size={20} />
+          <Heading fontSize={"lg"}>SMTP Providers</Heading>
         </HStack>
         <Tooltip 
-          label={providers.length >= 3 ? "Maximum limit of 3 AI providers reached" : ""}
+          label={providers.length >= 3 ? "Maximum limit of 3 SMTP providers reached" : ""}
           isDisabled={providers.length < 3}
         >
           <Button
@@ -196,7 +198,8 @@ export default function AiProviders({ formik }) {
           <Thead bg={useColorModeValue("gray.50", "whiteAlpha.50")}>
             <Tr>
               <Th py={4}>Name</Th>
-              <Th py={4}>Provider</Th>
+              <Th py={4}>Engine</Th>
+              <Th py={4}>User/Email</Th>
               <Th py={4}>Active</Th>
               <Th py={4} textAlign="right">Actions</Th>
             </Tr>
@@ -207,10 +210,11 @@ export default function AiProviders({ formik }) {
                 <Tr key={provider._id}>
                   <Td fontWeight="600">{provider.name}</Td>
                   <Td>
-                    <Badge colorScheme="purple" variant="subtle">
+                    <Badge colorScheme="green" variant="subtle">
                       {provider.provider}
                     </Badge>
                   </Td>
+                  <Td>{provider.fields?.user}</Td>
                   <Td>
                     <Switch 
                       colorScheme="blue" 
@@ -234,8 +238,8 @@ export default function AiProviders({ formik }) {
               ))
             ) : (
               <Tr>
-                <Td colSpan={4} py={8} textAlign="center">
-                  <Text color="gray.500">No AI providers configured yet.</Text>
+                <Td colSpan={5} py={8} textAlign="center">
+                  <Text color="gray.500">No SMTP providers configured yet. Using system default.</Text>
                 </Td>
               </Tr>
             )}
@@ -249,17 +253,17 @@ export default function AiProviders({ formik }) {
           <ModalHeader borderBottomWidth="1px" borderColor={borderColor}>
             <HStack spacing={2}>
               <FiPlus color="blue" />
-              <Text fontSize="lg">Add AI Provider</Text>
+              <Text fontSize="lg">Add SMTP Provider</Text>
             </HStack>
           </ModalHeader>
           <ModalBody py={6}>
-            <form id="add-provider-form" onSubmit={addFormik.handleSubmit}>
+            <form id="add-smtp-form" onSubmit={addFormik.handleSubmit}>
               <Stack spacing={4}>
                 <FormControl isRequired>
-                  <FormLabel fontSize="sm">Provider Name</FormLabel>
+                  <FormLabel fontSize="sm">Configuration Name</FormLabel>
                   <Input
                     name="name"
-                    placeholder="e.g. My Grok Service"
+                    placeholder="e.g. Sales Team Gmail"
                     size="sm"
                     value={addFormik.values.name}
                     onChange={addFormik.handleChange}
@@ -268,16 +272,20 @@ export default function AiProviders({ formik }) {
                 </FormControl>
 
                 <FormControl isRequired>
-                  <FormLabel fontSize="sm">AI Engine</FormLabel>
+                  <FormLabel fontSize="sm">SMTP Engine</FormLabel>
                   <Select
                     options={providerOptions}
                     size="sm"
-                    placeholder="Select provider..."
+                    placeholder="Select engine..."
                     value={providerOptions.find(o => o.value === addFormik.values.provider)}
                     onChange={(option) => {
                       addFormik.setFieldValue("provider", option.value);
-                      // Reset fields when provider changes
-                      addFormik.setFieldValue("fields", {});
+                      const provider = availableProviders.find(p => p.provider === option.value);
+                      const initialFields = {};
+                      provider?.fields?.forEach(f => {
+                          initialFields[f.name] = f.default !== undefined ? f.default : "";
+                      });
+                      addFormik.setFieldValue("fields", initialFields);
                     }}
                     chakraStyles={{
                       control: (provided) => ({
@@ -293,27 +301,36 @@ export default function AiProviders({ formik }) {
                   <>
                     <Divider />
                     <Text fontSize="xs" fontWeight="bold" color="gray.500" textTransform="uppercase">
-                      Provider Configuration
+                      Authentication & Server Settings
                     </Text>
                     {availableProviders
-                      .find((p) => p.value === addFormik.values.provider)
+                      .find((p) => p.provider === addFormik.values.provider)
                       ?.fields?.map((field) => (
-                        <FormControl key={field.label || field.value} isRequired>
-                          <FormLabel fontSize="sm">{field.name}</FormLabel>
-                          <Input
-                            name={`fields.${field.label || field.value || field.name}`}
-                            type={
-                              (field.label || field.value || field.name || "").toLowerCase().includes("key") || 
-                              (field.label || field.value || field.name || "").toLowerCase().includes("secret") 
-                                ? "password" 
-                                : "text"
-                            }
-                            placeholder={`Enter ${(field.name || field.label || "value").toLowerCase()}`}
-                            size="sm"
-                            value={addFormik.values.fields?.[field.label || field.value] || ""}
-                            onChange={addFormik.handleChange}
-                            borderRadius="md"
-                          />
+                        <FormControl key={field.name} isRequired>
+                          {field.type !== "boolean" && (
+                            <FormLabel fontSize="sm">{field.label}</FormLabel>
+                          )}
+                          {field.type === "boolean" ? (
+                              <Checkbox
+                                isChecked={addFormik.values.fields?.[field.name] || false}
+                                onChange={(e) => addFormik.setFieldValue(`fields.${field.name}`, e.target.checked)}
+                              >
+                                {field.label}
+                              </Checkbox>
+                          ) : (
+                              <Input
+                                name={`fields.${field.name}`}
+                                type={field.type}
+                                placeholder={`Enter ${(field.label || "value").toLowerCase()}`}
+                                size="sm"
+                                value={addFormik.values.fields?.[field.name] || ""}
+                                onChange={(e) => {
+                                    const val = field.type === "number" ? Number(e.target.value) : e.target.value;
+                                    addFormik.setFieldValue(`fields.${field.name}`, val);
+                                }}
+                                borderRadius="md"
+                              />
+                          )}
                         </FormControl>
                       ))}
                   </>
@@ -326,14 +343,14 @@ export default function AiProviders({ formik }) {
               Cancel
             </Button>
             <Button
-              form="add-provider-form"
+              form="add-smtp-form"
               type="submit"
               colorScheme="blue"
               isLoading={addFormik.isSubmitting}
               size="sm"
               borderRadius="md"
             >
-              Add Provider
+              Add SMTP Provider
             </Button>
           </ModalFooter>
         </ModalContent>

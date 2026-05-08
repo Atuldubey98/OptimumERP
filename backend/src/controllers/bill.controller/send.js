@@ -4,6 +4,8 @@ const { convertBillToPdfByTemplate } = require("../../services/bill.service");
 const Joi = require("joi");
 const Contact = require("../../models/contacts.model");
 const logger = require("../../logger");
+const smtpService = require("../../services/smtp.service");
+const Setting = require("../../models/settings.model");
 const mailBodyDto = Joi.object({
   to: Joi.array().items(Joi.string()).default([]),
   cc: Joi.array().items(Joi.string()).default([]),
@@ -38,8 +40,11 @@ const send = async (options = {}, req, res) => {
     t,
     language,
   });
-  const info = await transporter.sendMail({
-    from: `"OptimumERP" <${req?.session?.user?.email}>`,
+  const settings = await Setting.findOne({ org: req.params.orgId }).lean();
+  const activeSmtpProvider = settings?.smtpProviders?.find((p) => p.isActive);
+
+  const mailOptions = {
+    from: `"OptimumERP" <${activeSmtpProvider?.fields?.user || req?.session?.user?.email}>`,
     to: toEmails.join(","),
     cc: ccEmails.join(","),
     subject: body.subject,
@@ -50,7 +55,21 @@ const send = async (options = {}, req, res) => {
         content: pdfBuffer,
       },
     ],
-  });
+  };
+
+  let info;
+  if (activeSmtpProvider) {
+    const { send: customSend } = await smtpService.getMailerSetup(activeSmtpProvider);
+    info = await customSend(
+      mailOptions.to,
+      mailOptions.cc,
+      mailOptions.subject,
+      mailOptions.text,
+      mailOptions.attachments
+    );
+  } else {
+    info = await transporter.sendMail(mailOptions);
+  }
   logger.info("Email sent: " + info.messageId);
   logger.info("Sending emails to", toEmails)
 

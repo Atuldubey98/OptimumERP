@@ -126,4 +126,124 @@ const setActive = async (req, res) => {
     });
 };
 
-module.exports = { create, remove, setActive };
+const createSmtp = async (req, res) => {
+    const schema = Joi.object({
+        name: Joi.string().required(),
+        provider: Joi.string().valid("gmail", "brevo").required(),
+        fields: Joi.object({
+            user: Joi.string().required(),
+            pass: Joi.string().required(),
+            port: Joi.number().required(),
+            secure: Joi.boolean().required(),
+        }).required(),
+    });
+
+    const value = await schema.validateAsync(req.body);
+    const org = req.params.orgId;
+    const { name, provider, fields } = value;
+
+    const encryptedPass = encrypt(fields.pass);
+
+    const currentSetting = await Setting.findOne({ org });
+    const isActive = !currentSetting.smtpProviders || currentSetting.smtpProviders.length === 0;
+
+    const result = await Setting.updateOne({ org }, {
+        $push: {
+            smtpProviders: {
+                name,
+                provider,
+                fields: {
+                    ...fields,
+                    pass: encryptedPass
+                },
+                isActive
+            }
+        }
+    });
+
+    if (result.matchedCount === 0) {
+        return res.status(404).json({ success: false, message: "Organization settings not found" });
+    }
+
+    await invalidateSettingCache(org);
+
+    return res.status(201).json({
+        success: true,
+        message: "SMTP Provider added successfully"
+    });
+};
+
+const removeSmtp = async (req, res) => {
+    const { providerId } = req.params;
+    const org = req.params.orgId;
+
+    await executeMongoDbTransaction(async (session) => {
+        const setting = await Setting.findOne({ org }).session(session);
+        if (!setting) {
+            const error = new Error("Organization settings not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const providerToRemove = setting.smtpProviders.find(p => p._id.toString() === providerId);
+        const wasActive = providerToRemove?.isActive;
+
+        await Setting.updateOne({ org }, {
+            $pull: {
+                smtpProviders: { _id: providerId }
+            }
+        }, { session });
+
+        if (wasActive) {
+            const updatedSetting = await Setting.findOne({ org }).session(session);
+            if (updatedSetting.smtpProviders.length > 0) {
+                await Setting.updateOne(
+                    { org, "smtpProviders.0": { $exists: true } },
+                    { $set: { "smtpProviders.0.isActive": true } },
+                    { session }
+                );
+            }
+        }
+    });
+
+    await invalidateSettingCache(org);
+
+    return res.status(200).json({
+        success: true,
+        message: "SMTP Provider removed successfully"
+    });
+};
+
+const setActiveSmtp = async (req, res) => {
+    const { providerId } = req.params;
+    const org = req.params.orgId;
+
+    await executeMongoDbTransaction(async (session) => {
+        await Setting.updateOne(
+            { org },
+            { $set: { "smtpProviders.$[].isActive": false } },
+            { session }
+        );
+
+        const result = await Setting.updateOne(
+            { org, "smtpProviders._id": providerId },
+            { $set: { "smtpProviders.$.isActive": true } },
+            { session }
+        );
+
+        if (result.matchedCount === 0) {
+            const error = new Error("Provider not found");
+            error.statusCode = 404;
+            throw error;
+        }
+    });
+
+    await invalidateSettingCache(org);
+
+    return res.status(200).json({
+        success: true,
+        message: "SMTP Provider activated successfully"
+    });
+};
+
+module.exports = { create, remove, setActive, createSmtp, removeSmtp, setActiveSmtp };

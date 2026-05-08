@@ -1269,5 +1269,68 @@
         }
       ]
     }
+  },
+  {
+    "name": "SMTP_PROVIDERS",
+    "value": [
+      {
+        "name": "Gmail",
+        "provider": "gmail",
+        "host": "smtp.gmail.com",
+        "fields": [
+          {
+            "name": "user",
+            "label": "Email/User",
+            "type": "email"
+          },
+          {
+            "name": "pass",
+            "label": "Password/App Key",
+            "type": "password"
+          },
+          {
+            "name": "secure",
+            "label": "Secure (SSL/TLS)",
+            "type": "boolean",
+            "default": true
+          },
+          {
+            "name": "port",
+            "label": "Port",
+            "type": "number",
+            "default": 465
+          }
+        ]
+      },
+      {
+        "name": "Brevo",
+        "provider": "brevo",
+        "host": "smtp-relay.brevo.com",
+        "fields": [
+          {
+            "name": "user",
+            "label": "SMTP User",
+            "type": "text"
+          },
+          {
+            "name": "pass",
+            "label": "SMTP Key",
+            "type": "password"
+          },
+          {
+            "name": "secure",
+            "label": "Secure",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "port",
+            "label": "Port",
+            "type": "number",
+            "default": 587
+          }
+        ]
+      }
+    ]
   }
 ]

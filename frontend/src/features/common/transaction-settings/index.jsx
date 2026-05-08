@@ -26,6 +26,7 @@ import useOrganizations from "../../../hooks/useOrganizations";
 import instance from "../../../instance";
 import AdminLayout from "../auth-layout/AdminLayout";
 import AiProviders from "./AiProviders";
+import SmtpProviders from "./SmtpProviders";
 import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
 export default function TransactionSettingsPage() {
@@ -168,6 +169,8 @@ export default function TransactionSettingsPage() {
                         />
                         <Divider />
                         <AiProviders formik={formik} />
+                        <Divider />
+                        <SmtpProviders formik={formik} />
                       </Stack>
                     </Box>
                   </TabPanel>
