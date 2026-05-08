@@ -1,6 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
 const Party = require("./party.model");
-const Property = require("./properties.model");
 const invoiceSchema = new Schema(
   {
     party: {
