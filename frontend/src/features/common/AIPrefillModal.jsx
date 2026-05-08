@@ -53,6 +53,7 @@ export default function AIPrefillModal({ isOpen, onClose, onPrefill, type = "inv
   const uploadBg = useColorModeValue("gray.50", "gray.700");
   const uploadHoverBg = useColorModeValue("blue.50", "gray.600");
   const footerBg = useColorModeValue("gray.50", "gray.900");
+  const attachmentNameColor = useColorModeValue("gray.700", "white");
 
   const activeProvider = useMemo(() => {
     return setting?.aiProviders?.find((p) => p.isActive);
@@ -243,7 +244,7 @@ export default function AIPrefillModal({ isOpen, onClose, onPrefill, type = "inv
                       />
                     </Box>
                     <VStack spacing={0}>
-                      <Text fontWeight="bold" fontSize="md" color={useColorModeValue("gray.700", "white")}>
+                      <Text fontWeight="bold" fontSize="md" color={attachmentNameColor}>
                         {attachment.name}
                       </Text>
                       <Text fontSize="xs" color="gray.500">

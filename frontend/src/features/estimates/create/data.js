@@ -35,6 +35,7 @@ const defaultQuoteItem = {
   tax: "",
   price: 0,
   code: "",
+  product: null,
 };
 const defaultInvoiceItem = {
   name: "",
@@ -43,6 +44,7 @@ const defaultInvoiceItem = {
   um: "none",
   tax: "",
   price: 0,
+  product: null,
 };
 function calculateGrandTotalWithTax({ quoteItems, taxes, shippingCharges = 0 }) {
   let grandTotal = 0;

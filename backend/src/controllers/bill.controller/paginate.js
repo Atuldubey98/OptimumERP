@@ -10,8 +10,17 @@ const paginate = async (options = {}, req, res) => {
       modelName: entities.INVOICES,
       model: Bill,
     });
-  const bills = await Bill.find(filter)
-    .sort({ createdAt: -1 })
+  let query = Bill.find(filter);
+
+  if (filter && filter.$text) {
+    query = query
+      .select({ score: { $meta: "textScore" } })
+      .sort({ score: { $meta: "textScore" } });
+  } else {
+    query = query.sort({ createdAt: -1 });
+  }
+
+  const bills = await query
     .populate("party")
     .populate("org")
     .select(req.query.select)

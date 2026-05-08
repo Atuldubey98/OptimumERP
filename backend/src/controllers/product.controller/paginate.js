@@ -13,10 +13,19 @@ const paginate = async (req, res) => {
       model: Product,
       modelName: entities.PRODUCTS,
     });
-  const products = await Product.find(filter)
+  let query = Product.find(filter);
+
+  if (filter && filter.$text) {
+    query = query
+      .select({ score: { $meta: "textScore" } })
+      .sort({ score: { $meta: "textScore" } });
+  } else {
+    query = query.sort({ createdAt: -1 });
+  }
+
+  const products = await query
     .skip(skip)
     .limit(limit)
-    .sort({ createdAt: -1 })
     .populate("category")
     .populate("um")
     .lean()

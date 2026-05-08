@@ -93,11 +93,12 @@ const upsertBill = async (params) => {
   try {
     const modelProps = models[params.type];
     const { Bill, prefixType } = modelProps;
+    let party;
     const makeRequestBody = async () => {
       logger.info("Bill details ", params);
       logger.info(`Executing ${params?.billId ? "Edit" : "Create"} flow`);
 
-      const party = await partyService.upsert({
+      party = await partyService.upsert({
         ...params,
         ...(params.partyDetails || {}),
       });

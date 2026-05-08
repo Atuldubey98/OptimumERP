@@ -117,6 +117,7 @@ module.exports = ({ provider, apiKey }) => {
       const allDownloads = [];
       let iterations = 0;
       const MAX_ITERATIONS = 10;
+      const toolCallHistory = new Set();
 
       while (iterations < MAX_ITERATIONS) {
         iterations++;
@@ -135,6 +136,17 @@ module.exports = ({ provider, apiKey }) => {
         messages.push(aiMessage);
 
         if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
+          const currentCalls = aiMessage.tool_calls.map(tc => 
+            `${tc.function.name}:${typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments)}`
+          );
+
+          if (currentCalls.some(call => toolCallHistory.has(call))) {
+            logger.warn("Duplicate tool call loop detected. Stopping AI flow.");
+            return aiMessage;
+          }
+
+          currentCalls.forEach(call => toolCallHistory.add(call));
+
           const toolResults = await executeTools({
             toolCalls: aiMessage.tool_calls,
             body,
