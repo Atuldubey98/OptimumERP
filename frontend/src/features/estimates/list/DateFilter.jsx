@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Grid, Input } from "@chakra-ui/react";
+import { FormControl, FormLabel, Stack, Input } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 export default function DateFilter({
@@ -8,9 +8,11 @@ export default function DateFilter({
 }) {
   const { t } = useTranslation("common");
   return (
-    <>
+    <Stack spacing={3}>
       <FormControl size={"sm"} isRequired={isRequired}>
-        <FormLabel fontWeight={"bold"}>{t("common_ui.date_filter.start_date")}</FormLabel>
+        <FormLabel fontSize="xs" fontWeight={"bold"} mb={1}>
+          {t("common_ui.date_filter.start_date")}
+        </FormLabel>
         <Input
           name="startDate"
           value={dateFilter.startDate}
@@ -18,10 +20,13 @@ export default function DateFilter({
           placeholder={t("common_ui.date_filter.placeholder")}
           type="date"
           size={"sm"} 
+          borderRadius="md"
         />
       </FormControl>
       <FormControl size={"sm"} isRequired={isRequired}>
-        <FormLabel fontWeight={"bold"}>{t("common_ui.date_filter.end_date")}</FormLabel>
+        <FormLabel fontSize="xs" fontWeight={"bold"} mb={1}>
+          {t("common_ui.date_filter.end_date")}
+        </FormLabel>
         <Input
           value={dateFilter.endDate}
           placeholder={t("common_ui.date_filter.placeholder")}
@@ -29,8 +34,9 @@ export default function DateFilter({
           size={"sm"}
           name="endDate"
           onChange={onChangeDateFilter}
+          borderRadius="md"
         />
       </FormControl>
-    </>
+    </Stack>
   );
 }

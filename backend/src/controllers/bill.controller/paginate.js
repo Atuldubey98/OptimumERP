@@ -3,7 +3,7 @@ const { getPaginationParams, hasUserReachedCreationLimits } = require("../../ser
 
 const paginate = async (options = {}, req, res) => {
   const { Bill } = options;
-  const { filter, skip, limit, total, totalPages, page } =
+  const { filter, skip, limit, total, totalPages, page, hasTextSearch } =
     await getPaginationParams({
       query: req.query,
       params: req.params,
@@ -12,7 +12,7 @@ const paginate = async (options = {}, req, res) => {
     });
   let query = Bill.find(filter);
 
-  if (filter && filter.$text) {
+  if (hasTextSearch) {
     query = query
       .select({ score: { $meta: "textScore" } })
       .sort({ score: { $meta: "textScore" } });

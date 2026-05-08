@@ -151,9 +151,9 @@ const proformaInvoiceSchema = new Schema({
 });
 
 proformaInvoiceSchema.index({
-  num: "text",
   description: "text",
 });
+proformaInvoiceSchema.index({ num: 1 });
 proformaInvoiceSchema.index({ org: 1, createdAt: -1 });
 proformaInvoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },

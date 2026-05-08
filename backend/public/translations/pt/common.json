@@ -160,6 +160,7 @@
       }
     },
     "organization": "Organização",
+    "filters": "Filtros",
     "select_organization": "Selecionar Organização",
     "organizations": {
       "subheading": "Alterne entre suas organizações, revise a disponibilidade do plano e volte ao faturamento sem precisar procurar nas configurações.",
@@ -186,7 +187,9 @@
     "search": {
       "placeholder": "Buscar",
       "by_description": "Buscar por descrição",
-      "parties": "Buscar contatos"
+      "parties": "Buscar contatos",
+      "document_no": "Nº do Documento",
+      "doc_no_placeholder": "Buscar por número..."
     },
     "date_filter": {
       "start_date": "Data de início",

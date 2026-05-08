@@ -160,6 +160,7 @@
       }
     },
     "organization": "Organization",
+    "filters": "Filters",
     "select_organization": "Select Organization",
     "organizations": {
       "subheading": "Switch between your organizations, review plan availability, and jump back into billing without hunting through settings.",
@@ -186,7 +187,9 @@
     "search": {
       "placeholder": "Search",
       "by_description": "Search by description",
-      "parties": "Search parties"
+      "parties": "Search parties",
+      "document_no": "Document No.",
+      "doc_no_placeholder": "Search by number..."
     },
     "date_filter": {
       "start_date": "Start Date",

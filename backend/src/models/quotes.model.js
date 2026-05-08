@@ -143,8 +143,8 @@ const quoteSchema = new Schema(
 );
 quoteSchema.index({
   description: "text",
-  num: "text",
 });
+quoteSchema.index({ num: 1 });
 quoteSchema.index({ org: 1, createdAt: -1 });
 quoteSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },

@@ -56,6 +56,7 @@ exports.getPaginationParams = async ({
           $gte: new Date(query.startDate),
           $lte: new Date(query.endDate),
         };
+      if (query.num) filter.num = query.num;
       if (isValidObjectId(query.refDoc)) filter.refDoc = query.refDoc;
       if (query.refDocModel) filter.refDocModel = query.refDocModel;
       break;
@@ -64,7 +65,8 @@ exports.getPaginationParams = async ({
   }
   const total = shouldPaginate ? await model.countDocuments(filter) : 0;
   const totalPages = Math.ceil(total / limit);
-  return { filter, page, limit, skip, total, totalPages };
+  const hasTextSearch = !!(query.search);
+  return { filter, page, limit, skip, total, totalPages, hasTextSearch };
 };
 
 exports.hasUserReachedCreationLimits = ({

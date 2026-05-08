@@ -170,8 +170,8 @@ const invoiceSchema = new Schema(
 );
 invoiceSchema.index({
   description: "text",
-  num: "text",
 });
+invoiceSchema.index({ num: 1 });
 invoiceSchema.index({ org: 1, createdAt: -1 });
 invoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },

@@ -6,7 +6,7 @@ const {
 const Product = require("../../models/product.model");
 
 const paginate = async (req, res) => {
-  const { filter, limit, page, skip, total, totalPages } =
+  const { filter, limit, page, skip, total, totalPages, hasTextSearch } =
     await getPaginationParams({
       query : req.query,
       params :req.params,
@@ -15,7 +15,7 @@ const paginate = async (req, res) => {
     });
   let query = Product.find(filter);
 
-  if (filter && filter.$text) {
+  if (hasTextSearch) {
     query = query
       .select({ score: { $meta: "textScore" } })
       .sort({ score: { $meta: "textScore" } });

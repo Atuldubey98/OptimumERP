@@ -94,10 +94,10 @@ const paymentVoucherSchema = new Schema(
 
 paymentVoucherSchema.index({ org: 1, createdAt: -1 });
 paymentVoucherSchema.index({
-  "financialYear.start":1,
-  "financialYear.end":-1,
-  num: "text",
+  "financialYear.start": 1,
+  "financialYear.end": -1,
 });
+paymentVoucherSchema.index({ num: 1 });
 
 const PaymentVoucher = model("payment_voucher", paymentVoucherSchema);
 

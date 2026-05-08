@@ -142,8 +142,8 @@ const purchaseInvoice = new Schema(
 );
 purchaseInvoice.index({
   description: "text",
-  num: "text",
 });
+purchaseInvoice.index({ num: 1 });
 purchaseInvoice.index({ org: 1, createdAt: -1 });
 
 const Purchase = model("purchase", purchaseInvoice);

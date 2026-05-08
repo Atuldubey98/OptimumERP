@@ -152,9 +152,9 @@ const purchaseOrderSchema = new Schema(
   }
 );
 purchaseOrderSchema.index({
-  num: "text",
   description: "text",
 });
+purchaseOrderSchema.index({ num: 1 });
 purchaseOrderSchema.index({ org: 1, createdAt: -1 });
 purchaseOrderSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },

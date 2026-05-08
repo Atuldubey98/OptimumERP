@@ -26,6 +26,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
   const defaultDateFilter = {
     startDate: monthAgo.format("YYYY-MM-DD"),
     endDate: today.format("YYYY-MM-DD"),
+    num: "",
   };
   const scopedStorageKey = storageKey
     ? `${storageKey}:${orgId || "default"}`
@@ -52,6 +53,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
       return {
         startDate: parsedDateFilter.startDate,
         endDate: parsedDateFilter.endDate,
+        num: parsedDateFilter.num || "",
       };
     } catch (error) {
       return defaultDateFilter;
@@ -66,6 +68,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
           search: searchQuery,
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
+          num: dateFilter.num,
           page,
           ...extraParams,
         },

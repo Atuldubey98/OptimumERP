@@ -182,14 +182,14 @@ const upsertBill = async (params) => {
           product: item.productId,
         });
       });
-      const terms = (setting?.receiptDefaults?.terms||{})[prefixType]
+      const terms = (setting?.receiptDefaults?.terms || {})[prefixType]
       return {
         party: params.partyId,
         billingAddress: party.billingAddress,
         items,
         terms,
         date: params.date || new Date().toISOString().split("T")[0],
-        prefix: (setting?.transactionPrefix||{})[prefixType] ||"",
+        prefix: (setting?.transactionPrefix || {})[prefixType] || "",
         org: params.org,
         sequence,
         createdBy: params.createdBy,
@@ -202,7 +202,7 @@ const upsertBill = async (params) => {
       };
     };
 
-   
+
 
     if (!Bill) throw new Error("Invalid bill type");
 
