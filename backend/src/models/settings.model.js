@@ -135,25 +135,33 @@ const settingSchema = new Schema({
       proformaInvoice: termsSchema,
     },
   },
-  aiProviders: [
-    {
-      provider: {
-        type: String,
-        enum: ["grok", "ollama"]
+  aiProviders: {
+    type: [
+      {
+        provider: {
+          type: String,
+          enum: ["grok", "ollama"],
+        },
+        fields: {
+          apiKey: String,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        isActive: {
+          type: Boolean,
+          default: false,
+        },
       },
-      fields: {
-        apiKey: String,
+    ],
+    validate: {
+      validator: function (v) {
+        return v.length <= 3;
       },
-      name: {
-        type: String,
-        required: true,
-      },
-      isActive: {
-        type: Boolean,
-        default: false
-      }
-    }
-  ]
+      message: (props) => `${props.path} exceeds the limit of 3 AI providers`,
+    },
+  },
 });
 
 settingSchema.index({ org: 1, "aiProviders.name": 1 }, { unique: true });

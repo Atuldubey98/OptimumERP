@@ -28,6 +28,7 @@ import {
   HStack,
   Divider,
   Switch,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -174,15 +175,20 @@ export default function AiProviders({ formik }) {
           <FiCpu size={20} />
           <Heading fontSize={"lg"}>AI Providers</Heading>
         </HStack>
-        <Button
-          leftIcon={<FiPlus />}
-          size="sm"
-          colorScheme="blue"
-          onClick={onOpen}
-          isDisabled={!formik.values.organization}
+        <Tooltip 
+          label={providers.length >= 3 ? "Maximum limit of 3 AI providers reached" : ""}
+          isDisabled={providers.length < 3}
         >
-          Add Provider
-        </Button>
+          <Button
+            leftIcon={<FiPlus />}
+            size="sm"
+            colorScheme="blue"
+            onClick={onOpen}
+            isDisabled={!formik.values.organization || providers.length >= 3}
+          >
+            Add Provider
+          </Button>
+        </Tooltip>
       </Flex>
 
       <Box overflowX="auto" borderWidth="1px" borderColor={borderColor} borderRadius="lg" bg={cardBg}>
