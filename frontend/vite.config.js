@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
+import { VitePWA } from 'vite-plugin-pwa'
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), VitePWA({})],
   envDir: "../",
   build: {
     chunkSizeWarningLimit: 600,
@@ -12,19 +12,19 @@ export default defineConfig({
         manualChunks(id) {
           // Core React runtime + all libs that call React.createContext at module init
           if (id.includes('node_modules/react/') ||
-              id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/react-router-dom/') ||
-              id.includes('node_modules/react-error-boundary/') ||
-              id.includes('node_modules/react-i18next/') ||
-              id.includes('node_modules/formik/') ||
-              id.includes('node_modules/yup/')) {
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-router-dom/') ||
+            id.includes('node_modules/react-error-boundary/') ||
+            id.includes('node_modules/react-i18next/') ||
+            id.includes('node_modules/formik/') ||
+            id.includes('node_modules/yup/')) {
             return 'react-vendor'
           }
 
           // Chakra UI + emotion (heavy, but kept together since they're tightly coupled)
           if (id.includes('node_modules/@chakra-ui/') ||
-              id.includes('node_modules/@emotion/') ||
-              id.includes('node_modules/chakra-react-select/')) {
+            id.includes('node_modules/@emotion/') ||
+            id.includes('node_modules/chakra-react-select/')) {
             return 'ui-vendor'
           }
 
@@ -40,7 +40,7 @@ export default defineConfig({
 
           // i18n stack (pure JS, no React.createContext — safe to split)
           if (id.includes('node_modules/i18next') &&
-              !id.includes('node_modules/react-i18next/')) {
+            !id.includes('node_modules/react-i18next/')) {
             return 'i18n-vendor'
           }
 
@@ -48,8 +48,8 @@ export default defineConfig({
 
           // Misc utilities
           if (id.includes('node_modules/axios/') ||
-              id.includes('node_modules/moment/') ||
-              id.includes('node_modules/@fontsource/')) {
+            id.includes('node_modules/moment/') ||
+            id.includes('node_modules/@fontsource/')) {
             return 'utils-vendor'
           }
         },
