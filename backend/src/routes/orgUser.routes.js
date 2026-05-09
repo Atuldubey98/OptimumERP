@@ -27,6 +27,7 @@ const expenseCategoryRouter = require("./expenseCategory.routes");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const taxRouter = require("./tax.routes");
 const umRouter = require("./um.routes");
+const chatRouter = require("./chat.routes");
 
 const orgUserRouter = Router({
   mergeParams: true,
@@ -69,5 +70,6 @@ orgUserRouter.use("/contacts", contactRouter);
 orgUserRouter.use("/proformaInvoices", proformaInvoiceRouter);
 orgUserRouter.use("/paymentVouchers", paymentVoucherRouter);
 orgUserRouter.use("/stats", statsRouter);
+orgUserRouter.use("/chats", chatRouter);
 
 module.exports = orgUserRouter;

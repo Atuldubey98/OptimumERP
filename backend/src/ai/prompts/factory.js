@@ -91,9 +91,23 @@ const prefillPrompt = ({ type, organization }) => {
         `);
 };
 
+const titlePrompt = () => {
+    const builder = createPromptBuilder();
+    return builder
+        .system("You are a helpful assistant that generates short, concise titles for chat conversations.")
+        .instructions(`
+            - Analyze the provided conversation history.
+            - Generate a short, descriptive title (3-5 words max).
+            - The title should reflect the main topic discussed.
+            - Output ONLY the title, no quotes or extra text.
+            - If the conversation is too short, use "General Inquiry".
+        `);
+};
+
 const factory = {
     organizationPrompt,
     prefillPrompt,
+    titlePrompt,
 };
 
 module.exports = factory;

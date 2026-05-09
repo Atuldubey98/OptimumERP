@@ -15,11 +15,12 @@ const bootstrap = async () => {
   const server = http.createServer(app);
   const wss = new ws.Server({ noServer: true });
 
-  const { onClose, onMessage, onUpgrade } = getWsHandler(wss);
+  const { onClose, onMessage, onUpgrade, onConnection } = getWsHandler(wss);
 
   server.on("upgrade", onUpgrade);
 
-  wss.on('connection', (socket, request) => {
+  wss.on('connection', async (socket, request) => {
+    await onConnection(socket, request);
     socket.on("message", (data) => onMessage(socket, data, request));
     socket.on("close", onClose);
   });

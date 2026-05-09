@@ -36,38 +36,6 @@ const MessageItem = memo(({ msg, formatTime }) => {
           overflow="hidden"
         >
           <MarkdownRenderer content={msg.content} />
-          {msg.downloads && msg.downloads.length > 0 && (
-            <Flex wrap="wrap" gap={2} mt={3} pt={2} borderTopWidth="1px" borderColor="whiteAlpha.200" _light={{ borderColor: "gray.100" }}>
-              {msg.downloads.map((download, idx) => (
-                <HStack 
-                  key={idx} 
-                  as="a" 
-                  href={download.url.startsWith("http") ? download.url : `${baseURL}${download.url}`} 
-                  download 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  px={3}
-                  py={1.5}
-                  bg="whiteAlpha.200"
-                  borderRadius="full"
-                  _hover={{ bg: "whiteAlpha.300", transform: "translateY(-1px)" }}
-                  _light={{ 
-                    bg: "gray.100", 
-                    _hover: { bg: "gray.200" },
-                    color: "gray.700"
-                  }}
-                  cursor="pointer"
-                  transition="all 0.2s"
-                  maxW="100%"
-                >
-                  <FiFileText size={12} color="currentColor" />
-                  <Text fontSize="11px" fontWeight="medium" noOfLines={1} isTruncated>
-                    {download.name}
-                  </Text>
-                </HStack>
-              ))}
-            </Flex>
-          )}
         </Box>
         <Text fontSize="10px" color="whiteAlpha.600" _light={{ color: "gray.500" }} px={1}>{formatTime(msg.timestamp)}</Text>
       </VStack>

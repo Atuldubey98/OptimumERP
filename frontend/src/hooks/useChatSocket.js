@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import useAuth from "./useAuth";
+import instance from "../instance";
 
 
 export const useChatSocket = (orgId) => {
@@ -12,7 +13,7 @@ export const useChatSocket = (orgId) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [statusMsg, setStatusMsg] = useState("Assistant is thinking...");
-  
+
   const socket = useRef(null);
   const statusQueue = useRef([]);
   const isProcessingQueue = useRef(false);
@@ -115,6 +116,16 @@ export const useChatSocket = (orgId) => {
     }
   };
 
+  const clearHistory = async (model) => {
+    try {
+      await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, { model });
+      setMessages([]);
+      localStorage.removeItem(`chat_history_${userId}`);
+    } catch (error) {
+      console.error("Failed to clear chat history", error);
+    }
+  };
+
   return {
     messages,
     setMessages,
@@ -122,5 +133,6 @@ export const useChatSocket = (orgId) => {
     isTyping,
     statusMsg,
     sendMessage,
+    clearHistory,
   };
 };

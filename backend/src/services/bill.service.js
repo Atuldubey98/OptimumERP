@@ -490,7 +490,6 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
   logger.info("Country code", setting?.org?.location?.countryCode3);
   const countryMetaEnricher = countryMetaEnrichers[setting.org?.location?.countryCode3] || countryMetaEnrichers.DEFAULT;
   const countryMeta = await countryMetaEnricher();
-  console.log(`Country meta`, countryMeta);
 
   const data = {
     entity: bill,

@@ -2,6 +2,7 @@ const getHandler = require("./handlers");
 const tools = require("./tools");
 const logger = require("../logger");
 const { getProvider } = require("./providers");
+
 const cleanMessages = (messages) => {
   return messages.map((msg) => {
     const cleaned = {
@@ -32,7 +33,6 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     get_product_details: "Searching products...",
     create_product: "Creating item...",
     create_contact: "Creating contact...",
-    get_product_details: "Fetching product details...",
     create_payment_voucher: "Creating payment voucher...",
     find_payment_voucher: "Fetching payment voucher...",
     list_expenses: "Listing expenses...",
@@ -40,6 +40,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     list_expense_categories: "Listing expense categories...",
     create_expense_category: "Creating expense category...",
   };
+
   const toolPromises = toolCalls.map(async (tool) => {
     const toolName = tool.function.name;
     const args = typeof tool.function.arguments === "string"
@@ -71,7 +72,6 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
         org: body.org,
         createdBy: body.createdBy,
       });
-      logger.info("Results from handler ", result);
       return {
         role: "tool",
         content: JSON.stringify({
@@ -82,9 +82,6 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
         tool_call_id: tool.id,
       };
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.log(error);
-      }
       logger.error(`Tool Execution Error [${toolName}]: ${error.message}`);
       return {
         role: "tool",
@@ -100,49 +97,44 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
   return await Promise.all(toolPromises);
 };
 
-
-
-module.exports = ({ provider, apiKey }) => {
+const aiFactory = ({ provider, apiKey }) => {
   const hosts = {
     ollama: process.env.OLLAMA_HOST,
     grok: process.env.GROK_HOST,
-  }
-  const host = hosts[provider]
-  const aiProvider = getProvider(provider, {
-    apiKey,
-    host
-  });
-  const chat = async (model, { messages = [], body, onProgress }) => {
+  };
+  const host = hosts[provider];
+  const aiProvider = getProvider(provider, { apiKey, host });
+
+  const chat = async (model, { messages = [], body, onProgress, options = {} }) => {
     try {
-      const allDownloads = [];
+      const allDownloads = new Map();
       let iterations = 0;
       const MAX_ITERATIONS = 10;
       const toolCallHistory = new Set();
+      const history = [...messages];
 
       while (iterations < MAX_ITERATIONS) {
         iterations++;
-        if (onProgress) {
-          onProgress({ type: "status", message: "Thinking..." });
-        }
+        if (onProgress) onProgress({ type: "status", message: "Thinking..." });
 
         const response = await aiProvider.chat({
           model,
-          messages: aiProvider.formatMessages ? aiProvider.formatMessages(messages) : cleanMessages(messages),
+          messages: aiProvider.formatMessages ? aiProvider.formatMessages(history) : cleanMessages(history),
           tools,
-          options: { temperature: 0 }
+          options: { temperature: 0, ...options }
         });
 
         const aiMessage = response.message;
-        messages.push(aiMessage);
+        history.push(aiMessage);
 
         if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
-          const currentCalls = aiMessage.tool_calls.map(tc => 
+          const currentCalls = aiMessage.tool_calls.map(tc =>
             `${tc.function.name}:${typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments)}`
           );
 
           if (currentCalls.some(call => toolCallHistory.has(call))) {
-            logger.warn("Duplicate tool call loop detected. Stopping AI flow.");
-            return aiMessage;
+            logger.warn("Duplicate tool call loop detected.");
+            return { response: aiMessage, newMessages: history.slice(messages.length) };
           }
 
           currentCalls.forEach(call => toolCallHistory.add(call));
@@ -153,86 +145,72 @@ module.exports = ({ provider, apiKey }) => {
             onProgress,
           });
 
-          messages.push(...toolResults);
+          history.push(...toolResults);
 
           toolResults.forEach((res) => {
             if (res.fullData?.downloads) {
-              allDownloads.push(...res.fullData.downloads);
+              res.fullData.downloads.forEach(d => {
+                if (d.url) allDownloads.set(d.url, d);
+              });
             }
           });
-          logger.info(`Extracted ${allDownloads.length} downloads from tools`);
 
-          const hasError = toolResults.some(
-            (res) => !JSON.parse(res.content).success,
-          );
-
-          if (hasError) {
-            messages.push({
-              role: "user",
-              content:
-                "A tool error occurred. Please explain the issue to the user politely based on the error message provided in the tool results. Suggest how they can adjust their prompt to fix it.",
+          const hasError = toolResults.some(res => !JSON.parse(res.content).success);
+          if (hasError && iterations === MAX_ITERATIONS - 1) {
+            history.push({
+              role: "system",
+              content: "The previous tool call failed. Please explain the error to the user."
             });
-
-            if (onProgress) {
-              onProgress({ type: "status", message: "Resolving error..." });
-            }
-
-            const finalAiExplanation = await aiProvider.chat({
-              model,
-              messages: aiProvider.formatMessages ? aiProvider.formatMessages(messages) : cleanMessages(messages),
-            });
-
-            if (allDownloads.length > 0) {
-              finalAiExplanation.message.downloads = allDownloads;
-            }
-            return finalAiExplanation.message;
           }
-
           continue;
         }
 
-        if (allDownloads.length > 0) {
-          aiMessage.downloads = allDownloads;
+        if (allDownloads.size > 0) {
+          aiMessage.downloads = Array.from(allDownloads.values());
         }
-        return aiMessage;
-      }
-      return {
-        role: "assistant",
-        content: "I reached my response limit. Please try simplifying your request.",
-      };
-    } catch (error) {
-      logger.error(`Critical Chat Flow Error: ${error.message}`);
 
-      try {
-        const errorSummary = await aiProvider.chat({
-          model,
-          messages: aiProvider.formatMessages ? aiProvider.formatMessages([
-            ...messages,
-            {
-              role: "user",
-              content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
-            },
-          ]) : cleanMessages([
-            ...messages,
-            {
-              role: "user",
-              content: `A system error occurred: ${error.message}. Provide a human-readable apology.`,
-            },
-          ]),
-          options: { temperature: 0.3 },
-        });
-        return errorSummary.message;
-      } catch (innerError) {
         return {
-          role: "assistant",
-          content:
-            "I encountered a critical error while processing your request. Please try again later.",
+          response: aiMessage,
+          newMessages: history.slice(messages.length)
         };
       }
+
+      const finalResponse = { role: "assistant", content: "Limit reached. Please simplify request." };
+      return { response: finalResponse, newMessages: [finalResponse] };
+
+    } catch (error) {
+      logger.error(`Critical Chat Flow Error: ${error.message}`);
+      const errorMessage = { role: "assistant", content: "Critical error encountered. Please try again." };
+      return { response: errorMessage, newMessages: [errorMessage] };
     }
   };
+
   return Object.freeze({
     chat,
+    activeProvider: provider,
     processImage: (img) => aiProvider.processImage ? aiProvider.processImage(img) : img,
   });
 };
+
+aiFactory.getAIInstanceForOrg = async (orgId) => {
+  const settingService = require("../services/setting.service");
+  const { decrypt } = require("../services/hashing.service");
+
+  const settings = await settingService.getDetailedSettingForOrg(orgId);
+  const activeProvider = settings?.aiProviders?.find((p) => p.isActive);
+
+  if (!activeProvider) return { ai: null, settings };
+
+  const apiKey = decrypt(activeProvider.fields.apiKey);
+  const providerType = activeProvider.provider;
+
+
+  return {
+    ai: aiFactory({ provider: providerType, apiKey }),
+    settings,
+    activeProviderId: activeProvider._id.toString(),
+    defaultModel: activeProvider.fields.defaultModel
+  };
+};
+
+module.exports = aiFactory;

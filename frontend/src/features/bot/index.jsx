@@ -34,7 +34,7 @@ const ChatWidget = () => {
   const { orgId } = useParams();
   const navigate = useNavigate();
 
-  const { messages, isConnected, isTyping, statusMsg, sendMessage } = useChatSocket(orgId);
+  const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory } = useChatSocket(orgId);
   const { setting } = useCurrentOrgCurrency();
   const [selectedModel, setSelectedModel] = useState("");
 
@@ -125,9 +125,21 @@ const ChatWidget = () => {
   }, []);
 
   const memoizedMessages = useMemo(() => {
-    return messages.map((msg, i) => (
-      <MessageItem key={i} msg={msg} formatTime={formatTime} />
-    ));
+    return (
+      <AnimatePresence initial={false}>
+        {messages.map((msg, i) => (
+          <motion.div
+            key={msg.id || `${i}-${msg.timestamp}`}
+            initial={{ opacity: 0, x: msg.role === "user" ? 20 : -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+            layout
+          >
+            <MessageItem msg={msg} formatTime={formatTime} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    );
   }, [messages, formatTime]);
 
   const toggleOpen = useCallback(() => setIsOpen(prev => !prev), []);
@@ -161,7 +173,7 @@ const ChatWidget = () => {
                 mb={{ base: 0, md: 4 }} 
                 boxShadow="2xl"
               >
-                <ChatHeader isConnected={isConnected} onToggle={toggleOpen} />
+                <ChatHeader isConnected={isConnected} onToggle={toggleOpen} onReset={() => clearHistory(selectedModel)} />
 
                 {/* Messages Area */}
                 <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>
