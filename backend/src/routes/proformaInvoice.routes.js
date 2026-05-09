@@ -15,6 +15,7 @@ const {
   exportData,
   update,
   convertProformaToInvoice,
+  activities,
 } = require("../controllers/proformaInvoice.controller");
 const { updateModel, createModel } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -52,5 +53,6 @@ proformaInvoiceRouter.post(
   checkPlan(["gold", "platinum"]),
   requestAsyncHandler(send)
 );
+proformaInvoiceRouter.get("/:id/activities", requestAsyncHandler(activities));
 
 module.exports = proformaInvoiceRouter;

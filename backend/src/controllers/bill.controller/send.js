@@ -6,6 +6,7 @@ const Contact = require("../../models/contacts.model");
 const logger = require("../../logger");
 const smtpService = require("../../services/smtp.service");
 const Setting = require("../../models/settings.model");
+const logService = require("../../services/log.service");
 const mailBodyDto = Joi.object({
   to: Joi.array().items(Joi.string()).default([]),
   cc: Joi.array().items(Joi.string()).default([]),
@@ -13,7 +14,7 @@ const mailBodyDto = Joi.object({
   subject: Joi.string(),
 });
 const send = async (options = {}, req, res) => {
-  const { NotFound, Bill } = options;
+  const { NotFound, Bill, prefixType } = options;
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
   const body = await mailBodyDto.validateAsync(req.body);
@@ -72,6 +73,15 @@ const send = async (options = {}, req, res) => {
   }
   logger.info("Email sent: " + info.messageId);
   logger.info("Sending emails to", toEmails)
+
+  await logService.recordActivity({
+    org: req.params.orgId,
+    user: req.session.user._id,
+    docModel: prefixType,
+    doc: id,
+    action: "sent",
+    message: `Emailed to ${toEmails.join(", ")} by ${req.session.user.name}`,
+  });
 
   return res.status(201).json({ message: req.t("common:api.attachment_sent") });
 };

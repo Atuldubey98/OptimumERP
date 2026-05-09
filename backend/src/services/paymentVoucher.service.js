@@ -151,30 +151,30 @@ exports.createStandalonePaymentVoucher = async ({ orgId, userId, body, session }
 
 exports.updatePaymentVoucher = async ({ id, orgId, userId, body, session }) => {
   const voucher = await PaymentVoucher.findOne({ _id: id, org: orgId }).session(session);
-  if (!voucher) {
-    throw new Error("Payment voucher not found");
-  }
+  if (!voucher) throw new Error("Payment voucher not found");
 
   const oldAmount = voucher.amount;
-  voucher.amount = body.amount ?? voucher.amount;
-  voucher.paymentMode = body.paymentMode ?? voucher.paymentMode;
-  voucher.description = body.description ?? voucher.description;
-  voucher.date = body.date ?? voucher.date;
-  voucher.party = body.party ?? voucher.party;
+  const fields = ["amount", "paymentMode", "description", "date", "party"];
+  fields.forEach(field => {
+    if (body[field] !== undefined) voucher[field] = body[field];
+  });
   voucher.updatedBy = userId;
 
   await voucher.save({ session });
 
-  const transaction = await Transaction.findOne({ docModel: "payment_voucher", doc: voucher._id }).session(session);
-  if (transaction) {
-    transaction.total = voucher.amount;
-    transaction.date = voucher.date;
-    transaction.party = voucher.party;
-    transaction.voucherType = voucher.voucherType;
-    await transaction.save({ session });
-  }
+  await Transaction.updateOne(
+    { docModel: "payment_voucher", doc: voucher._id, org: orgId },
+    {
+      $set: {
+        total: voucher.amount,
+        date: voucher.date,
+        party: voucher.party,
+        voucherType: voucher.voucherType,
+      }
+    },
+    { session }
+  );
 
-  // If this voucher was linked to a doc, update the doc balance and status
   if (voucher.refDoc && voucher.refDocModel && oldAmount !== voucher.amount) {
     const Model = require(`../models/${voucher.refDocModel}.model`);
     const doc = await Model.findOne({ _id: voucher.refDoc, org: orgId }).session(session);

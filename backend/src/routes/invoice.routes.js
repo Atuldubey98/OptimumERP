@@ -17,6 +17,7 @@ const {
   send,
   read,
   aiPrefill,
+  activities,
 } = require("../controllers/invoice.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
@@ -46,5 +47,6 @@ invoiceRouter.post(
   checkPlan(["gold", "platinum"]),
   requestAsyncHandler(send)
 );
+invoiceRouter.get("/:id/activities", requestAsyncHandler(activities));
 
 module.exports = invoiceRouter;

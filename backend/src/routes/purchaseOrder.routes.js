@@ -19,6 +19,7 @@ const {
   remove,
   update,
   aiPrefill,
+  activities,
 } = require("../controllers/purchaseOrder.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
@@ -48,5 +49,6 @@ purchaseOrderRouter.post(
   checkPlan(["gold", "platinum"]),
   requestAsyncHandler(send)
 );
+purchaseOrderRouter.get("/:id/activities", requestAsyncHandler(activities));
 
 module.exports = purchaseOrderRouter;

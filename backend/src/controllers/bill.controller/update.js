@@ -1,8 +1,9 @@
 const { isValidObjectId } = require("mongoose");
 const logger = require("../../logger");
-const { saveBill } = require("../../services/bill.service");
+const { saveBill, pluckRelevantFields } = require("../../services/bill.service");
 const billTypes = require("../../constants/billTypes");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
+const logService = require("../../services/log.service");
 
 
 const update = async (options = {}, req, res) => {
@@ -22,6 +23,27 @@ const update = async (options = {}, req, res) => {
       billId: req.params.id,
       session,
     });
+    
+    await logService.recordActivity({
+      org: req.params.orgId,
+      user: req.session.user._id,
+      docModel: prefixType,
+      doc: updatedBill._id,
+      action: "updated",
+      message: `${billTypes[Bill.modelName] || Bill.modelName} updated by ${req.session.user.name}`,
+      session
+    });
+
+    await logService.recordAudit({
+      org: req.params.orgId,
+      user: req.session.user._id,
+      docModel: prefixType,
+      doc: updatedBill._id,
+      action: "updated",
+      changes: pluckRelevantFields(updatedBill),
+      session
+    });
+
     logger.info(`${Bill.modelName} updated ${updatedBill.id}`);
     return updatedBill;
   });

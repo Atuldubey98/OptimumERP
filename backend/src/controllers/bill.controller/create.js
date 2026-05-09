@@ -1,8 +1,9 @@
-const { saveBill } = require("../../services/bill.service");
+const { saveBill, pluckRelevantFields } = require("../../services/bill.service");
 const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 const billTypes = require("../../constants/billTypes");
+const logService = require("../../services/log.service");
 
 const create = async (options = {}, req, res) => {
   const { NotFound, Duplicate, dto, Bill, prefixType, relatedDocType } =
@@ -24,6 +25,27 @@ const create = async (options = {}, req, res) => {
       { _id: req.params.orgId },
       { $inc: { [relatedDocTypeKey]: 1 } }
     ).session(session);
+    
+    await logService.recordActivity({
+      org: req.params.orgId,
+      user: req.session.user._id,
+      docModel: prefixType, // e.g., 'invoice'
+      doc: bill._id,
+      action: "created",
+      message: `${billTypes[Bill.modelName] || Bill.modelName} created by ${req.session.user.name}`,
+      session
+    });
+
+    await logService.recordAudit({
+      org: req.params.orgId,
+      user: req.session.user._id,
+      docModel: prefixType,
+      doc: bill._id,
+      action: "created",
+      changes: pluckRelevantFields(bill),
+      session
+    });
+
     logger.info(`${Bill.modelName} created ${bill.id}`);
   });
   const billLabel = billTypes[Bill.modelName] || Bill.modelName;  

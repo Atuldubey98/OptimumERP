@@ -17,7 +17,7 @@ const {
   calculateTaxes,
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
-const { getDisplaySettingForOrg, getDetailedSettingForOrg } = require("./setting.service");
+const { getDetailedSettingForOrg } = require("./setting.service");
 const path = require("path");
 const logger = require("../logger");
 const { moneyUtils } = require("../utils");
@@ -27,6 +27,36 @@ const MODEL_NAME_TO_COUNTER_KEY = {
   purchase_order: "purchaseOrder",
   proforma_invoice: "proformaInvoice",
   sale_order: "saleOrder",
+};
+
+exports.pluckRelevantFields = (bill) => {
+  if (!bill) return {};
+  const {
+    total,
+    totalTax,
+    shippingCharges,
+    status,
+    items,
+    party,
+    date,
+    num,
+    financialYear,
+  } = bill;
+  return {
+    total,
+    totalTax,
+    shippingCharges,
+    status,
+    items: items?.map((item) => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+    party,
+    date,
+    num,
+    financialYear,
+  };
 };
 
 exports.getBill = async ({ Bill, filter, select }) => {

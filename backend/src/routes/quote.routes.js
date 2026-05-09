@@ -21,6 +21,7 @@ const {
   remove,
   update,
   aiPrefill,
+  activities,
 } = require("../controllers/quotes.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const quoteRouter = Router({
@@ -55,6 +56,7 @@ quoteRouter.post(
   checkPlan(["gold", "platinum"]),
   requestAsyncHandler(send)
 );
+quoteRouter.get("/:id/activities", requestAsyncHandler(activities));
 
 
 module.exports = quoteRouter;

@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { CiEdit, CiMail, CiSaveDown2 } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { LiaEyeSolid } from "react-icons/lia";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdHistory } from "react-icons/md";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import instance from "../../../instance";
 import BillModal from "../../estimates/list/BillModal";
@@ -31,6 +31,7 @@ import ReceiptMainAmounts from "./ReceiptMainAmounts";
 import PartyDisplayReceipt from "./PartyDisplayReceipt";
 import ReceiptMenu from "./ReceiptMenu";
 import ReceiptPayment from "./ReceiptPayment";
+import HistoryDrawer from "./HistoryDrawer";
 export default function ReceiptDisplay({ receipt, meta }) {
   const { t, i18n } = useTranslation("common");
   const { type, orgId } = useParams();
@@ -58,6 +59,8 @@ export default function ReceiptDisplay({ receipt, meta }) {
   const { isOpen: isReceiptModalOpen, onToggle: toggleReceiptModal } =
     useDisclosure();
   const { isOpen: isDeleteModalOpen, onToggle: toggleDeleteModal } =
+    useDisclosure();
+  const { isOpen: isHistoryOpen, onOpen: onHistoryOpen, onClose: onHistoryClose } =
     useDisclosure();
   const toast = useToast();
   const navigateToReceiptList = () =>
@@ -128,6 +131,13 @@ export default function ReceiptDisplay({ receipt, meta }) {
       icon: <MdDeleteOutline />,
       label: t("common_ui.actions.delete"),
       onClick: toggleDeleteModal,
+      showForReceipts: [],
+    },
+    {
+      colorScheme: "blue",
+      icon: <MdHistory />,
+      label: t("common_ui.actions.history", { defaultValue: "History" }),
+      onClick: onHistoryOpen,
       showForReceipts: [],
     },
   ];
@@ -264,6 +274,7 @@ export default function ReceiptDisplay({ receipt, meta }) {
         heading={meta.label}
         onClose={toggleReceiptModal}
       />
+      <HistoryDrawer isOpen={isHistoryOpen} onClose={onHistoryClose} />
       {receipt.converted ? (
         <Box>
           <Text>
