@@ -19,6 +19,7 @@ import {
   AlertTitle,
   AlertDescription,
   FormHelperText,
+  Box,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -27,6 +28,8 @@ import { useTranslation } from "react-i18next";
 import instance from "../../instance";
 import { useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
   const { t, i18n } = useTranslation("common");
   const defaultFields = {
@@ -157,11 +160,20 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                 </FormControl>
                 <FormControl>
                   <FormLabel>{t("common_ui.share_mail.body")}</FormLabel>
-                  <Textarea
-                    onChange={formik.handleChange}
-                    name="body"
-                    value={formik.values.body}
-                  />
+                  <Box
+                    className="quill-wrapper"
+                    sx={{
+                      ".ql-editor": {
+                        minHeight: "150px",
+                      },
+                    }}
+                  >
+                    <ReactQuill
+                      theme="snow"
+                      value={formik.values.body}
+                      onChange={(content) => formik.setFieldValue("body", content)}
+                    />
+                  </Box>
                   <FormHelperText>{t("common_ui.share_mail.body_help")}</FormHelperText>
                 </FormControl>
               </Stack>

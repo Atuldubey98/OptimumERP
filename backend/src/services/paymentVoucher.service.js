@@ -116,7 +116,7 @@ exports.addPaymentToDoc = async ({ id, orgId, userId, body, docModel, voucherTyp
   return voucher;
 };
 
-// Keeping for backward compatibility but using new logic
+
 exports.createPaymentVoucherForDoc = async ({ doc, docModel, voucherType, body, userId, session }) => {
   return exports.createPaymentVoucher({
     orgId: doc.org,

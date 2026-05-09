@@ -48,7 +48,7 @@ const send = async (options = {}, req, res) => {
     to: toEmails.join(","),
     cc: ccEmails.join(","),
     subject: body.subject,
-    text: body.body,
+    html: body.body,
     attachments: [
       {
         filename: "Bill.pdf",
@@ -64,7 +64,7 @@ const send = async (options = {}, req, res) => {
       mailOptions.to,
       mailOptions.cc,
       mailOptions.subject,
-      mailOptions.text,
+      mailOptions.html,
       mailOptions.attachments
     );
   } else {

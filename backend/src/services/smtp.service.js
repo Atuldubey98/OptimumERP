@@ -27,7 +27,7 @@ const getMailerSetup = async (activeProviderSetting) => {
                 to,
                 cc,
                 subject,
-                text: body,
+                html: body,
                 attachments
             });
             return info;
