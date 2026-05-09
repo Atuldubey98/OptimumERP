@@ -173,7 +173,12 @@ const ChatWidget = () => {
                 mb={{ base: 0, md: 4 }} 
                 boxShadow="2xl"
               >
-                <ChatHeader isConnected={isConnected} onToggle={toggleOpen} onReset={() => clearHistory(selectedModel)} />
+                <ChatHeader 
+                  isConnected={isConnected} 
+                  onToggle={toggleOpen} 
+                  onReset={() => clearHistory(selectedModel)} 
+                  showReset={messages.length > 0}
+                />
 
                 {/* Messages Area */}
                 <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>

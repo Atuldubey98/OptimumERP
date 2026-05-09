@@ -4,7 +4,7 @@ import { RiRobot2Line } from "react-icons/ri";
 import { FiX, FiRefreshCw } from "react-icons/fi";
 import { motion, useAnimation } from "framer-motion";
 
-const ChatHeader = memo(({ isConnected, onToggle, onReset }) => {
+const ChatHeader = memo(({ isConnected, onToggle, onReset, showReset }) => {
   const controls = useAnimation();
 
   const handleReset = async () => {
@@ -28,19 +28,21 @@ const ChatHeader = memo(({ isConnected, onToggle, onReset }) => {
         </Box>
       </HStack>
       <HStack gap={1}>
-        <IconButton 
-          aria-label="Reset Chat" 
-          variant="ghost" 
-          size="sm" 
-          color="white" 
-          icon={
-            <motion.div animate={controls}>
-              <FiRefreshCw size={16} />
-            </motion.div>
-          } 
-          onClick={handleReset}
-          _hover={{ bg: "whiteAlpha.200" }}
-        />
+        {showReset && (
+          <IconButton 
+            aria-label="Reset Chat" 
+            variant="ghost" 
+            size="sm" 
+            color="white" 
+            icon={
+              <motion.div animate={controls}>
+                <FiRefreshCw size={16} />
+              </motion.div>
+            } 
+            onClick={handleReset}
+            _hover={{ bg: "whiteAlpha.200" }}
+          />
+        )}
         <IconButton aria-label="Close" variant="ghost" size="sm" color="white" icon={<FiX size={18} />} onClick={onToggle} />
       </HStack>
     </Flex>
