@@ -227,7 +227,8 @@
         "expenses": "Expenses",
         "purchase": "Purchase",
         "payment_vouchers": "Payment Vouchers",
-        "items": "Items"
+        "items": "Items",
+        "conversations": "Conversations"
       },
       "settings_links": {
         "admin": "Admin",

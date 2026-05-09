@@ -48,6 +48,7 @@ const InvoicesPage = lazy(() => import("./features/invoices/list"));
 const ReportsPage = lazy(() => import("./features/reports"));
 const ExpensesPage = lazy(() => import("./features/expenses"));
 const VouchersPage = lazy(() => import("./features/vouchers"));
+const ConversationsPage = lazy(() => import("./features/conversations"));
 export default function App() {
   return (
     <Suspense fallback={<FullLoader />}>
@@ -126,6 +127,10 @@ export default function App() {
           <Route path="reports">
             <Route path="" element={<ReportsPage />} />
             <Route path=":reportType" element={<ReportsPage />} />
+          </Route>
+          <Route path="conversations">
+            <Route path="" element={<ConversationsPage />} />
+            <Route path=":chatId" element={<ConversationsPage />} />
           </Route>
           <Route path="paymentVouchers" element={<VouchersPage />} />
           <Route element={<ReceiptPreview />} path="receipt/:type/:id" />

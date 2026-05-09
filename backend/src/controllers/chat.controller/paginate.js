@@ -16,12 +16,14 @@ const paginate = requestAsyncHandler(async (req, res) => {
     .skip(skip)
     .limit(pageSize);
 
+  const page = parseInt(req.query.page) || 1;
+
   return res.status(200).json({
     success: true,
     data: result,
     pagination: {
       total,
-      page: parseInt(page) || 1,
+      page,
       limit: pageSize,
       totalPages,
     },

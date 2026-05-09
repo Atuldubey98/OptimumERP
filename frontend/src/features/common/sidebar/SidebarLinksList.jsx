@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { FiChevronDown, FiChevronRight, FiMessageSquare } from "react-icons/fi";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
@@ -58,6 +58,14 @@ export const SidebarLinksList = ({ onClose }) => {
             icon: HiOutlineDocumentReport,
             link: `/reports/${reportType}`,
             labelKey: "common_ui.sidebar.reports",
+          }}
+          onClose={onClose}
+        />
+        <HeaderLink
+          headerLink={{
+            icon: FiMessageSquare,
+            link: "/conversations",
+            labelKey: "common_ui.sidebar.links.conversations",
           }}
           onClose={onClose}
         />

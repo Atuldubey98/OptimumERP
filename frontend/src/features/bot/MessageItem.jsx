@@ -29,7 +29,7 @@ const MessageItem = memo(({ msg, formatTime }) => {
           _light={{ 
             bg: msg.role === "user" ? "blue.600" : "white", 
             color: msg.role === "user" ? "white" : "gray.800", 
-            borderWidth: msg.role === "ai" ? "1px" : "0px", 
+            borderWidth: msg.role !== "user" ? "1px" : "0px", 
             borderColor: "gray.200" 
           }}
           maxW="100%"
@@ -37,7 +37,9 @@ const MessageItem = memo(({ msg, formatTime }) => {
         >
           <MarkdownRenderer content={msg.content} />
         </Box>
-        <Text fontSize="10px" color="whiteAlpha.600" _light={{ color: "gray.500" }} px={1}>{formatTime(msg.timestamp)}</Text>
+        <Text fontSize="10px" color="whiteAlpha.600" _light={{ color: "gray.500" }} px={1}>
+          {formatTime(msg.timestamp || msg.createdAt)}
+        </Text>
       </VStack>
     </Flex>
   );
