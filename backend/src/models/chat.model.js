@@ -44,6 +44,7 @@ const chatSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
+chatSchema.index({ title: "text" });
 chatSchema.index({ org: 1, user: 1, updatedAt: -1 });
 
 const Chat = model("chat", chatSchema);

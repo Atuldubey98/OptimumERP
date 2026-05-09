@@ -389,6 +389,7 @@
     }
   },
   "errors": {
+    "ChatNotFound": "Conversation not found",
     "ContactNotFound": "Contact does not exist",
     "ExpenseNotFound": "Expense not found",
     "ExpenseCategoryNotDeleted": "{{reason}}",
