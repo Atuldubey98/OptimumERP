@@ -104,7 +104,6 @@ function getWsHandlers(wss) {
 
       if (ws.ai && images.length > 0) {
         images = images.map((img) => ws.ai.processImage(img));
-        logger.info('images', images[0]?.substring(0, 10));
       }
       messages.push({
         role: "user",

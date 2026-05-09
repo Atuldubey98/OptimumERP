@@ -25,11 +25,11 @@ const create = async (options = {}, req, res) => {
       { _id: req.params.orgId },
       { $inc: { [relatedDocTypeKey]: 1 } }
     ).session(session);
-    
+
     await logService.recordActivity({
       org: req.params.orgId,
       user: req.session.user._id,
-      docModel: prefixType, // e.g., 'invoice'
+      docModel: Bill.modelName,
       doc: bill._id,
       action: "created",
       message: `${billTypes[Bill.modelName] || Bill.modelName} created by ${req.session.user.name}`,
@@ -48,7 +48,7 @@ const create = async (options = {}, req, res) => {
 
     logger.info(`${Bill.modelName} created ${bill.id}`);
   });
-  const billLabel = billTypes[Bill.modelName] || Bill.modelName;  
+  const billLabel = billTypes[Bill.modelName] || Bill.modelName;
   logger.info(`${billLabel} created successfully`);
   return res
     .status(201)

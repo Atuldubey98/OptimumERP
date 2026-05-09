@@ -16,7 +16,13 @@ const activitySchema = new Schema(
     docModel: {
       type: String,
       required: true,
-      enum: ["invoice", "purchase", "quote", "proforma_invoice", "purchase_order", "expense", "payment_voucher", "setting"],
+      enum: ["invoice",
+        "purchase",
+        "expense",
+        "quotes",
+        "proforma_invoice",
+        "purchase_order",
+        "payment_voucher"],
     },
     doc: {
       type: Types.ObjectId,
