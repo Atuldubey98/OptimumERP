@@ -10,11 +10,11 @@ const billTools = [
           type: {
             type: "string",
             enum: [
-              "invoices",
-              "purchases",
-              "proformaInvoices",
-              "estimates",
-              "purchaseOrders",
+              "invoice",
+              "purchase",
+              "proforma_invoice",
+              "quotes",
+              "purchase_order",
             ],
             description: "The category of the document.",
           },
@@ -76,6 +76,10 @@ const billTools = [
             type: "string",
             description: "Specific date (YYYY-MM-DD).",
           },
+          partyId: {
+            type: "string",
+            description: "Filter by party ID (MongoDB _id).",
+          },
         },
       },
     },
@@ -92,12 +96,11 @@ const billTools = [
           type: {
             type: "string",
             enum: [
-              "invoices",
-              "purchaseOrders",
-              "estimates",
-              "proformaInvoices",
-              "quotations",
-              "purchases",
+              "invoice",
+              "purchase",
+              "proforma_invoice",
+              "quotes",
+              "purchase_order",
             ],
             description: "The category of the document.",
           },
@@ -126,12 +129,11 @@ const billTools = [
           type: {
             type: "string",
             enum: [
-              "invoices",
-              "purchases",
-              "proformaInvoices",
-              "estimates",
-              "purchaseOrders",
-              "quotations",
+              "invoice",
+              "purchase",
+              "proforma_invoice",
+              "quotes",
+              "purchase_order",
             ],
           },
           partyId: {

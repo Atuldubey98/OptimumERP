@@ -42,7 +42,7 @@ const { quoteDto } = require("../../dto/quotes.dto");
 const { purchaseOrderDto } = require("../../dto/purchaseOrder.dto");
 
 const models = {
-  invoices: {
+  invoice: {
     Bill: Invoice,
     dto: invoiceDto,
     Duplicate: InvoiceDuplicate,
@@ -50,21 +50,21 @@ const models = {
     prefixType: "invoice",
     relatedDocType: "invoices",
   },
-  purchases: {
+  purchase: {
     Bill: Purchase,
     dto: purchaseDto,
     Duplicate: PurchaseDuplicate,
     NotFound: PurchaseNotFound,
     relatedDocType: "purchases",
   },
-  proformaInvoices: {
+  proforma_invoice: {
     Bill: ProformaInvoice,
     dto: proformaInvoiceDto,
     Duplicate: ProformaInvoiceDuplicate,
     prefixType: "proformaInvoice",
     relatedDocType: "proformaInvoices",
   },
-  purchaseOrders: {
+  purchase_order: {
     prefixType: "purchaseOrder",
     relatedDocType: "purchaseOrders",
     Bill: PurchaseOrder,
@@ -72,15 +72,7 @@ const models = {
     NotFound: PurchaseOrderNotFound,
     dto: purchaseOrderDto,
   },
-  estimates: {
-    NotFound: QuoteNotFound,
-    Duplicate: QuotationDuplicate,
-    Bill: Quotes,
-    dto: quoteDto,
-    prefixType: "quotation",
-    relatedDocType: "quotes",
-  },
-  quotations: {
+  quotes: {
     NotFound: QuoteNotFound,
     Duplicate: QuotationDuplicate,
     Bill: Quotes,
@@ -272,8 +264,8 @@ const billHandler = {
       const bill = await Bill.findOne(filter).lean();
       if (!bill) throw new modelProps.NotFound();
 
-      const downloadUrl = `/api/v1/organizations/${params.org}/${params.type}/${bill._id}/download`;
-      const docTypeLabel = params.type.slice(0, -1);
+      const downloadUrl = `/api/v1/organizations/${params.org}/${modelProps.relatedDocType}/${bill._id}/download`;
+      const docTypeLabel = modelProps.relatedDocType.slice(0, -1);
       return {
         message: `I've prepared the download for ${docTypeLabel} ${bill.num}.`,
         aiResponse: `I have found the ${docTypeLabel} ${bill.num} and generated a download link for it. Please do not include the download link in your text response, as I will provide a dedicated download button for it.`,
@@ -297,14 +289,16 @@ const billHandler = {
         filter.docModel = params.type;
       }
 
-      if (params.partyName) {
+      if (params.partyId) {
+        filter.party = params.partyId;
+      } else if (params.partyName) {
         const parties = await partyService.getPartiesForAI(
           params.partyName,
           null,
           params.org,
         );
         if (parties.length > 0) {
-          filter.party = parties[0]._id;
+          filter.party = { $in: parties.map((p) => p._id) };
         }
       }
 
@@ -370,6 +364,19 @@ const billHandler = {
           (t.total || 0) + (t.totalTax || 0) + (t.shippingCharges || 0),
         ),
         status: t.doc?.status || "N/A",
+        downloadUrl: (() => {
+          const routeMap = {
+            invoice: "invoices",
+            purchase: "purchases",
+            expense: "expenses",
+            quotes: "quotes",
+            proforma_invoice: "proformaInvoices",
+            purchase_order: "purchaseOrders",
+            payment_voucher: "paymentVouchers",
+          };
+          const route = routeMap[t.docModel] || t.docModel + "s";
+          return `/api/v1/organizations/${params.org}/${route}/${t.doc?._id || t._id}/download`;
+        })(),
       }));
     } catch (error) {
       throw error;
