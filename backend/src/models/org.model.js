@@ -4,10 +4,36 @@ class Org {
     return this.findOne({ _id, createdBy: userId });
   }
 }
-const relatedDocsCountSchema = {
-  type: Number,
-  min: 0,
-};
+const relatedDocsCountFields = [
+  "contacts",
+  "invoices",
+  "expenses",
+  "expenseCategories",
+  "organizationUsers",
+  "parties",
+  "productCategories",
+  "products",
+  "proformaInvoices",
+  "purchaseOrders",
+  "purchases",
+  "quotes",
+  "saleOrders",
+  "creditNotes",
+  "debitNotes",
+  "recurringInvoices",
+  "ums",
+  "taxes",
+];
+
+const relatedDocsCountSchema = {};
+relatedDocsCountFields.forEach((field) => {
+  relatedDocsCountSchema[field] = {
+    type: Number,
+    min: 0,
+    default: 0,
+  };
+});
+
 const orgSchema = new Schema(
   {
     name: {
@@ -67,45 +93,8 @@ const orgSchema = new Schema(
     },
     relatedDocsCount: {
       _id: false,
-      type: {
-        contacts: relatedDocsCountSchema,
-        invoices: relatedDocsCountSchema,
-        expenses: relatedDocsCountSchema,
-        expenseCategories: relatedDocsCountSchema,
-        organizationUsers: relatedDocsCountSchema,
-        parties: relatedDocsCountSchema,
-        productCategories: relatedDocsCountSchema,
-        products: relatedDocsCountSchema,
-        proformaInvoices: relatedDocsCountSchema,
-        purchaseOrders: relatedDocsCountSchema,
-        purchases: relatedDocsCountSchema,
-        quotes: relatedDocsCountSchema,
-        saleOrders: relatedDocsCountSchema,
-        creditNotes: relatedDocsCountSchema,
-        debitNotes: relatedDocsCountSchema,
-        recurringInvoices: relatedDocsCountSchema,
-        ums: relatedDocsCountSchema,
-        taxes: relatedDocsCountSchema,
-      },
-      default: {
-        contacts: 0,
-        invoices: 0,
-        expenses: 0,
-        expenseCategories: 0,
-        invoices: 0,
-        organizationUsers: 0,
-        parties: 0,
-        productCategories: 0,
-        products: 0,
-        proformaInvoices: 0,
-        purchaseOrders: 0,
-        purchases: 0,
-        quotes: 0,
-        saleOrders: 0,
-        creditNotes: 0,
-        debitNotes: 0,
-        recurringInvoices: 0,
-      },
+      type: relatedDocsCountSchema,
+      default: () => ({}),
     },
   },
   { timestamps: true, versionKey: false }

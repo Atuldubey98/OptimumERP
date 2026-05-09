@@ -112,7 +112,7 @@ exports.addPaymentToDoc = async ({ id, orgId, userId, body, docModel, voucherTyp
 
   await updateDocPaymentStatus({ doc, docModel });
   await doc.save({ session });
-
+  
   return voucher;
 };
 

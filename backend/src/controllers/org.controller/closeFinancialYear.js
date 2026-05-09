@@ -15,6 +15,7 @@ const closeFinancialYear = async (req, res) => {
       purchaseOrder: Joi.string().allow(""),
       proformaInvoice: Joi.string().allow(""),
       saleOrder: Joi.string().allow(""),
+      paymentVoucher: Joi.string().allow(""),
     },
   }).validateAsync(req.body);
   const setting = await Setting.findOneAndUpdate(
@@ -29,6 +30,7 @@ const closeFinancialYear = async (req, res) => {
           purchaseOrder: 0,
           proformaInvoice: 0,
           saleOrder: 0,
+          paymentVoucher: 0,
         },
       },
       $addToSet: {
@@ -37,6 +39,7 @@ const closeFinancialYear = async (req, res) => {
         "prefixes.purchaseOrder": body.transactionPrefix.purchaseOrder,
         "prefixes.proformaInvoice": body.transactionPrefix.proformaInvoice,
         "prefixes.saleOrder": body.transactionPrefix.saleOrder,
+        "prefixes.paymentVoucher": body.transactionPrefix.paymentVoucher,
       },
     },
     {
@@ -44,6 +47,7 @@ const closeFinancialYear = async (req, res) => {
     }
   );
   invalidateSettingCache(orgId);
+
   return res
     .status(200)
     .json({ message: req.t("common:api.financial_year_updated"), data: setting });
