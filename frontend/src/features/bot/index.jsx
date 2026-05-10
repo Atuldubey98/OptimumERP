@@ -1,36 +1,43 @@
 import {
   Box,
   Flex,
-  HStack, 
   IconButton,
   Portal,
-  Spinner,
-  Text,
   VStack,
   useColorModeValue,
-  Icon,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FiMessageSquare, FiCpu } from "react-icons/fi";
+import { FiMessageSquare } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
+
+// Hooks
 import { useChatSocket } from "../../hooks/useChatSocket";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
 import useProperty from "../../hooks/useProperty";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+
+// Components
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
-import MessageItem from "./MessageItem";
-import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
-import { FiSettings, FiAlertTriangle } from "react-icons/fi";
-import { Button } from "@chakra-ui/react";
+import MessageList from "./components/MessageList";
+import TypingIndicator from "./components/TypingIndicator";
+import ResetDialog from "./components/ResetDialog";
+import SetupRequired from "./components/SetupRequired";
+import EmptyState from "./components/EmptyState";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [isClearing, setIsClearing] = useState(false);
   const scrollRef = useRef(null);
   const fileInputRef = useRef(null);
+  const cancelRef = useRef();
+  
+  const { isOpen: isResetOpen, onOpen: onResetOpen, onClose: onResetClose } = useDisclosure();
   const { orgId } = useParams();
   const navigate = useNavigate();
 
@@ -104,7 +111,17 @@ const ChatWidget = () => {
     setInput("");
     clearAttachment();
     setHistoryIndex(-1);
-  }, [input, attachment, isConnected, sendMessage, clearAttachment]);
+  }, [input, attachment, isConnected, sendMessage, clearAttachment, selectedModel]);
+
+  const handleConfirmReset = async () => {
+    setIsClearing(true);
+    try {
+      await clearHistory(selectedModel);
+      onResetClose();
+    } finally {
+      setIsClearing(false);
+    }
+  };
 
   const handleKeyDown = useCallback((e) => {
     const userMsgs = messages.filter((m) => m.role === "user");
@@ -125,24 +142,6 @@ const ChatWidget = () => {
     if (!isoString) return "";
     return new Date(isoString).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }, []);
-
-  const memoizedMessages = useMemo(() => {
-    return (
-      <AnimatePresence initial={false}>
-        {messages.map((msg, i) => (
-          <motion.div
-            key={msg.id || `${i}-${msg.timestamp}`}
-            initial={{ opacity: 0, x: msg.role === "user" ? 20 : -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-            layout
-          >
-            <MessageItem msg={msg} formatTime={formatTime} />
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    );
-  }, [messages, formatTime]);
 
   const toggleOpen = useCallback(() => setIsOpen(prev => !prev), []);
 
@@ -178,71 +177,26 @@ const ChatWidget = () => {
                 <ChatHeader 
                   isConnected={isConnected} 
                   onToggle={toggleOpen} 
-                  onReset={() => clearHistory(selectedModel)} 
+                  onReset={onResetOpen} 
                   showReset={messages.length > 0}
                 />
 
-                {/* Messages Area */}
                 <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>
                   <VStack align="stretch" spacing={4} minHeight="100%">
                     {!activeProvider ? (
-                      <Flex 
-                        direction="column" 
-                        align="center" 
-                        justify="center" 
-                        flex="1" 
-                        py={20}
-                        px={10}
-                        textAlign="center"
-                      >
-                        <Icon as={FiAlertTriangle} fontSize="4xl" color="orange.400" mb={4} />
-                        <Text fontWeight="600" fontSize="md" mb={2}>AI Setup Required</Text>
-                        <Text fontSize="xs" color="gray.500" mb={6}>
-                          No AI providers are configured or active for this organization. Please set up a provider to start chatting.
-                        </Text>
-                        <Button 
-                          leftIcon={<FiSettings />} 
-                          colorScheme="blue" 
-                          size="sm" 
-                          onClick={() => {
-                            setIsOpen(false);
-                            navigate(`/${orgId}/application`);
-                          }}
-                        >
-                          Go to Settings
-                        </Button>
-                      </Flex>
+                      <SetupRequired 
+                        onNavigate={() => {
+                          setIsOpen(false);
+                          navigate(`/${orgId}/application`);
+                        }} 
+                      />
                     ) : messages.length === 0 ? (
-                      <Flex 
-                        direction="column" 
-                        align="center" 
-                        justify="center" 
-                        flex="1" 
-                        py={20}
-                        opacity={0.6}
-                      >
-                        <Icon as={FiCpu} fontSize="4xl" color="blue.500" mb={4} />
-                        <Text fontWeight="600" fontSize="md">Say Hi 👋 !</Text>
-                        <Text fontSize="sm">Start a conversation with OptiBot!</Text>
-                      </Flex>
+                      <EmptyState />
                     ) : (
-                      memoizedMessages
+                      <MessageList messages={messages} formatTime={formatTime} />
                     )}
                     
-                    {isTyping && (
-                      <Flex justify="flex-start">
-                        <Box p={3} borderRadius="xl" bg={useColorModeValue("white", "gray.700")} borderWidth={useColorModeValue("1px", "0px")} borderColor="gray.200">
-                          <HStack spacing={2}>
-                            <Spinner size="xs" color="blue.400" />
-                            <AnimatePresence mode="wait">
-                              <motion.div key={statusMsg} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.2 }}>
-                                <Text fontSize="12px" color="gray.400" _light={{ color: "gray.500" }}>{statusMsg}</Text>
-                              </motion.div>
-                            </AnimatePresence>
-                          </HStack>
-                        </Box>
-                      </Flex>
-                    )}
+                    {isTyping && <TypingIndicator statusMsg={statusMsg} />}
                   </VStack>
                 </Box>
 
@@ -285,6 +239,16 @@ const ChatWidget = () => {
             />
           </Flex>
         )}
+
+        <ResetDialog 
+          isOpen={isResetOpen}
+          onClose={onResetClose}
+          onConfirm={handleConfirmReset}
+          cancelRef={cancelRef}
+          isClearing={isClearing}
+          widgetBg={widgetBg}
+          widgetBorder={widgetBorder}
+        />
       </Box>
     </Portal>
   );

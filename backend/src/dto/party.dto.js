@@ -9,7 +9,7 @@ exports.createPartyDto = Joi.object({
   updatedBy: Joi.string().label("Updated by"),
   panNo: Joi.string().label("Pan Number").allow(""),
   org: Joi.string().required().label("Organization"),
-});
+}).options({ stripUnknown: true });
 
 exports.updatePartyDto = Joi.object({
   name: Joi.string().min(2).max(80).label("Party name"),
@@ -19,4 +19,4 @@ exports.updatePartyDto = Joi.object({
   updatedBy: Joi.string().label("Updated By"),
   org : Joi.string().label("Organization"),
   panNo: Joi.string().label("Pan No").allow(""),
-});
+}).options({ stripUnknown: true });

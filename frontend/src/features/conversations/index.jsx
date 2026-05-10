@@ -109,35 +109,14 @@ export default function ConversationsPage() {
 
   return (
 
-      <Box h="calc(100vh - 64px)" overflow="hidden">
+      <Box h="100%" overflow="hidden">
         <Flex h="100%" overflow="hidden">
-          {/* Desktop List Sidebar */}
           {!isMobile && (
-            <Box w="350px" h="100%" borderRightWidth="1px" borderColor={borderColor} bg={sidebarBg}>
+            <Flex direction="column" w="350px" h="100%" borderRightWidth="1px" borderColor={borderColor} bg={sidebarBg}>
               <Flex p={4} borderBottomWidth="1px" borderColor={headerBorderColor} justify="space-between" align="center">
                 <Heading size="md">Conversations</Heading>
               </Flex>
-              <ConversationList 
-                chats={chats} 
-                loading={loadingChats} 
-                loadingMore={loadingMore}
-                activeChatId={chatId} 
-                onChatSelect={handleChatSelect} 
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                hasMore={hasMore}
-                onLoadMore={() => fetchChats(true)}
-              />
-            </Box>
-          )}
-
-          {/* Main Content Area */}
-          <Box flex={1} h="100%">
-            {isMobile && !chatId ? (
-              <Box h="100%" bg={sidebarBg}>
-                <Flex p={4} borderBottomWidth="1px" borderColor={headerBorderColor}>
-                  <Heading size="md">Conversations</Heading>
-                </Flex>
+              <Box flex={1} overflow="hidden">
                 <ConversationList 
                   chats={chats} 
                   loading={loadingChats} 
@@ -150,6 +129,29 @@ export default function ConversationsPage() {
                   onLoadMore={() => fetchChats(true)}
                 />
               </Box>
+            </Flex>
+          )}
+
+          <Box flex={1} h="100%" overflow="hidden">
+            {isMobile && !chatId ? (
+              <Flex direction="column" h="100%" bg={sidebarBg}>
+                <Flex p={4} borderBottomWidth="1px" borderColor={headerBorderColor}>
+                  <Heading size="md">Conversations</Heading>
+                </Flex>
+                <Box flex={1} overflow="hidden">
+                  <ConversationList 
+                    chats={chats} 
+                    loading={loadingChats} 
+                    loadingMore={loadingMore}
+                    activeChatId={chatId} 
+                    onChatSelect={handleChatSelect} 
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    hasMore={hasMore}
+                    onLoadMore={() => fetchChats(true)}
+                  />
+                </Box>
+              </Flex>
             ) : (
               <ChatWindow 
                 chatId={chatId}

@@ -52,7 +52,7 @@ const expenseHandlers = {
     }
   },
 
-  create_expense: async ({ org, ...params }) => {
+  create_expense: async ({ org, createdBy, user, ...params }) => {
     try {
       const displaySetting = await getDisplaySettingForOrg(org);
       const currencyConfig = displaySetting
@@ -85,7 +85,7 @@ const expenseHandlers = {
         org
       };
 
-      const body = await expenseDto.validateAsync(rawParams);
+      const body = await expenseDto.validateAsync({ ...rawParams, createdBy });
       body.org = org;
 
       const expense = await expenseService.createExpense(body);

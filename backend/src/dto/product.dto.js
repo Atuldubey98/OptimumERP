@@ -14,6 +14,6 @@ const productDto = Joi.object({
   category: Joi.string().optional().allow(null),
   createdBy: Joi.string().label("Created By"),
   updatedBy: Joi.string().label("Updated By").optional(),
-});
+}).options({ stripUnknown: true });
 
 module.exports = { productDto };

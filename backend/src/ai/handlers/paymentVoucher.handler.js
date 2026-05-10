@@ -8,7 +8,7 @@ const { moneyUtils } = require("../../utils");
 const settingService = require("../../services/setting.service");
 
 const createPaymentVoucher = async (params) => {
-  const { org, createdBy, ...body } = params;
+  const { org, createdBy, user, ...body } = params;
 
   const party = await partyService.upsert({
     org,

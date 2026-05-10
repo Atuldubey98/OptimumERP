@@ -67,7 +67,6 @@ export default function FilterPopoverWrapper({ children, title, isFiltered }) {
           width={{ base: "100vw", sm: "320px" }} 
           maxW="100vw"
           borderRadius="lg"
-          overflow="hidden"
         >
           <FocusLock returnFocus persistentFocus={false}>
             <PopoverHeader borderBottomWidth="1px" py={3} px={4}>

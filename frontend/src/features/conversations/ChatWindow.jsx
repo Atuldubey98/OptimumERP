@@ -50,7 +50,6 @@ const ChatWindow = ({
         p={10} 
         textAlign="center"
         bg={headerBg}
-        borderRadius={{ md: "xl" }}
       >
         <Icon as={FiMessageSquare} fontSize="6xl" color="blue.500" mb={4} />
         <Heading size="md" mb={2}>Select a conversation</Heading>

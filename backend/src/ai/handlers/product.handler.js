@@ -16,7 +16,7 @@ const productHandlers = {
       throw error;
     }
   },
-  create_product: async ({ org, ...params }) => {
+  create_product: async ({ org, createdBy, user, ...params }) => {
     try {
       const displaySetting = await getDisplaySettingForOrg(org);
       const currencyConfig = displaySetting
@@ -31,7 +31,7 @@ const productHandlers = {
         ...(params.sellingPrice != null && { sellingPrice: toSmallest(params.sellingPrice) }),
       };
 
-      const body = await productDto.validateAsync(rawParams);
+      const body = await productDto.validateAsync({ ...rawParams, createdBy });
       const setting = await getDetailedSettingForOrg(org);
       let um = setting?.receiptDefaults?.um?._id?.toString();
       if (body?.um) {

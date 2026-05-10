@@ -9,6 +9,6 @@ const contactDto = Joi.object({
   type: Joi.string().required(),
   createdBy: Joi.string().required(),
   updatedBy: Joi.string().optional(),
-});
+}).options({ stripUnknown: true });
 
 module.exports = { contactDto };

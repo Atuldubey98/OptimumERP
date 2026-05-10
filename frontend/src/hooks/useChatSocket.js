@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import useAuth from "./useAuth";
 import instance from "../instance";
+import { useIndexedDB } from "./useIndexedDB";
 
 
 export const useChatSocket = (orgId) => {
@@ -9,6 +10,7 @@ export const useChatSocket = (orgId) => {
   const [messages, setMessages] = useState([]);
   const loadedId = useRef(null);
 
+  const { getChatHistory, saveChatHistory, deleteChatHistory } = useIndexedDB();
 
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -24,21 +26,24 @@ export const useChatSocket = (orgId) => {
       loadedId.current = null;
       return;
     }
-    try {
-      const saved = localStorage.getItem(`chat_history_${userId}`);
-      setMessages(saved ? JSON.parse(saved) : []);
-      loadedId.current = userId;
-    } catch (e) {
-      setMessages([]);
-      loadedId.current = userId;
-    }
-  }, [userId]);
+    const loadHistory = async () => {
+      try {
+        const saved = await getChatHistory(userId);
+        setMessages(saved || []);
+        loadedId.current = userId;
+      } catch (e) {
+        setMessages([]);
+        loadedId.current = userId;
+      }
+    };
+    loadHistory();
+  }, [userId, getChatHistory]);
 
   useEffect(() => {
     if (userId && loadedId.current === userId) {
-      localStorage.setItem(`chat_history_${userId}`, JSON.stringify(messages.slice(-20)));
+      saveChatHistory(userId, messages.slice(-50)); // Increased limit since IndexedDB has more space
     }
-  }, [messages, userId]);
+  }, [messages, userId, saveChatHistory]);
 
 
 
@@ -120,7 +125,7 @@ export const useChatSocket = (orgId) => {
     try {
       await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, { model });
       setMessages([]);
-      localStorage.removeItem(`chat_history_${userId}`);
+      await deleteChatHistory(userId);
     } catch (error) {
       console.error("Failed to clear chat history", error);
     }
@@ -135,4 +140,4 @@ export const useChatSocket = (orgId) => {
     sendMessage,
     clearHistory,
   };
-};
+};

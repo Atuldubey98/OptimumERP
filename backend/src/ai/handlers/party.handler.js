@@ -3,9 +3,12 @@ const partyService = require("../../services/party.service");
 const settingService = require("../../services/setting.service")
 const { moneyUtils } = require("../../utils");
 
+const { createPartyDto } = require("../../dto/party.dto");
+
 const partyHandler = {
-  create_party: (params) => {
-    return partyService.create(params);
+  create_party: async ({ org, createdBy, user, ...params }) => {
+    const body = await createPartyDto.validateAsync({ ...params, org, createdBy });
+    return partyService.create(body);
   },
   get_party: async (params) => {
     try {

@@ -69,9 +69,9 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     try {
       const result = await handler({
         ...args,
-        org: body.org,
-        createdBy: body.createdBy,
-        user: body.user,
+        org: body?.org,
+        createdBy: body?.createdBy,
+        user: body?.user,
       });
       return {
         role: "tool",

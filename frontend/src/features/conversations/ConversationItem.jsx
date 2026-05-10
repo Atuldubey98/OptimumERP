@@ -1,12 +1,45 @@
 import { Box, Flex, HStack, VStack, Text, Avatar, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
-import { FiMessageSquare } from "react-icons/fi";
+import { FiMessageSquare, FiCpu } from "react-icons/fi";
 import moment from "moment";
+import MarkdownRenderer from "../bot/MarkdownRenderer";
+
+const toolLabelMap = {
+  download_report: "Report Link",
+  download_bill: "Document",
+  find_bills: "Bill Search",
+  find_bill: "Bill Details",
+  create_bill: "Bill Creation",
+  get_party: "Party Details",
+  get_parties: "Parties List",
+  create_party: "Party Creation",
+  get_party_ledger: "Ledger",
+  get_product_details: "Product Search",
+  create_product: "Product Creation",
+  create_contact: "Contact Creation",
+  create_payment_voucher: "Payment Voucher",
+  find_payment_voucher: "Voucher Search",
+  list_expenses: "Expenses List",
+  create_expense: "Expense Creation",
+  list_expense_categories: "Expense Categories",
+  create_expense_category: "Category Creation",
+};
 
 const ConversationItem = ({ chat, isActive, onClick }) => {
   const bg = useColorModeValue(isActive ? "gray.100" : "transparent", isActive ? "whiteAlpha.200" : "transparent");
   const hoverBg = useColorModeValue("gray.50", "whiteAlpha.100");
   const lastMessage = chat.messages?.[0];
+
+  const getSnippet = () => {
+    if (lastMessage?.content) {
+      return <MarkdownRenderer content={lastMessage.content} />;
+    }
+    if (lastMessage?.tool_calls?.length > 0) {
+      const labels = lastMessage.tool_calls.map(tc => toolLabelMap[tc.function.name] || tc.function.name);
+      return <Text as="span" fontStyle="italic">{labels.join(", ")}</Text>;
+    }
+    return "No messages yet";
+  };
 
   return (
     <Box
@@ -30,9 +63,9 @@ const ConversationItem = ({ chat, isActive, onClick }) => {
               {moment(chat.updatedAt).format("MMM D")}
             </Text>
           </HStack>
-          <Text fontSize="xs" color="gray.500" noOfLines={1}>
-            {lastMessage?.content || "No messages yet"}
-          </Text>
+          <Box fontSize="xs" color="gray.500" noOfLines={1} w="100%">
+            {getSnippet()}
+          </Box>
         </VStack>
       </HStack>
     </Box>

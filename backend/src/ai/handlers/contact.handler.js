@@ -3,8 +3,8 @@ const { contactDto } = require("../../dto/contact.dto");
 const contactService = require("../../services/contact.service");
 
 const contactHandler = {
-  create_contact: async ({ org, ...params }) => {
-    const body = await contactDto.validateAsync(params);
+  create_contact: async ({ org, createdBy, user, ...params }) => {
+    const body = await contactDto.validateAsync({ ...params, createdBy });
     const contact = await contactService.create({
       ...body,
       org,

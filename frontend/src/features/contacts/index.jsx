@@ -220,6 +220,10 @@ export default function ContactsPage() {
                             {t("contact_ui.page.contact_type")}
                           </FormLabel>
                           <Select
+                            menuPortalTarget={document.body}
+                            styles={{
+                              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                            }}
                             options={allContactTypes}
                             onChange={({ value }) => navigate(`?type=${value}`)}
                             value={allContactTypes.find(
