@@ -20,7 +20,23 @@ const ChatHeader = memo(({ isConnected, onToggle, onReset, showReset }) => {
       <HStack gap={3}>
         <RiRobot2Line size={22} />
         <Box>
-          <Text fontWeight="bold" fontSize="13px" m={0}>OptimumERP Assistant</Text>
+          <HStack gap={2} align="center">
+            <Text fontWeight="bold" fontSize="13px" m={0}>OptimumERP Assistant</Text>
+            <Box 
+              fontSize="9px" 
+              px={1.5} 
+              py={0.5} 
+              borderRadius="full" 
+              bg="whiteAlpha.200" 
+              color="whiteAlpha.900" 
+              fontWeight="medium"
+              borderWidth="1px"
+              borderColor="whiteAlpha.300"
+              lineHeight="1"
+            >
+              EXPERIMENTAL
+            </Box>
+          </HStack>
           <HStack gap={1}>
             <Circle size="1.5" bg={isConnected ? "green.400" : "red.400"} />
             <Text fontSize="10px" m={0} opacity={0.8}>{isConnected ? "Connected" : "Offline"}</Text>
