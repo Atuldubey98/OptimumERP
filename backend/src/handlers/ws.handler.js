@@ -117,7 +117,7 @@ function getWsHandlers(wss) {
 
       const { response, newMessages } = await ws.ai.chat(body.model, {
         messages: aiInputHistory,
-        body: { org: orgId, createdBy: userId },
+        body: { org: orgId, createdBy: userId, user: request.session.user },
         onProgress: (status) => ws.send(JSON.stringify(status)),
       });
 

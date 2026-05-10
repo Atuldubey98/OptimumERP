@@ -19,32 +19,13 @@ const create = async (options = {}, req, res) => {
       NotFound,
       requestBody,
       prefixType,
+      user: req.session.user,
       session,
     });
     await OrgModel.updateOne(
       { _id: req.params.orgId },
       { $inc: { [relatedDocTypeKey]: 1 } }
     ).session(session);
-
-    await logService.recordActivity({
-      org: req.params.orgId,
-      user: req.session.user._id,
-      docModel: Bill.modelName,
-      doc: bill._id,
-      action: "created",
-      message: `${billTypes[Bill.modelName] || Bill.modelName} created by ${req.session.user.name}`,
-      session
-    });
-
-    await logService.recordAudit({
-      org: req.params.orgId,
-      user: req.session.user._id,
-      docModel: prefixType,
-      doc: bill._id,
-      action: "created",
-      changes: pluckRelevantFields(bill),
-      session
-    });
 
     logger.info(`${Bill.modelName} created ${bill.id}`);
   });

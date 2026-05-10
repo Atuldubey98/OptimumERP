@@ -6,6 +6,8 @@ const ProformaInvoice = require("../models/proformaInvoice.model");
 const Quotes = require("../models/quotes.model");
 const PaymentVoucher = require("../models/paymentVoucher.model");
 const { executeMongoDbTransaction } = require("./crud.service");
+const logService = require("./log.service");
+const billTypes = require("../constants/billTypes");
 
 
 const { currencyToWordConverter } = require("./currencyToWord.service");
@@ -173,6 +175,7 @@ exports.saveBill = async ({
   NotFound,
   prefixType = "quotation",
   billId,
+  user,
   session,
 }) => {
   const body = await dto.validateAsync(requestBody);
@@ -250,6 +253,29 @@ exports.saveBill = async ({
     org: body.org,
     counterKey,
     sequence: body.sequence,
+    session,
+  });
+  
+  const action = billId ? "updated" : "created";
+  const userObj = user || { _id: body.createdBy, name: "AI Assistant" };
+
+  await logService.recordActivity({
+    org: body.org,
+    user: userObj._id,
+    docModel: Bill.modelName,
+    doc: bill._id,
+    action,
+    message: `${billTypes[Bill.modelName] || Bill.modelName} ${action} by ${userObj.name}`,
+    session,
+  });
+
+  await logService.recordAudit({
+    org: body.org,
+    user: userObj._id,
+    docModel: prefixType,
+    doc: bill._id,
+    action,
+    changes: exports.pluckRelevantFields(bill),
     session,
   });
 

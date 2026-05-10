@@ -36,7 +36,7 @@ const ChatWidget = () => {
 
   const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory } = useChatSocket(orgId);
   const { setting } = useCurrentOrgCurrency();
-  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedModel, setSelectedModel] = useState(() => localStorage.getItem("selected_ai_model") || "");
 
   const { value: AI_MODELS } = useProperty("AI_MODELS");
 
@@ -54,6 +54,8 @@ const ChatWidget = () => {
       const isValid = availableModels.some(m => m.id === selectedModel);
       if (!selectedModel || !isValid) {
         setSelectedModel(availableModels[0].id);
+      } else {
+        localStorage.setItem("selected_ai_model", selectedModel);
       }
     }
   }, [availableModels, selectedModel]);

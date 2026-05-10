@@ -227,6 +227,7 @@ const upsertBill = async (params) => {
         ...modelProps,
         billId: params?.billId,
         requestBody,
+        user: params.user,
         session,
       });
 

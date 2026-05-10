@@ -21,29 +21,10 @@ const update = async (options = {}, req, res) => {
       requestBody,
       prefixType,
       billId: req.params.id,
+      user: req.session.user,
       session,
     });
     
-    await logService.recordActivity({
-      org: req.params.orgId,
-      user: req.session.user._id,
-      docModel: prefixType,
-      doc: updatedBill._id,
-      action: "updated",
-      message: `${billTypes[Bill.modelName] || Bill.modelName} updated by ${req.session.user.name}`,
-      session
-    });
-
-    await logService.recordAudit({
-      org: req.params.orgId,
-      user: req.session.user._id,
-      docModel: prefixType,
-      doc: updatedBill._id,
-      action: "updated",
-      changes: pluckRelevantFields(updatedBill),
-      session
-    });
-
     logger.info(`${Bill.modelName} updated ${updatedBill.id}`);
     return updatedBill;
   });
