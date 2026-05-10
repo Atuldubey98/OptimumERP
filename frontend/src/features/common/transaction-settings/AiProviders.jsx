@@ -167,7 +167,7 @@ export default function AiProviders({ formik }) {
   }));
 
   const providers = currentSettings?.setting?.aiProviders || [];
-
+  
   return (
     <Stack spacing={4}>
       <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">

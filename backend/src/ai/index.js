@@ -204,7 +204,7 @@ aiFactory.getAIInstanceForOrg = async (orgId) => {
 
   const apiKey = decrypt(activeProvider.fields.apiKey);
   const providerType = activeProvider.provider;
-
+  logger.info(`Active Provider: ${providerType}`);
 
   return {
     ai: aiFactory({ provider: providerType, apiKey }),

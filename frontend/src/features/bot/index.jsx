@@ -148,7 +148,7 @@ const ChatWidget = () => {
   const widgetBg = useColorModeValue("white", "gray.800");
   const widgetBorder = useColorModeValue("gray.200", "whiteAlpha.200");
   const messageAreaBg = useColorModeValue("gray.50", "#131720");
-
+  
   if (!isConnected) return null;
 
   return (

@@ -68,6 +68,23 @@ function getWsHandlers(wss) {
       const userId = ws.userId || request.session.user._id;
 
       if (!ws.ai) {
+        const { ai, settings, activeProviderId } = await aiFactory.getAIInstanceForOrg(orgId);
+        ws.ai = ai;
+        ws.settings = settings;
+        ws.activeProviderId = activeProviderId;
+      } else {
+        const { ai, settings, activeProviderId } = await aiFactory.getAIInstanceForOrg(orgId);
+        if (ws.activeProviderId !== activeProviderId) {
+          logger.info(`AI Provider changed for org ${orgId}. Refreshing instance.`);
+          ws.ai = ai;
+          ws.settings = settings;
+          ws.activeProviderId = activeProviderId;
+          const aiModelsProp = await propertyService.getByName("AI_MODELS");
+          ws.aiModels = aiModelsProp?.value || {};
+        }
+      }
+
+      if (!ws.ai) {
         return ws.send(JSON.stringify({
           event: "ai_response",
           message: "Please set up your AI provider keys in organization settings.",
