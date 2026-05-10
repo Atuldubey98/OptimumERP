@@ -255,52 +255,56 @@ const simpleTemplate = (data, color) => {
       {
         margin: [0, 10, 0, 0],
         unbreakable: true,
-        table: {
-          widths: ["*", 120],
-          body: [
-            [
-              {
-                stack: [
-                  { text: `${labels.terms_and_conditions || "Terms and Conditions"}:`, style: "termsHeading" },
-                  { text: data.entity.terms || "", style: "terms" },
-                ],
-                border: [false, false, false, false],
-                margin: [0, 0, 10, 0],
-              },
-              {
-                stack: [
-                  {
-                    text: `For ${data.entity?.org?.name || ""}`,
-                    style: "signatoryBoxCompany",
-                    alignment: "center",
-                    margin: [0, 0, 0, 16],
-                  },
-                  {
-                    text: " ",
-                    margin: [0, 14, 0, 14],
-                  },
-                  {
-                    text: labels.authorized_signatory || "Authorized Signatory",
-                    style: "signatoryBoxLabel",
-                    alignment: "center",
-                  },
-                ],
-              },
+        columns: [
+          {
+            width: "*",
+            stack: [
+              { text: `${labels.terms_and_conditions || "Terms and Conditions"}:`, style: "termsHeading" },
+              { text: data.entity.terms || "", style: "terms" },
             ],
-          ],
-        },
-        layout: {
-          hLineColor: (index, node, columnIndex) =>
-            columnIndex === 1 ? palette.border : palette.border,
-          vLineColor: (index, node, columnIndex) =>
-            columnIndex === 1 ? palette.border : palette.border,
-          hLineWidth: (index, node) => (index === 0 || index === node.table.body.length ? 0.75 : 0),
-          vLineWidth: (index) => (index === 1 || index === 2 ? 0.75 : 0),
-          paddingLeft: (columnIndex) => (columnIndex === 0 ? 0 : 8),
-          paddingRight: (columnIndex) => (columnIndex === 0 ? 10 : 8),
-          paddingTop: () => 7,
-          paddingBottom: () => 7,
-        },
+            margin: [0, 0, 16, 0],
+          },
+          {
+            width: 140,
+            table: {
+              widths: ["*"],
+              body: [
+                [
+                  {
+                    stack: [
+                      {
+                        text: `For ${data.entity?.org?.name || ""}`,
+                        style: "signatoryBoxCompany",
+                        alignment: "center",
+                        margin: [0, 0, 0, 20],
+                      },
+                      {
+                        text: " ",
+                        margin: [0, 15, 0, 15],
+                      },
+                      {
+                        text: labels.authorized_signatory || "Authorized Signatory",
+                        style: "signatoryBoxLabel",
+                        alignment: "center",
+                      },
+                    ],
+                    margin: [4, 10, 4, 10],
+                  },
+                ],
+              ],
+            },
+            layout: {
+              hLineColor: () => palette.border,
+              vLineColor: () => palette.border,
+              hLineWidth: () => 0.75,
+              vLineWidth: () => 0.75,
+              paddingLeft: () => 4,
+              paddingRight: () => 4,
+              paddingTop: () => 4,
+              paddingBottom: () => 4,
+            },
+          },
+        ],
       },
     ],
     styles: {
