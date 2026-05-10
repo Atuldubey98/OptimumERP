@@ -36,11 +36,12 @@ async function getLoggedInUser(user) {
   const activatedPlan = await UserActivatedPlan.findOne({
     user: user._id,
   }).lean();
-  const limits = getLimitsForActivePlan(activatedPlan);
+  const planData = getLimitsForActivePlan(activatedPlan);
   const loggedInUser = createLoggedInUserWithPlanAndLimits({
     user,
     activatedPlan,
-    limits,
+    limits: planData.limits,
+    features: planData.features,
   });
   return loggedInUser;
 }

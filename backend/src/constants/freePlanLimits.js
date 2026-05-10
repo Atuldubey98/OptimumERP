@@ -15,5 +15,6 @@ const freePlanLimits = {
   recurringInvoices: 0,
   taxes: 50,
   ums: 60,
+  paymentVouchers: 200,
 };
 module.exports = freePlanLimits;

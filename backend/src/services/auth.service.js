@@ -35,6 +35,7 @@ exports.createLoggedInUserWithPlanAndLimits = ({
   user,
   activatedPlan,
   limits,
+  features,
 }) => {
   return {
     email: user.email,
@@ -43,25 +44,61 @@ exports.createLoggedInUserWithPlanAndLimits = ({
     currentPlan: activatedPlan,
     avatar: user?.avatar,
     limits,
+    features,
   };
 };
 
 exports.getLimitsForActivePlan = (activatedPlan) => {
-  const planLimits = {
-    free: freePlanLimits,
+  const planData = {
+    free: {
+      limits: freePlanLimits,
+      features: {
+        ai_integration: false,
+        byok: false,
+        on_premise: false,
+        bot: false,
+      },
+    },
     gold: {
-      organizations: 3,
-      ums: 100,
-      taxes: 100,
-      expenseCategories: 100,
-      productCategories: 100,
+      limits: {
+        ...freePlanLimits,
+        organizations: 3,
+        ums: 100,
+        taxes: 100,
+        expenseCategories: 100,
+        productCategories: 100,
+        contacts: 2000,
+        invoices: 2000,
+        paymentVouchers: 2000,
+      },
+      features: {
+        ai_integration: false,
+        byok: false,
+        on_premise: false,
+        bot: false,
+      },
     },
     platinum: {
-      bot: true
+      limits: {
+        organizations: 99,
+        ums: 999999,
+        taxes: 999999,
+        expenseCategories: 999999,
+        productCategories: 999999,
+        contacts: 999999,
+        invoices: 999999,
+        paymentVouchers: 999999,
+      },
+      features: {
+        ai_integration: true,
+        byok: true,
+        on_premise: true,
+        bot: true,
+      },
     },
   };
-  const limits = planLimits[activatedPlan.plan];
-  return limits;
+  const planKey = activatedPlan?.plan || "free";
+  return planData[planKey] || planData.free;
 };
 
 exports.sendOtpEmailToUser = async ({ user, typeOfOtp, subject }) => {

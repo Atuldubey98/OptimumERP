@@ -1,4 +1,4 @@
-const { getPaginationParams } = require("../../services/crud.service");
+const { getPaginationParams, hasUserReachedCreationLimits } = require("../../services/crud.service");
 const PaymentVoucher = require("../../models/paymentVoucher.model");
 const entities = require("../../constants/entities");
 require("../../models/invoice.model");
@@ -33,7 +33,12 @@ const getAll = async (req, res) => {
     total,
     page,
     limit,
-    totalPages
+    totalPages,
+    reachedLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "paymentVouchers",
+    }),
   });
 };
 

@@ -36,8 +36,8 @@ export const SidebarLinksList = ({ onClose }) => {
       .includes(location.pathname),
   );
   const { user } = useAuth();
-  const currentPlan = user?.limits || {};
-  const bot = currentPlan?.bot ?? false;
+  const currentFeatures = user?.features || {};
+  const bot = currentFeatures?.bot ?? false;
   const bg = useColorModeValue("black");
 
   return (
