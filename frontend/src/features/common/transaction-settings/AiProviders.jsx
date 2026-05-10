@@ -38,16 +38,22 @@ import { FiPlus, FiTrash2, FiCpu, FiKey } from "react-icons/fi";
 import instance from "../../../instance";
 import useProperty from "../../../hooks/useProperty";
 import SettingContext from "../../../contexts/SettingContext";
+import useAuth from "../../../hooks/useAuth";
+import { useIndexedDB } from "../../../hooks/useIndexedDB";
 
 export default function AiProviders({ formik }) {
+
   const { t } = useTranslation("common");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const settingContext = useContext(SettingContext);
+  const { user } = useAuth();
+  const { deleteChatHistory } = useIndexedDB();
   const [currentSettings, setCurrentSettings] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const bg = useColorModeValue("gray.100", "gray.700");
+
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
 
@@ -76,11 +82,21 @@ export default function AiProviders({ formik }) {
     fetchOrgSettings();
   }, [formik.values.organization]);
 
+  const clearchat = async () => {
+    try {
+      await instance.post(`/api/v1/organizations/${formik.values.organization}/chats/clear`);
+      await deleteChatHistory(user?._id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleToggleActive = async (providerId) => {
     try {
       await instance.patch(
         `/api/v1/organizations/${formik.values.organization}/settings/ai-providers/${providerId}/active`
       );
+      await clearchat();
       toast({
         title: "Success",
         description: "Active provider switched",
@@ -91,6 +107,7 @@ export default function AiProviders({ formik }) {
         settingContext.fetchSetting();
       }
     } catch (error) {
+
       toast({
         title: "Error",
         description: "Failed to switch provider",
