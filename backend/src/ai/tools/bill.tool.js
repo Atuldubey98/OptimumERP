@@ -175,6 +175,10 @@ const billTools = [
             type: "boolean",
             description: "If true, the tool will only return the extracted data without saving it to the database. Use this for pre-filling forms.",
           },
+          terms: {
+            type: "string",
+            description: "Custom terms and conditions for this document. Only include if explicitly provided by the user.",
+          },
           items: {
             type: "array",
             items: {

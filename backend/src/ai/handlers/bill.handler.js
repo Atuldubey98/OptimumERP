@@ -84,6 +84,9 @@ const models = {
 const upsertBill = async (params) => {
   try {
     const modelProps = models[params.type];
+    if (!modelProps) {
+      throw new Error(`Invalid or missing document type: "${params.type}". Supported types are: ${Object.keys(models).join(", ")}`);
+    }
     const { Bill, prefixType } = modelProps;
     let party;
     const makeRequestBody = async () => {
@@ -174,7 +177,7 @@ const upsertBill = async (params) => {
           product: item.productId,
         });
       });
-      const terms = (setting?.receiptDefaults?.terms || {})[prefixType]
+      const terms = params.terms || (setting?.receiptDefaults?.terms || {})[prefixType]
       return {
         party: params.partyId,
         billingAddress: party.billingAddress,
