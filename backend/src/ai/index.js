@@ -3,19 +3,6 @@ const tools = require("./tools");
 const logger = require("../logger");
 const { getProvider } = require("./providers");
 
-const cleanMessages = (messages) => {
-  return messages.map((msg) => {
-    const cleaned = {
-      role: msg.role,
-      content: msg.content,
-    };
-    if (msg.tool_calls) cleaned.tool_calls = msg.tool_calls;
-    if (msg.tool_call_id) cleaned.tool_call_id = msg.tool_call_id;
-    if (msg.images) cleaned.images = msg.images;
-    return cleaned;
-  });
-};
-
 const executeTools = async ({ toolCalls, body, onProgress }) => {
   logger.info(
     `Processing ${toolCalls.length} tool(s): ${toolCalls.map((t) => `${t.function.name} - ${JSON.stringify(t.function.arguments)}`).join(", ")} `,
@@ -120,10 +107,17 @@ const aiFactory = ({ provider, apiKey }) => {
 
         const response = await aiProvider.chat({
           model,
-          messages: aiProvider.formatMessages ? aiProvider.formatMessages(history) : cleanMessages(history),
+          messages: history.map(msg => ({
+            role: msg.role,
+            content: msg.content || "",
+            ...(msg.tool_calls && { tool_calls: msg.tool_calls }),
+            ...(msg.tool_call_id && { tool_call_id: msg.tool_call_id }),
+            ...(msg.images && { images: msg.images })
+          })),
           tools,
           options: { temperature: 0, ...options }
         });
+
 
         const aiMessage = response.message;
         history.push(aiMessage);
@@ -189,8 +183,8 @@ const aiFactory = ({ provider, apiKey }) => {
   return Object.freeze({
     chat,
     activeProvider: provider,
-    processImage: (img) => aiProvider.processImage ? aiProvider.processImage(img) : img,
   });
+
 };
 
 aiFactory.getAIInstanceForOrg = async (orgId) => {
