@@ -12,6 +12,7 @@ export const useChatSocket = (orgId) => {
 
   const { getChatHistory, saveChatHistory, deleteChatHistory } = useIndexedDB();
 
+  const [activeChatId, setActiveChatId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [statusMsg, setStatusMsg] = useState("Assistant is thinking...");
@@ -24,6 +25,7 @@ export const useChatSocket = (orgId) => {
     if (!userId) {
       setMessages([]);
       loadedId.current = null;
+      setActiveChatId(null);
       return;
     }
     const loadHistory = async () => {
@@ -71,7 +73,9 @@ export const useChatSocket = (orgId) => {
       socket.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.event === "ai_response" || data.type === "message") {
+          if (data.event === "ready" || data.event === "chat_switched") {
+            setActiveChatId(data.chatId);
+          } else if (data.event === "ai_response" || data.type === "message") {
             statusQueue.current = [];
             setMessages((prev) => [
               ...prev,
@@ -122,13 +126,12 @@ export const useChatSocket = (orgId) => {
   };
 
   const clearHistory = async (model) => {
-    try {
-      await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, { model });
-      setMessages([]);
-      await deleteChatHistory(userId);
-    } catch (error) {
-      console.error("Failed to clear chat history", error);
-    }
+    await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, { 
+      model,
+      chatId: activeChatId 
+    });
+    setMessages([]);
+    await deleteChatHistory(userId);
   };
 
   return {
@@ -139,5 +142,6 @@ export const useChatSocket = (orgId) => {
     statusMsg,
     sendMessage,
     clearHistory,
+    activeChatId,
   };
 };

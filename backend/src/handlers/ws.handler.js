@@ -21,7 +21,7 @@ function getWsHandlers(wss) {
       ws.userId = userId;
 
       const { ai, settings, activeProviderId } = await aiFactory.getAIInstanceForOrg(orgId);
-      
+
       ws.ai = ai;
       ws.settings = settings;
       ws.activeProviderId = activeProviderId;
@@ -53,7 +53,7 @@ function getWsHandlers(wss) {
         ws.history.unshift({ role: "system", content: systemContent });
       }
 
-      ws.send(JSON.stringify({ event: "ready", message: "Assistant is ready." }));
+      ws.send(JSON.stringify({ event: "ready", message: "Assistant is ready.", chatId: chat._id }));
     } catch (error) {
       logger.error(`Connection Error: ${error.message}`);
       ws.send(JSON.stringify({ event: "error", message: "Failed to initialize session." }));
@@ -83,10 +83,11 @@ function getWsHandlers(wss) {
       if (!isChatStillActive) {
         const chat = await chatService.getOrCreateActiveChat(orgId, userId);
         ws.chatId = chat._id;
-        ws.history = [{ 
-          role: "system", 
-          content: ws.history.find(m => m.role === "system")?.content 
+        ws.history = [{
+          role: "system",
+          content: ws.history.find(m => m.role === "system")?.content
         }];
+        ws.send(JSON.stringify({ event: "chat_switched", chatId: chat._id }));
       }
 
       let images = [];

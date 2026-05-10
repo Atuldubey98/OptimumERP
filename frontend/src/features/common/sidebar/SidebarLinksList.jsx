@@ -21,6 +21,7 @@ import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
+import useAuth from "../../../hooks/useAuth";
 export const SidebarLinksList = ({ onClose }) => {
   const { t } = useTranslation("common");
   const {
@@ -34,7 +35,11 @@ export const SidebarLinksList = ({ onClose }) => {
       .map((settingLink) => `/${orgId}${settingLink.link}`)
       .includes(location.pathname),
   );
+  const { user } = useAuth();
+  const currentPlan = user?.limits || {};
+  const bot = currentPlan?.bot ?? false;
   const bg = useColorModeValue("black");
+
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
@@ -61,14 +66,16 @@ export const SidebarLinksList = ({ onClose }) => {
           }}
           onClose={onClose}
         />
-        <HeaderLink
-          headerLink={{
-            icon: FiMessageSquare,
-            link: "/conversations",
-            labelKey: "common_ui.sidebar.links.conversations",
-          }}
-          onClose={onClose}
-        />
+        {bot && (
+          <HeaderLink
+            headerLink={{
+              icon: FiMessageSquare,
+              link: "/conversations",
+              labelKey: "common_ui.sidebar.links.conversations",
+            }}
+            onClose={onClose}
+          />
+        )}
         <Divider bg={bg} />
         <ListItem
           cursor={"pointer"}

@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FiMessageSquare } from "react-icons/fi";
+import { RiRobot2Line } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 
 // Hooks
@@ -235,7 +235,7 @@ const ChatWidget = () => {
               width="50px" 
               height="50px" 
               boxShadow="2xl" 
-              icon={<FiMessageSquare size={22} />} 
+              icon={<RiRobot2Line size={24} />} 
             />
           </Flex>
         )}

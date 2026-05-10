@@ -7,7 +7,11 @@ const { createPartyDto } = require("../../dto/party.dto");
 
 const partyHandler = {
   create_party: async ({ org, createdBy, user, ...params }) => {
-    const body = await createPartyDto.validateAsync({ ...params, org, createdBy });
+    const body = await createPartyDto.validateAsync({ 
+      ...params, 
+      org: org?.toString(), 
+      createdBy: createdBy?.toString() 
+    });
     return partyService.create(body);
   },
   get_party: async (params) => {

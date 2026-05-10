@@ -22,22 +22,28 @@ const getChatById = async (chatId) => {
 };
 
 
-const clearChat = async (orgId, userId, model) => {
-  return await crudService.executeMongoDbTransaction(async (session) => {
-    const chat = await Chat.findOne({ org: orgId, user: userId, isActive: true }).session(session);
+const clearChat = async (chatId, model) => {
+  const chat = await Chat.findById(chatId);
 
-    if (chat && chat.messages.length > 0) {
+  if (!chat || !chat.isActive) return null;
+
+  const hasMessages = chat.messages.length > 0;
+  const messagesContext = hasMessages ? chat.messages.filter(m => m.role === "user").slice(0, 3) : [];
+  const orgId = chat.org;
+  const userId = chat.user;
+
+  chat.isActive = false;
+  await chat.save();
+
+  if (hasMessages) {
+    (async () => {
       const aiFactory = require("../ai");
       const factory = require("../ai/prompts/factory");
-
       const { ai, defaultModel } = await aiFactory.getAIInstanceForOrg(orgId);
 
       if (ai) {
         const prompt = factory.titlePrompt().build();
-        const userContent = chat.messages
-          .filter(m => m.role === "user")
-          .map(m => m.content)
-          .join("\n");
+        const userContent = messagesContext.map(m => m.content).join("\n");
 
         const { response } = await ai.chat(model || defaultModel, {
           messages: [
@@ -48,18 +54,14 @@ const clearChat = async (orgId, userId, model) => {
         });
 
         if (response?.content) {
-          chat.title = response.content.trim().replace(/^"|"$/g, '');
+          const title = response.content.trim().replace(/^"|"$/g, "");
+          await Chat.findByIdAndUpdate(chat._id, { title });
         }
       }
-    }
+    })();
+  }
 
-    if (chat) {
-      chat.isActive = false;
-      await chat.save({ session });
-    }
-
-    return chat;
-  });
+  return chat;
 };
 
 const isChatActive = async (chatId) => {
