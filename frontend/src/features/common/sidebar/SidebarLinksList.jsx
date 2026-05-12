@@ -47,7 +47,6 @@ export const SidebarLinksList = ({ onClose }) => {
           <HeaderLink
             headerLink={headerLink}
             key={headerLink.link}
-            onClose={onClose}
           />
         ))}
         <HeaderLink
@@ -56,7 +55,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/categories/${type}`,
             labelKey: "common_ui.sidebar.categories",
           }}
-          onClose={onClose}
+
         />
         <HeaderLink
           headerLink={{
@@ -64,7 +63,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/reports/${reportType}`,
             labelKey: "common_ui.sidebar.reports",
           }}
-          onClose={onClose}
+
         />
         {bot && (
           <HeaderLink
@@ -73,7 +72,7 @@ export const SidebarLinksList = ({ onClose }) => {
               link: "/conversations",
               labelKey: "common_ui.sidebar.links.conversations",
             }}
-            onClose={onClose}
+
           />
         )}
         <Divider bg={bg} />
@@ -110,7 +109,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/pricings`,
             labelKey: "common_ui.sidebar.plans",
           }}
-          onClose={onClose}
+
         />
         <HeaderLink
           headerLink={{
@@ -118,7 +117,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/about`,
             labelKey: "common_ui.sidebar.about",
           }}
-          onClose={onClose}
+
         />
       </List>
     </Container>
