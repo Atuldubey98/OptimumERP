@@ -33,6 +33,29 @@
     },
     "new_org_modal": {
       "header": "New Organization",
+      "subheader": "Setup your organization in a few simple steps",
+      "steps": {
+        "identity": {
+          "title": "Identity",
+          "description": "Organization basics",
+          "heading": "Organization Identity"
+        },
+        "business": {
+          "title": "Business",
+          "description": "Tax & ID details",
+          "heading": "Business Registration"
+        },
+        "regional": {
+          "title": "Regional",
+          "description": "Location & Currency",
+          "heading": "Regional Settings"
+        },
+        "fiscal": {
+          "title": "Fiscal",
+          "description": "Financial period",
+          "heading": "Financial Period"
+        }
+      },
       "name_label": "Name",
       "name_placeholder": "Name",
       "name_helper": "Name of your organization",
@@ -52,7 +75,11 @@
       "date_placeholder": "dd-mm-yyyy",
       "fiscal_year_note": "Select current fiscal year you are following",
       "close_button": "Close",
-      "submit_button": "Save"
+      "submit_button": "Save",
+      "cancel_button": "Cancel",
+      "back_button": "Back",
+      "continue_button": "Continue",
+      "complete_button": "Complete Setup"
     }
   }
 }
