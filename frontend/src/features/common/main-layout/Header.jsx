@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Badge,
   Flex,
   IconButton,
   Show,
@@ -14,18 +15,34 @@ import { AiOutlineDashboard } from "react-icons/ai";
 import { SiQuicktime } from "react-icons/si";
 import { CiDark } from "react-icons/ci";
 import { MdMenu, MdOutlineWbSunny } from "react-icons/md";
+import { IoNotificationsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import AvatarProfileWithOptions from "../sidebar/AvatarProfileWithOptions";
+
 import QuickAccessModal from "../QuickAccessModal";
+import NotificationModal from "../NotificationModal";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+
+
 export default function Header({ onSideNavOpen }) {
   const { t } = useTranslation("common");
   const { colorMode, toggleColorMode } = useColorMode();
+  const { setting, fetchSetting } = useCurrentOrgCurrency();
   const navigate = useNavigate();
   const {
     isOpen: isQuickAccessOpen,
     onClose: closeQuickAccess,
     onOpen: openQuickAccess,
   } = useDisclosure();
+
+  const {
+    isOpen: isNotificationsOpen,
+    onClose: closeNotifications,
+    onOpen: openNotifications,
+  } = useDisclosure();
+
+  const unReadCount = setting?.sequenceCounters?.unReadNotifications || 0;
+
   const onClickDashboard = () => {
     navigate(
       localStorage.getItem("organization")
@@ -78,6 +95,26 @@ export default function Header({ onSideNavOpen }) {
               onClick={openQuickAccess}
             />
           </Show>
+          <Box position="relative">
+            <IconButton
+              size={"sm"}
+              icon={<IoNotificationsOutline />}
+              onClick={openNotifications}
+            />
+            {unReadCount > 0 && (
+              <Badge
+                position="absolute"
+                top="-1px"
+                right="-1px"
+                colorScheme="red"
+                borderRadius="full"
+                fontSize="10px"
+                px={1}
+              >
+                {unReadCount}
+              </Badge>
+            )}
+          </Box>
           <IconButton
             size={"sm"}
             icon={colorMode === "dark" ? <MdOutlineWbSunny /> : <CiDark />}
@@ -91,6 +128,11 @@ export default function Header({ onSideNavOpen }) {
         </Flex>
       </Box>
       <QuickAccessModal isOpen={isQuickAccessOpen} onClose={closeQuickAccess} />
+      <NotificationModal
+        isOpen={isNotificationsOpen}
+        onClose={closeNotifications}
+        onRefreshCount={fetchSetting}
+      />
     </Box>
   );
 }

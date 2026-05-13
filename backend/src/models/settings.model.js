@@ -83,6 +83,7 @@ const settingSchema = new Schema({
       proformaInvoice: sequenceCounterSchema,
       saleOrder: sequenceCounterSchema,
       paymentVoucher: sequenceCounterSchema,
+      unReadNotifications: sequenceCounterSchema,
     },
     default: {
       invoice: 0,
@@ -91,6 +92,7 @@ const settingSchema = new Schema({
       proformaInvoice: 0,
       saleOrder: 0,
       paymentVoucher: 0,
+      unReadNotifications: 0,
     },
   },
   printSettings: {

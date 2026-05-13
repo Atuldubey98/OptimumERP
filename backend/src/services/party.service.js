@@ -5,8 +5,8 @@ const Party = require("../models/party.model");
 const { executeMongoDbTransaction } = require("./crud.service");
 
 
-exports.create = async (body) => {
-    const newParty = await executeMongoDbTransaction(async (session) => {
+exports.create = async (body, session = null) => {
+    const operations = async (session) => {
         const party = new Party(body);
         await party.save({ session });
         await OrgModel.updateOne(
@@ -16,8 +16,10 @@ exports.create = async (body) => {
         );
         logger.info(`created party ${party.id}`);
         return party;
-    });
-    return newParty;
+    }
+
+    if (session) return await operations(session);
+    return await executeMongoDbTransaction(operations);
 }
 exports.findOne = async (params) => {
     const filter = { org: params.org };

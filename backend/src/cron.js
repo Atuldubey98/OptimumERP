@@ -13,7 +13,8 @@ const { Readable } = require("stream");
 const logger = require("./logger");
 const settingService = require("./services/setting.service");
 const { moneyUtils } = require("./utils");
-
+const notificationService = require("./services/notification.service")
+const { executeMongoDbTransaction } = require("./services/crud.service");
 
 let isRunning = false;
 let dbConnection = null;
@@ -66,9 +67,13 @@ const importCron = new CronJob(
               createdBy: jobDoc.createdBy,
               org: jobDoc.org,
             }),
+            frontendTitle: "Parties upload Results",
+            frontendListing: `${process.env.VITE_APP_URL}/${jobDoc.org}/parties`,
             create: async (data) => partyService.create(data),
           },
           product: {
+            frontendTitle: "Products upload Results",
+            frontendListing: `${process.env.VITE_APP_URL}/${jobDoc.org}/products`,
             mapper: (data) => {
               const umName = data["Unit"] || data["UM"];
               const matchedUm = cachedUms.find(u =>
@@ -92,37 +97,53 @@ const importCron = new CronJob(
           },
         };
 
-        const { mapper, create } = entityCreationFns[entity];
+        const { mapper, create, frontendListing, frontendTitle } = entityCreationFns[entity];
         let successCount = 0;
         let failureCount = 0;
 
-        try {
-          const stream = Readable.from(fileBuffer.buffer).pipe(csvParser());
+        await executeMongoDbTransaction(async (session) => {
+          try {
+            const stream = Readable.from(fileBuffer.buffer).pipe(csvParser());
 
-          for await (const row of stream) {
-            try {
-              row.createdBy = jobDoc.createdBy;
-              row.org = jobDoc.org;
-              const mappedData = await mapper(row);
-              await create(mappedData);
-              successCount++;
-            } catch (error) {
-              failureCount++;
-              logger.error("Row error:", error);
+            for await (const row of stream) {
+              try {
+                row.createdBy = jobDoc.createdBy;
+                row.org = jobDoc.org;
+                const mappedData = await mapper(row);
+                await create(mappedData, session);
+                successCount++;
+              } catch (error) {
+                failureCount++;
+                logger.error("Row error:", error);
+              }
             }
-          }
 
-          jobDoc.metadata.successCount = successCount;
-          jobDoc.metadata.failureCount = failureCount;
-          jobDoc.status = "completed";
-          await jobDoc.save();
-        } catch (streamErr) {
-          logger.error("Stream error:", streamErr);
-          jobDoc.status = "failed";
-          await jobDoc.save();
-        }
+            jobDoc.metadata.successCount = successCount;
+            jobDoc.metadata.failureCount = failureCount;
+            jobDoc.status = "completed";
+            jobDoc.markModified("metadata");
+            await jobDoc.save({ session });
+          } catch (streamErr) {
+            logger.error("Stream error:", streamErr);
+            jobDoc.status = "failed";
+            await jobDoc.save({ session });
+          } finally {
+            await notificationService.create({
+              org: jobDoc.org,
+              title: frontendTitle,
+              message: `Bulk Upload completed with ${successCount} success and ${failureCount} failed`,
+              user: jobDoc.createdBy,
+              data: {
+                event: "link_to",
+                data: frontendListing
+              },
+              type: "info",
+            }, session)
+          }
+        });
       }
     } catch (error) {
+      console.log(error)
       logger.error(error);
     } finally {
       isRunning = false;

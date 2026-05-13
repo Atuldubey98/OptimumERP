@@ -12,4 +12,5 @@ module.exports = {
   TRANSACTIONS: "transaction",
   TAXES: "tax",
   PAYMENT_VOUCHERS: "paymentVoucher",
+  NOTIFICATIONS: "notification",
 };

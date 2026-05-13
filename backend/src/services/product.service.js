@@ -35,8 +35,8 @@ const getProductDetailsForAI = async (query, type, currentOrgId) => {
     throw error;
   }
 };
-const create = async (body) => {
-  const product = await executeMongoDbTransaction(async (session) => {
+const create = async (body, session = null) => {
+  const operations = async (session) => {
     const product = new Product(body);
     const newProduct = await product.save({ session });
     await OrgModel.updateOne(
@@ -46,8 +46,10 @@ const create = async (body) => {
     );
     logger.info("created product for org ", body.org, "with id", newProduct._id)
     return newProduct;
-  });
-  return product;
+  }
+
+  if (session) return await operations(session);
+  return await executeMongoDbTransaction(operations);
 };
 module.exports = {
   getProductDetailsForAI,

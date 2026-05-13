@@ -9,6 +9,7 @@ const {
   QUOTATION,
   TRANSACTIONS,
   PAYMENT_VOUCHERS,
+  NOTIFICATIONS,
 } = require("../constants/entities");
 const { isValidObjectId, default: mongoose } = require("mongoose");
 
@@ -59,6 +60,10 @@ exports.getPaginationParams = async ({
       if (query.num) filter.num = query.num;
       if (isValidObjectId(query.refDoc)) filter.refDoc = query.refDoc;
       if (query.refDocModel) filter.refDocModel = query.refDocModel;
+      break;
+    case NOTIFICATIONS:
+      if (isValidObjectId(query.user)) filter.user = query.user;
+      if (query.isRead !== undefined) filter.isRead = query.isRead === "true" || query.isRead === true;
       break;
     default:
       break;

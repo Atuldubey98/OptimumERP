@@ -28,10 +28,13 @@ const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const taxRouter = require("./tax.routes");
 const umRouter = require("./um.routes");
 const chatRouter = require("./chat.routes");
+const notificationRouter = require("./notification.routes");
 
 const orgUserRouter = Router({
   mergeParams: true,
 });
+
+
 
 orgUserRouter.get("/", requestAsyncHandler(read));
 orgUserRouter.patch("/", requestAsyncHandler(update));
@@ -71,5 +74,6 @@ orgUserRouter.use("/proformaInvoices", proformaInvoiceRouter);
 orgUserRouter.use("/paymentVouchers", paymentVoucherRouter);
 orgUserRouter.use("/stats", statsRouter);
 orgUserRouter.use("/chats", chatRouter);
+orgUserRouter.use("/notifications", notificationRouter);
 
 module.exports = orgUserRouter;
