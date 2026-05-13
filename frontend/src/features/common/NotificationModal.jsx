@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import instance from "../../instance";
 import { MdDeleteOutline, MdOutlineMarkEmailRead } from "react-icons/md";
 import moment from "moment";
@@ -29,11 +29,13 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
   const { t } = useTranslation("common");
   const { orgId } = useParams();
   const [notifications, setNotifications] = useState([]);
+  const [processingIds, setProcessingIds] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const toast = useToast();
+  const navigate = useNavigate();
   const { requestAsyncHandler } = useAsyncCall();
 
   const fetchNotifications = async (pageNumber = 1, append = false) => {
@@ -79,15 +81,37 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
     }
   };
 
+  const handleNotificationClick = (notification) => {
+
+    if (notification.data?.event === "link_to" && notification.data?.data) {
+      const url = notification.data.data;
+      if (url.startsWith(window.location.origin)) {
+        const path = url.replace(window.location.origin, "");
+        navigate(path);
+      } else {
+        window.location.href = url;
+      }
+      onClose();
+    }
+  };
 
   const markAsRead = requestAsyncHandler(async (id) => {
-    await instance.patch(
-      `/api/v1/organizations/${orgId}/notifications/${id}/read`
-    );
-    setNotifications((prev) =>
-      prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
-    );
-    onRefreshCount();
+    setProcessingIds((prev) => new Set(prev).add(id));
+    try {
+      await instance.patch(
+        `/api/v1/organizations/${orgId}/notifications/${id}/read`
+      );
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
+      );
+      onRefreshCount();
+    } finally {
+      setProcessingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   });
 
   const markAllAsRead = requestAsyncHandler(async () => {
@@ -104,11 +128,20 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
   });
 
   const deleteNotification = requestAsyncHandler(async (id) => {
-    await instance.delete(
-      `/api/v1/organizations/${orgId}/notifications/${id}`
-    );
-    setNotifications((prev) => prev.filter((n) => n._id !== id));
-    onRefreshCount();
+    setProcessingIds((prev) => new Set(prev).add(id));
+    try {
+      await instance.delete(
+        `/api/v1/organizations/${orgId}/notifications/${id}`
+      );
+      setNotifications((prev) => prev.filter((n) => n._id !== id));
+      onRefreshCount();
+    } finally {
+      setProcessingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   });
 
   return (
@@ -146,6 +179,9 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
                   _dark={{ bg: notification.isRead ? "transparent" : "whiteAlpha.100" }}
                   borderBottomWidth="1px"
                   transition="background 0.2s"
+                  cursor={notification.data?.event ? "pointer" : "default"}
+                  _hover={notification.data?.event ? { bg: "gray.50", _dark: { bg: "whiteAlpha.200" } } : {}}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <Flex justify="space-between" align="start" gap={2}>
                     <VStack align="start" spacing={1} flex={1}>
@@ -179,7 +215,11 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
                           size="sm"
                           variant="ghost"
                           icon={<MdOutlineMarkEmailRead />}
-                          onClick={() => markAsRead(notification._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markAsRead(notification._id);
+                          }}
+                          isLoading={processingIds.has(notification._id)}
                           aria-label="Mark as read"
                         />
                       )}
@@ -188,7 +228,11 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
                         variant="ghost"
                         colorScheme="red"
                         icon={<MdDeleteOutline />}
-                        onClick={() => deleteNotification(notification._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(notification._id);
+                        }}
+                        isLoading={processingIds.has(notification._id)}
                         aria-label="Delete"
                       />
                     </Flex>
