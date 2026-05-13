@@ -80,7 +80,7 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
     },
     platinum: {
       limits: {
-        organizations: 99,
+        organizations: 3,
         ums: 999999,
         taxes: 999999,
         expenseCategories: 999999,
