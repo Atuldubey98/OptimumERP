@@ -11,14 +11,27 @@ const createGrokProvider = (config) => {
 
 
   const chat = async ({ model, messages, tools, options }) => {
-
     if (!apiKey) {
       throw new Error("Grok API Key is missing. Please set GROK_API_KEY in your .env file.");
     }
     try {
+      const formattedMessages = messages.map((m) => {
+        if (m.images && m.images.length > 0) {
+          const content = [
+            { type: "text", text: m.content || "" },
+            ...m.images.map((img) => ({
+              type: "image_url",
+              image_url: { url: img.startsWith("data:") ? img : `data:image/jpeg;base64,${img}` },
+            })),
+          ];
+          return { ...m, content };
+        }
+        return m;
+      });
+
       const response = await client.chat.completions.create({
         model,
-        messages,
+        messages: formattedMessages,
         ...(tools && tools.length > 0 && { tools }),
         temperature: options?.temperature ?? 0,
       });
@@ -45,7 +58,15 @@ const createGrokProvider = (config) => {
     }
   };
 
-  return { chat, listModels };
+  const processImage = (base64Image) => {
+    if (typeof base64Image !== "string") return base64Image;
+    if (!base64Image.startsWith("data:")) {
+      return `data:image/jpeg;base64,${base64Image}`;
+    }
+    return base64Image;
+  };
+
+  return { chat, listModels, processImage };
 };
 
 

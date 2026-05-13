@@ -34,7 +34,15 @@ const createOllamaProvider = (config) => {
     }
   };
 
-  return { chat, listModels };
+  const processImage = (base64Image) => {
+    if (typeof base64Image !== "string") return base64Image;
+    if (base64Image.startsWith("data:")) {
+      return base64Image.split(",")[1];
+    }
+    return base64Image;
+  };
+
+  return { chat, listModels, processImage };
 };
 
 

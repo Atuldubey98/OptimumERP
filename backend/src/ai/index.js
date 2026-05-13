@@ -182,6 +182,7 @@ const aiFactory = ({ provider, apiKey }) => {
 
   return Object.freeze({
     chat,
+    processImage: aiProvider.processImage,
     activeProvider: provider,
   });
 
