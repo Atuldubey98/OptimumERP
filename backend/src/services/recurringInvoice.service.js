@@ -47,8 +47,6 @@ exports.update = async (filter, body, session = null) => {
         const existingRI = await RecurringInvoice.findOne(filter).session(session).lean();
         if (!existingRI) return null;
 
-        const org = await OrgModel.findById(existingRI.org).session(session).lean();
-
         if (body.items) {
             const orgId = filter.org || body.org || existingRI.org;
             const totalWithTaxes = await calculateTaxes(body.items, orgId);
