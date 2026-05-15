@@ -255,9 +255,9 @@ exports.saveBill = async ({
     sequence: body.sequence,
     session,
   });
-  
+
   const action = billId ? "updated" : "created";
-  const userObj = user || { _id: body.createdBy, name: "AI Assistant" };
+  const userObj = user;
 
   await logService.recordActivity({
     org: body.org,

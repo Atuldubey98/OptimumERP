@@ -1,110 +1,213 @@
 const RecurringInvoice = require("../models/recurringInvoice.model");
 const OrgModel = require("../models/org.model");
-const { executeMongoDbTransaction, getPaginationParams } = require("./crud.service");
+const { executeMongoDbTransaction } = require("./crud.service");
 const logger = require("../logger");
-const { RECURRING_INVOICES } = require("../constants/entities");
 const { calculateTaxes } = require("./taxCalculator.service");
 const { getDisplaySettingForOrg } = require("./setting.service");
-
-
+const { saveBill, getNextSequence } = require("./bill.service");
+const Invoice = require("../models/invoice.model");
+const { invoiceDto } = require("../dto/invoice.dto");
+const { InvoiceDuplicate, InvoiceNotFound } = require("../errors/invoice.error");
+const ProformaInvoice = require("../models/proformaInvoice.model");
+const proformaInvoiceDto = require("../dto/proformaInvoice.dto");
+const { ProformaInvoiceDuplicate, ProformaInvoiceNotFound } = require("../errors/proformaInvoice.error");
+const notificationService = require("./notification.service");
 
 exports.create = async (body, session = null) => {
     const operations = async (session) => {
         const totalWithTaxes = await calculateTaxes(body.items, body.org);
-        const setting = await getDisplaySettingForOrg(body.org);
-        const org = await OrgModel.findById(body.org).session(session).lean();
+        const nextOccurrence = body.nextOccurrence || exports.getFirstOccurrence(
+            body.startDate,
+            body.interval,
+            body.dateOfEveryMonth,
+            body.dayOfEveryWeek
+        );
 
         const recurringInvoice = new RecurringInvoice({
             ...body,
             ...totalWithTaxes,
-            financialYear: setting.financialYear,
+            nextOccurrence
         });
         await recurringInvoice.save({ session });
-        await OrgModel.updateOne(
-            { _id: recurringInvoice.org },
-            { $inc: { "relatedDocsCount.recurringInvoices": 1 } },
+        return recurringInvoice;
+    };
+
+    if (session) return await operations(session);
+    return await executeMongoDbTransaction(operations);
+};
+
+const generateBill = async (recurringInvoice, type, session = null) => {
+    const isProforma = type === "proformaInvoice";
+    const config = {
+        Model: isProforma ? ProformaInvoice : Invoice,
+        dto: isProforma ? proformaInvoiceDto : invoiceDto,
+        Duplicate: isProforma ? ProformaInvoiceDuplicate : InvoiceDuplicate,
+        NotFound: isProforma ? ProformaInvoiceNotFound : InvoiceNotFound,
+        prefixType: type,
+        updateField: isProforma ? "proformaInvoices" : "invoices",
+        orgCountField: isProforma ? "relatedDocsCount.proformaInvoices" : "relatedDocsCount.invoices",
+        notifTitle: isProforma ? "Recurring Proforma Invoice Generated" : "Recurring Invoice Generated",
+        notifLink: isProforma ? "/proforma-invoices/" : "/invoices/",
+        prefixKey: isProforma ? "proformaInvoice" : "invoice"
+    };
+
+    const operations = async (session) => {
+        const setting = await getDisplaySettingForOrg(recurringInvoice.org);
+        const sequence = await getNextSequence({
+            Bill: config.Model,
+            org: recurringInvoice.org,
+            prefixType: config.prefixType,
+            session,
+        });
+
+        const requestBody = {
+            org: String(recurringInvoice.org),
+            party: String(recurringInvoice.party?._id || recurringInvoice.party),
+            date: recurringInvoice.nextOccurrence || recurringInvoice.startDate,
+            sequence,
+            prefix: setting.transactionPrefix?.[config.prefixKey] || "",
+            poNo: recurringInvoice.poNo,
+            poDate: recurringInvoice.poDate ? recurringInvoice.poDate.toISOString() : "",
+            status: "draft",
+            items: recurringInvoice.items.map((item) => {
+                const itemObj = item.toObject ? item.toObject() : item;
+                const { _id, ...cleanItem } = itemObj;
+                return {
+                    ...cleanItem,
+                    um: String(cleanItem.um?._id || cleanItem.um),
+                    tax: String(cleanItem.tax?._id || cleanItem.tax),
+                    product: String(cleanItem.product?._id || cleanItem.product),
+                };
+            }),
+            createdBy: String(recurringInvoice.createdBy?._id || recurringInvoice.createdBy),
+            terms: recurringInvoice.terms || "Thanks for business !",
+            description: recurringInvoice.description || "",
+            billingAddress: recurringInvoice.billingAddress,
+            shippingCharges: recurringInvoice.shippingCharges,
+        };
+
+        const bill = await saveBill({
+            Bill: config.Model,
+            dto: config.dto,
+            Duplicate: config.Duplicate,
+            NotFound: config.NotFound,
+            requestBody,
+            prefixType: config.prefixType,
+            user: recurringInvoice.createdBy,
+            session,
+        });
+
+        await RecurringInvoice.updateOne(
+            { _id: recurringInvoice._id },
+            {
+                $push: { [config.updateField]: bill._id },
+                $inc: { totalGenerated: 1 },
+                $set: { lastGeneratedDate: new Date() }
+            },
             { session }
         );
-        logger.info(`Created recurring invoice ${recurringInvoice.id}`);
-        return recurringInvoice;
-    };
 
-    if (session) return await operations(session);
-    return await executeMongoDbTransaction(operations);
-};
-
-exports.update = async (filter, body, session = null) => {
-    const operations = async (session) => {
-        let updateBody = { ...body };
-        const existingRI = await RecurringInvoice.findOne(filter).session(session).lean();
-        if (!existingRI) return null;
-
-        if (body.items) {
-            const orgId = filter.org || body.org || existingRI.org;
-            const totalWithTaxes = await calculateTaxes(body.items, orgId);
-            updateBody = { ...updateBody, ...totalWithTaxes };
-        }
-
-
-        const recurringInvoice = await RecurringInvoice.findOneAndUpdate(
-            filter,
-            { $set: updateBody },
-            { new: true, session }
+        await OrgModel.updateOne(
+            { _id: recurringInvoice.org },
+            { $inc: { [config.orgCountField]: 1 } },
+            { session }
         );
-        if (recurringInvoice) {
-            logger.info(`Updated recurring invoice ${recurringInvoice.id}`);
-        }
-        return recurringInvoice;
+
+        await notificationService.create({
+            user: recurringInvoice.createdBy?._id || recurringInvoice.createdBy,
+            org: recurringInvoice.org,
+            title: config.notifTitle,
+            message: `${isProforma ? "Proforma " : ""}Invoice #${bill.prefix}${bill.sequence} generated for date ${new Date(requestBody.date).toLocaleDateString()}`,
+            type: "success",
+            data: { event: "link_to", data: `${config.notifLink}${bill._id}` }
+        }, session);
+
+        return bill;
     };
 
     if (session) return await operations(session);
     return await executeMongoDbTransaction(operations);
 };
 
-exports.findOne = async (filter, select = null) => {
-    return await RecurringInvoice.findOne(filter).populate("party").populate("items.tax")
-        .populate("items.um").select(select).lean().exec();
+exports.generateInvoice = (ri, session) => generateBill(ri, "invoice", session);
+exports.generateProformaInvoice = (ri, session) => generateBill(ri, "proformaInvoice", session);
+
+exports.checkIfInvoiceHasToBeGenerated = (recurringInvoice) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const nextDate = recurringInvoice.nextOccurrence || recurringInvoice.startDate;
+    if (!nextDate) return false;
+
+    const nextOccurrence = new Date(nextDate);
+    nextOccurrence.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(recurringInvoice.endDate);
+    endDate.setHours(23, 59, 59, 999);
+
+    const hasFlags = recurringInvoice.generateInvoice || recurringInvoice.generateProformaInvoice;
+
+    return recurringInvoice.status === "active" &&
+        nextOccurrence <= today &&
+        nextOccurrence <= endDate &&
+        hasFlags;
 };
 
-exports.remove = async (filter, session = null) => {
-    const operations = async (session) => {
-        const recurringInvoice = await RecurringInvoice.softDelete(filter, { session });
-        if (recurringInvoice) {
-            await OrgModel.updateOne(
-                { _id: recurringInvoice.org },
-                { $inc: { "relatedDocsCount.recurringInvoices": -1 } },
-                { session }
-            );
-            logger.info(`Soft deleted recurring invoice ${recurringInvoice.id}`);
+exports.convertToInvoice = async (recurringInvoice, session = null) => {
+    const results = {};
+    if (recurringInvoice.generateInvoice) {
+        results.invoice = await exports.generateInvoice(recurringInvoice, session);
+    }
+    if (recurringInvoice.generateProformaInvoice) {
+        results.proformaInvoice = await exports.generateProformaInvoice(recurringInvoice, session);
+    }
+    return results;
+};
+
+exports.updateNextOccurrence = async (recurringInvoice, session = null) => {
+    const baseDate = recurringInvoice.nextOccurrence || recurringInvoice.startDate;
+    const nextOccurrence = exports.calculateNextOccurrence(baseDate, recurringInvoice.interval);
+
+    await RecurringInvoice.updateOne(
+        { _id: recurringInvoice._id },
+        { $set: { nextOccurrence } },
+        { session }
+    );
+    return nextOccurrence;
+};
+
+exports.calculateNextOccurrence = (currentNext, interval) => {
+    const date = new Date(currentNext);
+    switch (interval) {
+        case "daily": date.setDate(date.getDate() + 1); break;
+        case "weekly": date.setDate(date.getDate() + 7); break;
+        case "monthly": date.setMonth(date.getMonth() + 1); break;
+        case "quarterly": date.setMonth(date.getMonth() + 3); break;
+        case "triannually": date.setMonth(date.getMonth() + 4); break;
+        case "semiannually":
+        case "half_yearly": date.setMonth(date.getMonth() + 6); break;
+        case "yearly": date.setFullYear(date.getFullYear() + 1); break;
+    }
+    return date;
+};
+
+exports.getFirstOccurrence = (start, interval, dateOfEveryMonth, dayOfEveryWeek) => {
+    const current = new Date(start);
+    if (interval === "weekly" && dayOfEveryWeek) {
+        const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const targetDay = days.indexOf(dayOfEveryWeek.toLowerCase());
+        const currentDay = current.getDay();
+        if (currentDay > targetDay) {
+            current.setDate(current.getDate() + (7 - currentDay + targetDay));
+        } else {
+            current.setDate(current.getDate() + (targetDay - currentDay));
         }
-        return recurringInvoice;
-    };
-
-    if (session) return await operations(session);
-    return await executeMongoDbTransaction(operations);
-};
-
-exports.paginate = async ({ query, params }) => {
-    const { filter, page, limit, skip, total, totalPages } = await getPaginationParams({
-        query,
-        params,
-        model: RecurringInvoice,
-        modelName: RECURRING_INVOICES,
-    });
-
-    const recurringInvoices = await RecurringInvoice.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate("party", "name")
-        .lean()
-        .exec();
-
-    return {
-        data: recurringInvoices,
-        page,
-        limit,
-        total,
-        totalPages,
-    };
+    }
+    if (["monthly", "quarterly", "triannually", "semiannually", "half_yearly", "yearly"].includes(interval) && dateOfEveryMonth) {
+        current.setDate(dateOfEveryMonth);
+        if (current < start) {
+            current.setMonth(current.getMonth() + 1);
+            current.setDate(dateOfEveryMonth);
+        }
+    }
+    return current;
 };

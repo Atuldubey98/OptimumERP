@@ -75,7 +75,13 @@ const recurringInvoiceSchema = new Schema(
     },
     { timestamps: true, versionKey: false }
 );
+recurringInvoiceSchema.index({
+    description: "text",
+    poNo: "text",
+});
+recurringInvoiceSchema.index({ org: 1, createdAt: -1 });
 
 const RecurringInvoice = model("recurring_invoice", recurringInvoiceSchema);
+
 
 module.exports = RecurringInvoice;  

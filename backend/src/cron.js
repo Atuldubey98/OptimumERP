@@ -11,13 +11,20 @@ const productService = require("./services/product.service");
 const umService = require("./services/um.service");
 const { Readable } = require("stream");
 const logger = require("./logger");
+const recurringInvoiceService = require("./services/recurringInvoice.service");
+const RecurringInvoice = require("./models/recurringInvoice.model");
+require("./models/user.model");
+
+
 const settingService = require("./services/setting.service");
 const { moneyUtils } = require("./utils");
 const notificationService = require("./services/notification.service")
 const { executeMongoDbTransaction } = require("./services/crud.service");
 
 let isImportRunning = false;
+let isRecurringInvoiceRunning = false;
 let dbConnection = null;
+
 
 if (!process.env.IMPORT_CRON_SCHEDULE) {
   logger.warn("IMPORT_CRON_SCHEDULE not set. Import cron job will not run.");
@@ -159,4 +166,53 @@ const importCron = new CronJob(
 if (process.env.IMPORT_CRON_SCHEDULE) {
   importCron.start();
   logger.info(`Import cron started with schedule: ${process.env.IMPORT_CRON_SCHEDULE}`);
+}
+
+const recurringInvoiceCron = new CronJob(
+  process.env.RECURRING_INVOICES_CRON || "0 0 * * *",
+  async function () {
+    if (!process.env.RECURRING_INVOICES_CRON || isRecurringInvoiceRunning) return;
+    isRecurringInvoiceRunning = true;
+
+    try {
+      await ensureDbConnection();
+
+      const recurringInvoices = await RecurringInvoice.find({ status: "active" }).populate("createdBy");
+      logger.info("Recurring invoices found", { count: recurringInvoices.length });
+      for (const ri of recurringInvoices) {
+        // Use a while loop to catch up on missed generations
+        while (recurringInvoiceService.checkIfInvoiceHasToBeGenerated(ri)) {
+          await executeMongoDbTransaction(async (session) => {
+            try {
+              await recurringInvoiceService.convertToInvoice(ri, session);
+              await recurringInvoiceService.updateNextOccurrence(ri, session);
+              logger.info(`Generated invoice for recurring invoice ${ri._id}. Catching up...`);
+              
+              // Update local object to reflect the new nextOccurrence for the next iteration of the while loop
+              ri.nextOccurrence = recurringInvoiceService.calculateNextOccurrence(ri.nextOccurrence, ri.interval);
+            } catch (err) {
+              logger.error(`Error generating invoice for recurring invoice ${ri._id}:`, err);
+              throw err; // Re-throw to break the while loop for this specific RI
+            }
+          }).catch(() => {
+            // Break the while loop if transaction fails
+            return;
+          });
+        }
+      }
+
+    } catch (error) {
+      logger.error("Recurring invoice cron error:", error);
+    } finally {
+      isRecurringInvoiceRunning = false;
+    }
+  },
+  null,
+  false,
+  "UTC"
+);
+
+if (process.env.RECURRING_INVOICES_CRON) {
+  recurringInvoiceCron.start();
+  logger.info(`Recurring invoice cron started with schedule: ${process.env.RECURRING_INVOICES_CRON}`);
 }

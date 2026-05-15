@@ -22,6 +22,8 @@ import TableLayout from "../../common/table-layout";
 import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import Status from "../../estimates/list/Status";
 import useAuth from "../../../hooks/useAuth";
+import TableDateFilter from "./TableDateFilter";
+
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -109,6 +111,12 @@ export default function RecurringInvoicesPage() {
         </Flex>
       ) : (
         <TableLayout
+          filter={
+            <TableDateFilter
+              dateFilter={dateFilter}
+              onChangeDateFilter={onChangeDateFilter}
+            />
+          }
           limitKey={"recurringInvoices"}
           heading={t("recurring_invoice_ui.page.heading")}
           tableData={recurringInvoices.map(recurringInvoiceTableMapper)}
@@ -133,6 +141,7 @@ export default function RecurringInvoicesPage() {
           }}
           onAddNewItem={() => navigate("create")}
         />
+
       )}
       <AlertModal
         confirmDisable={deleteStatus === "deleting"}
