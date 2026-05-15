@@ -42,7 +42,7 @@ export const SidebarLinksList = ({ onClose }) => {
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
-        {headerLinks.map((headerLink) => (
+        {headerLinks.filter(headerLink => headerLink.feature ? currentFeatures[headerLink.feature] : true).map((headerLink) => (
           <HeaderLink
             headerLink={headerLink}
             key={headerLink.link}

@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullLoader from "./features/common/FullLoader";
 import OrgChatbotLayout from "./features/common/OrgChatbotLayout";
+import useAuth from "./hooks/useAuth";
 const ReceiptPreview = lazy(() => import("./features/common/receipt-preview"));
 
 const TaxesPage = lazy(() => import("./features/taxes"));
@@ -53,6 +54,10 @@ const RecurringInvoiceFormPage = lazy(() => import("./features/recurringInvoices
 const RecurringInvoicesPage = lazy(() => import("./features/recurringInvoices/list"));
 
 export default function App() {
+  const { user } = useAuth();
+  const currentFeatures = user?.features || {};
+  const bot = currentFeatures?.bot ?? false;
+  const recurringInvoicesEnabled = currentFeatures?.recurring_invoice ?? false;
   return (
     <Suspense fallback={<FullLoader />}>
       <Routes>
@@ -60,7 +65,7 @@ export default function App() {
 
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/:orgId" element={<OrgChatbotLayout/>}>
+        <Route path="/:orgId" element={<OrgChatbotLayout />}>
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
           <Route element={<PricingPage />} path="pricings" />
           <Route element={<ContactsPage />} path="contacts" />
@@ -113,11 +118,15 @@ export default function App() {
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
             <Route element={<VouchersPage />} path=":invoiceId/vouchers" />
           </Route>
-          <Route path="recurringInvoices">
-            <Route element={<RecurringInvoicesPage />} path="" />
-            <Route element={<RecurringInvoiceFormPage />} path="create" />
-            <Route element={<RecurringInvoiceFormPage />} path=":recurringInvoiceId/edit" />
-          </Route>
+          {
+            recurringInvoicesEnabled && (
+              <Route path="recurringInvoices">
+                <Route element={<RecurringInvoicesPage />} path="" />
+                <Route element={<RecurringInvoiceFormPage />} path="create" />
+                <Route element={<RecurringInvoiceFormPage />} path=":recurringInvoiceId/edit" />
+              </Route>
+            )
+          }
 
           <Route path="proformaInvoices">
             <Route element={<ProformaInvoicesPage />} path="" />
@@ -137,10 +146,14 @@ export default function App() {
             <Route path="" element={<ReportsPage />} />
             <Route path=":reportType" element={<ReportsPage />} />
           </Route>
-          <Route path="conversations">
-            <Route path="" element={<ConversationsPage />} />
-            <Route path=":chatId" element={<ConversationsPage />} />
-          </Route>
+          {
+            bot && (
+              <Route path="conversations">
+                <Route path="" element={<ConversationsPage />} />
+                <Route path=":chatId" element={<ConversationsPage />} />
+              </Route>
+            )
+          }
           <Route path="paymentVouchers" element={<VouchersPage />} />
           <Route element={<ReceiptPreview />} path="receipt/:type/:id" />
         </Route>

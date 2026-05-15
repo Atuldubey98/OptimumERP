@@ -20,6 +20,7 @@ const headerLinks = [
   {
     icon: MdCached,
     link: "/recurringInvoices",
+    feature: "recurring_invoice",
     label: "Recurring Invoices",
     labelKey: "common_ui.sidebar.links.recurring_invoices",
   },
