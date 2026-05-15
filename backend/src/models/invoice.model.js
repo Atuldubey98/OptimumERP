@@ -51,6 +51,7 @@ const invoiceSchema = new Schema(
 
 invoiceSchema.index({
   description: "text",
+  poNo: "text",
 });
 invoiceSchema.index({ num: 1 });
 invoiceSchema.index({ org: 1, createdAt: -1 });

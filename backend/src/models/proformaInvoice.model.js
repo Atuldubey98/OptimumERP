@@ -38,6 +38,7 @@ const proformaInvoiceSchema = new Schema(
 
 proformaInvoiceSchema.index({
   description: "text",
+  poNo: "text",
 });
 proformaInvoiceSchema.index({ num: 1 });
 proformaInvoiceSchema.index({ org: 1, createdAt: -1 });
