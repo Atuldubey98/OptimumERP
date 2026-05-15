@@ -318,7 +318,7 @@ const billHandler = {
       const fromSmallest = (val) =>
         moneyUtils.fromSmallestUnit(val, decimalDigits);
 
-      if (params.minAmount != null || params.maxAmount != null) {
+      if (params.minAmount && params.maxAmount && params.minAmount != null || params.maxAmount != null) {
         filter.$expr = { $and: [] };
         const sumExpr = {
           $add: [
