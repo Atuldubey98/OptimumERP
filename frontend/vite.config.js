@@ -16,6 +16,7 @@ export default defineConfig({
             id.includes('node_modules/react-router-dom/') ||
             id.includes('node_modules/react-error-boundary/') ||
             id.includes('node_modules/react-i18next/') ||
+            id.includes('node_modules/framer-motion/') ||
             id.includes('node_modules/formik/') ||
             id.includes('node_modules/yup/')) {
             return 'react-vendor'
@@ -26,11 +27,6 @@ export default defineConfig({
             id.includes('node_modules/@emotion/') ||
             id.includes('node_modules/chakra-react-select/')) {
             return 'ui-vendor'
-          }
-
-          // Framer Motion split out separately to reduce ui-vendor size
-          if (id.includes('node_modules/framer-motion/')) {
-            return 'motion-vendor'
           }
 
           // Icons (react-icons ships per-icon files but can still be large)
