@@ -1,11 +1,80 @@
 {
-  "recurring_invoice": {
-    "recurring_invoice": {
-      "not_found": "Recurring Invoice does not exists",
-      "is_invalid": "Recurring Invoice is invalid",
-      "created": "Recurring Invoice created successfully",
-      "updated": "Recurring Invoice updated successfully",
-      "deleted": "Recurring Invoice deleted successfully"
+  "recurringInvoice": {
+    "not_found": "Recurring Invoice does not exists",
+    "created": "Recurring Invoice created successfully",
+    "updated": "Recurring Invoice updated successfully",
+    "deleted": "Recurring Invoice deleted successfully"
+  },
+  "recurring_invoice_ui": {
+    "page": {
+      "heading": "Recurring Invoices",
+      "total_found": "Total recurring invoices found",
+      "not_found": "Recurring Invoice not found"
+    },
+    "table": {
+      "columns": {
+        "recipient": "Recipient",
+        "status": "Status",
+        "total": "Total",
+        "grand_total": "Grand Total",
+        "interval": "Interval",
+        "next_occurrence": "Next Occurrence",
+        "start_date": "Start Date",
+        "end_date": "End Date"
+      }
+    },
+    "form": {
+      "party_section": "Party",
+      "bill_to": "Bill to",
+      "billing_address": "Billing Address",
+      "details_section": "Recurring Details",
+      "interval": "Interval",
+      "start_date": "Start Date",
+      "end_date": "End Date",
+      "status": "Status",
+      "items_section": "Items",
+      "frequency_section": "Frequency Settings",
+      "day_of_week": "Day of Week",
+      "date_of_month": "Date of Month",
+      "save_button": "Save",
+      "generation_options": "Generation Options",
+      "generate_invoice": "Generate Invoice",
+      "generate_proforma_invoice": "Generate Proforma Invoice"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "interval": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "half_yearly": "Half Yearly",
+      "yearly": "Yearly"
+    },
+    "days": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "modal": {
+      "heading": "Recurring Invoice",
+      "delete_header": "Delete Recurring Invoice",
+      "delete_body": "Are you sure you want to delete this recurring invoice? This will stop future generations.",
+      "confirm_save_header": "Confirm Recurring Schedule",
+      "summary_text": "This will create a total of {{count}} invoices based on your selection.",
+      "dates_list_header": "Scheduled Creation Dates:",
+      "next_badge": "Next",
+      "confirm_proceed_text": "Do you want to proceed and save this schedule?",
+      "cancel_button": "Cancel",
+      "confirm_button": "Confirm & Save"
     }
   }
 }

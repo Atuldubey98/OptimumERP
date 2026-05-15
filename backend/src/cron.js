@@ -16,24 +16,27 @@ const { moneyUtils } = require("./utils");
 const notificationService = require("./services/notification.service")
 const { executeMongoDbTransaction } = require("./services/crud.service");
 
-let isRunning = false;
+let isImportRunning = false;
 let dbConnection = null;
 
 if (!process.env.IMPORT_CRON_SCHEDULE) {
-  logger.warn("IMPORT_CRON_SCHEDULE not set. Cron job will not run.");
-  process.exit(0);
+  logger.warn("IMPORT_CRON_SCHEDULE not set. Import cron job will not run.");
 }
 
+const ensureDbConnection = async () => {
+  if (!dbConnection) {
+    dbConnection = await dbService.connectDatabase(process.env.MONGO_URI);
+  }
+};
+
 const importCron = new CronJob(
-  process.env.IMPORT_CRON_SCHEDULE,
+  process.env.IMPORT_CRON_SCHEDULE || "0 * * * *",
   async function () {
-    if (isRunning) return;
-    isRunning = true;
+    if (!process.env.IMPORT_CRON_SCHEDULE || isImportRunning) return;
+    isImportRunning = true;
 
     try {
-      if (!dbConnection) {
-        dbConnection = await dbService.connectDatabase(process.env.MONGO_URI);
-      }
+      await ensureDbConnection();
 
       const jobs = await JobModel.find({
         type: "bulk_upload",
@@ -143,10 +146,9 @@ const importCron = new CronJob(
         });
       }
     } catch (error) {
-      console.log(error)
-      logger.error(error);
+      logger.error("Import cron error:", error);
     } finally {
-      isRunning = false;
+      isImportRunning = false;
     }
   },
   null,
@@ -154,4 +156,7 @@ const importCron = new CronJob(
   "UTC"
 );
 
-importCron.start();
+if (process.env.IMPORT_CRON_SCHEDULE) {
+  importCron.start();
+  logger.info(`Import cron started with schedule: ${process.env.IMPORT_CRON_SCHEDULE}`);
+}

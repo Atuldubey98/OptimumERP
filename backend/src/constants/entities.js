@@ -13,4 +13,5 @@ module.exports = {
   TAXES: "tax",
   PAYMENT_VOUCHERS: "paymentVoucher",
   NOTIFICATIONS: "notification",
+  RECURRING_INVOICES: "recurringInvoice",
 };

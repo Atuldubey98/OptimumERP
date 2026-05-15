@@ -139,7 +139,11 @@
         "product_name_required": "Please provide product name",
         "name_required": "Name is required",
         "min_length_3": "Min length should be 3",
-        "max_length_60": "Max length should be 60"
+        "max_length_60": "Max length should be 60",
+        "interval_required": "Interval is required",
+        "end_date_min_start_date": "End date must be after start date",
+        "day_of_week_required": "Day of week is required",
+        "date_of_month_required": "Date of month is required"
       },
       "labels": {
         "invoice_number": "Invoice Number",
@@ -156,7 +160,10 @@
         "selling_price": "Selling Price",
         "unit_of_measurement": "UOM",
         "product_type": "Type of product",
-        "hsn_or_sac": "HSN Code or SAC Code"
+        "hsn_or_sac": "HSN Code or SAC Code",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "interval": "Interval"
       }
     },
     "organization": "Organization",
@@ -228,7 +235,8 @@
         "purchase": "Purchase",
         "payment_vouchers": "Payment Vouchers",
         "items": "Items",
-        "conversations": "Conversations"
+        "conversations": "Conversations",
+        "recurring_invoices": "Recurring Invoices"
       },
       "settings_links": {
         "admin": "Admin",

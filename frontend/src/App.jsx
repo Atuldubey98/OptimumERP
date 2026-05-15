@@ -49,6 +49,9 @@ const ReportsPage = lazy(() => import("./features/reports"));
 const ExpensesPage = lazy(() => import("./features/expenses"));
 const VouchersPage = lazy(() => import("./features/vouchers"));
 const ConversationsPage = lazy(() => import("./features/conversations"));
+const RecurringInvoiceFormPage = lazy(() => import("./features/recurringInvoices/create"));
+const RecurringInvoicesPage = lazy(() => import("./features/recurringInvoices/list"));
+
 export default function App() {
   return (
     <Suspense fallback={<FullLoader />}>
@@ -110,6 +113,12 @@ export default function App() {
             <Route element={<CreateInvoicePage />} path=":invoiceId/edit" />
             <Route element={<VouchersPage />} path=":invoiceId/vouchers" />
           </Route>
+          <Route path="recurringInvoices">
+            <Route element={<RecurringInvoicesPage />} path="" />
+            <Route element={<RecurringInvoiceFormPage />} path="create" />
+            <Route element={<RecurringInvoiceFormPage />} path=":recurringInvoiceId/edit" />
+          </Route>
+
           <Route path="proformaInvoices">
             <Route element={<ProformaInvoicesPage />} path="" />
             <Route element={<ProformaInvoiceFormPage />} path="create" />

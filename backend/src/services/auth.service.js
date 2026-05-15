@@ -94,6 +94,7 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
         byok: true,
         on_premise: true,
         bot: true,
+        recurringInvoices: true,
       },
     },
   };

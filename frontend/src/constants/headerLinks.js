@@ -10,13 +10,19 @@ import { GoPeople, GoTag } from "react-icons/go";
 import { ImStatsBars2 } from "react-icons/im";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { TiContacts } from "react-icons/ti";
-import { MdOutlinePayments } from "react-icons/md";
+import { MdOutlinePayments, MdCached } from "react-icons/md";
 const headerLinks = [
   { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard", labelKey: "common_ui.sidebar.links.dashboard" },
   { icon: ImStatsBars2, link: "/stats", label: "Stats", labelKey: "common_ui.sidebar.links.stats" },
   { icon: GoPeople, link: "/parties", label: "Parties", labelKey: "common_ui.sidebar.links.parties" },
   { icon: TiContacts, link: "/contacts", label: "Contacts", labelKey: "common_ui.sidebar.links.contacts" },
   { icon: FaFileInvoiceDollar, link: "/invoices", label: "Invoices", labelKey: "common_ui.sidebar.links.invoices" },
+  {
+    icon: MdCached,
+    link: "/recurringInvoices",
+    label: "Recurring Invoices",
+    labelKey: "common_ui.sidebar.links.recurring_invoices",
+  },
   {
     icon: LiaFileInvoiceDollarSolid,
     link: "/proformaInvoices",

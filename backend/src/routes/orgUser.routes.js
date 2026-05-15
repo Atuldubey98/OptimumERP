@@ -29,6 +29,7 @@ const taxRouter = require("./tax.routes");
 const umRouter = require("./um.routes");
 const chatRouter = require("./chat.routes");
 const notificationRouter = require("./notification.routes");
+const recurringInvoiceRouter = require("./recurringInvoice.routes");
 
 const orgUserRouter = Router({
   mergeParams: true,
@@ -75,5 +76,6 @@ orgUserRouter.use("/paymentVouchers", paymentVoucherRouter);
 orgUserRouter.use("/stats", statsRouter);
 orgUserRouter.use("/chats", chatRouter);
 orgUserRouter.use("/notifications", notificationRouter);
+orgUserRouter.use("/recurringInvoices", recurringInvoiceRouter);
 
 module.exports = orgUserRouter;

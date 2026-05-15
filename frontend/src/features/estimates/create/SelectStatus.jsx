@@ -11,6 +11,8 @@ export default function SelectStatus({ formik, statusList, namespace = "quote" }
     ? "invoice_ui.form.status"
     : namespace === "purchase"
     ? "purchase_ui.form.status_label"
+    : namespace === "recurringInvoice"
+    ? "recurring_invoice_ui.form.status"
     : "quote_ui.form.status_label";
   return (
     <FormControl

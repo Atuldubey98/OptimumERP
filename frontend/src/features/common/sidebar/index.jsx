@@ -5,6 +5,7 @@ import Banner from "./Banner";
 import { SidebarLinksList } from "./SidebarLinksList";
 export default function Sidebar() {
   const bg = useColorModeValue("gray.100", "gray.700");
+    
   return (
     <Flex
       bg={bg}

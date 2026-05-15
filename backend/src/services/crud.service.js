@@ -10,6 +10,7 @@ const {
   TRANSACTIONS,
   PAYMENT_VOUCHERS,
   NOTIFICATIONS,
+  RECURRING_INVOICES,
 } = require("../constants/entities");
 const { isValidObjectId, default: mongoose } = require("mongoose");
 
@@ -52,6 +53,7 @@ exports.getPaginationParams = async ({
     case PURCHASE_INVOICES:
     case PURCHASE_ORDERS:
     case PAYMENT_VOUCHERS:
+    case RECURRING_INVOICES:
       if (query.startDate && query.endDate)
         filter.date = {
           $gte: new Date(query.startDate),

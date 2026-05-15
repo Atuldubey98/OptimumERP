@@ -3,7 +3,6 @@ const logger = require("../../logger");
 const OrgModel = require("../../models/org.model");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 const billTypes = require("../../constants/billTypes");
-const logService = require("../../services/log.service");
 
 const create = async (options = {}, req, res) => {
   const { NotFound, Duplicate, dto, Bill, prefixType, relatedDocType } =

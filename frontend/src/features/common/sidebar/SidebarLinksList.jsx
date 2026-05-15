@@ -39,7 +39,6 @@ export const SidebarLinksList = ({ onClose }) => {
   const currentFeatures = user?.features || {};
   const bot = currentFeatures?.bot ?? false;
   const bg = useColorModeValue("black");
-
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
