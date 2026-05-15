@@ -1,6 +1,7 @@
 const RecurringInvoice = require("../models/recurringInvoice.model");
 const OrgModel = require("../models/org.model");
-const { executeMongoDbTransaction } = require("./crud.service");
+const { executeMongoDbTransaction, getPaginationParams } = require("./crud.service");
+const { RECURRING_INVOICES } = require("../constants/entities");
 const logger = require("../logger");
 const { calculateTaxes } = require("./taxCalculator.service");
 const { getDisplaySettingForOrg } = require("./setting.service");
@@ -210,4 +211,61 @@ exports.getFirstOccurrence = (start, interval, dateOfEveryMonth, dayOfEveryWeek)
         }
     }
     return current;
+};
+
+exports.paginate = async ({ query, params }) => {
+    const { filter, limit, page, skip, total, totalPages, hasTextSearch } =
+        await getPaginationParams({
+            query,
+            params,
+            model: RecurringInvoice,
+            modelName: RECURRING_INVOICES,
+        });
+
+    let mongoQuery = RecurringInvoice.find(filter);
+
+    if (hasTextSearch) {
+        mongoQuery = mongoQuery
+            .select({ score: { $meta: "textScore" } })
+            .sort({ score: { $meta: "textScore" } });
+    } else {
+        mongoQuery = mongoQuery.sort({ createdAt: -1 });
+    }
+
+    const data = await mongoQuery
+        .skip(skip)
+        .limit(limit)
+        .populate("party", "name")
+        .lean()
+        .exec();
+
+    return {
+        data,
+        page,
+        limit,
+        total,
+        totalPages,
+    };
+};
+
+exports.findOne = async (filter) => {
+    return await RecurringInvoice.findOne(filter)
+        .populate("party")
+        .populate("createdBy", "name email")
+        .populate("invoices", "num date total status")
+        .populate("proformaInvoices", "num date total status")
+        .populate("items.tax")
+        .populate("items.um")
+        .populate("items.product")
+        .lean();
+};
+
+exports.update = async (filter, body) => {
+    const totalWithTaxes = await calculateTaxes(body.items, body.org);
+    const updatedBody = { ...body, ...totalWithTaxes };
+    return await RecurringInvoice.findOneAndUpdate(filter, updatedBody, { new: true });
+};
+
+exports.remove = async (filter) => {
+    return await RecurringInvoice.findOneAndDelete(filter);
 };
