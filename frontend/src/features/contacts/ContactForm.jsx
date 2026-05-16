@@ -53,24 +53,26 @@ export default function ContactForm({
           <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
         </FormControl>
         <FormControl
-          isRequired
           isInvalid={formik.touched.telephone && formik.errors.telephone}
         >
           <FormLabel>{t("contact_ui.form.telephone")}</FormLabel>
           <Input
             name="telephone"
             type="tel"
-            required
             value={formik.values.telephone}
             onChange={formik.handleChange}
           />
           <FormErrorMessage>{formik.errors.telephone}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={formik.touched.email && formik.errors.email}>
+        <FormControl 
+          isRequired
+          isInvalid={formik.touched.email && formik.errors.email}
+        >
           <FormLabel>{t("contact_ui.form.email")}</FormLabel>
           <Input
             name="email"
             type="email"
+            required
             value={formik.values.email}
             onChange={formik.handleChange}
           />

@@ -56,7 +56,7 @@ const contactTools = [
             description: "Identifier of the user who last updated the contact.",
           },
         },
-        required: ["name", "type", "createdBy"],
+        required: ["name", "type", "email", "createdBy"],
       },
     },
   },

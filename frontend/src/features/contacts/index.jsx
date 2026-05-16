@@ -75,9 +75,9 @@ export default function ContactsPage() {
       .required()
       .min(2)
       .max(40),
-    email: Yup.string().email().max(40).optional(),
+    email: Yup.string().label(t("contact_ui.form.email")).email().max(40).required(),
     party: Yup.string().optional(),
-    telephone: Yup.string().required(),
+    telephone: Yup.string().label(t("contact_ui.form.telephone")).optional(),
     description: Yup.string().optional().max(80),
     type: Yup.string().required(),
   });

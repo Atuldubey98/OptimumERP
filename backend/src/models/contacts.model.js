@@ -16,6 +16,7 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
+      required: true,
     },
     party: {
       type: Types.ObjectId,
