@@ -6,6 +6,7 @@ import {
   VStack,
   useColorModeValue,
   useDisclosure,
+  useOutsideClick,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -36,8 +37,19 @@ const ChatWidget = () => {
   const scrollRef = useRef(null);
   const fileInputRef = useRef(null);
   const cancelRef = useRef();
+  const containerRef = useRef();
 
   const { isOpen: isResetOpen, onOpen: onResetOpen, onClose: onResetClose } = useDisclosure();
+  
+  useOutsideClick({
+    ref: containerRef,
+    handler: () => {
+      if (isOpen && !isResetOpen) {
+        setIsOpen(false);
+      }
+    },
+  });
+
   const { orgId } = useParams();
   const navigate = useNavigate();
 
@@ -157,6 +169,7 @@ const ChatWidget = () => {
   return (
     <Portal>
       <Box
+        ref={containerRef}
         position="fixed"
         bottom={{ base: isOpen ? "0" : "8px", md: "20px" }}
         right={{ base: isOpen ? "0" : "8px", md: "20px" }}
