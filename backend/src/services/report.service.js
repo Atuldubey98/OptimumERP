@@ -62,19 +62,42 @@ exports.makeReportExcelBuffer = async ({
     });
   };
 
+  const priceFields = [
+    "totalTax",
+    "grandTotal",
+    "amount",
+    "total",
+    "shippingCharges",
+    "price",
+    "cgst",
+    "sgst",
+    "igst",
+    "vat",
+    "cess",
+    "sal",
+    "others",
+  ];
+
   const writeBodyRow = (worksheet, headerObj, reportItem, rowIndex) => {
     Object.entries(headerObj).forEach(([key], fieldIndex) => {
       if (key !== "_id") {
         const value = reportItem[key];
         const cell = worksheet.cell(rowIndex, fieldIndex + 1);
 
-        if (
+        if (["num", "poNo"].includes(key)) {
+          cell.string(String(value ?? ""));
+        } else if (
           typeof value === "number" ||
           (typeof value === "string" &&
             value.trim() !== "" &&
             !isNaN(Number(value)))
         ) {
-          cell.number(Number(value)).style(numberStyle);
+          const numValue = Number(value);
+          if (priceFields.includes(key)) {
+            cell.number(numValue).style(numberStyle);
+          } else {
+            cell.number(numValue); // Default formatting for other numbers (e.g. quantity)
+          }
         } else {
           cell.string(String(value ?? ""));
         }
