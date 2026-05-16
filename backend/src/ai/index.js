@@ -27,6 +27,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     list_expense_categories: "Listing expense categories...",
     create_expense_category: "Creating expense category...",
     get_activity_log: "Fetching history...",
+    get_business_stats: "Fetching business performance data...",
   };
 
   const toolPromises = toolCalls.map(async (tool) => {

@@ -36,7 +36,7 @@ const ChatWidget = () => {
   const scrollRef = useRef(null);
   const fileInputRef = useRef(null);
   const cancelRef = useRef();
-  
+
   const { isOpen: isResetOpen, onOpen: onResetOpen, onClose: onResetClose } = useDisclosure();
   const { orgId } = useParams();
   const navigate = useNavigate();
@@ -85,11 +85,12 @@ const ChatWidget = () => {
     scrollToBottom();
   }, [messages, isOpen, isTyping, statusMsg, scrollToBottom]);
 
-  const handleSend = useCallback(() => {
-    if ((!input.trim() && !attachment) || !isConnected) return;
+  const handleSend = useCallback((overrideText) => {
+    const textToSend = (typeof overrideText === "string" ? overrideText : input).trim();
+    if ((!textToSend && !attachment) || !isConnected) return;
     const now = new Date().toISOString();
     const payload = {
-      message: input.trim(),
+      message: textToSend,
       model: selectedModel,
       attachment: attachment ? {
         name: attachment.name,
@@ -99,7 +100,7 @@ const ChatWidget = () => {
     };
     const userMessage = {
       role: "user",
-      content: input.trim(),
+      content: textToSend,
       timestamp: now,
       attachment: attachment ? {
         name: attachment.name,
@@ -112,6 +113,10 @@ const ChatWidget = () => {
     clearAttachment();
     setHistoryIndex(-1);
   }, [input, attachment, isConnected, sendMessage, clearAttachment, selectedModel]);
+
+  const handleSuggestionClick = useCallback((text) => {
+    handleSend(text);
+  }, [handleSend]);
 
   const handleConfirmReset = async () => {
     setIsClearing(true);
@@ -148,59 +153,59 @@ const ChatWidget = () => {
   const widgetBg = useColorModeValue("white", "gray.800");
   const widgetBorder = useColorModeValue("gray.200", "whiteAlpha.200");
   const messageAreaBg = useColorModeValue("gray.50", "#131720");
-  
+
   if (!isConnected) return null;
 
   return (
     <Portal>
-      <Box 
-        position="fixed" 
-        bottom={{ base: isOpen ? "0" : "8px", md: "20px" }} 
-        right={{ base: isOpen ? "0" : "8px", md: "20px" }} 
+      <Box
+        position="fixed"
+        bottom={{ base: isOpen ? "0" : "8px", md: "20px" }}
+        right={{ base: isOpen ? "0" : "8px", md: "20px" }}
         zIndex={1000}
       >
         <AnimatePresence>
           {isOpen && (
             <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}>
-              <Flex 
-                flexDirection="column" 
-                width={{ base: "100vw", md: "400px" }} 
-                height={{ base: "100dvh", md: "600px" }} 
-                bg={widgetBg} 
-                borderRadius={{ base: "0", md: "2xl" }} 
-                borderWidth={{ base: "0", md: "1px" }} 
-                borderColor={widgetBorder} 
-                overflow="hidden" 
-                mb={{ base: 0, md: 4 }} 
+              <Flex
+                flexDirection="column"
+                width={{ base: "100vw", md: "400px" }}
+                height={{ base: "100dvh", md: "600px" }}
+                bg={widgetBg}
+                borderRadius={{ base: "0", md: "2xl" }}
+                borderWidth={{ base: "0", md: "1px" }}
+                borderColor={widgetBorder}
+                overflow="hidden"
+                mb={{ base: 0, md: 4 }}
                 boxShadow="2xl"
               >
-                <ChatHeader 
-                  isConnected={isConnected} 
-                  onToggle={toggleOpen} 
-                  onReset={onResetOpen} 
+                <ChatHeader
+                  isConnected={isConnected}
+                  onToggle={toggleOpen}
+                  onReset={onResetOpen}
                   showReset={messages.length > 0}
                 />
 
                 <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>
                   <VStack align="stretch" spacing={4} minHeight="100%">
                     {!activeProvider ? (
-                      <SetupRequired 
+                      <SetupRequired
                         onNavigate={() => {
                           setIsOpen(false);
                           navigate(`/${orgId}/application`);
-                        }} 
+                        }}
                       />
                     ) : messages.length === 0 ? (
-                      <EmptyState />
+                      <EmptyState onSuggestionClick={handleSuggestionClick} />
                     ) : (
                       <MessageList messages={messages} formatTime={formatTime} />
                     )}
-                    
+
                     {isTyping && <TypingIndicator statusMsg={statusMsg} />}
                   </VStack>
                 </Box>
 
-                <ChatInput 
+                <ChatInput
                   input={input}
                   setInput={setInput}
                   handleKeyDown={handleKeyDown}
@@ -223,24 +228,24 @@ const ChatWidget = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         {!isOpen && (
           <Flex justify="flex-end">
-            <IconButton 
-              aria-label="Open Chat" 
-              onClick={toggleOpen} 
-              size="md" 
+            <IconButton
+              aria-label="Open Chat"
+              onClick={toggleOpen}
+              size="md"
               colorScheme="blue"
-              borderRadius="full" 
-              width="50px" 
-              height="50px" 
-              boxShadow="2xl" 
-              icon={<RiRobot2Line size={24} />} 
+              borderRadius="full"
+              width="50px"
+              height="50px"
+              boxShadow="2xl"
+              icon={<RiRobot2Line size={24} />}
             />
           </Flex>
         )}
 
-        <ResetDialog 
+        <ResetDialog
           isOpen={isResetOpen}
           onClose={onResetClose}
           onConfirm={handleConfirmReset}

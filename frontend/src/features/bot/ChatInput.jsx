@@ -10,18 +10,18 @@ const pulse = keyframes`
   100% { transform: scale(1); opacity: 1; }
 `;
 
-const ChatInput = memo(({ 
-  input, 
-  setInput, 
-  handleKeyDown, 
-  handleSend, 
-  attachment, 
-  clearAttachment, 
-  isListening, 
-  isSupported, 
-  startListening, 
-  stopListening, 
-  fileInputRef, 
+const ChatInput = memo(({
+  input,
+  setInput,
+  handleKeyDown,
+  handleSend,
+  attachment,
+  clearAttachment,
+  isListening,
+  isSupported,
+  startListening,
+  stopListening,
+  fileInputRef,
   handleFileChange,
   isConnected,
   isTyping,
@@ -41,20 +41,20 @@ const ChatInput = memo(({
           </Tag>
         )}
 
-        <Flex 
+        <Flex
           direction="column"
-          bg="gray.700" 
-          borderRadius="xl" 
+          bg="gray.700"
+          borderRadius="xl"
           borderWidth="1px"
           borderColor={isListening ? "red.400" : "whiteAlpha.200"}
-          _light={{ 
+          _light={{
             bg: "gray.50",
-            borderColor: isListening ? "red.400" : "gray.200" 
+            borderColor: isListening ? "red.400" : "gray.200"
           }}
           transition="all 0.2s"
           overflow="hidden"
         >
-          <Box 
+          <Box
             as={TextareaAutosize}
             minRows={1}
             maxRows={5}
@@ -72,7 +72,7 @@ const ChatInput = memo(({
             _focus={{ outline: "none" }}
             style={{ resize: "none" }}
           />
-          
+
           <Flex px={2} pb={2} justify="space-between" align="center">
             <HStack spacing={1}>
               {isSupported && (
@@ -95,13 +95,13 @@ const ChatInput = memo(({
               {currentModel?.vision && (
                 <>
                   <input type="file" hidden ref={fileInputRef} accept="application/pdf,image/*" onChange={handleFileChange} />
-                  <IconButton 
-                    aria-label="Attach file" 
-                    variant="ghost" 
+                  <IconButton
+                    aria-label="Attach file"
+                    variant="ghost"
                     size="sm"
-                    icon={<FiPaperclip size={16} />} 
-                    onClick={() => fileInputRef.current.click()} 
-                    color="whiteAlpha.600" 
+                    icon={<FiPaperclip size={16} />}
+                    onClick={() => fileInputRef.current.click()}
+                    color="whiteAlpha.600"
                     _light={{ color: "gray.400" }}
                     _hover={{ bg: "whiteAlpha.200" }}
                   />
@@ -111,12 +111,12 @@ const ChatInput = memo(({
 
             <HStack spacing={2}>
               {availableModels.length > 0 && (
-                <Select 
-                  size="xs" 
-                  width="auto" 
-                  variant="unstyled" 
-                  borderRadius="md" 
-                  value={selectedModel} 
+                <Select
+                  size="xs"
+                  width="auto"
+                  variant="unstyled"
+                  borderRadius="md"
+                  value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
                   fontSize="11px"
                   color="whiteAlpha.600"
@@ -127,14 +127,14 @@ const ChatInput = memo(({
                   iconSize="0"
                 >
                   {availableModels.map((m) => (
-                    <option key={m.id} value={m.id}>{`${m.name}${m.vision ? "-(v)" : ""}${m.thinking ? "-(t)" : ""}`}</option>
+                    <option key={m.id} value={m.id}>{`${m.name}${m.vision ? "-(vision)" : ""}${m.thinking ? "-(thinking)" : ""}`}</option>
                   ))}
                 </Select>
               )}
               {currentModel?.thinking && (
                 <Tooltip label="Thinking Model" fontSize="xs" placement="top" hasArrow>
                   <Flex align="center" px={1} cursor="help">
-                    <Box 
+                    <Box
                       as={motion.div}
                       animate={{ rotate: 360 }}
                       transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -144,14 +144,14 @@ const ChatInput = memo(({
                   </Flex>
                 </Tooltip>
               )}
-              <IconButton 
-                aria-label="Send" 
-                colorScheme="blue" 
+              <IconButton
+                aria-label="Send"
+                colorScheme="blue"
                 size="sm"
-                icon={<FiSend size={14} />} 
-                onClick={handleSend} 
-                isDisabled={!isConnected || (!input.trim() && !attachment) || isTyping} 
-                borderRadius="lg" 
+                icon={<FiSend size={14} />}
+                onClick={handleSend}
+                isDisabled={!isConnected || (!input.trim() && !attachment) || isTyping}
+                borderRadius="lg"
                 boxShadow="md"
                 _hover={{ transform: "scale(1.05)" }}
                 _active={{ transform: "scale(0.95)" }}
