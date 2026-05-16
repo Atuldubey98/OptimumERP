@@ -11,11 +11,19 @@ const downloadReportByType = async (req, res) => {
   });
   
   const { getDisplaySettingForOrg } = require("../../services/setting.service");
-  const { moneyUtils } = require("../../utils");
   let decimalDigits = 2;
+  let organization = null;
   if (reportData.length > 0) {
     const orgId = reportData[0].org;
-    const setting = await getDisplaySettingForOrg(orgId);
+    const { getDisplaySettingForOrg } = require("../../services/setting.service");
+    const Org = require("../../models/org.model");
+    const organizationPromise = Org.findById(orgId);
+    const settingPromise = getDisplaySettingForOrg(orgId);
+    
+    const [org, setting] = await Promise.all([organizationPromise, settingPromise]);
+    organization = org;
+    
+    const { moneyUtils } = require("../../utils");
     const currencyConfig = await moneyUtils.getCurrencyConfigByCode(setting.currency);
     decimalDigits = currencyConfig?.decimal_digits || 2;
   }
@@ -24,6 +32,7 @@ const downloadReportByType = async (req, res) => {
     reportData,
     reportType,
     decimalDigits,
+    organization,
   });
   res.setHeader(
     "Content-Type",

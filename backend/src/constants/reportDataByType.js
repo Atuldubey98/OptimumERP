@@ -55,6 +55,8 @@ const buildGstrHeader = ({ dateLabel, numberLabel, taxCategoryKeys }) => {
     header[key] = key.toUpperCase();
   });
   header.totalTax = "Total Tax";
+  header.total = "Total";
+  header.shippingCharges = "Shipping Charges";
   header.grandTotal = "Grand Total";
   return header;
 };
@@ -144,8 +146,32 @@ const reportDataByType = {
       gstNo: item.party?.gstNo,
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories, decimalDigits),
       totalTax: formatAmount(item.totalTax, decimalDigits),
+      total: formatAmount(item.total, decimalDigits),
+      shippingCharges: formatAmount(item.shippingCharges, decimalDigits),
       grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
     }),
+    itemSheet: {
+      header: {
+        parentNum: "Invoice No.",
+        date: "Invoice Date",
+        partyName: "Party Name",
+        name: "Item Name",
+        code: "HSN Code",
+        quantity: "Quantity",
+        price: "Rate",
+        total: "Total",
+      },
+      bodyMapper: (parent, item, { decimalDigits = 2 } = {}) => ({
+        parentNum: parent.num,
+        date: formatDate(parent.date),
+        partyName: parent.party?.name,
+        name: item.name,
+        code: item.code || "",
+        quantity: item.quantity,
+        price: formatAmount(item.price, decimalDigits),
+        total: formatAmount(item.quantity * item.price, decimalDigits),
+      }),
+    },
   },
   gstr2: {
     getTaxCategoryKeys: (items) =>
@@ -164,8 +190,32 @@ const reportDataByType = {
       date: formatDate(item.date),
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories, decimalDigits),
       totalTax: formatAmount(item.totalTax, decimalDigits),
+      total: formatAmount(item.total, decimalDigits),
+      shippingCharges: formatAmount(item.shippingCharges, decimalDigits),
       grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
     }),
+    itemSheet: {
+      header: {
+        parentNum: "Purchase No.",
+        date: "Purchase Date",
+        partyName: "Party Name",
+        name: "Item Name",
+        code: "HSN Code",
+        quantity: "Quantity",
+        price: "Rate",
+        total: "Total",
+      },
+      bodyMapper: (parent, item, { decimalDigits = 2 } = {}) => ({
+        parentNum: parent.num,
+        date: formatDate(parent.date),
+        partyName: parent.party?.name,
+        name: item.name,
+        code: item.code || "",
+        quantity: item.quantity,
+        price: formatAmount(item.price, decimalDigits),
+        total: formatAmount(item.quantity * item.price, decimalDigits),
+      }),
+    },
   },
 };
 
