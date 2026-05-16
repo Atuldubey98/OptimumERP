@@ -1,3 +1,4 @@
+const path = require("path");
 const { isValidObjectId } = require("mongoose");
 const transporter = require("../../mailer");
 const { convertBillToPdfByTemplate } = require("../../services/bill.service");
@@ -7,6 +8,7 @@ const logger = require("../../logger");
 const smtpService = require("../../services/smtp.service");
 const Setting = require("../../models/settings.model");
 const logService = require("../../services/log.service");
+const Org = require("../../models/org.model");
 const mailBodyDto = Joi.object({
   to: Joi.array().items(Joi.string()).default([]),
   cc: Joi.array().items(Joi.string()).default([]),
@@ -33,7 +35,7 @@ const send = async (options = {}, req, res) => {
   const t = language && req.i18n
     ? (key, options = {}) => req.i18n.t(key, { ...options, lng: language })
     : req.t;
-  const { pdfBuffer } = await convertBillToPdfByTemplate({
+  const { pdfBuffer, data: billData } = await convertBillToPdfByTemplate({
     Bill,
     filter,
     NotFound,
@@ -41,21 +43,30 @@ const send = async (options = {}, req, res) => {
     t,
     language,
   });
-  const settings = await Setting.findOne({ org: req.params.orgId }).lean();
+  const [settings, organization] = await Promise.all([
+    Setting.findOne({ org: req.params.orgId }).lean(),
+    Org.findById(req.params.orgId).select("name alias").lean()
+  ]);
   const activeSmtpProvider = settings?.smtpProviders?.find((p) => p.isActive);
 
+  const senderName = organization?.alias || organization?.name || "OptimumERP";
+
+  const pdfFileName = `${billData.title || "Bill"}-${billData.num}.pdf`;
+
+  const attachments = [
+    {
+      filename: pdfFileName,
+      content: pdfBuffer,
+    },
+  ];
+
   const mailOptions = {
-    from: `"OptimumERP" <${activeSmtpProvider?.fields?.user || req?.session?.user?.email}>`,
+    from: `"${senderName}" <${activeSmtpProvider?.fields?.user || req?.session?.user?.email}>`,
     to: toEmails.join(","),
     cc: ccEmails.join(","),
     subject: body.subject,
     html: body.body,
-    attachments: [
-      {
-        filename: "Bill.pdf",
-        content: pdfBuffer,
-      },
-    ],
+    attachments,
   };
 
   let info;
@@ -66,7 +77,8 @@ const send = async (options = {}, req, res) => {
       mailOptions.cc,
       mailOptions.subject,
       mailOptions.html,
-      mailOptions.attachments
+      mailOptions.attachments,
+      mailOptions.from
     );
   } else {
     info = await transporter.sendMail(mailOptions);

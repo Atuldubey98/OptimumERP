@@ -127,6 +127,7 @@ export default function AdminPage() {
 
   const defaultOrganization = {
     name: "",
+    alias: "",
     address: "",
     gstNo: "",
     panNo: "",
@@ -141,6 +142,7 @@ export default function AdminPage() {
     isSubmitting,
     handleSubmit,
     setValues,
+    setFieldValue,
   } = useFormik({
     initialValues: defaultOrganization,
     onSubmit: async (data, { setSubmitting }) => {
@@ -309,7 +311,19 @@ export default function AdminPage() {
                                   currentSelectedOrganization={
                                     currentSelectedOrganization
                                   }
-                                  handleChange={handleChange}
+                                  handleChange={(e) => {
+                                    handleChange(e);
+                                    if (e.target.name === "name") {
+                                      const alias = e.target.value
+                                        .split(/\s+/)
+                                        .filter(word => word.length > 0)
+                                        .map(word => word[0])
+                                        .join('')
+                                        .toUpperCase()
+                                        .replace(/[^A-Z0-9]/g, '');
+                                      setFieldValue("alias", alias);
+                                    }
+                                  }}
                                   handleSubmit={handleSubmit}
                                   isSubmitting={isSubmitting}
                                 />

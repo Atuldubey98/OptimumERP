@@ -41,6 +41,11 @@ const orgSchema = new Schema(
       minLength: 2,
       maxLength: 80,
     },
+    alias: {
+      type: String,
+      required: true,
+      maxLength: 80,
+    },
     address: {
       type: String,
       required: true,

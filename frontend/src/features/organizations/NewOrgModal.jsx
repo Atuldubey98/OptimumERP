@@ -32,6 +32,9 @@ import {
   VStack,
   Heading,
   Spacer,
+  InputGroup,
+  InputLeftElement,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
@@ -46,6 +49,7 @@ import {
   HiOutlineArrowRight,
   HiOutlineArrowLeft,
   HiOutlineCheck,
+  HiOutlineFingerPrint,
 } from "react-icons/hi2";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useProperty from "../../hooks/useProperty";
@@ -96,6 +100,7 @@ export default function NewOrgModal({
   const formik = useFormik({
     initialValues: {
       name: "",
+      alias: "",
       address: "",
       gstNo: "",
       panNo: "",
@@ -139,7 +144,7 @@ export default function NewOrgModal({
 
   const isStepValid = () => {
     if (activeStep === 0) {
-      return formik.values.name && formik.values.address;
+      return formik.values.name && formik.values.alias && formik.values.address;
     }
     if (activeStep === 1) {
       return formik.values.panNo;
@@ -240,25 +245,72 @@ export default function NewOrgModal({
                       <Icon as={HiOutlineBuildingOffice} boxSize={6} color="blue.500" />
                       <Heading size="sm">{t("org_ui.new_org_modal.steps.identity.heading")}</Heading>
                     </Flex>
-                    {/* Name */}
-                    <FormControl
-                      isRequired
-                      isInvalid={formik.errors.name && formik.touched.name}
-                    >
-                      <FormLabel>{t("org_ui.new_org_modal.name_label")}</FormLabel>
-                      <Input
-                        autoFocus
-                        onChange={formik.handleChange}
-                        name="name"
-                        type="text"
-                        value={formik.values.name}
-                        placeholder={t("org_ui.new_org_modal.name_placeholder")}
-                        size="lg"
-                        borderRadius="xl"
-                      />
-                      <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
-                      <FormHelperText>{t("org_ui.new_org_modal.name_helper")}</FormHelperText>
-                    </FormControl>
+                    <Grid templateColumns={{ base: "1fr", md: "7fr 3fr" }} gap={6}>
+                      {/* Name */}
+                      <FormControl
+                        isRequired
+                        isInvalid={formik.errors.name && formik.touched.name}
+                      >
+                        <FormLabel>{t("org_ui.new_org_modal.name_label")}</FormLabel>
+                        <Input
+                          autoFocus
+                          onChange={(e) => {
+                            formik.handleChange(e);
+                            const alias = e.target.value
+                              .split(/\s+/)
+                              .filter(word => word.length > 0)
+                              .map(word => word[0])
+                              .join('')
+                              .toUpperCase()
+                              .replace(/[^A-Z0-9]/g, '');
+                            formik.setFieldValue("alias", alias);
+                          }}
+                          name="name"
+                          type="text"
+                          value={formik.values.name}
+                          placeholder={t("org_ui.new_org_modal.name_placeholder")}
+                          size="lg"
+                          borderRadius="xl"
+                        />
+                        <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+                        <FormHelperText>{t("org_ui.new_org_modal.name_helper")}</FormHelperText>
+                      </FormControl>
+
+                      {/* Alias */}
+                      <FormControl
+                        isRequired
+                        isInvalid={formik.errors.alias && formik.touched.alias}
+                      >
+                        <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" color="gray.500">
+                          Brand Alias
+                        </FormLabel>
+                        <Tooltip label="This alias will be used in emails and branding" placement="top-end" hasArrow>
+                          <InputGroup size="lg">
+                            <InputLeftElement pointerEvents="none">
+                              <Icon as={HiOutlineFingerPrint} color="blue.500" />
+                            </InputLeftElement>
+                            <Input
+                              onChange={formik.handleChange}
+                              name="alias"
+                              type="text"
+                              value={formik.values.alias}
+                              placeholder="ALIAS"
+                              borderRadius="xl"
+                              bg={useColorModeValue("blue.50", "whiteAlpha.50")}
+                              borderWidth="1px"
+                              borderColor={useColorModeValue("blue.100", "blue.900")}
+                              _focus={{ borderColor: "blue.400", bg: useColorModeValue("white", "gray.800") }}
+                              fontFamily="mono"
+                              fontSize="md"
+                              letterSpacing="wider"
+                              fontWeight="bold"
+                            />
+                          </InputGroup>
+                        </Tooltip>
+                        <FormErrorMessage>{formik.errors.alias}</FormErrorMessage>
+                        <FormHelperText fontSize="xs">Visible to customers in emails and invoices.</FormHelperText>
+                      </FormControl>
+                    </Grid>
 
                     {/* Address */}
                     <FormControl

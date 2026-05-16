@@ -51,6 +51,15 @@ export default function CurrentOrgDetailsForm({
               />
             </FormControl>
             <FormControl isRequired>
+              <FormLabel>Alias</FormLabel>
+              <Input
+                onChange={handleChange}
+                name="alias"
+                value={currentSelectedOrganization.alias || ""}
+                placeholder="ALIAS"
+              />
+            </FormControl>
+            <FormControl isRequired>
               <FormLabel>{t("organization.fields.address")}</FormLabel>
               <Input
                 onChange={handleChange}

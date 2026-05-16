@@ -43,17 +43,17 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
         parsedDateFilter?.startDate,
         "YYYY-MM-DD",
         true,
-        ).isValid();
+      ).isValid();
       const hasValidEndDate = moment(
         parsedDateFilter?.endDate,
         "YYYY-MM-DD",
         true,
-        ).isValid();
+      ).isValid();
       if (!hasValidStartDate || !hasValidEndDate) return defaultDateFilter;
       return {
         startDate: parsedDateFilter.startDate,
         endDate: parsedDateFilter.endDate,
-        num: parsedDateFilter.num || "",
+        num: (parsedDateFilter.num || "").trim(),
       };
     } catch (error) {
       return defaultDateFilter;
@@ -87,7 +87,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
       controller.abort();
     };
   }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
-  
+
   const onChangeDateFilter = useCallback((e) =>
     setDateFilter((prev) => ({
       ...prev,

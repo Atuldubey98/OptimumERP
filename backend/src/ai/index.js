@@ -20,6 +20,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     get_product_details: "Searching products...",
     create_product: "Creating item...",
     create_contact: "Creating contact...",
+    get_contacts: "Getting the contact details...",
     create_payment_voucher: "Creating payment voucher...",
     find_payment_voucher: "Fetching payment voucher...",
     list_expenses: "Listing expenses...",

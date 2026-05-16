@@ -1,11 +1,11 @@
-import { FormControl, FormLabel, Stack, Input, useColorModeValue } from "@chakra-ui/react";
+import { FormControl, FormLabel, SimpleGrid, Input, useColorModeValue } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 export default function DateFilter({
   dateFilter,
   onChangeDateFilter,
   isRequired,
-  direction = { base: "column", sm: "row" },
+  columns = { base: 1, md: 2 },
 }) {
   const { t } = useTranslation("common");
   const inputBg = useColorModeValue("white", "gray.800");
@@ -14,8 +14,8 @@ export default function DateFilter({
   const focusBorderColor = useColorModeValue("blue.500", "blue.300");
 
   return (
-    <Stack direction={direction} spacing={4} w="full">
-      <FormControl size={"sm"} isRequired={isRequired}>
+    <SimpleGrid columns={columns} spacing={4} w="full">
+      <FormControl size={"sm"} isRequired={isRequired} minW={0}>
         <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
           {t("common_ui.date_filter.start_date")}
         </FormLabel>
@@ -30,11 +30,12 @@ export default function DateFilter({
           bg={inputBg}
           borderWidth="1px"
           borderColor={borderColor}
+          w="full"
           _hover={{ borderColor: useColorModeValue("gray.300", "gray.600") }}
           _focus={{ borderColor: focusBorderColor, boxShadow: `0 0 0 1px ${focusBorderColor}` }}
         />
       </FormControl>
-      <FormControl size={"sm"} isRequired={isRequired}>
+      <FormControl size={"sm"} isRequired={isRequired} minW={0}>
         <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
           {t("common_ui.date_filter.end_date")}
         </FormLabel>
@@ -49,10 +50,11 @@ export default function DateFilter({
           bg={inputBg}
           borderWidth="1px"
           borderColor={borderColor}
+          w="full"
           _hover={{ borderColor: useColorModeValue("gray.300", "gray.600") }}
           _focus={{ borderColor: focusBorderColor, boxShadow: `0 0 0 1px ${focusBorderColor}` }}
         />
       </FormControl>
-    </Stack>
+    </SimpleGrid>
   );
 }

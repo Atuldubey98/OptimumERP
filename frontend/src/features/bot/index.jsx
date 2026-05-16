@@ -114,9 +114,7 @@ const ChatWidget = () => {
     setHistoryIndex(-1);
   }, [input, attachment, isConnected, sendMessage, clearAttachment, selectedModel]);
 
-  const handleSuggestionClick = useCallback((text) => {
-    handleSend(text);
-  }, [handleSend]);
+
 
   const handleConfirmReset = async () => {
     setIsClearing(true);
@@ -196,7 +194,7 @@ const ChatWidget = () => {
                         }}
                       />
                     ) : messages.length === 0 ? (
-                      <EmptyState onSuggestionClick={handleSuggestionClick} />
+                      <EmptyState />
                     ) : (
                       <MessageList messages={messages} formatTime={formatTime} />
                     )}
@@ -237,10 +235,8 @@ const ChatWidget = () => {
               size="md"
               colorScheme="blue"
               borderRadius="full"
-              width="50px"
-              height="50px"
               boxShadow="2xl"
-              icon={<RiRobot2Line size={24} />}
+              icon={<RiRobot2Line />}
             />
           </Flex>
         )}
