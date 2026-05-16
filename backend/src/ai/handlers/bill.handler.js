@@ -40,6 +40,7 @@ const {
 const Quotes = require("../../models/quotes.model");
 const { quoteDto } = require("../../dto/quotes.dto");
 const { purchaseOrderDto } = require("../../dto/purchaseOrder.dto");
+const Activity = require("../../models/activity.model");
 
 const models = {
   invoice: {
@@ -401,6 +402,41 @@ const billHandler = {
     });
   },
   create_bill: upsertBill,
+  get_activity_log: async (params) => {
+    try {
+      const modelProps = models[params.type];
+      const { Bill } = modelProps;
+      if (!Bill) throw new Error("Invalid bill type");
+
+      const filter = { org: params.org };
+      if (params.billId) filter._id = params.billId;
+      if (params.billNumber) filter.num = params.billNumber;
+
+      const bill = await Bill.findOne(filter).select("_id num").lean();
+      if (!bill) throw new modelProps.NotFound();
+
+      const activities = await Activity.find({
+        org: params.org,
+        doc: bill._id,
+      })
+        .sort({ at: -1 })
+        .populate("user", "name email avatar")
+        .lean();
+
+      return {
+        billNumber: bill.num,
+        type: params.type,
+        activities: activities.map((a) => ({
+          user: a.user?.name || "System",
+          action: a.action,
+          at: a.at,
+          message: a.message,
+        })),
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = billHandler;

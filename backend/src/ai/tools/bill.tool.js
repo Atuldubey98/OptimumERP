@@ -226,6 +226,38 @@ const billTools = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "get_activity_log",
+      description: "Retrieve the history/activity log of a specific document (invoice, purchase, etc.) to see who created or modified it.",
+      parameters: {
+        type: "object",
+        properties: {
+          type: {
+            type: "string",
+            enum: [
+              "invoice",
+              "purchase",
+              "proforma_invoice",
+              "quotes",
+              "purchase_order",
+            ],
+            description: "The category of the document.",
+          },
+          billId: {
+            type: "string",
+            description: "The MongoDB _id of the bill.",
+          },
+          billNumber: {
+            type: "string",
+            description: "The human-readable number (e.g., 'INV-001').",
+          },
+        },
+        required: ["type"],
+      },
+    },
+  },
 ];
 
 module.exports = billTools;
