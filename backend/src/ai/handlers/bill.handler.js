@@ -245,15 +245,36 @@ const upsertBill = async (params) => {
     });
 
     logger.info("Bill created");
-    return billService.getBillDetail({
+    const billDetail = await billService.getBillDetail({
       Bill,
       filter: { _id: bill._id, org: params.org },
       NotFound: modelProps.NotFound,
       minimal: true,
     });
+    return normalizeBillDetailForAI(billDetail, params.org);
   } catch (error) {
     throw error;
   }
+};
+const normalizeBillDetailForAI = async (billDetail, orgId) => {
+  if (billDetail && billDetail.entity) {
+    const displaySetting = await settingService.getDisplaySettingForOrg(orgId);
+    const currencyConfig = (await moneyUtils.getCurrencyConfigByCode(displaySetting?.currency)) || { decimal_digits: 2 };
+    const decimalDigits = currencyConfig.decimal_digits;
+    if (billDetail.entity.items) {
+      billDetail.entity.items = billDetail.entity.items.map((item) => ({
+        ...item,
+        price: moneyUtils.fromSmallestUnit(item.price, decimalDigits),
+      }));
+    }
+    if (billDetail.entity.shippingCharges) {
+      billDetail.entity.shippingCharges = moneyUtils.fromSmallestUnit(
+        billDetail.entity.shippingCharges,
+        decimalDigits,
+      );
+    }
+  }
+  return billDetail;
 };
 const billHandler = {
   download_bill: async (params) => {
@@ -394,12 +415,13 @@ const billHandler = {
     const filter = { org: params.org };
     if (params.billId) filter._id = params.billId;
     if (params.billNumber) filter.num = params.billNumber;
-    return billService.getBillDetail({
+    const billDetail = await billService.getBillDetail({
       Bill,
       filter,
       NotFound: modelProps.NotFound,
       minimal: true,
     });
+    return normalizeBillDetailForAI(billDetail, params.org);
   },
   create_bill: upsertBill,
   get_activity_log: async (params) => {
