@@ -1,4 +1,4 @@
-const freePlanLimits = require("../constants/freePlanLimits");
+const propertiesService = require("./property.service");
 const { UserDuplicate, UnAuthenticated, UnAuthorizedUser } = require("../errors/user.error");
 const Otp = require("../models/otp.model");
 const UserModel = require("../models/user.model");
@@ -48,34 +48,9 @@ exports.createLoggedInUserWithPlanAndLimits = ({
   };
 };
 
-exports.getLimitsForActivePlan = (activatedPlan) => {
-  const planData = {
-    free: {
-      limits: freePlanLimits,
-      features: {
-      },
-    },
-    gold: {
-      limits: {
-      },
-      features: {
-        smtp: true,
-        import_bulk: true
-      },
-    },
-    platinum: {
-      limits: {
-        organizations: 3,
-      },
-      features: {
-        ai_integration: true,
-        byok: true,
-        bot: true,
-        recurring_invoice: true,
-        import_bulk: true
-      },
-    },
-  };
+exports.getLimitsForActivePlan = async (activatedPlan) => {
+  const plansConfig = await propertiesService.getPlansConfig();
+  const planData = plansConfig.value;
   const planKey = activatedPlan?.plan || "free";
   return planData[planKey] || planData.free;
 };
