@@ -1,16 +1,26 @@
-import { Box, Progress, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Progress, Text, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 
-export default function StatProgress({ value, progress }) {
+export default function StatProgress({ value, progress, colorScheme = "blue" }) {
+  const trackColor = useColorModeValue("gray.100", "gray.700");
+  
   return (
-    <Box>
-      <Text fontSize={"sm"} textTransform={"capitalize"}>
-        {value}
-      </Text>
-      <Tooltip label={`${progress.toFixed(2)} %`}>
-        <Box marginBlock={1}>
-          <Progress value={progress} colorScheme="blue" />
-        </Box>
+    <Box w="100%">
+      {value && (
+        <Text fontSize="sm" fontWeight="medium" mb={1} color="gray.600">
+          {value}
+        </Text>
+      )}
+      <Tooltip label={`${progress.toFixed(2)}%`}>
+        <Progress
+          value={progress}
+          colorScheme={colorScheme}
+          borderRadius="full"
+          size="sm"
+          bg={trackColor}
+          hasStripe
+          isAnimated
+        />
       </Tooltip>
     </Box>
   );

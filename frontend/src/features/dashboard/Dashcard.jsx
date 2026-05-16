@@ -16,10 +16,11 @@ export default function Dashcard({
   dashTotal = "123",
   period,
   icon,
+  colorScheme = "blue",
 }) {
   const { t } = useTranslation("dashboard");
-  const bg = useColorModeValue("gray.100", "gray.800");
-  const iconColor = useColorModeValue("gray.700", "white");
+  const bg = useColorModeValue(`${colorScheme}.50`, `${colorScheme}.900`);
+  const iconColor = useColorModeValue(`${colorScheme}.500`, `${colorScheme}.200`);
   const resolvedPeriod = period || t("dashboard_ui.periods.this_month");
   return (
     <Card w="100%" h="100%" borderRadius="2xl">
