@@ -52,6 +52,7 @@ const VouchersPage = lazy(() => import("./features/vouchers"));
 const ConversationsPage = lazy(() => import("./features/conversations"));
 const RecurringInvoiceFormPage = lazy(() => import("./features/recurringInvoices/create"));
 const RecurringInvoicesPage = lazy(() => import("./features/recurringInvoices/list"));
+const RecurringInvoiceViewPage = lazy(() => import("./features/recurringInvoices/view"));
 
 export default function App() {
   const { user } = useAuth();
@@ -124,6 +125,7 @@ export default function App() {
                 <Route element={<RecurringInvoicesPage />} path="" />
                 <Route element={<RecurringInvoiceFormPage />} path="create" />
                 <Route element={<RecurringInvoiceFormPage />} path=":recurringInvoiceId/edit" />
+                <Route element={<RecurringInvoiceViewPage />} path=":recurringInvoiceId/view" />
               </Route>
             )
           }

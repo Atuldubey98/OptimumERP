@@ -123,6 +123,9 @@ export default function RecurringInvoicesPage() {
           caption={`${t("recurring_invoice_ui.page.total_found")} : ${totalCount}`}
           operations={recurringInvoices.map((ri) => (
             <VertIconMenu
+              openItem={() => {
+                navigate(`${ri._id}/view`);
+              }}
               editItem={() => {
                 navigate(`${ri._id}/edit`);
               }}

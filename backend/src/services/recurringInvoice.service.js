@@ -252,11 +252,10 @@ exports.findOne = async (filter) => {
     return await RecurringInvoice.findOne(filter)
         .populate("party")
         .populate("createdBy", "name email")
-        .populate("invoices", "num date total status")
-        .populate("proformaInvoices", "num date total status")
+        .populate("invoices", "num date total totalTax status")
+        .populate("proformaInvoices", "num date total totalTax status")
         .populate("items.tax")
         .populate("items.um")
-        .populate("items.product")
         .lean();
 };
 
