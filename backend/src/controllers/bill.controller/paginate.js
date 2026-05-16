@@ -2,7 +2,7 @@ const entities = require("../../constants/entities");
 const { getPaginationParams, hasUserReachedCreationLimits } = require("../../services/crud.service");
 
 const paginate = async (options = {}, req, res) => {
-  const { Bill } = options;
+  const { Bill, relatedDocType } = options;
   const { filter, skip, limit, total, totalPages, page, hasTextSearch } =
     await getPaginationParams({
       query: req.query,
@@ -37,7 +37,7 @@ const paginate = async (options = {}, req, res) => {
     reachedLimit: hasUserReachedCreationLimits({
       relatedDocsCount: res.locals.organization.relatedDocsCount,
       userLimits: req.session.user.limits,
-      key: "invoices",
+      key: relatedDocType,
     }),
   });
 };

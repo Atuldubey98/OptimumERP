@@ -28,6 +28,7 @@ import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import useAuth from "../../../hooks/useAuth";
+import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -53,6 +54,7 @@ export default function InvoicesPage() {
       select: "num date party status total totalTax shippingCharges org",
     },
   });
+  const { disable: voucherLimitReached } = useLimitsInFreePlan({ key: "paymentVouchers" });
   const loading = status === "loading";
   const navigate = useNavigate();
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
@@ -166,6 +168,7 @@ export default function InvoicesPage() {
             caption={`${t("invoice_ui.page.total_found")} : ${totalCount}`}
             operations={invoices.map((invoice) => (
               <VertIconMenu
+                recordPaymentDisabled={voucherLimitReached}
                 recordPayment={() => {
                   setInvoice(invoice);
                   openRecordPaymentModal();

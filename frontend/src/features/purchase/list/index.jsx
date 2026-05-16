@@ -55,6 +55,7 @@ export default function PurchasePage() {
       select: "num date party status total totalTax shippingCharges org",
     },
   });
+  const { disable: voucherLimitReached } = useLimitsInFreePlan({ key: "paymentVouchers" });
   const loading = status === "loading";
 
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
@@ -156,6 +157,7 @@ export default function PurchasePage() {
             caption={`${t("purchase_ui.page.total_found")} : ${totalCount}`}
             operations={purchases.map((purchase) => (
               <VertIconMenu
+                payoutPurchaseDisabled={voucherLimitReached}
                 shareItem={() => {
                   setInvoice(purchase);
                   toggleShareModal();

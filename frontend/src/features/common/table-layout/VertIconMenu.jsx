@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import useAuth from "../../../hooks/useAuth";
 import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
 import { FaMoneyCheck } from "react-icons/fa";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
@@ -38,8 +39,13 @@ export default function VertIconMenu({
   onOverviewItem,
   openItem,
   showVouchers,
+  recordPaymentDisabled = false,
+  payoutPurchaseDisabled = false,
 }) {
   const { t } = useTranslation("common");
+  const { user } = useAuth();
+  const currentFeatures = user?.features || {};
+  const isSmtpEnabled = currentFeatures?.smtp ?? false;
 
   return (
     <Menu>
@@ -88,6 +94,7 @@ export default function VertIconMenu({
         ) : null}
         {payoutPurchase ? (
           <MenuItem
+            isDisabled={payoutPurchaseDisabled}
             icon={<GiExpense size={20} />}
             onClick={payoutPurchase}
             command="⌘P"
@@ -125,6 +132,7 @@ export default function VertIconMenu({
         ) : null}
         {recordPayment ? (
           <MenuItem
+            isDisabled={recordPaymentDisabled}
             onClick={recordPayment}
             icon={<FaMoneyCheck size={20} />}
             command="⌘M"
@@ -166,7 +174,7 @@ export default function VertIconMenu({
           </MenuItem>
         ) : null}
         <Divider />
-        {shareItem && import.meta.env.VITE_SMTP_ENABLED === "true" ? (
+        {shareItem && import.meta.env.VITE_SMTP_ENABLED === "true" && isSmtpEnabled ? (
           <MenuItem
             icon={<BsShare size={20} />}
             onClick={shareItem}

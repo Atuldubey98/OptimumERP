@@ -236,10 +236,9 @@ export default function AdminTasks({ organization }) {
       setSubmitting(false);
     },
   });
-  const isCurrentUserOwnerOfOrganization =
-    auth.user?.currentPlan?.purchasedBy === auth?.user._id;
-  const isCurrentPlanGreaterThanFreePlan =
-    auth?.user.currentPlan?.plan !== "free";
+  const { user } = useAuth();
+  const currentFeatures = user?.features || {};
+  const import_bulk = currentFeatures?.import_bulk ?? false;
   return (
     <Box pt={2}>
       <Box bg={bg} p={3}>
@@ -248,19 +247,23 @@ export default function AdminTasks({ organization }) {
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
         <DefaultTermsForReceiptsForm formik={termsFormik} />
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box fontWeight={"bold"} flex="1" textAlign="left">
-                {t("tasks.import.title")}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <ImportTasks organization={organization} />
-          </AccordionPanel>
-        </AccordionItem>
+        {
+          import_bulk && (
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box fontWeight={"bold"} flex="1" textAlign="left">
+                    {t("tasks.import.title")}
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <ImportTasks organization={organization} />
+              </AccordionPanel>
+            </AccordionItem>
+          )
+        }
       </Accordion>
     </Box>
   );

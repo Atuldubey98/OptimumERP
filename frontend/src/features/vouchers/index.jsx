@@ -72,6 +72,7 @@ export default function VouchersPage() {
 
   const {
     items: vouchers,
+    reachedLimit,
     dateFilter,
     onChangeDateFilter,
     currentPage,
@@ -280,8 +281,8 @@ export default function VouchersPage() {
             )}
 
             <TableLayout
-
-            filter={
+              isAddDisabled={reachedLimit}
+              filter={
               <TableDateFilter
                 dateFilter={dateFilter}
                 onChangeDateFilter={onChangeDateFilter}

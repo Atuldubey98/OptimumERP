@@ -1,6 +1,7 @@
 const { getPaginationParams, hasUserReachedCreationLimits } = require("../../services/crud.service");
 const PaymentVoucher = require("../../models/paymentVoucher.model");
 const entities = require("../../constants/entities");
+const logger = require("../../logger");
 require("../../models/invoice.model");
 require("../../models/purchase.model");
 
@@ -27,7 +28,7 @@ const getAll = async (req, res) => {
     .populate("party", "name")
     .populate("refDoc", "num")
     .lean();
-
+  logger.info("User limits", req.session.user.limits)
   return res.status(200).json({
     data: vouchers,
     total,

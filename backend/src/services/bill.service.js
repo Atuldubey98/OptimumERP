@@ -302,11 +302,19 @@ exports.deleteBill = async ({ Bill, NotFound, filter, relatedDocTypeKey }) => {
       docModel: Bill.modelName,
       doc: filter._id,
     }, { session });
-    await PaymentVoucher.softDeleteMany({
+    const deletedVouchers = await PaymentVoucher.softDeleteMany({
       org: filter.org,
       refDoc: filter._id,
       refDocModel: Bill.modelName,
     }, { session });
+
+    if (deletedVouchers.modifiedCount > 0) {
+      await OrgModel.updateOne(
+        { _id: filter.org },
+        { $inc: { "relatedDocsCount.paymentVouchers": -deletedVouchers.modifiedCount } },
+        { session }
+      );
+    }
     await Promise.all(
       [ProformaInvoice, Quotes].map((Model) =>
         Model.updateMany({ converted: filter._id }, { $set: { converted: null } }, { session })

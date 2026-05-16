@@ -1,6 +1,7 @@
 const PaymentVoucher = require("../models/paymentVoucher.model");
 const Transaction = require("../models/transaction.model");
 const Setting = require("../models/settings.model");
+const OrgModel = require("../models/org.model");
 
 const getNextSequence = async (orgId, session) => {
   const setting = await Setting.findOne({ org: orgId }).session(session);
@@ -86,6 +87,11 @@ exports.createPaymentVoucher = async ({ orgId, userId, body, doc, docModel, vouc
     voucherType: voucher.voucherType,
   });
   await transaction.save({ session });
+  await OrgModel.updateOne(
+    { _id: orgId },
+    { $inc: { "relatedDocsCount.paymentVouchers": 1 } },
+    { session }
+  );
 
   return voucher;
 };
@@ -208,4 +214,9 @@ exports.deletePaymentVoucher = async ({ id, orgId, session }) => {
 
   await Transaction.softDelete({ docModel: "payment_voucher", doc: voucher._id }).session(session);
   await PaymentVoucher.softDelete({ _id: voucher._id }).session(session);
+  await OrgModel.updateOne(
+    { _id: orgId },
+    { $inc: { "relatedDocsCount.paymentVouchers": -1 } },
+    { session }
+  );
 };

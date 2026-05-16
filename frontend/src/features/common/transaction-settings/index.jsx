@@ -29,11 +29,15 @@ import AiProviders from "./AiProviders";
 import SmtpProviders from "./SmtpProviders";
 import PrintSettings from "./PrintSettings";
 import TransactionPrefix from "./TransactionsPrefix";
+import useAuth from "../../../hooks/useAuth";
 export default function TransactionSettingsPage() {
   const { t } = useTranslation("common");
   const { orgId } = useParams();
   const { authorizedOrgs: organizations, loading } = useOrganizations();
   const settingContext = useContext(SettingContext);
+  const { user } = useAuth();
+  const currentFeatures = user?.features || {};
+  const byok = currentFeatures?.byok ?? false;
   const toast = useToast();
   const printFormik = useFormik({
     initialValues: {
@@ -125,82 +129,86 @@ export default function TransactionSettingsPage() {
     },
   });
   return (
-    
-      <AdminLayout>
-        <Stack spacing={3}>
-          {loading ? (
-            <Flex p={4} justifyContent={"center"} alignItems={"center"}>
-              <Spinner />
-            </Flex>
-          ) : (
-            <Box p={3}>
-              <FormControl>
-                <FormLabel fontWeight={"bold"}>{t("common_ui.organization")}</FormLabel>
-                <Select
-                  value={organizationOptions.find(
-                    (org) => org.value === formik.values.organization
-                  )}
-                  onChange={({ value }) => {
-                    formik.setFieldValue("organization", value);
-                  }}
-                  isOptionDisabled={({ disabled }) => disabled}
-                  options={organizationOptions}
-                  name="organization"
-                />
-              </FormControl>
-            </Box>
-          )}
-          <SimpleGrid gap={8} minChildWidth={300}>
-            {formik.values.organization ? (
-              <Tabs size={"sm"}>
-                <TabList>
-                  <Tab>{t("common_ui.transaction_settings.configuration")}</Tab>
-                  <Tab>{t("common_ui.transaction_settings.transaction")}</Tab>
-                </TabList>
 
-                <TabPanels>
-                  <TabPanel>
-                    <Box>
-                      <Stack spacing={6}>
-                        <PrintSettings
-                          printFormik={printFormik}
-                          formik={formik}
-                          loading={loading}
-                        />
-                        <Divider />
-                        <AiProviders formik={formik} />
-                        <Divider />
-                        <SmtpProviders formik={formik} />
-                      </Stack>
-                    </Box>
-                  </TabPanel>
-                  <TabPanel>
-                    <Box>
-                      <TransactionPrefix
+    <AdminLayout>
+      <Stack spacing={3}>
+        {loading ? (
+          <Flex p={4} justifyContent={"center"} alignItems={"center"}>
+            <Spinner />
+          </Flex>
+        ) : (
+          <Box p={3}>
+            <FormControl>
+              <FormLabel fontWeight={"bold"}>{t("common_ui.organization")}</FormLabel>
+              <Select
+                value={organizationOptions.find(
+                  (org) => org.value === formik.values.organization
+                )}
+                onChange={({ value }) => {
+                  formik.setFieldValue("organization", value);
+                }}
+                isOptionDisabled={({ disabled }) => disabled}
+                options={organizationOptions}
+                name="organization"
+              />
+            </FormControl>
+          </Box>
+        )}
+        <SimpleGrid gap={8} minChildWidth={300}>
+          {formik.values.organization ? (
+            <Tabs size={"sm"}>
+              <TabList>
+                <Tab>{t("common_ui.transaction_settings.configuration")}</Tab>
+                <Tab>{t("common_ui.transaction_settings.transaction")}</Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  <Box>
+                    <Stack spacing={6}>
+                      <PrintSettings
+                        printFormik={printFormik}
                         formik={formik}
                         loading={loading}
-                        printFormik={printFormik}
                       />
-                    </Box>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            ) : (
-              <Flex
-                minH={"50svh"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                flexDir={"column"}
-              >
-                <GoOrganization size={80} color="lightgray" />
-                <Heading color={"gray.300"} fontSize={"2xl"}>
-                  {t("common_ui.select_organization")}
-                </Heading>
-              </Flex>
-            )}
-          </SimpleGrid>
-        </Stack>
-      </AdminLayout>
-    
+                      {
+                        byok && <>
+                          <Divider />
+                          <AiProviders formik={formik} />
+                          <Divider />
+                          <SmtpProviders formik={formik} />
+                        </>
+                      }
+                    </Stack>
+                  </Box>
+                </TabPanel>
+                <TabPanel>
+                  <Box>
+                    <TransactionPrefix
+                      formik={formik}
+                      loading={loading}
+                      printFormik={printFormik}
+                    />
+                  </Box>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          ) : (
+            <Flex
+              minH={"50svh"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexDir={"column"}
+            >
+              <GoOrganization size={80} color="lightgray" />
+              <Heading color={"gray.300"} fontSize={"2xl"}>
+                {t("common_ui.select_organization")}
+              </Heading>
+            </Flex>
+          )}
+        </SimpleGrid>
+      </Stack>
+    </AdminLayout>
+
   );
 }

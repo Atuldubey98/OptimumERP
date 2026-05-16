@@ -22,7 +22,6 @@ export default function HeadingButtons({
           <Tooltip label={t("common_ui.actions.export")}>
             <span>
               <ButtonIcon
-                isDisabled={isAddDisabled}
                 colorScheme="green"
                 isLoading={showExport?.status === "exporting"}
                 icon={<TbTableExport />}

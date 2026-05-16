@@ -103,8 +103,9 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
     contactOption.value in selectedToOptions;
   const filterSelectedCCOptions = (contactOption) =>
     contactOption.value in selectedCCOptions;
-  const auth = useAuth();
-  const isNotFree = auth?.user?.currentPlan?.plan !== "free";
+  const { user } = useAuth();
+  const currentFeatures = user?.features || {};
+  const isSmtpEnabled = currentFeatures?.smtp ?? false;
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -113,7 +114,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
         <ModalCloseButton />
         <form onSubmit={formik.handleSubmit}>
           <ModalBody>
-            {isNotFree ? (
+            {isSmtpEnabled ? (
               <Stack spacing={1}>
                 <FormControl isRequired>
                   <FormLabel>{t("common_ui.share_mail.to")}</FormLabel>
@@ -202,7 +203,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
             <Button mr={3} onClick={onClose}>
               {t("common_ui.actions.close")}
             </Button>
-            {isNotFree ? (
+            {isSmtpEnabled ? (
               <Button
                 isLoading={formik.isSubmitting}
                 type="submit"

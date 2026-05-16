@@ -18,8 +18,7 @@ const relatedDocsCountFields = [
   "purchases",
   "quotes",
   "saleOrders",
-  "creditNotes",
-  "debitNotes",
+  "paymentVouchers",
   "recurringInvoices",
   "ums",
   "taxes",
@@ -53,8 +52,8 @@ const orgSchema = new Schema(
       type: String,
       required: true,
     },
-    location : {
-      countryCode3 : String,
+    location: {
+      countryCode3: String,
       stateCode: String,
     },
     createdBy: {

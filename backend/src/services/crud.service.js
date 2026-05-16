@@ -13,6 +13,7 @@ const {
   RECURRING_INVOICES,
 } = require("../constants/entities");
 const { isValidObjectId, default: mongoose } = require("mongoose");
+const logger = require("../logger");
 
 exports.executeMongoDbTransaction = async (operationsCallback) => {
   const session = await mongoose.startSession();

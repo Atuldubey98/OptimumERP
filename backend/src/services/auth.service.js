@@ -53,48 +53,26 @@ exports.getLimitsForActivePlan = (activatedPlan) => {
     free: {
       limits: freePlanLimits,
       features: {
-        ai_integration: false,
-        byok: false,
-        on_premise: false,
-        bot: false,
       },
     },
     gold: {
       limits: {
-        ...freePlanLimits,
-        organizations: 3,
-        ums: 100,
-        taxes: 100,
-        expenseCategories: 100,
-        productCategories: 100,
-        contacts: 2000,
-        invoices: 2000,
-        paymentVouchers: 2000,
       },
       features: {
-        ai_integration: false,
-        byok: false,
-        on_premise: false,
-        bot: false,
+        smtp: true,
+        import_bulk: true
       },
     },
     platinum: {
       limits: {
         organizations: 3,
-        ums: 999999,
-        taxes: 999999,
-        expenseCategories: 999999,
-        productCategories: 999999,
-        contacts: 999999,
-        invoices: 999999,
-        paymentVouchers: 999999,
       },
       features: {
         ai_integration: true,
         byok: true,
-        on_premise: true,
         bot: true,
         recurring_invoice: true,
+        import_bulk: true
       },
     },
   };
