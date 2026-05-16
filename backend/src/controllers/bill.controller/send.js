@@ -69,30 +69,34 @@ const send = async (options = {}, req, res) => {
     attachments,
   };
 
-  let info;
-  if (activeSmtpProvider) {
-    const { send: customSend } = await smtpService.getMailerSetup(activeSmtpProvider);
-    info = await customSend(
-      mailOptions.to,
-      mailOptions.cc,
-      mailOptions.subject,
-      mailOptions.html,
-      mailOptions.attachments,
-      mailOptions.from
-    );
-  } else {
-    info = await transporter.sendMail(mailOptions);
-  }
-  logger.info("Email sent: " + info.messageId);
-  logger.info("Sending emails to", toEmails)
+  const { executeMongoDbTransaction } = require("../../services/crud.service");
 
-  await logService.recordActivity({
-    org: req.params.orgId,
-    user: req.session.user._id,
-    docModel: prefixType,
-    doc: id,
-    action: "sent",
-    message: `Emailed to ${toEmails.join(", ")} by ${req.session.user.name}`,
+  await executeMongoDbTransaction(async (session) => {
+    let info;
+    if (activeSmtpProvider) {
+      const { send: customSend } = await smtpService.getMailerSetup(activeSmtpProvider);
+      info = await customSend(
+        mailOptions.to,
+        mailOptions.cc,
+        mailOptions.subject,
+        mailOptions.html,
+        mailOptions.attachments,
+        mailOptions.from
+      );
+    } else {
+      info = await transporter.sendMail(mailOptions);
+    }
+    logger.info("Email sent: " + info.messageId);
+    logger.info("Sending emails to", toEmails)
+
+    await logService.recordActivity({
+      org: req.params.orgId,
+      user: req.session.user._id,
+      docModel: prefixType,
+      doc: id,
+      action: "sent",
+      message: `Emailed to ${toEmails.join(", ")} by ${req.session.user.name}`,
+    }, { session });
   });
 
   return res.status(201).json({ message: req.t("common:api.attachment_sent") });
@@ -121,3 +125,4 @@ function getContactEmailsByIds(contactIds = []) {
     .select("email")
     .lean();
 }
+
