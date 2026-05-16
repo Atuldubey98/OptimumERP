@@ -2,6 +2,7 @@ const billService = require("../../services/bill.service");
 const contactService = require("../../services/contact.service");
 const Contact = require("../../models/contacts.model");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
+const logger = require("../../logger");
 const Invoice = require("../../models/invoice.model");
 const Purchase = require("../../models/purchase.model");
 const ProformaInvoice = require("../../models/proformaInvoice.model");
@@ -27,17 +28,17 @@ const models = {
   proforma_invoice: {
     Bill: ProformaInvoice,
     NotFound: ProformaInvoiceNotFound,
-    prefixType: "proformaInvoice",
+    prefixType: "proforma_invoice",
   },
   purchase_order: {
     Bill: PurchaseOrder,
     NotFound: PurchaseOrderNotFound,
-    prefixType: "purchaseOrder",
+    prefixType: "purchase_order",
   },
   quotes: {
     Bill: Quotes,
     NotFound: QuoteNotFound,
-    prefixType: "quotation",
+    prefixType: "quotes",
   },
 };
 
@@ -79,30 +80,28 @@ const smtpHandler = {
           throw new Error(`The following emails belong to contacts associated with a different party: ${invalidEmails.join(", ")}. For security, documents can only be sent to contacts associated with the document's party.`);
         }
 
-        const info = await executeMongoDbTransaction(async (session) => {
-          return await billService.sendBill({
-            Bill,
-            filter: { _id: bill._id, org },
-            NotFound: modelProps.NotFound,
-            orgId: org,
-            user,
-            session,
-            prefixType: modelProps.prefixType,
-            toEmails,
-            ccEmails,
-            subject,
-            body,
-            replyToMessageId
-          });
+        billService.sendBill({
+          Bill,
+          filter: { _id: bill._id, org },
+          NotFound: modelProps.NotFound,
+          orgId: org,
+          user,
+          prefixType: modelProps.prefixType,
+          toEmails,
+          ccEmails,
+          subject,
+          body,
+          replyToMessageId
+        }).catch(err => {
+          logger.error("Background email sending failed:", err);
         });
 
         return {
-          message: `I've sent the ${type} ${bill.num} to ${toEmails.join(", ")}.`,
-          messageId: info.messageId,
+          message: `I've started sending the ${type} ${bill.num} to ${toEmails.join(", ")}. You can check the activity log in a moment to confirm it was sent.`,
         };
       }
 
-      const info = await billService.sendEmail({
+      billService.sendEmail({
         orgId: org,
         user,
         toEmails,
@@ -110,11 +109,12 @@ const smtpHandler = {
         subject,
         body,
         replyToMessageId
+      }).catch(err => {
+        logger.error("Background email sending failed:", err);
       });
 
       return {
-        message: `Email sent to ${toEmails.join(", ")}.`,
-        messageId: info.messageId,
+        message: `I've started sending the email to ${toEmails.join(", ")}.`,
       };
     } catch (error) {
       throw error;

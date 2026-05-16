@@ -25,22 +25,27 @@ const smtpTools = [
             description: "Whether to attach the specified document as a PDF. Set to true only if explicitly requested.",
           },
           type: {
-            type: "string",
-            enum: [
-              "invoice",
-              "purchase",
-              "proforma_invoice",
-              "quotes",
-              "purchase_order",
+            anyOf: [
+              {
+                type: "string",
+                enum: [
+                  "invoice",
+                  "purchase",
+                  "proforma_invoice",
+                  "quotes",
+                  "purchase_order",
+                ],
+              },
+              { type: "null" },
             ],
             description: "The category of the document to attach.",
           },
           billId: {
-            type: "string",
+            anyOf: [{ type: "string" }, { type: "null" }],
             description: "The MongoDB _id of the document to attach.",
           },
           billNumber: {
-            type: "string",
+            anyOf: [{ type: "string" }, { type: "null" }],
             description: "The human-readable number of the document to attach (e.g., 'INV-001').",
           },
           cc: {
@@ -49,7 +54,7 @@ const smtpTools = [
             description: "List of CC email addresses.",
           },
           replyToMessageId: {
-            type: "string",
+            anyOf: [{ type: "string" }, { type: "null" }],
             description: "The Message-ID of the email to reply to. Use this to keep the conversation in the same thread.",
           },
         },

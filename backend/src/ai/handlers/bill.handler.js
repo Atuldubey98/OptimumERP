@@ -178,7 +178,7 @@ const upsertBill = async (params) => {
           product: item.productId,
         });
       });
-      const terms = params.terms || (setting?.receiptDefaults?.terms || {})[prefixType]
+      const terms = (params.terms || (setting?.receiptDefaults?.terms || {})[prefixType])?.replace(/\\n/g, "\n");
       return {
         party: params.partyId,
         billingAddress: party.billingAddress,
