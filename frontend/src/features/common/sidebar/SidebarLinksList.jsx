@@ -17,11 +17,15 @@ import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
 import { SiAboutdotme } from "react-icons/si";
 import { TbCategory } from "react-icons/tb";
 import { useLocation, useParams } from "react-router-dom";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 import headerLinks from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
+import saleLinks from "../../../constants/saleLinks";
 import HeaderLink from "./HeaderLink";
 import SettingLinks from "./SettingLinks";
+import SaleLinks from "./SaleLinks";
 import useAuth from "../../../hooks/useAuth";
+
 export const SidebarLinksList = ({ onClose }) => {
   const { t } = useTranslation("common");
   const {
@@ -33,6 +37,11 @@ export const SidebarLinksList = ({ onClose }) => {
   const [openSettings, setOpenSettings] = useState(
     settingsLinks
       .map((settingLink) => `/${orgId}${settingLink.link}`)
+      .includes(location.pathname),
+  );
+  const [openSale, setOpenSale] = useState(
+    saleLinks
+      .map((saleLink) => `/${orgId}${saleLink.link}`)
       .includes(location.pathname),
   );
   const { user } = useAuth();
@@ -48,6 +57,34 @@ export const SidebarLinksList = ({ onClose }) => {
             key={headerLink.link}
           />
         ))}
+        <Divider bg={bg} />
+        <ListItem
+          cursor={"pointer"}
+          onClick={() => setOpenSale(!openSale)}
+        >
+          <Flex
+            p={1}
+            paddingInline={2}
+            justifyContent={"flex-start"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <Flex
+              w={"100%"}
+              justifyContent={"flex-start"}
+              gap={9}
+              alignItems={"center"}
+            >
+              <Flex gap={2} justifyContent={"center"} alignItems={"center"}>
+                <Icon as={FaFileInvoiceDollar} />
+                <Text>{t("common_ui.sidebar.sale")}</Text>
+              </Flex>
+            </Flex>
+            {openSale ? <FiChevronDown /> : <FiChevronRight />}
+          </Flex>
+        </ListItem>
+        {openSale ? <SaleLinks /> : null}
+        <Divider bg={bg} />
         <HeaderLink
           headerLink={{
             icon: TbCategory,

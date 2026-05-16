@@ -217,6 +217,7 @@
       "dashboard": "Dashboard"
     },
     "sidebar": {
+      "sale": "Sale",
       "categories": "Categories",
       "reports": "Reports",
       "settings": "Settings",

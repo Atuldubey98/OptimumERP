@@ -210,6 +210,7 @@
       "dashboard": "Painel"
     },
     "sidebar": {
+      "sale": "Vendas",
       "categories": "Categorias",
       "reports": "Relatórios",
       "settings": "Configurações",
