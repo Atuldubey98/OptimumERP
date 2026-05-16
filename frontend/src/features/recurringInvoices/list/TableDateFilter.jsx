@@ -49,7 +49,11 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
                <FormLabel fontSize="xs" fontWeight="bold" mb={1}>
                  {t("common_ui.fields.party")}
                </FormLabel>
-               <PartySelectBill formik={partyFormik} />
+                <PartySelectBill 
+                  formik={partyFormik} 
+                  isCreatable={false}
+                  size="sm"
+                />
             </Box>
             <Divider />
             <DateFilter

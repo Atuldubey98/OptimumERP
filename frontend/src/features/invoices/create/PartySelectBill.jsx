@@ -1,38 +1,41 @@
 import { useDisclosure } from "@chakra-ui/react";
-import { AsyncCreatableSelect } from "chakra-react-select";
+import { AsyncCreatableSelect, AsyncSelect } from "chakra-react-select";
 import React, { memo, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import usePartyForm from "../../../hooks/usePartyForm";
 import instance from "../../../instance";
 import PartyFormDrawer from "../../parties/PartyFormDrawer";
 
-function PartySelectBill({ formik, isDisabled =false }) {
+function PartySelectBill({ formik, isDisabled = false, isCreatable = true, size = "md" }) {
   const { orgId } = useParams();
   const selectRef = useRef(null);
-  const promiseOptions = useCallback(async (searchQuery) => {
-    if (selectRef.current) clearTimeout(selectRef.current);
-    return new Promise((resolve, reject) => {
-      selectRef.current = setTimeout(async () => {
-        try {
-          const { data } = await instance.get(
-            `/api/v1/organizations/${orgId}/parties/search`,
-            {
-              params: {
-                keyword: searchQuery,
-              },
-            }
-          );
-          const options = data.data.map((party) => ({
-            value: party,
-            label: party.name,
-          }));
-          resolve(options);
-        } catch (error) {
-          reject(error);
-        }
-      }, 800);
-    });
-  }, [orgId]);
+  const promiseOptions = useCallback(
+    async (searchQuery) => {
+      if (selectRef.current) clearTimeout(selectRef.current);
+      return new Promise((resolve, reject) => {
+        selectRef.current = setTimeout(async () => {
+          try {
+            const { data } = await instance.get(
+              `/api/v1/organizations/${orgId}/parties/search`,
+              {
+                params: {
+                  keyword: searchQuery,
+                },
+              }
+            );
+            const options = data.data.map((party) => ({
+              value: party,
+              label: party.name,
+            }));
+            resolve(options);
+          } catch (error) {
+            reject(error);
+          }
+        }, 800);
+      });
+    },
+    [orgId]
+  );
 
   const applySelectedParty = useCallback(
     (party) => {
@@ -40,7 +43,7 @@ function PartySelectBill({ formik, isDisabled =false }) {
       formik.setFieldValue("billingAddress", party?.billingAddress || "");
       formik.setFieldValue("partyDetails", party);
     },
-    [formik],
+    [formik]
   );
 
   const {
@@ -48,12 +51,9 @@ function PartySelectBill({ formik, isDisabled =false }) {
     onClose: onClosePartyFormDrawer,
     onOpen: openPartyFormDrawer,
   } = useDisclosure();
-  const { formik: partyFormik } = usePartyForm(
-    (party) => {
-      applySelectedParty(party);
-    },
-    onClosePartyFormDrawer,
-  );
+  const { formik: partyFormik } = usePartyForm((party) => {
+    applySelectedParty(party);
+  }, onClosePartyFormDrawer);
   const onChange = useCallback(
     (e) => {
       if (!e) {
@@ -64,7 +64,7 @@ function PartySelectBill({ formik, isDisabled =false }) {
         applySelectedParty(e.value);
       }
     },
-    [applySelectedParty, formik],
+    [applySelectedParty, formik]
   );
 
   const onCreateOption = useCallback(
@@ -78,12 +78,15 @@ function PartySelectBill({ formik, isDisabled =false }) {
       });
       openPartyFormDrawer();
     },
-    [openPartyFormDrawer, partyFormik],
+    [openPartyFormDrawer, partyFormik]
   );
+
+  const SelectComponent = isCreatable ? AsyncCreatableSelect : AsyncSelect;
 
   return (
     <>
-      <AsyncCreatableSelect
+      <SelectComponent
+        size={size}
         value={
           formik.values.partyDetails && {
             value: formik.values?.partyDetails,
@@ -93,15 +96,17 @@ function PartySelectBill({ formik, isDisabled =false }) {
         createOptionPosition="first"
         isDisabled={isDisabled}
         onChange={onChange}
-        onCreateOption={onCreateOption}
+        onCreateOption={isCreatable ? onCreateOption : undefined}
         isClearable
         loadOptions={promiseOptions}
       />
-      <PartyFormDrawer
-        formik={partyFormik}
-        isOpen={isPartyFormOpen}
-        onClose={onClosePartyFormDrawer}
-      />
+      {isCreatable && (
+        <PartyFormDrawer
+          formik={partyFormik}
+          isOpen={isPartyFormOpen}
+          onClose={onClosePartyFormDrawer}
+        />
+      )}
     </>
   );
 }
@@ -110,5 +115,8 @@ export default memo(
   PartySelectBill,
   (prevProps, nextProps) =>
     prevProps.formik.values.party === nextProps.formik.values.party &&
-    prevProps.formik.values.partyDetails === nextProps.formik.values.partyDetails,
+    prevProps.formik.values.partyDetails ===
+      nextProps.formik.values.partyDetails &&
+    prevProps.isCreatable === nextProps.isCreatable &&
+    prevProps.size === nextProps.size
 );
