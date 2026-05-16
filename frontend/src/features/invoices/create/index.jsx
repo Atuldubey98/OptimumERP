@@ -39,6 +39,7 @@ import useUms from "../../../hooks/useUms";
 import BannerWithLabel from "../../common/BannerWithLabel";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 import AIPrefillModal from "../../common/AIPrefillModal";
+import useAuth from "../../../hooks/useAuth";
 
 export default function CreateInvoicePage() {
   const { t } = useTranslation("invoice");
@@ -64,175 +65,178 @@ export default function CreateInvoicePage() {
     key: "invoices",
   });
   const hasError = status === "error";
+  const { user } = useAuth();
+  const currentFeatures = user?.features || {};
+  const bot = currentFeatures?.bot ?? false;
   return (
-  
-      <Box p={5}>
-        <FormikProvider value={formik}>
-          {loading ? (
-            <Flex justifyContent={"center"} alignItems={"center"}>
-              <Spinner size={"md"} />
-            </Flex>
-          ) : hasError ? (
-            <BannerWithLabel
-              label={t("invoice_ui.page.not_found")}
-              Icon={FaFileInvoiceDollar}
-            />
-          ) : (
-            <form onSubmit={formik.handleSubmit}>
-              <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
-                {formik.values._id ? null : (
-                  <>
-                    <Button
+
+    <Box p={5}>
+      <FormikProvider value={formik}>
+        {loading ? (
+          <Flex justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"md"} />
+          </Flex>
+        ) : hasError ? (
+          <BannerWithLabel
+            label={t("invoice_ui.page.not_found")}
+            Icon={FaFileInvoiceDollar}
+          />
+        ) : (
+          <form onSubmit={formik.handleSubmit}>
+            <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
+              {formik.values._id ? null : (
+                <>
+                  {bot && <Button
+                    colorScheme="blue"
+                    size="md"
+                    leftIcon={<BsStars />}
+                    onClick={onOpen}
+                  >
+                    Smart Fill
+                  </Button>}
+                  <FormControl
+                    display="flex"
+                    justifyContent={"flex-end"}
+                    alignItems="center"
+                    w="auto"
+                  >
+                    <FormLabel htmlFor="save-and-new" mb="0" fontSize="sm" fontWeight="medium">
+                      {t("invoice_ui.form.save_and_new_label")}
+                    </FormLabel>
+                    <Switch
                       colorScheme="blue"
-                      size="md"
-                      leftIcon={<BsStars />}
-                      onClick={onOpen}
-                    >
-                      Smart Fill
-                    </Button>
-                    <FormControl
-                      display="flex"
-                      justifyContent={"flex-end"}
-                      alignItems="center"
-                      w="auto"
-                    >
-                      <FormLabel htmlFor="save-and-new" mb="0" fontSize="sm" fontWeight="medium">
-                        {t("invoice_ui.form.save_and_new_label")}
-                      </FormLabel>
-                      <Switch
-                        colorScheme="blue"
-                        onChange={(e) => {
-                          onToggleSaveAndNew(e.currentTarget.checked);
-                        }}
-                        isChecked={saveAndNew}
-                        id="save-and-new"
-                      />
-                    </FormControl>
-                  </>
-                )}
-                <Button
-                  isDisabled={formik.values._id ? false : disable}
-                  leftIcon={<AiOutlineSave />}
-                  isLoading={formik.isSubmitting || loading}
-                  type="submit"
-                  colorScheme="teal"
-                  variant="solid"
-                >
-                  {t("invoice_ui.form.save_button")}
-                </Button>
-              </Flex>
-              <Grid gap={4}>
-                <Heading fontSize={"xl"}>{t("invoice_ui.form.party_section")}</Heading>
+                      onChange={(e) => {
+                        onToggleSaveAndNew(e.currentTarget.checked);
+                      }}
+                      isChecked={saveAndNew}
+                      id="save-and-new"
+                    />
+                  </FormControl>
+                </>
+              )}
+              <Button
+                isDisabled={formik.values._id ? false : disable}
+                leftIcon={<AiOutlineSave />}
+                isLoading={formik.isSubmitting || loading}
+                type="submit"
+                colorScheme="teal"
+                variant="solid"
+              >
+                {t("invoice_ui.form.save_button")}
+              </Button>
+            </Flex>
+            <Grid gap={4}>
+              <Heading fontSize={"xl"}>{t("invoice_ui.form.party_section")}</Heading>
+              <FormControl
+                isInvalid={formik.errors.party && formik.touched.party}
+                isRequired
+              >
+                <FormLabel>{t("invoice_ui.form.bill_to")}</FormLabel>
+                <PartySelectBill formik={formik} isDisabled={(formik.values?.paymentVouchers || []).length} />
+                <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
+              </FormControl>
+              {formik.values.party ? (
                 <FormControl
-                  isInvalid={formik.errors.party && formik.touched.party}
+                  isInvalid={
+                    formik.errors.billingAddress &&
+                    formik.touched.billingAddress
+                  }
                   isRequired
                 >
-                  <FormLabel>{t("invoice_ui.form.bill_to")}</FormLabel>
-                  <PartySelectBill formik={formik} isDisabled={(formik.values?.paymentVouchers||[]).length} />
-                  <FormErrorMessage>{formik.errors.party}</FormErrorMessage>
-                </FormControl>
-                {formik.values.party ? (
-                  <FormControl
-                    isInvalid={
-                      formik.errors.billingAddress &&
-                      formik.touched.billingAddress
-                    }
-                    isRequired
-                  >
-                    <FormLabel>{t("invoice_ui.form.billing_address")}</FormLabel>
-                    <Textarea
-                      name="billingAddress"
-                      onChange={formik.handleChange}
-                      value={formik.values.billingAddress}
-                    />
-                    <FormErrorMessage>
-                      {formik.errors.billingAddress}
-                    </FormErrorMessage>
-                  </FormControl>
-                ) : null}
-                <Heading fontSize={"xl"}>{t("invoice_ui.form.invoice_details_section")}</Heading>
-                <SimpleGrid gap={2} minChildWidth={300}>
-                  <FormControl
-                    isInvalid={
-                      formik.errors.sequence && formik.touched.sequence
-                    }
-                  >
-                    <FormLabel>{t("invoice_ui.form.invoice_no")}</FormLabel>
-                    <InputGroup>
-                      <PrefixFormField formik={formik} prefixType={"invoice"} />
-                      <NumberInputInteger
-                        min={1}
-                        formik={formik}
-                        name={"sequence"}
-                        onlyInt={true}
-                      />
-                    </InputGroup>
-
-                    <FormErrorMessage>
-                      {formik.errors.sequence}
-                    </FormErrorMessage>
-                  </FormControl>
-                  <DateField formik={formik} />
-                  <SelectStatus
-                    formik={formik}
-                    statusList={invoiceStatusList}
-                    namespace="invoice"
+                  <FormLabel>{t("invoice_ui.form.billing_address")}</FormLabel>
+                  <Textarea
+                    name="billingAddress"
+                    onChange={formik.handleChange}
+                    value={formik.values.billingAddress}
                   />
-                  <FormControl>
-                    <FormLabel>{t("invoice_ui.form.po_number")}</FormLabel>
-                    <Input
-                      value={formik.values.poNo}
-                      onChange={formik.handleChange}
-                      name="poNo"
+                  <FormErrorMessage>
+                    {formik.errors.billingAddress}
+                  </FormErrorMessage>
+                </FormControl>
+              ) : null}
+              <Heading fontSize={"xl"}>{t("invoice_ui.form.invoice_details_section")}</Heading>
+              <SimpleGrid gap={2} minChildWidth={300}>
+                <FormControl
+                  isInvalid={
+                    formik.errors.sequence && formik.touched.sequence
+                  }
+                >
+                  <FormLabel>{t("invoice_ui.form.invoice_no")}</FormLabel>
+                  <InputGroup>
+                    <PrefixFormField formik={formik} prefixType={"invoice"} />
+                    <NumberInputInteger
+                      min={1}
+                      formik={formik}
+                      name={"sequence"}
+                      onlyInt={true}
                     />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>{t("invoice_ui.form.po_date")}</FormLabel>
-                    <Input
-                      value={formik.values.poDate}
-                      onChange={formik.handleChange}
-                      name="poDate"
-                      type="date"
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>{t("invoice_ui.form.due_date")}</FormLabel>
-                    <Input
-                      min={formik.values.date}
-                      value={formik.values.dueDate}
-                      onChange={formik.handleChange}
-                      name="dueDate"
-                      type="date"
-                    />
-                  </FormControl>
-                </SimpleGrid>
-                <Heading fontSize={"xl"}>{t("invoice_ui.form.items_section")}</Heading>
-                <ItemsList
+                  </InputGroup>
+
+                  <FormErrorMessage>
+                    {formik.errors.sequence}
+                  </FormErrorMessage>
+                </FormControl>
+                <DateField formik={formik} />
+                <SelectStatus
                   formik={formik}
-                  taxes={taxes}
-                  ums={ums}
+                  statusList={invoiceStatusList}
                   namespace="invoice"
                 />
-                <TotalsBox
-                  quoteItems={deferredItems}
-                  taxes={taxes}
-                  shippingCharges={formik.values.shippingCharges ?? ""}
-                  onShippingChargesChange={(value) => {
-                    formik.setFieldValue("shippingCharges", value);
-                  }}
-                />
-                <DescriptionField formik={formik} />
-                <TermsAndCondtions formik={formik} />
-              </Grid>
-            </form>
-          )}
-          <AIPrefillModal
-            isOpen={isOpen}
-            onClose={onClose}
-            onPrefill={handlePrefill}
-          />
-        </FormikProvider>
-      </Box>
- 
+                <FormControl>
+                  <FormLabel>{t("invoice_ui.form.po_number")}</FormLabel>
+                  <Input
+                    value={formik.values.poNo}
+                    onChange={formik.handleChange}
+                    name="poNo"
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>{t("invoice_ui.form.po_date")}</FormLabel>
+                  <Input
+                    value={formik.values.poDate}
+                    onChange={formik.handleChange}
+                    name="poDate"
+                    type="date"
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>{t("invoice_ui.form.due_date")}</FormLabel>
+                  <Input
+                    min={formik.values.date}
+                    value={formik.values.dueDate}
+                    onChange={formik.handleChange}
+                    name="dueDate"
+                    type="date"
+                  />
+                </FormControl>
+              </SimpleGrid>
+              <Heading fontSize={"xl"}>{t("invoice_ui.form.items_section")}</Heading>
+              <ItemsList
+                formik={formik}
+                taxes={taxes}
+                ums={ums}
+                namespace="invoice"
+              />
+              <TotalsBox
+                quoteItems={deferredItems}
+                taxes={taxes}
+                shippingCharges={formik.values.shippingCharges ?? ""}
+                onShippingChargesChange={(value) => {
+                  formik.setFieldValue("shippingCharges", value);
+                }}
+              />
+              <DescriptionField formik={formik} />
+              <TermsAndCondtions formik={formik} />
+            </Grid>
+          </form>
+        )}
+        <AIPrefillModal
+          isOpen={isOpen}
+          onClose={onClose}
+          onPrefill={handlePrefill}
+        />
+      </FormikProvider>
+    </Box>
+
   );
 }
