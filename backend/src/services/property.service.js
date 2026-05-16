@@ -67,7 +67,14 @@ exports.getCurrencyConfig = async (filter = {}) => {
 
 exports.getTemplateConfig = async (filter = {}) => {
   return getPropertyWithCache({
-  name: "TEMPLATES_CONFIG",
+    name: "TEMPLATES_CONFIG",
+    filter,
+  });
+};
+
+exports.getPlansConfig = async (filter = {}) => {
+  return getPropertyWithCache({
+    name: "PLANS_CONFIG",
     filter,
   });
 };
@@ -93,9 +100,9 @@ exports.warmPropertyCache = async (entries = []) => {
   const defaultEntries = entries.length
     ? entries
     : [
-        { name: "CURRENCIES_CONFIG" },
-        { name: "TEMPLATES_CONFIG" },
-      ];
+      { name: "CURRENCIES_CONFIG" },
+      { name: "TEMPLATES_CONFIG" },
+    ];
 
   return Promise.all(
     defaultEntries.map(({ name, filter = {}, shouldThrow = false }) =>

@@ -41,16 +41,12 @@ export default function PricingCard({ plan, planOfferings, price }) {
         <Heading>{price}</Heading>
         <List spacing={3}>
           {planOfferings.map((planOffering, index) => (
-            <ListItem key={index}>
+            <ListItem key={index} opacity={planOffering.available ? 1 : 0.5}>
               <ListIcon
-                as={
-                  planOffering.valid.includes(plan)
-                    ? MdCheckCircle
-                    : FaRegCircle
-                }
-                color="green.500"
+                as={planOffering.available ? MdCheckCircle : FaRegCircle}
+                color={planOffering.available ? "green.500" : "gray.400"}
               />
-              {planOffering.value}
+              {planOffering.label}
             </ListItem>
           ))}
         </List>
@@ -58,13 +54,10 @@ export default function PricingCard({ plan, planOfferings, price }) {
           colorScheme="blue"
           as={"a"}
           href={`mailto:optimum.erp2024@gmail.com?subject=Upgrade to ${plan}&body=${t("pricing_ui.card.mailto_body")}`}
-          title={plan === "platinum" ? t("pricing_ui.card.coming_soon") : undefined}
-          isDisabled={currentPlan === plan || plan === "platinum"}
+          isDisabled={currentPlan === plan}
         >
           {currentPlan === plan
             ? t("pricing_ui.card.active")
-            : plan === "platinum"
-            ? t("pricing_ui.card.coming_soon")
             : t("pricing_ui.card.upgrade")}
         </Button>
       </Stack>

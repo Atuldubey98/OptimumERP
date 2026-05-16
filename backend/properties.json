@@ -1332,5 +1332,58 @@
         ]
       }
     ]
+  },
+  {
+    "name": "PLANS_CONFIG",
+    "value": {
+      "free": {
+        "name": "Free",
+        "features": {},
+        "price": 0,
+        "limits": {
+          "contacts": 100,
+          "expenses": 100,
+          "expenseCategories": 100,
+          "invoices": 100,
+          "purchases": 100,
+          "purchaseOrders": 100,
+          "products": 100,
+          "parties": 100,
+          "productCategories": 100,
+          "proformaInvoices": 100,
+          "quotes": 100,
+          "organizationUsers": 1,
+          "recurringInvoices": 0,
+          "taxes": 50,
+          "ums": 50,
+          "paymentVouchers": 100
+        }
+      },
+      "gold": {
+        "name": "Gold",
+        "price": 2000,
+        "features": {
+          "smtp": true,
+          "import_bulk": true
+        },
+        "limits": {
+          "recurringInvoices": 3,
+          "organizationUsers": 3
+        }
+      },
+      "platinum": {
+        "name": "Platinum",
+        "price": 10000,
+        "features": {
+          "ai_integration": true,
+          "byok": true,
+          "smtp": true,
+          "bot": true,
+          "recurring_invoice": true,
+          "import_bulk": true
+        },
+        "limits": {}
+      }
+    }
   }
 ]

@@ -9,7 +9,7 @@ const {
   resetPassword,
   register,
   update,
-
+  getPlans,
   resendVerificationLink,
   verifyForgotPasswordOtp,
   verifyRegisteredUserOtp,
@@ -66,5 +66,5 @@ userRoutes.post(
   authorize,
   requestAsyncHandler(activate)
 );
-
+userRoutes.get("/plans", authenticate, requestAsyncHandler(getPlans));
 module.exports = userRoutes;

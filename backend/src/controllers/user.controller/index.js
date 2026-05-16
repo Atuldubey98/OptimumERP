@@ -15,14 +15,14 @@ const verifyRegisteredUserOtp = require("./verifyRegisteredUserOtp");
 const resendVerificationLink = require("./resendVerificationOtp");
 const uploadAvatar = require("./uploadAvatar");
 const removeAvatar = require("./removeAvatar");
+const { getPlans } = require("./getPlans");
 module.exports = {
   activate,
   uploadAvatar,
   resendVerificationLink,
   currentUser,
-
+  getPlans,
   removeAvatar,
-
   deactivate,
   verifyForgotPasswordOtp,
   verifyRegisteredUserOtp,
