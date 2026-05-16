@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const { contactDto } = require("../../dto/contact.dto");
 const contactService = require("../../services/contact.service");
+const { ContactNotFound } = require("../../errors/contact.error");
 
 const contactHandler = {
   create_contact: async ({ org, createdBy, user, ...params }) => {
@@ -27,6 +28,16 @@ const contactHandler = {
       shouldPaginate: false,
     });
     return contacts;
+  },
+  get_contact: async (params) => {
+    if (!isValidObjectId(params.contactId)) {
+      throw new Error("Invalid contact ID");
+    }
+    const contact = await contactService.getById(params.contactId);
+    if (!contact || contact.org.toString() !== params.org.toString()) {
+      throw new ContactNotFound();
+    }
+    return contact;
   },
 };
 

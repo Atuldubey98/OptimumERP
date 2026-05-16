@@ -39,11 +39,11 @@ const contactSchema = new Schema(
     type: {
       type: String,
       validate: {
-        validator : async (value)=>{
-          const property = await Property.findOne({name : "CONTACT_TYPES", "value.value": value}).lean();
+        validator: async (value) => {
+          const property = await Property.findOne({ name: "CONTACT_TYPES", "value.value": value }).lean();
           return property != null;
         },
-        message : "Invalid contact type"
+        message: "Invalid contact type"
       }
     },
     updatedBy: {
@@ -62,6 +62,8 @@ contactSchema.index({
   type: "text",
 });
 contactSchema.index({ org: 1, createdAt: -1 });
+contactSchema.index({ org: 1, party: 1 });
+contactSchema.index({ org: 1, email: 1 });
 
 const Contact = model("contact", contactSchema);
 

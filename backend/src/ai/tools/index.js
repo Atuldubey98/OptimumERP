@@ -7,5 +7,6 @@ const paymentVoucherTools = require("./paymentVoucher.tool");
 const expenseTools = require("./expense.tool");
 const reportTools = require("./report.tool");
 const dashboardTools = require("./dashboard.tool");
-const tools = [...partyTools, ...billTools, ...productTools, ...contactTools, ...paymentVoucherTools, ...expenseTools, ...reportTools, ...dashboardTools];
+const smtpTools = require("./smtp.tool");
+const tools = [...partyTools, ...billTools, ...productTools, ...contactTools, ...paymentVoucherTools, ...expenseTools, ...reportTools, ...dashboardTools, ...smtpTools];
 module.exports = tools;

@@ -12,6 +12,11 @@ const billTypes = require("../constants/billTypes");
 
 const { currencyToWordConverter } = require("./currencyToWord.service");
 const propertyService = require("./property.service");
+const path = require("path");
+const logger = require("../logger");
+const transporter = require("../mailer");
+const smtpService = require("./smtp.service");
+const contactService = require("./contact.service");
 const { promiseQrCode, renderHtml, getPdfBufferFromDocDefinition } = require("./renderEngine.service");
 const templator = require("../views/templates/templator");
 
@@ -20,8 +25,6 @@ const {
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
 const { getDetailedSettingForOrg } = require("./setting.service");
-const path = require("path");
-const logger = require("../logger");
 const { moneyUtils } = require("../utils");
 const MODEL_NAME_TO_COUNTER_KEY = {
   invoice: "invoice",
@@ -700,4 +703,118 @@ exports.convertBillToPdfByTemplate = async ({
   const docDefinition = templator(template)(data);
   const pdfBuffer = await getPdfBufferFromDocDefinition(docDefinition);
   return { pdfBuffer, data };
+};
+
+exports.sendEmail = async ({
+  orgId,
+  user,
+  toEmails = [],
+  ccEmails = [],
+  subject,
+  body,
+  attachments = [],
+  replyToMessageId
+}) => {
+  const [settings, organization] = await Promise.all([
+    Setting.findOne({ org: orgId }).lean(),
+    OrgModel.findById(orgId).select("name alias").lean()
+  ]);
+
+  const activeSmtpProvider = settings?.smtpProviders?.find((p) => p.isActive);
+  const senderName = organization?.alias || organization?.name || "OptimumERP";
+
+  const mailOptions = {
+    from: `"${senderName}" <${activeSmtpProvider?.fields?.user || user?.email}>`,
+    to: toEmails.join(","),
+    cc: ccEmails.join(","),
+    subject: subject,
+    html: body,
+    attachments,
+    ...(replyToMessageId && {
+      inReplyTo: replyToMessageId,
+      references: [replyToMessageId],
+    }),
+  };
+
+  let info;
+  if (activeSmtpProvider) {
+    const { send: customSend } = await smtpService.getMailerSetup(activeSmtpProvider);
+    info = await customSend(
+      mailOptions.to,
+      mailOptions.cc,
+      mailOptions.subject,
+      mailOptions.html,
+      mailOptions.attachments,
+      mailOptions.from,
+      mailOptions.inReplyTo,
+      mailOptions.references
+    );
+  } else {
+    info = await transporter.sendMail(mailOptions);
+  }
+  return info;
+};
+
+exports.sendBill = async ({
+  Bill,
+  filter,
+  NotFound,
+  template = "simple",
+  t,
+  language,
+  orgId,
+  user,
+  session,
+  prefixType,
+  toEmails = [],
+  ccEmails = [],
+  subject,
+  body,
+  replyToMessageId
+}) => {
+  const { pdfBuffer, data: billData } = await this.convertBillToPdfByTemplate({
+    Bill,
+    filter,
+    NotFound,
+    template,
+    t,
+    language,
+  });
+
+  const pdfFileName = `${billData.title || "Bill"}-${billData.num}.pdf`;
+
+  const attachments = [
+    {
+      filename: pdfFileName,
+      content: pdfBuffer,
+    },
+  ];
+
+  const info = await this.sendEmail({
+    orgId,
+    user,
+    toEmails,
+    ccEmails,
+    subject,
+    body,
+    attachments,
+    replyToMessageId
+  });
+
+  await logService.recordActivity({
+    org: orgId,
+    user: user._id,
+    docModel: prefixType || Bill.modelName,
+    doc: billData.entity._id,
+    action: "sent",
+    message: `Emailed to ${toEmails.join(", ")} by ${user.name}`,
+    data: {
+      messageId: info.messageId,
+      to: toEmails,
+      cc: ccEmails,
+      html: body
+    }
+  }, { session });
+
+  return info;
 };

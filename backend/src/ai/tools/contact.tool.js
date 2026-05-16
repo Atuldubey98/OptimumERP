@@ -81,6 +81,23 @@ const contactTools = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "get_contact",
+      description: "Retrieve details of a specific contact using its unique ID.",
+      parameters: {
+        type: "object",
+        properties: {
+          contactId: {
+            type: "string",
+            description: "The unique ID (ObjectId) of the contact.",
+          },
+        },
+        required: ["contactId"],
+      },
+    },
+  },
 ];
 
 module.exports = contactTools;

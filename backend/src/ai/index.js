@@ -21,6 +21,8 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     create_product: "Creating item...",
     create_contact: "Creating contact...",
     get_contacts: "Getting the contact details...",
+    get_contact: "Retrieving contact details...",
+    send_email: "Sending email...",
     create_payment_voucher: "Creating payment voucher...",
     find_payment_voucher: "Fetching payment voucher...",
     list_expenses: "Listing expenses...",

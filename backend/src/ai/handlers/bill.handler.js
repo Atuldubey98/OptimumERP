@@ -431,6 +431,7 @@ const billHandler = {
           action: a.action,
           at: a.at,
           message: a.message,
+          data: a?.data || {}
         })),
       };
     } catch (error) {

@@ -21,14 +21,16 @@ const getMailerSetup = async (activeProviderSetting) => {
     });
     return {
         mailer,
-        send: async (to, cc, subject, body, attachments, from) => {
+        send: async (to, cc, subject, body, attachments, from, inReplyTo, references) => {
             const info = await mailer.sendMail({
                 from: from || `"OptimumERP" <${activeProviderSetting?.fields?.user}>`,
                 to,
                 cc,
                 subject,
                 html: body,
-                attachments
+                attachments,
+                inReplyTo,
+                references,
             });
             return info;
         }

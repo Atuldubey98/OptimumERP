@@ -38,6 +38,13 @@ const activitySchema = new Schema(
       type: String,
       required: true,
     },
+    data: {
+      messageId: String,
+      to: [String],
+      cc: [String],
+      html: String,
+      body: String,
+    }
   },
   {
     timestamps: { createdAt: "at", updatedAt: false },

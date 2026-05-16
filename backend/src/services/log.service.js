@@ -1,7 +1,7 @@
 const Activity = require("../models/activity.model");
 const AuditLog = require("../models/auditLog.model");
 
-exports.recordActivity = async ({ org, user, docModel, doc, action, message, session }) => {
+exports.recordActivity = async ({ org, user, docModel, doc, action, message, session, data }) => {
   const activity = new Activity({
     org,
     user,
@@ -9,6 +9,7 @@ exports.recordActivity = async ({ org, user, docModel, doc, action, message, ses
     doc,
     action,
     message,
+    data,
   });
   return await activity.save({ session });
 };

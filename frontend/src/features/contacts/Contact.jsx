@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Avatar,
   Badge,
@@ -17,9 +18,35 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { CiEdit } from "react-icons/ci";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin2Line } from "react-icons/ri";
+
+function CopyableText({ value, children, ...props }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (!value) return;
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+
+  return (
+    <Tooltip label={copied ? "Copied!" : value} placement="top" isDisabled={!value}>
+      <Box
+        as="span"
+        onClick={handleCopy}
+        cursor={value ? "pointer" : undefined}
+        {...props}
+      >
+        {children}
+      </Box>
+    </Tooltip>
+  );
+}
+
 export default function Contact({ item, onDeleteContact, onEditContact }) {
   const { orgId } = useParams();
   const { t } = useTranslation("contact");
@@ -27,25 +54,35 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
   const surfaceBg = useColorModeValue("gray.50", "gray.700");
 
   return (
-    <Card key={item._id} borderRadius="2xl" h="100%">
+    <Card
+      key={item._id}
+      borderRadius="2xl"
+      h="100%"
+      transition="all 0.2s"
+      _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+    >
       <CardHeader>
         <Flex justifyContent="space-between" gap={4} alignItems="flex-start">
           <HStack spacing={3} align="flex-start">
             <Avatar size="md" name={item.name} />
             <Box>
-              <Text noOfLines={1} fontSize="lg" fontWeight="semibold">
-                {item.name}
-              </Text>
-              <Link noOfLines={1} href={`tel:${item.telephone}`} color={subtleTextColor}>
-                {item.telephone}
-              </Link>
+              <CopyableText value={item._id}>
+                <Text noOfLines={1} fontSize="lg" fontWeight="semibold">
+                  {item.name}
+                </Text>
+              </CopyableText>
+              <CopyableText value={item.telephone}>
+                <Link noOfLines={1} href={`tel:${item.telephone}`} color={subtleTextColor}>
+                  {item.telephone}
+                </Link>
+              </CopyableText>
             </Box>
           </HStack>
-          <Tooltip label={item.type} placement="top">
+          <CopyableText value={item.type}>
             <Badge borderRadius="full" px={3} py={1} bg={surfaceBg} textTransform="none" maxW="24" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap" display="block" cursor="default">
               {item.type}
             </Badge>
-          </Tooltip>
+          </CopyableText>
         </Flex>
       </CardHeader>
       <CardBody pt={0} fontSize="sm">
@@ -55,9 +92,9 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
               {t("contact_ui.card.email")}
             </Text>
             {item.email ? (
-              <Tooltip label={item.email} placement="top">
+              <CopyableText value={item.email}>
                 <Link href={`mailto:${item.email}`} noOfLines={1} display="block">{item.email}</Link>
-              </Tooltip>
+              </CopyableText>
             ) : (
               <Text color={subtleTextColor}>{t("contact_ui.card.not_set")}</Text>
             )}
@@ -67,13 +104,15 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
               {t("contact_ui.card.company_name")}
             </Text>
             {item.party ? (
-              <Link
-                as={RouterLink}
-                to={`/${orgId}/parties/${item.party._id}/transactions`}
-                noOfLines={1}
-              >
-                {item.party.name}
-              </Link>
+              <CopyableText value={item.party._id}>
+                <Link
+                  as={RouterLink}
+                  to={`/${orgId}/parties/${item.party._id}/transactions`}
+                  noOfLines={1}
+                >
+                  {item.party.name}
+                </Link>
+              </CopyableText>
             ) : (
               <Text color={subtleTextColor}>{t("contact_ui.card.not_set")}</Text>
             )}

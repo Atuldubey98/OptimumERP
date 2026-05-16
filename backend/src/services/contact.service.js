@@ -61,12 +61,32 @@ const update = async (filter, data) => {
   logger.log("info", `Contact updated with id ${updatedContact.id}`);
   return updatedContact;
 };
+const getContactEmailsByIds = async (contactIds = []) => {
+  return await Contact.find({
+    _id: { $in: contactIds },
+    email: { $ne: "" },
+  })
+    .select("email")
+    .lean();
+};
+
+const getContactsByEmails = async ({ emails, orgId, partyId }) => {
+  const filter = {
+    org: orgId,
+    email: { $in: emails },
+  };
+  if (partyId) filter.party = partyId;
+  return await Contact.find(filter).lean();
+};
+
 const contactService = {
   create,
   getAll,
   getById,
   remove,
   update,
+  getContactEmailsByIds,
+  getContactsByEmails,
 };
 
 module.exports = contactService;
