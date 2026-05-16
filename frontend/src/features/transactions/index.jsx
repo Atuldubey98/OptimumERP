@@ -2,11 +2,13 @@ import {
   Box,
   Flex,
   Grid,
+  FormLabel,
   SimpleGrid,
   Spinner,
   Stack,
   Tag,
   TagLabel,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
@@ -183,34 +185,44 @@ export default function TransactionsPage() {
   const partyName = transactionsResponse.party
     ? transactionsResponse.party.name
     : "";
+  const filterBg = useColorModeValue("gray.50", "gray.900");
+  const filterBorder = useColorModeValue("gray.200", "gray.700");
+  const cardBg = useColorModeValue("white", "gray.800");
+  const cardBorder = useColorModeValue("gray.100", "whiteAlpha.200");
+  const labelColor = useColorModeValue("gray.600", "gray.400");
+
   return (
-    
-      <Box p={5}>
-        {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"}>
-            <Spinner size={"md"} />
-          </Flex>
-        ) : (
-          <TableLayout
-            showExport={{
-              onExport: onExportTransactions,
-              status,
-            }}
-            filter={
-              <Stack spacing={3}>
-                <SimpleGrid gap={3} minChildWidth={200}>
-                  {invoicesByStatus.length ? (
+    <Box p={5}>
+      {loading ? (
+        <Flex justifyContent={"center"} alignItems={"center"}>
+          <Spinner size={"md"} />
+        </Flex>
+      ) : (
+        <TableLayout
+          showExport={{
+            onExport: onExportTransactions,
+            status,
+          }}
+          filter={
+            <Stack spacing={6} bg={filterBg} p={5} borderRadius="xl" border="1px" borderColor={filterBorder}>
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                {invoicesByStatus.length ? (
+                  <Box bg={cardBg} borderRadius="lg" boxShadow="sm" overflow="hidden" border="1px" borderColor={cardBorder}>
                     <BillStatsByStatus
                       invoicesByStatus={invoicesByStatus}
                       label={t("transactions_ui.stats.invoices")}
                     />
-                  ) : null}
-                  {purchasesByStatus.length ? (
+                  </Box>
+                ) : null}
+                {purchasesByStatus.length ? (
+                  <Box bg={cardBg} borderRadius="lg" boxShadow="sm" overflow="hidden" border="1px" borderColor={cardBorder}>
                     <BillStatsByStatus
                       invoicesByStatus={purchasesByStatus}
                       label={t("transactions_ui.stats.purchase")}
                     />
-                  ) : null}
+                  </Box>
+                ) : null}
+                <Box bg={cardBg} borderRadius="lg" boxShadow="sm" overflow="hidden" border="1px" borderColor={cardBorder}>
                   <BalanceStats
                     balance={
                       invoiceBalance.total -
@@ -218,64 +230,90 @@ export default function TransactionsPage() {
                       (purchaseBalance.total - purchaseBalance.payment)
                     }
                   />
-                </SimpleGrid>
-                <Select
-                  isMulti
-                  onChange={setSelectedTypeOfTransactions}
-                  options={typeOfTransactions}
-                  value={selectedTypeOfTransactions}
-                />
-                <Grid gap={3} gridTemplateColumns={"1fr 1fr"}>
+                </Box>
+              </SimpleGrid>
+
+              <Flex direction={{ base: "column", lg: "row" }} gap={5} alignItems="flex-end">
+                <Box flex={1} w="full">
+                  <FormLabel fontSize="xs" fontWeight="bold" mb={1} color={labelColor}>
+                    {t("transactions_ui.filters.type_label") || "Filter by Type"}
+                  </FormLabel>
+                  <Select
+                    isMulti
+                    onChange={setSelectedTypeOfTransactions}
+                    options={typeOfTransactions}
+                    value={selectedTypeOfTransactions}
+                    chakraStyles={{
+                      control: (provided) => ({
+                        ...provided,
+                        borderRadius: "lg",
+                        bg: cardBg,
+                        borderColor: filterBorder,
+                        boxShadow: "sm",
+                      }),
+                      menu: (provided) => ({
+                        ...provided,
+                        bg: cardBg,
+                        borderColor: filterBorder,
+                      }),
+                      option: (provided, state) => ({
+                        ...provided,
+                        bg: state.isFocused ? (useColorModeValue("gray.100", "whiteAlpha.100")) : cardBg,
+                      })
+                    }}
+                  />
+                </Box>
+                <Box flex={1} w="full">
                   <DateFilter
                     dateFilter={dateFilter}
                     onChangeDateFilter={onChangeDateFilter}
                   />
-                </Grid>
-              </Stack>
-            }
-            heading={t("transactions_ui.page.heading", { partyName })}
-            tableData={transactionsResponse.items.map((item) => ({
-              _id: item._id,
-              date: new Date(item.doc.date).toLocaleDateString(),
-              totalItems: item.doc.items ?  item.doc.items.length : "--",
-              status: item.doc.status,
-              num: item.doc.num,
-              grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
-              type: (
-                <Tag
-                  size={"md"}
-                  variant="subtle"
-                  colorScheme={
-                    typeOfTransactions.find(
-                      (tranType) => tranType.value === item.docModel
-                    ).colorScheme || "cyan"
-                  }
-                >
-                  <TagLabel>{labels[item.docModel]}</TagLabel>
-                </Tag>
-              ),
-            }))}
-            caption={t("transactions_ui.page.total_found", {
-              count: transactionsResponse.total,
-            })}
-            operations={[]}
-            selectedKeys={{
-              date: t("transactions_ui.table.columns.date"),
-              num: t("transactions_ui.table.columns.num"),
-              totalItems: t("transactions_ui.table.columns.total_items"),
-              type: t("transactions_ui.table.columns.type"),
-              status: t("transactions_ui.table.columns.status"),
-              grandTotal: t("transactions_ui.table.columns.grand_total"),
-            }}
-          />
-        )}
-        {loading ? null : (
-          <Pagination
-            currentPage={transactionsResponse.page}
-            total={transactionsResponse.totalPages}
-          />
-        )}
-      </Box>
-    
+                </Box>
+              </Flex>
+            </Stack>
+          }
+          heading={t("transactions_ui.page.heading", { partyName })}
+          tableData={transactionsResponse.items.map((item) => ({
+            _id: item._id,
+            date: new Date(item.doc.date).toLocaleDateString(),
+            totalItems: item.doc.items ? item.doc.items.length : "--",
+            status: item.doc.status,
+            num: item.doc.num,
+            grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
+            type: (
+              <Tag
+                size={"md"}
+                variant="subtle"
+                colorScheme={
+                  typeOfTransactions.find(
+                    (tranType) => tranType.value === item.docModel
+                  ).colorScheme || "cyan"
+                }
+              >
+                <TagLabel>{labels[item.docModel]}</TagLabel>
+              </Tag>
+            ),
+          }))}
+          caption={t("transactions_ui.page.total_found", {
+            count: transactionsResponse.total,
+          })}
+          operations={[]}
+          selectedKeys={{
+            date: t("transactions_ui.table.columns.date"),
+            num: t("transactions_ui.table.columns.num"),
+            totalItems: t("transactions_ui.table.columns.total_items"),
+            type: t("transactions_ui.table.columns.type"),
+            status: t("transactions_ui.table.columns.status"),
+            grandTotal: t("transactions_ui.table.columns.grand_total"),
+          }}
+        />
+      )}
+      {loading ? null : (
+        <Pagination
+          currentPage={transactionsResponse.page}
+          total={transactionsResponse.totalPages}
+        />
+      )}
+    </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
@@ -6,8 +6,9 @@ import { useTranslation } from "react-i18next";
 export default function BalanceStats({ balance }) {
   const { t } = useTranslation("transactions");
   const { symbol, formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
   return (
-    <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
+    <Box borderRadius={"md"} border={"1px solid"} borderColor={borderColor} p={4}>
       <Text>{t("transactions_ui.stats.balance")}</Text>
       <Flex>
         <Heading>{formatSmallestUnitWithSymbol(Math.abs(balance))}</Heading>

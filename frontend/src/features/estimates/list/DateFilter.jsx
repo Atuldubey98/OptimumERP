@@ -1,16 +1,22 @@
-import { FormControl, FormLabel, Stack, Input } from "@chakra-ui/react";
+import { FormControl, FormLabel, Stack, Input, useColorModeValue } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 export default function DateFilter({
   dateFilter,
   onChangeDateFilter,
   isRequired,
+  direction = { base: "column", sm: "row" },
 }) {
   const { t } = useTranslation("common");
+  const inputBg = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const labelColor = useColorModeValue("gray.600", "gray.400");
+  const focusBorderColor = useColorModeValue("blue.500", "blue.300");
+
   return (
-    <Stack spacing={3}>
+    <Stack direction={direction} spacing={4} w="full">
       <FormControl size={"sm"} isRequired={isRequired}>
-        <FormLabel fontSize="xs" fontWeight={"bold"} mb={1}>
+        <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
           {t("common_ui.date_filter.start_date")}
         </FormLabel>
         <Input
@@ -19,12 +25,17 @@ export default function DateFilter({
           onChange={onChangeDateFilter}
           placeholder={t("common_ui.date_filter.placeholder")}
           type="date"
-          size={"sm"} 
+          size={"sm"}
           borderRadius="md"
+          bg={inputBg}
+          borderWidth="1px"
+          borderColor={borderColor}
+          _hover={{ borderColor: useColorModeValue("gray.300", "gray.600") }}
+          _focus={{ borderColor: focusBorderColor, boxShadow: `0 0 0 1px ${focusBorderColor}` }}
         />
       </FormControl>
       <FormControl size={"sm"} isRequired={isRequired}>
-        <FormLabel fontSize="xs" fontWeight={"bold"} mb={1}>
+        <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
           {t("common_ui.date_filter.end_date")}
         </FormLabel>
         <Input
@@ -35,6 +46,11 @@ export default function DateFilter({
           name="endDate"
           onChange={onChangeDateFilter}
           borderRadius="md"
+          bg={inputBg}
+          borderWidth="1px"
+          borderColor={borderColor}
+          _hover={{ borderColor: useColorModeValue("gray.300", "gray.600") }}
+          _focus={{ borderColor: focusBorderColor, boxShadow: `0 0 0 1px ${focusBorderColor}` }}
         />
       </FormControl>
     </Stack>

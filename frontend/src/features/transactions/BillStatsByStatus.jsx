@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Progress, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Flex, Grid, Progress, Text, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import StatProgress from "./StatProgress";
@@ -11,9 +11,10 @@ export default function BillStatsByStatus({ invoicesByStatus, label }) {
     0
   );
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
 
   return (
-    <Box borderRadius={"md"} border={"1px solid lightgray"} p={4}>
+    <Box borderRadius={"md"} border={"1px solid"} borderColor={borderColor} p={4}>
       <Box marginBlock={1}>
         <Text fontSize={"sm"}>{label}</Text>
       </Box>
