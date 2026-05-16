@@ -16,7 +16,11 @@ const notificationService = require("./notification.service");
 
 exports.create = async (body, session = null) => {
     const operations = async (session) => {
-        const totalWithTaxes = await calculateTaxes(body.items, body.org);
+        const [totalWithTaxes, setting] = await Promise.all([
+            calculateTaxes(body.items, body.org),
+            getDisplaySettingForOrg(body.org)
+        ]);
+
         const nextOccurrence = body.nextOccurrence || exports.getFirstOccurrence(
             body.startDate,
             body.interval,
@@ -27,6 +31,7 @@ exports.create = async (body, session = null) => {
         const recurringInvoice = new RecurringInvoice({
             ...body,
             ...totalWithTaxes,
+            financialYear: setting.financialYear,
             nextOccurrence
         });
         await recurringInvoice.save({ session });
@@ -37,20 +42,34 @@ exports.create = async (body, session = null) => {
     return await executeMongoDbTransaction(operations);
 };
 
+const CONFIG_MAP = {
+    proformaInvoice: {
+        Model: ProformaInvoice,
+        dto: proformaInvoiceDto,
+        Duplicate: ProformaInvoiceDuplicate,
+        NotFound: ProformaInvoiceNotFound,
+        updateField: "proformaInvoices",
+        orgCountField: "relatedDocsCount.proformaInvoices",
+        notifTitle: "Recurring Proforma Invoice Generated",
+        notifLink: "receipt/proformaInvoices/",
+        prefixKey: "proformaInvoice"
+    },
+    invoice: {
+        Model: Invoice,
+        dto: invoiceDto,
+        Duplicate: InvoiceDuplicate,
+        NotFound: InvoiceNotFound,
+        updateField: "invoices",
+        orgCountField: "relatedDocsCount.invoices",
+        notifTitle: "Recurring Invoice Generated",
+        notifLink: "receipt/invoices/",
+        prefixKey: "invoice"
+    }
+};
+
 const generateBill = async (recurringInvoice, type, session = null) => {
+    const config = { ...CONFIG_MAP[type], prefixType: type };
     const isProforma = type === "proformaInvoice";
-    const config = {
-        Model: isProforma ? ProformaInvoice : Invoice,
-        dto: isProforma ? proformaInvoiceDto : invoiceDto,
-        Duplicate: isProforma ? ProformaInvoiceDuplicate : InvoiceDuplicate,
-        NotFound: isProforma ? ProformaInvoiceNotFound : InvoiceNotFound,
-        prefixType: type,
-        updateField: isProforma ? "proformaInvoices" : "invoices",
-        orgCountField: isProforma ? "relatedDocsCount.proformaInvoices" : "relatedDocsCount.invoices",
-        notifTitle: isProforma ? "Recurring Proforma Invoice Generated" : "Recurring Invoice Generated",
-        notifLink: isProforma ? "/proforma-invoices/" : "/invoices/",
-        prefixKey: isProforma ? "proformaInvoice" : "invoice"
-    };
 
     const operations = async (session) => {
         const setting = await getDisplaySettingForOrg(recurringInvoice.org);
@@ -260,9 +279,27 @@ exports.findOne = async (filter) => {
 };
 
 exports.update = async (filter, body) => {
-    const totalWithTaxes = await calculateTaxes(body.items, body.org);
-    const updatedBody = { ...body, ...totalWithTaxes };
-    return await RecurringInvoice.findOneAndUpdate(filter, updatedBody, { new: true });
+    const operations = async (session) => {
+        const [totalWithTaxes, setting] = await Promise.all([
+            calculateTaxes(body.items, filter.org),
+            getDisplaySettingForOrg(filter.org)
+        ]);
+
+        const updatedBody = {
+            ...body,
+            ...totalWithTaxes,
+            financialYear: setting.financialYear
+        };
+
+        const recurringInvoice = await RecurringInvoice.findOneAndUpdate(
+            filter,
+            updatedBody,
+            { new: true, session }
+        );
+        return recurringInvoice;
+    };
+
+    return await executeMongoDbTransaction(operations);
 };
 
 exports.remove = async (filter) => {

@@ -71,6 +71,8 @@ export default function useRecurringInvoicesForm() {
       .label(t("common_ui.validation.labels.description")),
     generateInvoice: Yup.boolean().default(true),
     generateProformaInvoice: Yup.boolean().default(false),
+    poNo: Yup.string(),
+    poDate: Yup.date().nullable(),
   });
 
   const { requestAsyncHandler } = useAsyncCall();
@@ -91,6 +93,8 @@ export default function useRecurringInvoicesForm() {
     dayOfEveryWeek: moment().format('dddd').toLowerCase(),
     generateInvoice: true,
     generateProformaInvoice: false,
+    poNo: "",
+    poDate: "",
   }), [receiptDefaults, defaultReceiptItem]);
 
   const formik = useFormik({
@@ -152,6 +156,9 @@ export default function useRecurringInvoicesForm() {
         dayOfEveryWeek,
         generateInvoice,
         generateProformaInvoice,
+        num,
+        poNo,
+        poDate,
       } = data.data;
       formik.setValues({
         _id: data.data._id,
@@ -176,6 +183,8 @@ export default function useRecurringInvoicesForm() {
         dayOfEveryWeek: dayOfEveryWeek || "monday",
         generateInvoice: generateInvoice ?? true,
         generateProformaInvoice: generateProformaInvoice ?? false,
+        poNo: poNo || "",
+        poDate: poDate ? moment(poDate).format("YYYY-MM-DD") : "",
       });
       setStatus("success");
     } catch (error) {

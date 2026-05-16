@@ -52,7 +52,7 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
           },
         }
       );
-      
+
       if (append) {
         setNotifications((prev) => [...prev, ...data.notifications]);
       } else {
@@ -84,14 +84,7 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
   const handleNotificationClick = (notification) => {
 
     if (notification.data?.event === "link_to" && notification.data?.data) {
-      const url = notification.data.data;
-      if (url.startsWith(window.location.origin)) {
-        const path = url.replace(window.location.origin, "");
-        navigate(path);
-      } else {
-        window.location.href = url;
-      }
-      onClose();
+      navigate(`/${notification.data.data}`);
     }
   };
 
@@ -145,10 +138,10 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
   });
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      size={{ base: "full", md: "lg" }} 
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size={{ base: "full", md: "lg" }}
       scrollBehavior="inside"
       motionPreset="slideInBottom"
     >
@@ -194,10 +187,10 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
                             notification.type === "error"
                               ? "red"
                               : notification.type === "warning"
-                              ? "orange"
-                              : notification.type === "success"
-                              ? "green"
-                              : "blue"
+                                ? "orange"
+                                : notification.type === "success"
+                                  ? "green"
+                                  : "blue"
                           }
                           fontSize="2xs"
                         >
@@ -267,9 +260,9 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
           >
             {t("notifications.mark_all_read", "Mark all as read")}
           </Button>
-          <Button 
-            variant="ghost" 
-            onClick={onClose} 
+          <Button
+            variant="ghost"
+            onClick={onClose}
             size="sm"
             width={{ base: "full", md: "auto" }}
           >

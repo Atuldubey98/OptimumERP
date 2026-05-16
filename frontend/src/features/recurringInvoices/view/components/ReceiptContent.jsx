@@ -46,6 +46,8 @@ export default function ReceiptContent({ ri }) {
           <Text fontSize="xs" fontWeight="bold" color="gray.400" textTransform="uppercase">
             Plan Details
           </Text>
+          {ri.poNo && <Text fontSize="sm"><b>PO # :</b> {ri.poNo}</Text>}
+          {ri.poDate && <Text fontSize="sm"><b>PO Date :</b> {moment(ri.poDate).format("LL")}</Text>}
           <Text fontSize="sm"><b>Starts:</b> {moment(ri.startDate).format("LL")}</Text>
           <Text fontSize="sm"><b>Ends:</b> {ri.endDate ? moment(ri.endDate).format("LL") : "Never"}</Text>
           <Text fontSize="sm"><b>Last Run:</b> {ri.lastGeneratedDate ? moment(ri.lastGeneratedDate).format("LL") : "Never"}</Text>

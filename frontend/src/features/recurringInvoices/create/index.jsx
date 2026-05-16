@@ -146,7 +146,32 @@ export default function RecurringInvoiceFormPage() {
                 </FormControl>
               ) : null}
 
-              <Heading fontSize={"xl"}>{t("recurring_invoice_ui.form.frequency_section")}</Heading>
+              <Heading fontSize={"xl"}>{t("recurring_invoice_ui.form.document_details_section", { defaultValue: "Document Details" })}</Heading>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+                <FormControl isInvalid={formik.errors.poNo && formik.touched.poNo}>
+                  <FormLabel>{t("recurring_invoice_ui.form.po_no", { defaultValue: "PO Number" })}</FormLabel>
+                  <Input
+                    name="poNo"
+                    onChange={formik.handleChange}
+                    value={formik.values.poNo}
+                    placeholder="PO-12345"
+                  />
+                  <FormErrorMessage>{formik.errors.poNo}</FormErrorMessage>
+                </FormControl>
+
+                <FormControl isInvalid={formik.errors.poDate && formik.touched.poDate}>
+                  <FormLabel>{t("recurring_invoice_ui.form.po_date", { defaultValue: "PO Date" })}</FormLabel>
+                  <Input
+                    name="poDate"
+                    type="date"
+                    onChange={formik.handleChange}
+                    value={formik.values.poDate}
+                  />
+                  <FormErrorMessage>{formik.errors.poDate}</FormErrorMessage>
+                </FormControl>
+              </SimpleGrid>
+              
+              <Heading fontSize={"xl"}>{t("recurring_invoice_ui.form.frequency_section", { defaultValue: "Frequency Details" })}</Heading>
               <SimpleGrid gap={4} minChildWidth={250}>
                 <FormControl
                   isInvalid={formik.errors.interval && formik.touched.interval}
