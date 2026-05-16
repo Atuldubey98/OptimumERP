@@ -13,6 +13,37 @@ const dateUtils = {
     );
     return dateFormatter;
   },
+
+  getLocalizedNow: (timeZone = "UTC") => {
+    const options = {
+      timeZone,
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    };
+    const formatter = new Intl.DateTimeFormat("en-US", options);
+    const parts = formatter.formatToParts(new Date());
+    const map = new Map(parts.map((p) => [p.type, p.value]));
+    return new Date(
+      map.get("year"),
+      map.get("month") - 1,
+      map.get("day"),
+      map.get("hour"),
+      map.get("minute"),
+      map.get("second")
+    );
+  },
+
+  toUTC: (date, timeZone = "UTC") => {
+    const s = date.toLocaleString("en-US", { timeZone: "UTC" });
+    const target = date.toLocaleString("en-US", { timeZone });
+    const diff = new Date(s).getTime() - new Date(target).getTime();
+    return new Date(date.getTime() + diff);
+  },
 };
 
 const moneyUtils = {

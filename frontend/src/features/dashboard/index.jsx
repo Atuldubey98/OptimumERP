@@ -79,61 +79,42 @@ export default function DashboardPage() {
   const { orgId } = useParams();
   const { requestAsyncHandler } = useAsyncCall();
   const [currentPeriod, setCurrentPeriod] = useState("thisMonth");
-  const [statPeriod, setStatPeriod] = useState({
-    endDate: moment().format("YYYY-MM-DD"),
-    startDate: moment().startOf("month").format("YYYY-MM-DD"),
-  });
   const [status, setStatus] = useState("idle");
+
   const fetchDashboard = useCallback(
     requestAsyncHandler(async () => {
       setStatus("loading");
       const { data } = await instance.get(
         `/api/v1/organizations/${orgId}/dashboard`,
         {
-          params: statPeriod,
+          params: { period: currentPeriod },
         }
       );
       setDashboard(data.data);
       setStatus("success");
     }),
-    [orgId, requestAsyncHandler, statPeriod]
+    [orgId, requestAsyncHandler, currentPeriod]
   );
+
   useEffect(() => {
     fetchDashboard();
   }, [fetchDashboard]);
+
   const loading = status === "loading";
+
   const { isOpen: isGuideTourOpen, onClose: closeGuideTour } = useDisclosure({
     defaultIsOpen: !localStorage.getItem("guide"),
   });
+
   const onCloseGuidedTour = () => {
     closeGuideTour();
     localStorage.setItem("guide", false);
   };
+
   const periods = useMemo(() => [
-    {
-      label: t("dashboard_ui.periods.this_week"),
-      value: "thisWeek",
-      getDates: () => ({
-        startDate: moment().startOf("week").format("YYYY-MM-DD"),
-        endDate: moment().format("YYYY-MM-DD"),
-      }),
-    },
-    {
-      label: t("dashboard_ui.periods.this_month"),
-      value: "thisMonth",
-      getDates: () => ({
-        startDate: moment().startOf("month").format("YYYY-MM-DD"),
-        endDate: moment().format("YYYY-MM-DD"),
-      }),
-    },
-    {
-      label: t("dashboard_ui.periods.this_year"),
-      value: "thisYear",
-      getDates: () => ({
-        startDate: moment().startOf("year").format("YYYY-MM-DD"),
-        endDate: moment().format("YYYY-MM-DD"),
-      }),
-    },
+    { label: t("dashboard_ui.periods.this_week"), value: "thisWeek" },
+    { label: t("dashboard_ui.periods.this_month"), value: "thisMonth" },
+    { label: t("dashboard_ui.periods.this_year"), value: "thisYear" },
   ], [t]);
 
   const currentPeriodOption = useMemo(() => 
@@ -189,7 +170,6 @@ export default function DashboardPage() {
               <Select
                 options={periods}
                 onChange={(option) => {
-                  setStatPeriod(option.getDates());
                   setCurrentPeriod(option.value);
                 }}
                 value={currentPeriodOption}
