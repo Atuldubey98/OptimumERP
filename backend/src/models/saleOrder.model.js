@@ -147,6 +147,10 @@ const saleOrderSchema = new Schema(
   }
 );
 
+saleOrderSchema.index({ num: 1 });
+saleOrderSchema.index({ org: 1, createdAt: -1 });
+saleOrderSchema.index({ org: 1, party: 1 });
+
 const SaleOrder = model("sale_order", saleOrderSchema);
 
 module.exports = SaleOrder;

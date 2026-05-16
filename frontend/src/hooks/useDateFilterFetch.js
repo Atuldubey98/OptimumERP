@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import instance from "../instance";
 import useAsyncCall from "./useAsyncCall";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import useQuery from "./useQuery";
 import moment from "moment";
 export default function useDateFilterFetch({ entity, storageKey, extraParams = {} }) {
@@ -16,49 +16,100 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
   const [status, setStatus] = useState("loading");
   const controller = new AbortController();
   const { orgId } = useParams();
-  const query = useQuery();
-  const page = isNaN(parseInt(query.get("page")))
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = isNaN(parseInt(searchParams.get("page")))
     ? 1
-    : parseInt(query.get("page"));
-  const searchQuery = query.get("query");
+    : parseInt(searchParams.get("page"));
+  const searchQuery = searchParams.get("query");
+  const queryNum = searchParams.get("num");
+  const queryParty = searchParams.get("party");
   const today = moment();
   const monthAgo = moment().subtract(30, "days");
   const defaultDateFilter = {
     startDate: monthAgo.format("YYYY-MM-DD"),
     endDate: today.format("YYYY-MM-DD"),
-    num: "",
+    num: queryNum || "",
+    party: queryParty || "",
+    partyDetails: null,
   };
   const scopedStorageKey = storageKey
     ? `${storageKey}:${orgId || "default"}`
     : null;
   const [dateFilter, setDateFilter] = useState(() => {
-    if (!scopedStorageKey || typeof window === "undefined") {
-      return defaultDateFilter;
+    let initialFilter = { ...defaultDateFilter };
+    if (scopedStorageKey && typeof window !== "undefined") {
+      try {
+        const rawDateFilter = window.localStorage.getItem(scopedStorageKey);
+        if (rawDateFilter) {
+          const parsedDateFilter = JSON.parse(rawDateFilter);
+          const hasValidStartDate = moment(
+            parsedDateFilter?.startDate,
+            "YYYY-MM-DD",
+            true,
+          ).isValid();
+          const hasValidEndDate = moment(
+            parsedDateFilter?.endDate,
+            "YYYY-MM-DD",
+            true,
+          ).isValid();
+          if (hasValidStartDate && hasValidEndDate) {
+            initialFilter = {
+              ...initialFilter,
+              startDate: parsedDateFilter.startDate,
+              endDate: parsedDateFilter.endDate,
+              num: (parsedDateFilter.num || "").trim(),
+              party: parsedDateFilter.party || "",
+              partyDetails: parsedDateFilter.partyDetails || null,
+            };
+          }
+        }
+      } catch (error) {
+        // Fallback to default
+      }
     }
-    try {
-      const rawDateFilter = window.localStorage.getItem(scopedStorageKey);
-      if (!rawDateFilter) return defaultDateFilter;
-      const parsedDateFilter = JSON.parse(rawDateFilter);
-      const hasValidStartDate = moment(
-        parsedDateFilter?.startDate,
-        "YYYY-MM-DD",
-        true,
-      ).isValid();
-      const hasValidEndDate = moment(
-        parsedDateFilter?.endDate,
-        "YYYY-MM-DD",
-        true,
-      ).isValid();
-      if (!hasValidStartDate || !hasValidEndDate) return defaultDateFilter;
-      return {
-        startDate: parsedDateFilter.startDate,
-        endDate: parsedDateFilter.endDate,
-        num: (parsedDateFilter.num || "").trim(),
-      };
-    } catch (error) {
-      return defaultDateFilter;
-    }
+    // URL parameters should override everything
+    if (queryNum) initialFilter.num = queryNum;
+    if (queryParty) initialFilter.party = queryParty;
+    return initialFilter;
   });
+
+  // Fetch party details if ID is in URL but details are missing (for shared links)
+  useEffect(() => {
+    if (dateFilter.party && !dateFilter.partyDetails) {
+      const fetchPartyDetails = async () => {
+        try {
+          const { data } = await instance.get(`/api/v1/organizations/${orgId}/parties/${dateFilter.party}`);
+          setDateFilter(prev => ({ ...prev, partyDetails: data.data }));
+        } catch (error) {
+          console.error("Failed to fetch party details for filter", error);
+        }
+      };
+      fetchPartyDetails();
+    }
+  }, [dateFilter.party, orgId]);
+
+  // Sync URL with filter state
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    let changed = false;
+
+    if (dateFilter.num !== (params.get("num") || "")) {
+      if (dateFilter.num) params.set("num", dateFilter.num);
+      else params.delete("num");
+      changed = true;
+    }
+
+    if (dateFilter.party !== (params.get("party") || "")) {
+      if (dateFilter.party) params.set("party", dateFilter.party);
+      else params.delete("party");
+      changed = true;
+    }
+
+    if (changed) {
+      setSearchParams(params, { replace: true });
+    }
+  }, [dateFilter.num, dateFilter.party, setSearchParams]);
+
   const fetchItems = requestAsyncHandler(async () => {
     setStatus("loading");
     const { data } = await instance.get(
@@ -69,6 +120,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
           num: dateFilter.num,
+          party: dateFilter.party,
           page,
           ...extraParams,
         },
@@ -88,17 +140,27 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
     };
   }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
 
-  const onChangeDateFilter = useCallback((e) =>
-    setDateFilter((prev) => ({
-      ...prev,
-      [e.currentTarget.name]: e.currentTarget.value,
-    })), []);
+  const onChangeDateFilter = useCallback((e) => {
+    if (e.currentTarget) {
+      setDateFilter((prev) => ({
+        ...prev,
+        [e.currentTarget.name]: e.currentTarget.value,
+      }));
+    } else {
+      // Handle direct value updates (like from Select components)
+      setDateFilter((prev) => ({
+        ...prev,
+        ...e,
+      }));
+    }
+  }, []);
 
   const onSetDateFilter = useCallback(({ start, end }) => {
-    setDateFilter({
+    setDateFilter((prev) => ({
+      ...prev,
       endDate: end,
       startDate: start,
-    });
+    }));
   }, []);
 
   useEffect(() => {

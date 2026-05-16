@@ -15,6 +15,7 @@ import { IoCheckmark } from "react-icons/io5";
 import FilterPopoverWrapper from "../../common/FilterPopoverWrapper";
 import SearchItem from "../../common/table-layout/SearchItem";
 import DateFilter from "../../estimates/list/DateFilter";
+import PartySelectBill from "../../invoices/create/PartySelectBill";
 import { useTranslation } from "react-i18next";
 
 export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
@@ -40,6 +41,20 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
     }
   };
 
+  const partyFormik = {
+    values: { 
+      party: dateFilter.party,
+      partyDetails: dateFilter.partyDetails 
+    },
+    setFieldValue: (field, value) => {
+      onChangeDateFilter({
+        [field]: value,
+      });
+    },
+    errors: {},
+    touched: {},
+  };
+
   return (
     <Flex 
       direction={{ base: "column", sm: "row" }} 
@@ -54,7 +69,7 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
       <Box>
         <FilterPopoverWrapper 
           title={t("common_ui.filters")}
-          isFiltered={!!dateFilter.num}
+          isFiltered={!!dateFilter.num || !!dateFilter.party}
         >
           <Stack spacing={4}>
             <FormControl size="sm">
@@ -84,6 +99,15 @@ export default function TableDateFilter({ dateFilter, onChangeDateFilter }) {
               </InputGroup>
             </FormControl>
             
+            <Divider />
+
+            <Box>
+               <FormLabel fontSize="xs" fontWeight="bold" mb={1}>
+                 {t("common_ui.fields.party")}
+               </FormLabel>
+               <PartySelectBill formik={partyFormik} />
+            </Box>
+
             <Divider />
             
             <DateFilter

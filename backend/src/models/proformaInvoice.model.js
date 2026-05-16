@@ -42,6 +42,7 @@ proformaInvoiceSchema.index({
 });
 proformaInvoiceSchema.index({ num: 1 });
 proformaInvoiceSchema.index({ org: 1, createdAt: -1 });
+proformaInvoiceSchema.index({ org: 1, party: 1 });
 proformaInvoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
   { unique: true, name: "proforma_invoice_org_fin_year_sequence_unique" },

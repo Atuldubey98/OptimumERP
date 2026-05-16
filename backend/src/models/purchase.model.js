@@ -33,6 +33,7 @@ purchaseInvoice.index({
 });
 purchaseInvoice.index({ num: 1 });
 purchaseInvoice.index({ org: 1, createdAt: -1 });
+purchaseInvoice.index({ org: 1, party: 1 });
 
 const Purchase = model("purchase", purchaseInvoice);
 

@@ -63,6 +63,7 @@ exports.getPaginationParams = async ({
       if (query.num) filter.num = query.num;
       if (isValidObjectId(query.refDoc)) filter.refDoc = query.refDoc;
       if (query.refDocModel) filter.refDocModel = query.refDocModel;
+      if (isValidObjectId(query.party)) filter.party = query.party;
       break;
     case NOTIFICATIONS:
       if (isValidObjectId(query.user)) filter.user = query.user;

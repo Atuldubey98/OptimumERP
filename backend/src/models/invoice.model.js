@@ -55,6 +55,7 @@ invoiceSchema.index({
 });
 invoiceSchema.index({ num: 1 });
 invoiceSchema.index({ org: 1, createdAt: -1 });
+invoiceSchema.index({ org: 1, party: 1 });
 invoiceSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
   { unique: true, name: "invoice_org_fin_year_sequence_unique" },

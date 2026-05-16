@@ -80,6 +80,7 @@ recurringInvoiceSchema.index({
     poNo: "text",
 });
 recurringInvoiceSchema.index({ org: 1, createdAt: -1 });
+recurringInvoiceSchema.index({ org: 1, party: 1 });
 
 const RecurringInvoice = model("recurring_invoice", recurringInvoiceSchema);
 
