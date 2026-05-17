@@ -114,13 +114,20 @@ const aiFactory = ({ provider, apiKey }) => {
 
         const response = await aiProvider.chat({
           model,
-          messages: history.map(msg => ({
-            role: msg.role,
-            content: msg.content || "",
-            ...(msg.tool_calls && { tool_calls: msg.tool_calls }),
-            ...(msg.tool_call_id && { tool_call_id: msg.tool_call_id }),
-            ...(msg.images && { images: msg.images })
-          })),
+          messages: history.map(msg => {
+            const mapped = {
+              role: msg.role,
+              content: msg.content || "",
+              ...(msg.images && { images: msg.images })
+            };
+            if (msg.role === "assistant" && msg.tool_calls && msg.tool_calls.length > 0) {
+              mapped.tool_calls = msg.tool_calls;
+            }
+            if (msg.role === "tool" && msg.tool_call_id) {
+              mapped.tool_call_id = msg.tool_call_id;
+            }
+            return mapped;
+          }),
           tools,
           options: { temperature: 0, ...options, abortSignal }
         });

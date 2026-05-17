@@ -236,7 +236,7 @@ export default function TransactionsPage() {
               <Flex direction={{ base: "column", lg: "row" }} gap={5} alignItems="flex-end">
                 <Box flex={1} w="full">
                   <FormLabel fontSize="xs" fontWeight="bold" mb={1} color={labelColor}>
-                    {t("transactions_ui.filters.type_label") || "Filter by Type"}
+                    {t("transactions_ui.filters.type_label", "Type")}
                   </FormLabel>
                   <Select
                     isMulti
