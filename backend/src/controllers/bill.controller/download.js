@@ -40,6 +40,15 @@ const download = async (options = {}, req, res) => {
     const logo = await getBase64Url(orgLogoUrl);
     data.entity.org.logo = logo;
   }
+  const showSignature = req.query.signature === "true";
+  if (showSignature && setting?.signature) {
+    try {
+      const signature = await getBase64Url(setting.signature);
+      data.signature = signature;
+    } catch (err) {
+      logger.error("Error loading signature base64:", err);
+    }
+  }
   const docDefinition = runner(data, color);
   const buffer = await getPdfBufferFromDocDefinition(docDefinition);
   const filename = `${data.entity.org.name}-${data.num}`;

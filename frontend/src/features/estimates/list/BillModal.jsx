@@ -14,6 +14,7 @@ import {
   ModalOverlay,
   Skeleton,
   Tooltip,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -34,6 +35,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
     { name: "Dark Gray", hex: "616161" },
   ];
   const [color, setColor] = useState(templateColors[0].hex);
+  const [signature, setSignature] = useState(false);
   const settingContext = useCurrentOrgCurrency();
   const setting = settingContext?.setting;
   const templateName = setting?.printSettings?.defaultTemplate || "simple";
@@ -47,6 +49,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
         template: templateName,
         color,
         lng: language,
+        signature,
       },
     });
     const href = URL.createObjectURL(data);
@@ -84,13 +87,33 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
               src={
                 baseURL +
                 downloadBill +
-                `?template=${templateName}&color=${color}&lng=${language}`
+                `?template=${templateName}&color=${color}&lng=${language}&signature=${signature}`
               }
             />
           </Skeleton>
         </ModalBody>
         <ModalFooter>
-          <Flex mr={6} justifyContent={"center"} alignItems={"center"} gap={2}>
+          <Checkbox
+            colorScheme="blue"
+            mr={4}
+            isChecked={signature}
+            isDisabled={billLoadStatus === "loading"}
+            onChange={(e) => {
+              setBillLoadStatus("loading");
+              setSignature(e.target.checked);
+            }}
+          >
+            Apply Signature
+          </Checkbox>
+
+          <Flex
+            mr={6}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={2}
+            pointerEvents={billLoadStatus === "loading" ? "none" : "auto"}
+            opacity={billLoadStatus === "loading" ? 0.4 : 1}
+          >
             {templateColors.map((templateColor) => (
               <Box key={templateColor.hex}>
                 <Tooltip label={templateColor.name}>
@@ -99,10 +122,11 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
                     alignItems={"center"}
                     key={templateColor.hex}
                     onClick={() => {
+                      if (billLoadStatus === "loading") return;
                       setBillLoadStatus("loading");
                       setColor(templateColor.hex);
                     }}
-                    cursor={"pointer"}
+                    cursor={billLoadStatus === "loading" ? "not-allowed" : "pointer"}
                     bg={templateColor.hex ? `#${templateColor.hex}` : "transparent"}
                     border={templateColor.hex ? "none" : "1px solid"}
                     borderColor="gray.300"

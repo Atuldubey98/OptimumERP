@@ -439,7 +439,7 @@ const buzyTemplate = (data, color) => {
         margin: [0, 8, 0, 0],
         unbreakable: true,
         table: {
-          widths: ["*", 120],
+          widths: ["*", 160],
           body: [
             [
               {
@@ -458,10 +458,17 @@ const buzyTemplate = (data, color) => {
                     alignment: "center",
                     margin: [0, 0, 0, 16],
                   },
-                  {
-                    text: " ",
-                    margin: [0, 14, 0, 14],
-                  },
+                  data.signature
+                    ? {
+                        image: data.signature,
+                        width: 75,
+                        alignment: "center",
+                        margin: [0, 4, 0, 4],
+                      }
+                    : {
+                        text: " ",
+                        margin: [0, 14, 0, 14],
+                      },
                   {
                     text: labels.authorized_signatory || "Authorized Signatory",
                     style: "signatoryBoxLabel",

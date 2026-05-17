@@ -1,11 +1,15 @@
 const multer = require("multer");
 const logoStorage = require("../storages/logo.storage");
 const avatarStorage = require("../storages/avatar.storage");
+const signatureStorage = require("../storages/signature.storage");
 const logoUploader = multer({
   storage: logoStorage,
 });
 const avatarUploader = multer({
   storage: avatarStorage,
+});
+const signatureUploader = multer({
+  storage: signatureStorage,
 });
 const csvUploader = multer({
   storage: multer.memoryStorage(),
@@ -26,4 +30,4 @@ const csvUploader = multer({
   },
   limits: { fileSize: 5 * 1024 * 1024 },
 });
-module.exports = { logoUploader, avatarUploader, csvUploader };
+module.exports = { logoUploader, avatarUploader, signatureUploader, csvUploader };

@@ -12,13 +12,21 @@ import {
   HStack,
   Switch,
   Text,
+  useToast,
+  Image,
+  IconButton,
+  Input,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiPrinter, FiLayout, FiCheckCircle } from "react-icons/fi";
+import { MdDelete, MdOutlineFileUpload } from "react-icons/md";
 import AuthContext from "../../../contexts/AuthContext";
+import SettingContext from "../../../contexts/SettingContext";
 import useProperty from "../../../hooks/useProperty";
+import useStorageUtil from "../../../hooks/useStorageUtil";
+import instance from "../../../instance";
 
 export default function PrintSettings({ printFormik, formik, loading }) {
   const { t } = useTranslation("common");
@@ -36,6 +44,81 @@ export default function PrintSettings({ printFormik, formik, loading }) {
     label: template.name,
     value: template.value,
   }));
+
+  const settingContext = useContext(SettingContext);
+  const { getFileUrl } = useStorageUtil();
+  const signatureUrl = getFileUrl(settingContext?.setting?.signature);
+  const [signatureStatus, setSignatureStatus] = useState("idle");
+  const signatureInputRef = useRef(null);
+  const toast = useToast();
+
+  const handleSignatureUpload = async (e) => {
+    try {
+      setSignatureStatus("uploading");
+      const file = e.currentTarget.files[0];
+      if (!file) return;
+      const form = new FormData();
+      form.append("signature", file);
+      await instance.post(
+        `/api/v1/organizations/${formik.values.organization}/settings/signature`,
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (settingContext.fetchSetting) {
+        await settingContext.fetchSetting(formik.values.organization);
+      }
+      toast({
+        title: t("common_ui.toasts.success"),
+        description: "Signature uploaded successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: t("common_ui.toasts.error"),
+        description: error?.response?.data?.message || "Failed to upload signature",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setSignatureStatus("idle");
+    }
+  };
+
+  const handleSignatureDelete = async () => {
+    try {
+      setSignatureStatus("deleting");
+      await instance.delete(
+        `/api/v1/organizations/${formik.values.organization}/settings/signature`
+      );
+      if (settingContext.fetchSetting) {
+        await settingContext.fetchSetting(formik.values.organization);
+      }
+      toast({
+        title: t("common_ui.toasts.success"),
+        description: "Signature removed successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: t("common_ui.toasts.error"),
+        description: error?.response?.data?.message || "Failed to remove signature",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setSignatureStatus("idle");
+    }
+  };
 
   return (
     <form onSubmit={printFormik.handleSubmit}>
@@ -139,6 +222,74 @@ export default function PrintSettings({ printFormik, formik, loading }) {
                         : null
                     }
                   />
+                </Flex>
+
+                <Divider />
+
+                <Text fontSize="xs" fontWeight="bold" color="gray.500" textTransform="uppercase">
+                  Authorized Signature
+                </Text>
+                
+                <Flex gap={4} align="center">
+                  <Box
+                    p={2}
+                    borderRadius={"md"}
+                    border={"1px solid"}
+                    borderColor={borderColor}
+                    bg={useColorModeValue("gray.50", "gray.900")}
+                    minW={"100px"}
+                    minH={"60px"}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {signatureUrl ? (
+                      <Image
+                        maxH={"50px"}
+                        objectFit="contain"
+                        src={signatureUrl}
+                        alt="Authorized Signature"
+                      />
+                    ) : (
+                      <Text fontSize="xs" color="gray.400">No Signature</Text>
+                    )}
+                  </Box>
+                  
+                  <Stack spacing={1}>
+                    <Text fontSize="xs" color="gray.500">
+                      Upload an image of your signature (PNG/JPG) to display on documents
+                    </Text>
+                    <HStack spacing={2}>
+                      <Input
+                        ref={signatureInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleSignatureUpload}
+                        display={"none"}
+                      />
+                      <Button
+                        size={"sm"}
+                        leftIcon={<MdOutlineFileUpload />}
+                        colorScheme="yellow"
+                        isLoading={signatureStatus === "uploading"}
+                        onClick={() => signatureInputRef.current.click()}
+                        isDisabled={!formik.values?.organization}
+                      >
+                        Upload
+                      </Button>
+                      {signatureUrl && (
+                        <IconButton
+                          size={"sm"}
+                          colorScheme="red"
+                          variant={"outline"}
+                          isLoading={signatureStatus === "deleting"}
+                          icon={<MdDelete />}
+                          onClick={handleSignatureDelete}
+                          isDisabled={!formik.values?.organization}
+                        />
+                      )}
+                    </HStack>
+                  </Stack>
                 </Flex>
               </Stack>
             </Stack>

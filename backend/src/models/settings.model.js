@@ -194,6 +194,9 @@ const settingSchema = new Schema({
       message: (props) => `${props.path} exceeds the limit of 3 SMTP providers`,
     },
   },
+  signature: {
+    type: String,
+  }
 });
 
 settingSchema.index({ org: 1, "aiProviders.name": 1 }, { unique: true });

@@ -42,11 +42,11 @@ const simpleTemplate = (data, color) => {
         columns: [
           data.entity.org.logo
             ? {
-                image: data.entity.org.logo,
-                width: 56,
-                alignment: "left",
-                margin: [0, 4, 0, 0],
-              }
+              image: data.entity.org.logo,
+              width: 56,
+              alignment: "left",
+              margin: [0, 4, 0, 0],
+            }
             : {},
           {
             stack: [
@@ -54,19 +54,19 @@ const simpleTemplate = (data, color) => {
               { text: data.entity.org.address, style: "companyMeta" },
               data.entity.org.gstNo
                 ? {
-                    text: [
-                      { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
-                      { text: data.entity.org.gstNo, style: "companyMetaStrong" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
+                    { text: data.entity.org.gstNo, style: "companyMetaStrong" },
+                  ],
+                }
                 : {},
               data.entity.org.panNo
                 ? {
-                    text: [
-                      { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
-                      { text: data.entity.org.panNo, style: "companyMetaStrong" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
+                    { text: data.entity.org.panNo, style: "companyMetaStrong" },
+                  ],
+                }
                 : {},
               ...(data.countryMeta?.org || []).map((meta) => ({
                 text: [
@@ -91,19 +91,19 @@ const simpleTemplate = (data, color) => {
               { text: data.entity.billingAddress, style: "bodyText" },
               data.entity.party.gstNo
                 ? {
-                    text: [
-                      { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
-                      { text: data.entity.party.gstNo, style: "bodyTextStrong" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.gstin || "GSTIN"}: `, style: "metaLabel" },
+                    { text: data.entity.party.gstNo, style: "bodyTextStrong" },
+                  ],
+                }
                 : {},
               data.entity.party.panNo
                 ? {
-                    text: [
-                      { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
-                      { text: data.entity.party.panNo, style: "bodyTextStrong" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.pan || "PAN"}: `, style: "metaLabel" },
+                    { text: data.entity.party.panNo, style: "bodyTextStrong" },
+                  ],
+                }
                 : {},
               ...(data.countryMeta?.party || []).map((meta) => ({
                 text: [
@@ -131,11 +131,11 @@ const simpleTemplate = (data, color) => {
               data.entity.poNo ? { text: `${labels.po_no || "PO No"}: ${data.entity.poNo}`, style: "bodyText" } : {},
               data.entity.poDate
                 ? {
-                    text: `${labels.po_date || "PO Date"}: ${new Date(
-                      data.entity.poDate,
-                    ).toLocaleDateString(dateLocale)}`,
-                    style: "bodyText",
-                  }
+                  text: `${labels.po_date || "PO Date"}: ${new Date(
+                    data.entity.poDate,
+                  ).toLocaleDateString(dateLocale)}`,
+                  style: "bodyText",
+                }
                 : {},
             ],
             alignment: "right",
@@ -201,20 +201,20 @@ const simpleTemplate = (data, color) => {
         columns: [
           data.bank
             ? {
-                stack: [
-                  { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
-                  { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}` },
-                  { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}` },
-                  { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}` },
-                  { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}` },
-                  ...(data.upiQr
-                    ? [
-                        { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
-                        { image: data.upiQr, width: 72 },
-                      ]
-                    : []),
-                ],
-              }
+              stack: [
+                { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
+                { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}` },
+                { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}` },
+                { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}` },
+                { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}` },
+                ...(data.upiQr
+                  ? [
+                    { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
+                    { image: data.upiQr, width: 72 },
+                  ]
+                  : []),
+              ],
+            }
             : { text: "" },
           {
             table: {
@@ -265,7 +265,7 @@ const simpleTemplate = (data, color) => {
             margin: [0, 0, 16, 0],
           },
           {
-            width: 140,
+            width: 160,
             table: {
               widths: ["*"],
               body: [
@@ -278,10 +278,17 @@ const simpleTemplate = (data, color) => {
                         alignment: "center",
                         margin: [0, 0, 0, 20],
                       },
-                      {
-                        text: " ",
-                        margin: [0, 15, 0, 15],
-                      },
+                      data.signature
+                        ? {
+                            image: data.signature,
+                            width: 75,
+                            alignment: "center",
+                            margin: [0, 5, 0, 5],
+                          }
+                        : {
+                          text: " ",
+                          margin: [0, 15, 0, 15],
+                        },
                       {
                         text: labels.authorized_signatory || "Authorized Signatory",
                         style: "signatoryBoxLabel",

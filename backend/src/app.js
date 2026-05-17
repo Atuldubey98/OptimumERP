@@ -28,6 +28,10 @@ if (process.env.NETWORK_STORAGE_PATH) {
     "/uploads/avatars",
     express.static(path.join(process.env.NETWORK_STORAGE_PATH, "avatars")),
   );
+  app.use(
+    "/uploads/signatures",
+    express.static(path.join(process.env.NETWORK_STORAGE_PATH, "signatures")),
+  );
 }
 
 app.use(express.json({ limit: "5mb" }));

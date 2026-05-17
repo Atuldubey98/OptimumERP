@@ -35,11 +35,11 @@ const borderLandTemplate = (data, color) => {
         columns: [
           data.entity.org.logo
             ? {
-                image: data.entity.org.logo,
-                width: 56,
-                alignment: "left",
-                margin: [0, 6, 0, 0],
-              }
+              image: data.entity.org.logo,
+              width: 56,
+              alignment: "left",
+              margin: [0, 6, 0, 0],
+            }
             : {},
           [
             {
@@ -79,35 +79,35 @@ const borderLandTemplate = (data, color) => {
                 },
                 data.entity.poNo
                   ? {
-                      columns: [
-                        {
-                          text: labels.po_no || "PO No",
-                          style: "invoiceSubTitle",
-                          width: "*",
-                        },
-                        {
-                          text: data.entity.poNo,
-                          style: "invoiceSubValue",
-                          width: 100,
-                        },
-                      ],
-                    }
+                    columns: [
+                      {
+                        text: labels.po_no || "PO No",
+                        style: "invoiceSubTitle",
+                        width: "*",
+                      },
+                      {
+                        text: data.entity.poNo,
+                        style: "invoiceSubValue",
+                        width: 100,
+                      },
+                    ],
+                  }
                   : {},
                 data.entity.poDate
                   ? {
-                      columns: [
-                        {
-                          text: labels.po_date || "PO Date",
-                          style: "invoiceSubTitle",
-                          width: "*",
-                        },
-                        {
-                          text: new Date(data.entity.poDate).toLocaleDateString(dateLocale),
-                          style: "invoiceSubValue",
-                          width: 100,
-                        },
-                      ],
-                    }
+                    columns: [
+                      {
+                        text: labels.po_date || "PO Date",
+                        style: "invoiceSubTitle",
+                        width: "*",
+                      },
+                      {
+                        text: new Date(data.entity.poDate).toLocaleDateString(dateLocale),
+                        style: "invoiceSubValue",
+                        width: 100,
+                      },
+                    ],
+                  }
                   : {},
               ],
             },
@@ -141,19 +141,19 @@ const borderLandTemplate = (data, color) => {
               },
               data.entity.org.gstNo
                 ? {
-                    text: [
-                      { text: `${labels.gstin || "GSTIN"}: `, style: "billingMetaLabel" },
-                      { text: data.entity.org.gstNo, style: "billingMetaValue" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.gstin || "GSTIN"}: `, style: "billingMetaLabel" },
+                    { text: data.entity.org.gstNo, style: "billingMetaValue" },
+                  ],
+                }
                 : {},
               data.entity.org.panNo
                 ? {
-                    text: [
-                      { text: `${labels.pan || "PAN"}: `, style: "billingMetaLabel" },
-                      { text: data.entity.org.panNo, style: "billingMetaValue" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.pan || "PAN"}: `, style: "billingMetaLabel" },
+                    { text: data.entity.org.panNo, style: "billingMetaValue" },
+                  ],
+                }
                 : {},
               ...(data.countryMeta?.org || []).map((meta) => ({
                 text: [
@@ -171,19 +171,19 @@ const borderLandTemplate = (data, color) => {
               },
               data.entity.party.gstNo
                 ? {
-                    text: [
-                      { text: `${labels.gstin || "GSTIN"}: `, style: "billingMetaLabel" },
-                      { text: data.entity.party.gstNo, style: "billingMetaValue" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.gstin || "GSTIN"}: `, style: "billingMetaLabel" },
+                    { text: data.entity.party.gstNo, style: "billingMetaValue" },
+                  ],
+                }
                 : {},
               data.entity.party.panNo
                 ? {
-                    text: [
-                      { text: `${labels.pan || "PAN"}: `, style: "billingMetaLabel" },
-                      { text: data.entity.party.panNo, style: "billingMetaValue" },
-                    ],
-                  }
+                  text: [
+                    { text: `${labels.pan || "PAN"}: `, style: "billingMetaLabel" },
+                    { text: data.entity.party.panNo, style: "billingMetaValue" },
+                  ],
+                }
                 : {},
               ...(data.countryMeta?.party || []).map((meta) => ({
                 text: [
@@ -322,20 +322,20 @@ const borderLandTemplate = (data, color) => {
         columns: [
           data.bank
             ? {
-                stack: [
-                  { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
-                  { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}`, style: "bankDetail" },
-                  { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}`, style: "bankDetail" },
-                  { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}`, style: "bankDetail" },
-                  { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}`, style: "bankDetail" },
-                  ...(data.upiQr
-                    ? [
-                        { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
-                        { image: data.upiQr, width: 72 },
-                      ]
-                    : []),
-                ],
-              }
+              stack: [
+                { text: `${labels.bank_account_details || "Bank Account Details"}:`, style: "subheader" },
+                { text: `${labels.bank_name || "Bank Name"}: ${data.bank.name}`, style: "bankDetail" },
+                { text: `${labels.account_holder || "Account Holder"}: ${data.bank.accountHolderName}`, style: "bankDetail" },
+                { text: `${labels.account_number || "Account Number"}: ${data.bank.accountNo}`, style: "bankDetail" },
+                { text: `${labels.ifsc_code || "IFSC Code"}: ${data.bank.ifscCode}`, style: "bankDetail" },
+                ...(data.upiQr
+                  ? [
+                    { text: labels.upi_qr_code || "UPI QR Code", style: "subheader", margin: [0, 6, 0, 4] },
+                    { image: data.upiQr, width: 72 },
+                  ]
+                  : []),
+              ],
+            }
             : { text: "" },
           {
             table: {
@@ -352,15 +352,15 @@ const borderLandTemplate = (data, color) => {
                 ]] : []),
                 ...(taxEntries.length
                   ? taxEntries.map(([taxName, taxValue]) => [
-                      { text: `${taxName.toLocaleUpperCase()}`, style: "itemsFooterSubTitle" },
-                      { text: taxValue, style: "itemsFooterSubValue" },
-                    ])
+                    { text: `${taxName.toLocaleUpperCase()}`, style: "itemsFooterSubTitle" },
+                    { text: taxValue, style: "itemsFooterSubValue" },
+                  ])
                   : [
-                      [
-                        { text: labels.tax_upper || "TAX", style: "itemsFooterSubTitle" },
-                        { text: data.entity?.totalTax, style: "itemsFooterSubValue" },
-                      ],
-                    ]),
+                    [
+                      { text: labels.tax_upper || "TAX", style: "itemsFooterSubTitle" },
+                      { text: data.entity?.totalTax, style: "itemsFooterSubValue" },
+                    ],
+                  ]),
                 [
                   { text: labels.total_upper || "TOTAL", style: "itemsFooterTotalTitle" },
                   { text: data.grandTotal, style: "itemsFooterTotalValue" },
@@ -399,7 +399,7 @@ const borderLandTemplate = (data, color) => {
         margin: [0, 10, 0, 0],
         unbreakable: true,
         table: {
-          widths: [120],
+          widths: [160],
           body: [
             [
               {
@@ -410,10 +410,17 @@ const borderLandTemplate = (data, color) => {
                     alignment: "center",
                     margin: [0, 0, 0, 16],
                   },
-                  {
-                    text: " ",
-                    margin: [0, 14, 0, 14],
-                  },
+                  data.signature
+                    ? {
+                        image: data.signature,
+                        width: 75,
+                        alignment: "center",
+                        margin: [0, 4, 0, 4],
+                      }
+                    : {
+                      text: " ",
+                      margin: [0, 14, 0, 14],
+                    },
                   {
                     text: labels.authorized_signatory || "Authorized Signatory",
                     style: "signatoryBoxLabel",
