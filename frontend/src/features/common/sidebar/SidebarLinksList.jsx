@@ -12,13 +12,13 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiChevronDown, FiChevronRight, FiMessageSquare } from "react-icons/fi";
 import { HiOutlineDocumentReport } from "react-icons/hi";
-import { IoSettingsOutline } from "react-icons/io5";
-import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
-import { SiAboutdotme } from "react-icons/si";
 import { TbCategory } from "react-icons/tb";
 import { useLocation, useParams } from "react-router-dom";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
-import headerLinks from "../../../constants/headerLinks";
+import { IoSettingsOutline } from "react-icons/io5";
+import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+import { SiAboutdotme } from "react-icons/si";
+import { mainLinks, purchaseLinks, masterLinks, analyticLinks, accountingLinks } from "../../../constants/headerLinks";
 import settingsLinks from "../../../constants/settingsLinks";
 import saleLinks from "../../../constants/saleLinks";
 import HeaderLink from "./HeaderLink";
@@ -48,33 +48,28 @@ export const SidebarLinksList = ({ onClose }) => {
   const currentFeatures = user?.features || {};
   const bot = currentFeatures?.bot ?? false;
   const bg = useColorModeValue("black");
+
+  const renderLinks = (links) => {
+    return links
+      .filter(link => link.feature ? currentFeatures[link.feature] : true)
+      .map((link) => <HeaderLink headerLink={link} key={link.link} />);
+  };
+
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
       <List spacing={1}>
-        {headerLinks.filter(headerLink => headerLink.feature ? currentFeatures[headerLink.feature] : true).map((headerLink) => (
-          <HeaderLink
-            headerLink={headerLink}
-            key={headerLink.link}
-          />
-        ))}
+        
+
+        {renderLinks(mainLinks)}
         <Divider bg={bg} />
+
+
         <ListItem
           cursor={"pointer"}
           onClick={() => setOpenSale(!openSale)}
         >
-          <Flex
-            p={1}
-            paddingInline={2}
-            justifyContent={"flex-start"}
-            alignItems={"center"}
-            gap={2}
-          >
-            <Flex
-              w={"100%"}
-              justifyContent={"flex-start"}
-              gap={9}
-              alignItems={"center"}
-            >
+          <Flex p={1} paddingInline={2} justifyContent={"flex-start"} alignItems={"center"} gap={2}>
+            <Flex w={"100%"} justifyContent={"flex-start"} gap={9} alignItems={"center"}>
               <Flex gap={2} justifyContent={"center"} alignItems={"center"}>
                 <Icon as={FaFileInvoiceDollar} />
                 <Text>{t("common_ui.sidebar.sale")}</Text>
@@ -85,22 +80,38 @@ export const SidebarLinksList = ({ onClose }) => {
         </ListItem>
         {openSale ? <SaleLinks /> : null}
         <Divider bg={bg} />
+
+
+        {renderLinks(purchaseLinks)}
+        <Divider bg={bg} />
+
+
+        {renderLinks(accountingLinks)}
+        <Divider bg={bg} />
+
+
+        {renderLinks(masterLinks)}
         <HeaderLink
           headerLink={{
             icon: TbCategory,
             link: `/categories/${type}`,
             labelKey: "common_ui.sidebar.categories",
           }}
-
         />
+        <Divider bg={bg} />
+
+
+        {renderLinks(analyticLinks)}
         <HeaderLink
           headerLink={{
             icon: HiOutlineDocumentReport,
             link: `/reports/${reportType}`,
             labelKey: "common_ui.sidebar.reports",
           }}
-
         />
+        <Divider bg={bg} />
+
+
         {bot && (
           <HeaderLink
             headerLink={{
@@ -108,27 +119,14 @@ export const SidebarLinksList = ({ onClose }) => {
               link: "/conversations",
               labelKey: "common_ui.sidebar.links.conversations",
             }}
-
           />
         )}
-        <Divider bg={bg} />
         <ListItem
           cursor={"pointer"}
           onClick={() => setOpenSettings(!openSettings)}
         >
-          <Flex
-            p={1}
-            paddingInline={2}
-            justifyContent={"flex-start"}
-            alignItems={"center"}
-            gap={2}
-          >
-            <Flex
-              w={"100%"}
-              justifyContent={"flex-start"}
-              gap={9}
-              alignItems={"center"}
-            >
+          <Flex p={1} paddingInline={2} justifyContent={"flex-start"} alignItems={"center"} gap={2}>
+            <Flex w={"100%"} justifyContent={"flex-start"} gap={9} alignItems={"center"}>
               <Flex gap={2} justifyContent={"center"} alignItems={"center"}>
                 <Icon as={IoSettingsOutline} />
                 <Text>{t("common_ui.sidebar.settings")}</Text>
@@ -139,13 +137,13 @@ export const SidebarLinksList = ({ onClose }) => {
         </ListItem>
         {openSettings ? <SettingLinks /> : null}
         <Divider bg={bg} />
+
         <HeaderLink
           headerLink={{
             icon: LiaMoneyBillWaveAltSolid,
             link: `/pricings`,
             labelKey: "common_ui.sidebar.plans",
           }}
-
         />
         <HeaderLink
           headerLink={{
@@ -153,7 +151,6 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/about`,
             labelKey: "common_ui.sidebar.about",
           }}
-
         />
       </List>
     </Container>

@@ -1,31 +1,33 @@
 import { AiOutlineDashboard } from "react-icons/ai";
-import {
-  FaFileInvoice,
-  FaFileInvoiceDollar,
-  FaMoneyBillTrendUp,
-} from "react-icons/fa6";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { IoCartOutline } from "react-icons/io5";
 import { GiExpense } from "react-icons/gi";
 import { GoPeople, GoTag } from "react-icons/go";
 import { ImStatsBars2 } from "react-icons/im";
-import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { TiContacts } from "react-icons/ti";
-import { MdOutlinePayments, MdCached } from "react-icons/md";
-const headerLinks = [
-  { icon: AiOutlineDashboard, link: "/dashboard", label: "Dashboard", labelKey: "common_ui.sidebar.links.dashboard" },
-  { icon: ImStatsBars2, link: "/stats", label: "Stats", labelKey: "common_ui.sidebar.links.stats" },
-  { icon: GoPeople, link: "/parties", label: "Parties", labelKey: "common_ui.sidebar.links.parties" },
-  { icon: TiContacts, link: "/contacts", label: "Contacts", labelKey: "common_ui.sidebar.links.contacts" },
-  {
-    icon: IoCartOutline,
-    link: "/purchaseOrders",
-    label: "Purchase Orders",
-    labelKey: "common_ui.sidebar.links.purchase_orders",
-  },
-  { icon: GiExpense, link: "/expenses", label: "Expenses", labelKey: "common_ui.sidebar.links.expenses" },
-  { icon: FaMoneyBillTrendUp, link: "/purchases", label: "Purchase", labelKey: "common_ui.sidebar.links.purchase" },
-  { icon: MdOutlinePayments, link: "/paymentVouchers", label: "Payment Vouchers", labelKey: "common_ui.sidebar.links.payment_vouchers" },
-  { icon: GoTag, link: "/products", label: "Items", labelKey: "common_ui.sidebar.links.items" },
+import { MdOutlinePayments } from "react-icons/md";
+
+export const mainLinks = [
+  { icon: AiOutlineDashboard, link: "/dashboard", labelKey: "common_ui.sidebar.links.dashboard" },
 ];
 
-export default headerLinks;
+export const purchaseLinks = [
+  { icon: IoCartOutline, link: "/purchaseOrders", labelKey: "common_ui.sidebar.links.purchase_orders" },
+  { icon: FaMoneyBillTrendUp, link: "/purchases", labelKey: "common_ui.sidebar.links.purchase" },
+  { icon: GiExpense, link: "/expenses", labelKey: "common_ui.sidebar.links.expenses" },
+];
+
+export const accountingLinks = [
+  { icon: MdOutlinePayments, link: "/paymentVouchers", labelKey: "common_ui.sidebar.links.payment_vouchers" },
+];
+
+export const masterLinks = [
+  { icon: GoPeople, link: "/parties", labelKey: "common_ui.sidebar.links.parties" },
+  { icon: TiContacts, link: "/contacts", labelKey: "common_ui.sidebar.links.contacts" },
+  { icon: GoTag, link: "/products", labelKey: "common_ui.sidebar.links.items" },
+];
+
+export const analyticLinks = [
+  { icon: ImStatsBars2, link: "/stats", labelKey: "common_ui.sidebar.links.stats" },
+];
+
