@@ -16,17 +16,18 @@ const createGrokProvider = (config) => {
     }
     try {
       const formattedMessages = messages.map((m) => {
-        if (m.images && m.images.length > 0) {
+        const { images, ...rest } = m;
+        if (images && images.length > 0) {
           const content = [
-            { type: "text", text: m.content || "" },
-            ...m.images.map((img) => ({
+            { type: "text", text: rest.content || "" },
+            ...images.map((img) => ({
               type: "image_url",
               image_url: { url: img.startsWith("data:") ? img : `data:image/jpeg;base64,${img}` },
             })),
           ];
-          return { ...m, content };
+          return { ...rest, content };
         }
-        return m;
+        return rest;
       });
 
       const response = await client.chat.completions.create({
