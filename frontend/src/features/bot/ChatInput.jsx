@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select, Icon, Tooltip } from "@chakra-ui/react";
 import TextareaAutosize from "react-textarea-autosize";
-import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu } from "react-icons/fi";
+import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu, FiSquare } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 const pulse = keyframes`
@@ -27,7 +27,8 @@ const ChatInput = memo(({
   isTyping,
   selectedModel,
   setSelectedModel,
-  availableModels
+  availableModels,
+  abortMessage
 }) => {
   const currentModel = availableModels.find(m => m.id === selectedModel);
   return (
@@ -144,18 +145,32 @@ const ChatInput = memo(({
                   </Flex>
                 </Tooltip>
               )}
-              <IconButton
-                aria-label="Send"
-                colorScheme="blue"
-                size="sm"
-                icon={<FiSend size={14} />}
-                onClick={handleSend}
-                isDisabled={!isConnected || (!input.trim() && !attachment) || isTyping}
-                borderRadius="lg"
-                boxShadow="md"
-                _hover={{ transform: "scale(1.05)" }}
-                _active={{ transform: "scale(0.95)" }}
-              />
+              {isTyping ? (
+                <IconButton
+                  aria-label="Stop generation"
+                  colorScheme="red"
+                  size="sm"
+                  icon={<FiSquare size={14} fill="currentColor" />}
+                  onClick={abortMessage}
+                  borderRadius="lg"
+                  boxShadow="md"
+                  _hover={{ transform: "scale(1.05)" }}
+                  _active={{ transform: "scale(0.95)" }}
+                />
+              ) : (
+                <IconButton
+                  aria-label="Send"
+                  colorScheme="blue"
+                  size="sm"
+                  icon={<FiSend size={14} />}
+                  onClick={handleSend}
+                  isDisabled={!isConnected || (!input.trim() && !attachment)}
+                  borderRadius="lg"
+                  boxShadow="md"
+                  _hover={{ transform: "scale(1.05)" }}
+                  _active={{ transform: "scale(0.95)" }}
+                />
+              )}
             </HStack>
           </Flex>
         </Flex>

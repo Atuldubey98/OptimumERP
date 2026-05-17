@@ -53,7 +53,7 @@ const ChatWidget = () => {
   const { orgId } = useParams();
   const navigate = useNavigate();
 
-  const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory } = useChatSocket(orgId);
+  const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory, abortMessage } = useChatSocket(orgId);
   const { setting } = useCurrentOrgCurrency();
   const [selectedModel, setSelectedModel] = useState(() => localStorage.getItem("selected_ai_model") || "");
 
@@ -234,6 +234,7 @@ const ChatWidget = () => {
                   selectedModel={selectedModel}
                   setSelectedModel={setSelectedModel}
                   availableModels={availableModels}
+                  abortMessage={abortMessage}
                 />
               </Flex>
             </motion.div>

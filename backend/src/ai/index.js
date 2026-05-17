@@ -98,7 +98,7 @@ const aiFactory = ({ provider, apiKey }) => {
   const host = hosts[provider];
   const aiProvider = getProvider(provider, { apiKey, host });
 
-  const chat = async (model, { messages = [], body, onProgress, options = {} }) => {
+  const chat = async (model, { messages = [], body, onProgress, options = {}, abortSignal }) => {
     try {
       const allDownloads = new Map();
       let iterations = 0;
@@ -107,6 +107,8 @@ const aiFactory = ({ provider, apiKey }) => {
       const history = [...messages];
 
       while (iterations < MAX_ITERATIONS) {
+        if (abortSignal?.aborted) throw new Error("AbortError");
+        
         iterations++;
         if (onProgress) onProgress({ type: "status", message: "Thinking..." });
 
@@ -120,8 +122,9 @@ const aiFactory = ({ provider, apiKey }) => {
             ...(msg.images && { images: msg.images })
           })),
           tools,
-          options: { temperature: 0, ...options }
+          options: { temperature: 0, ...options, abortSignal }
         });
+
 
 
         const aiMessage = response.message;
@@ -179,6 +182,11 @@ const aiFactory = ({ provider, apiKey }) => {
       return { response: finalResponse, newMessages: [finalResponse] };
 
     } catch (error) {
+      if (error.name === "AbortError" || error.message === "AbortError" || abortSignal?.aborted) {
+        logger.info("Chat generation was aborted by the user.");
+        const errorMessage = { role: "assistant", content: "Generation stopped." };
+        return { response: errorMessage, newMessages: [errorMessage] };
+      }
       logger.error(`Critical Chat Flow Error: ${error.message}`);
       const errorMessage = { role: "assistant", content: "Critical error encountered. Please try again." };
       return { response: errorMessage, newMessages: [errorMessage] };

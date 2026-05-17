@@ -34,7 +34,7 @@ const createGrokProvider = (config) => {
         messages: formattedMessages,
         ...(tools && tools.length > 0 && { tools }),
         temperature: options?.temperature ?? 0,
-      });
+      }, { signal: options?.abortSignal });
 
       const choice = response.choices[0];
       return {

@@ -134,6 +134,14 @@ export const useChatSocket = (orgId) => {
     await deleteChatHistory(userId);
   };
 
+  const abortMessage = () => {
+    if (socket.current && isConnected && isTyping) {
+      socket.current.send(JSON.stringify({ event: "abort" }));
+      setIsTyping(false);
+      setStatusMsg("Generation stopped.");
+    }
+  };
+
   return {
     messages,
     setMessages,
@@ -143,5 +151,6 @@ export const useChatSocket = (orgId) => {
     sendMessage,
     clearHistory,
     activeChatId,
+    abortMessage,
   };
 };

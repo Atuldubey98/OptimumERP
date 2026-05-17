@@ -107,6 +107,17 @@ function getWsHandlers(wss) {
         ws.send(JSON.stringify({ event: "chat_switched", chatId: chat._id }));
       }
 
+      if (body.event === "abort") {
+        if (ws.abortController) {
+          ws.abortController.abort();
+          ws.abortController = null;
+        }
+        return;
+      }
+
+      ws.abortController = new AbortController();
+      const signal = ws.abortController.signal;
+
       let images = [];
       const attachment = body?.attachment;
       if (attachment?.type === "application/pdf") {
@@ -137,6 +148,7 @@ function getWsHandlers(wss) {
         messages: aiInputHistory,
         body: { org: orgId, createdBy: userId, user: request.session.user },
         onProgress: (status) => ws.send(JSON.stringify(status)),
+        abortSignal: signal,
       });
 
       ws.history.push(...newMessages);
