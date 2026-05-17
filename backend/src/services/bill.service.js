@@ -7,6 +7,7 @@ const Quotes = require("../models/quotes.model");
 const PaymentVoucher = require("../models/paymentVoucher.model");
 const { executeMongoDbTransaction } = require("./crud.service");
 const logService = require("./log.service");
+const paymentVoucherService = require("./paymentVoucher.service");
 const billTypes = require("../constants/billTypes");
 
 
@@ -305,19 +306,12 @@ exports.deleteBill = async ({ Bill, NotFound, filter, relatedDocTypeKey }) => {
       docModel: Bill.modelName,
       doc: filter._id,
     }, { session });
-    const deletedVouchers = await PaymentVoucher.softDeleteMany({
-      org: filter.org,
+    await paymentVoucherService.deleteManyPaymentVouchers({
       refDoc: filter._id,
       refDocModel: Bill.modelName,
-    }, { session });
-
-    if (deletedVouchers.modifiedCount > 0) {
-      await OrgModel.updateOne(
-        { _id: filter.org },
-        { $inc: { "relatedDocsCount.paymentVouchers": -deletedVouchers.modifiedCount } },
-        { session }
-      );
-    }
+      orgId: filter.org,
+      session,
+    });
     await Promise.all(
       [ProformaInvoice, Quotes].map((Model) =>
         Model.updateMany({ converted: filter._id }, { $set: { converted: null } }, { session })

@@ -220,3 +220,48 @@ exports.deletePaymentVoucher = async ({ id, orgId, session }) => {
     { session }
   );
 };
+
+exports.deleteManyPaymentVouchers = async ({ ids, refDoc, refDocModel, orgId, session }) => {
+  const filter = { org: orgId };
+  if (ids) {
+    filter._id = { $in: ids };
+  } else if (refDoc && refDocModel) {
+    filter.refDoc = refDoc;
+    filter.refDocModel = refDocModel;
+  } else {
+    throw new Error("Either ids or refDoc and refDocModel must be provided to deleteManyPaymentVouchers");
+  }
+
+  const vouchers = await PaymentVoucher.find(filter).session(session);
+  if (!vouchers || vouchers.length === 0) {
+    return;
+  }
+
+  if (ids) {
+    for (const voucher of vouchers) {
+      if (!voucher.refDoc || !voucher.refDocModel) continue;
+
+      const Model = require(`../models/${voucher.refDocModel}.model`);
+      const doc = await Model.findOne({ _id: voucher.refDoc }).session(session);
+      if (doc) {
+        if (doc.paymentVouchers) doc.paymentVouchers.pull(voucher._id);
+        doc.paymentVoucherBalance = (doc.paymentVoucherBalance || 0) - voucher.amount;
+        await updateDocPaymentStatus({ doc, docModel: voucher.refDocModel });
+        await doc.save({ session });
+      }
+    }
+  }
+
+  const matchedIds = vouchers.map(v => v._id);
+  await Transaction.softDeleteMany({ docModel: "payment_voucher", doc: { $in: matchedIds } }).session(session);
+  await PaymentVoucher.softDeleteMany({ _id: { $in: matchedIds } }).session(session);
+  
+  await OrgModel.updateOne(
+    { _id: orgId },
+    { $inc: { "relatedDocsCount.paymentVouchers": -vouchers.length } },
+    { session }
+  );
+};
+
+exports.deleteMany = exports.deleteManyPaymentVouchers;
+

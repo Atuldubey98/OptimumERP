@@ -59,7 +59,6 @@ export default function VouchersPage() {
 
   const grandTotal = doc ? (Number(doc.total || 0) + Number(doc.totalTax || 0) + Number(doc.shippingCharges || 0)) : 0;
   const balance = doc ? (grandTotal - Number(doc.paymentVoucherBalance || 0)) : 0;
-
   const { value: paymentMethods = [] } = useProperty("PAYMENT_METHODS");
   const extraParams = {};
   if (invoiceId) {
@@ -88,19 +87,19 @@ export default function VouchersPage() {
       select: "num date party voucherType refDoc refDocModel amount paymentMode org",
     },
   });
-  
+
   const loading = status === "loading";
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const toast = useToast();
 
   const [selectedVoucher, setSelectedVoucher] = useState(null);
-  
+
   const {
     isOpen: isDeleteModalOpen,
     onClose: onCloseDeleteModal,
     onOpen: onOpenDeleteModal,
   } = useDisclosure();
-  
+
   const {
     isOpen: isVoucherModalOpen,
     onOpen: onOpenVoucherModal,
@@ -164,7 +163,7 @@ export default function VouchersPage() {
     const modeObj = paymentMethods.find((m) => m.value === voucher.paymentMode);
     const linkedDocPath = voucher.refDocModel === "invoice" ? "invoices" : "purchases";
     const hasRefDoc = voucher.refDoc && typeof voucher.refDoc === "object";
-    
+
     return {
       ...voucher,
       num: voucher.num || "-",
@@ -200,89 +199,89 @@ export default function VouchersPage() {
   };
 
   return (
- 
-      <Box p={4}>
-        {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"} minH="200px">
-            <Spinner size={"md"} />
-          </Flex>
-        ) : (
-          <Stack spacing={6}>
-            {doc && (
-              <Card variant="outline" shadow="sm">
-                <CardBody>
-                  <SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing={6}>
-                    <HStack>
-                      <Icon as={FiFileText} color="blue.500" boxSize={5} />
-                      <VStack align="start" spacing={0}>
-                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                          {docType?.toUpperCase()} #
-                        </Text>
-                        <Text fontSize="md" fontWeight="bold">
-                          {doc.num}
-                        </Text>
-                      </VStack>
-                    </HStack>
 
-                    <HStack>
-                      <Icon as={FiCalendar} color="orange.500" boxSize={5} />
-                      <VStack align="start" spacing={0}>
-                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                          DATE
-                        </Text>
-                        <Text fontSize="md">
-                          {moment(doc.date).format("LL")}
-                        </Text>
-                      </VStack>
-                    </HStack>
+    <Box p={4}>
+      {loading ? (
+        <Flex justifyContent={"center"} alignItems={"center"} minH="200px">
+          <Spinner size={"md"} />
+        </Flex>
+      ) : (
+        <Stack spacing={6}>
+          {doc && (
+            <Card variant="outline" shadow="sm">
+              <CardBody>
+                <SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing={6}>
+                  <HStack>
+                    <Icon as={FiFileText} color="blue.500" boxSize={5} />
+                    <VStack align="start" spacing={0}>
+                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                        {docType?.toUpperCase()} #
+                      </Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {doc.num}
+                      </Text>
+                    </VStack>
+                  </HStack>
 
-                    <HStack>
-                      <Icon as={FiDollarSign} color="green.500" boxSize={5} />
-                      <VStack align="start" spacing={0}>
-                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                          TOTAL AMOUNT
-                        </Text>
-                        <Text fontSize="md" fontWeight="bold">
-                          {formatSmallestUnitWithSymbol(grandTotal)}
-                        </Text>
-                      </VStack>
-                    </HStack>
+                  <HStack>
+                    <Icon as={FiCalendar} color="orange.500" boxSize={5} />
+                    <VStack align="start" spacing={0}>
+                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                        DATE
+                      </Text>
+                      <Text fontSize="md">
+                        {moment(doc.date).format("LL")}
+                      </Text>
+                    </VStack>
+                  </HStack>
 
-                    <HStack>
-                      <Icon as={FiArrowDownCircle} color="purple.500" boxSize={5} />
-                      <VStack align="start" spacing={0}>
-                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                          {docType === "invoice" ? "AMOUNT RECEIVED" : "AMOUNT PAID"}
-                        </Text>
-                        <Text fontSize="md" fontWeight="bold" color="purple.600">
-                          {formatSmallestUnitWithSymbol(doc.paymentVoucherBalance || 0)}
-                        </Text>
-                      </VStack>
-                    </HStack>
+                  <HStack>
+                    <Icon as={FiDollarSign} color="green.500" boxSize={5} />
+                    <VStack align="start" spacing={0}>
+                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                        TOTAL AMOUNT
+                      </Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {formatSmallestUnitWithSymbol(grandTotal)}
+                      </Text>
+                    </VStack>
+                  </HStack>
 
-                    <HStack>
-                      <Icon 
-                        as={balance <= 0 ? (docType === "invoice" ? FiArrowUpCircle : FiArrowDownCircle) : FiDollarSign} 
-                        color={balance <= 0 ? "green.500" : "red.500"} 
-                        boxSize={5} 
-                      />
-                      <VStack align="start" spacing={0}>
-                        <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                          {balance === 0 ? "STATUS" : (balance < 0 ? (docType === "invoice" ? "EXTRA RECEIVED" : "EXTRA PAID") : "BALANCE DUE")}
-                        </Text>
-                        <Text fontSize="md" fontWeight="bold" color={balance <= 0 ? "green.600" : "red.600"}>
-                          {balance === 0 ? "SETTLED" : formatSmallestUnitWithSymbol(Math.abs(balance))}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  </SimpleGrid>
-                </CardBody>
-              </Card>
-            )}
+                  <HStack>
+                    <Icon as={FiArrowDownCircle} color="purple.500" boxSize={5} />
+                    <VStack align="start" spacing={0}>
+                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                        {docType === "invoice" ? "AMOUNT RECEIVED" : "AMOUNT PAID"}
+                      </Text>
+                      <Text fontSize="md" fontWeight="bold" color="purple.600">
+                        {formatSmallestUnitWithSymbol(doc.paymentVoucherBalance || 0)}
+                      </Text>
+                    </VStack>
+                  </HStack>
 
-            <TableLayout
-              isAddDisabled={reachedLimit}
-              filter={
+                  <HStack>
+                    <Icon
+                      as={balance <= 0 ? (docType === "invoice" ? FiArrowUpCircle : FiArrowDownCircle) : FiDollarSign}
+                      color={balance <= 0 ? "green.500" : "red.500"}
+                      boxSize={5}
+                    />
+                    <VStack align="start" spacing={0}>
+                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                        {balance === 0 ? "STATUS" : (balance < 0 ? (docType === "invoice" ? "EXTRA RECEIVED" : "EXTRA PAID") : "BALANCE DUE")}
+                      </Text>
+                      <Text fontSize="md" fontWeight="bold" color={balance <= 0 ? "green.600" : "red.600"}>
+                        {balance === 0 ? "SETTLED" : formatSmallestUnitWithSymbol(Math.abs(balance))}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                </SimpleGrid>
+              </CardBody>
+            </Card>
+          )}
+
+          <TableLayout
+            isAddDisabled={reachedLimit}
+            filter={
               <TableDateFilter
                 dateFilter={dateFilter}
                 onChangeDateFilter={onChangeDateFilter}
@@ -315,29 +314,29 @@ export default function VouchersPage() {
       )}
 
 
-        <VoucherModal
-          isOpen={isVoucherModalOpen}
-          onClose={onCloseVoucherModal}
-          voucher={selectedVoucher}
-          onVoucherSaved={onVoucherSaved}
-          refDocId={invoiceId || purchaseId}
-          refDocModel={invoiceId ? "invoice" : purchaseId ? "purchase" : null}
-          doc={doc}
-        />
+      <VoucherModal
+        isOpen={isVoucherModalOpen}
+        onClose={onCloseVoucherModal}
+        voucher={selectedVoucher}
+        onVoucherSaved={onVoucherSaved}
+        refDocId={invoiceId || purchaseId}
+        refDocModel={invoiceId ? "invoice" : purchaseId ? "purchase" : null}
+        doc={doc}
+      />
 
-        <AlertModal
-          confirmDisable={deleteStatus === "deleting"}
-          body="Are you sure you want to delete this payment voucher? This will update the linked invoice/purchase status and balance."
-          header="Delete Payment Voucher"
-          isOpen={isDeleteModalOpen}
-          onClose={onCloseDeleteModal}
-          onConfirm={() => deleteVoucher(selectedVoucher)}
-        />
+      <AlertModal
+        confirmDisable={deleteStatus === "deleting"}
+        body="Are you sure you want to delete this payment voucher? This will update the linked invoice/purchase status and balance."
+        header="Delete Payment Voucher"
+        isOpen={isDeleteModalOpen}
+        onClose={onCloseDeleteModal}
+        onConfirm={() => deleteVoucher(selectedVoucher)}
+      />
 
-        {loading ? null : (
-          <Pagination currentPage={currentPage} total={totalPages} />
-        )}
-      </Box>
-    
+      {loading ? null : (
+        <Pagination currentPage={currentPage} total={totalPages} />
+      )}
+    </Box>
+
   );
 }

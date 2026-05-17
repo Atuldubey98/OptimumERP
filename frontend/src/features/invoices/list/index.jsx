@@ -51,7 +51,7 @@ export default function InvoicesPage() {
     entity: "invoices",
     storageKey: "dateFilter:invoices",
     extraParams: {
-      select: "num date party status total totalTax shippingCharges org",
+      select: "num date party status total totalTax shippingCharges org paymentVoucherBalance",
     },
   });
   const { disable: voucherLimitReached } = useLimitsInFreePlan({ key: "paymentVouchers" });
@@ -95,7 +95,7 @@ export default function InvoicesPage() {
         `/api/v1/organizations/${orgId}/invoices/${invoice._id}`,
       );
       onCloseDeleteModal();
-      fetchInvoices();
+      fetchInvoicess();
     } catch (error) {
       toast({
         title: isAxiosError(error) ? error.response.data.name : "Error",
@@ -118,9 +118,8 @@ export default function InvoicesPage() {
   const onSaveBill = requestAsyncHandler(async (item) => {
     const currentInvoice = item || invoice;
     const language = i18n.resolvedLanguage || i18n.language || "en";
-    const downloadBill = `/api/v1/organizations/${
-      currentInvoice.org._id
-    }/invoices/${currentInvoice._id}/download?lng=${language}`;
+    const downloadBill = `/api/v1/organizations/${currentInvoice.org._id
+      }/invoices/${currentInvoice._id}/download?lng=${language}`;
     const { data } = await instance.get(downloadBill, {
       responseType: "blob",
     });
@@ -143,146 +142,146 @@ export default function InvoicesPage() {
     useDisclosure();
 
   return (
-    
-      <Box p={4}>
-        {loading ? (
-          <Flex justifyContent={"center"} alignItems={"center"}>
-            <Spinner size={"md"} />
-          </Flex>
-        ) : (
-          <TableLayout
-            filter={
-              <TableDateFilter
-                dateFilter={dateFilter}
-                onChangeDateFilter={onChangeDateFilter}
-              />
-            }
-            limitKey={"invoices"}
-            showExport={{
-              onExport: toggleExportModal,
-              status: "idle",
-            }}
-            isAddDisabled={reachedLimit}
-            heading={t("invoice_ui.page.heading")}
-            tableData={invoices.map(invoiceTableMapper)}
-            caption={`${t("invoice_ui.page.total_found")} : ${totalCount}`}
-            operations={invoices.map((invoice) => (
-              <VertIconMenu
-                recordPaymentDisabled={voucherLimitReached}
-                recordPayment={() => {
-                  setInvoice(invoice);
-                  openRecordPaymentModal();
-                }}
-                shareItem={() => {
-                  setInvoice(invoice);
-                  toggleShareModal();
-                }}
-                openItem={() => {
-                  navigate(`/${orgId}/receipt/invoices/${invoice._id}`);
-                }}
-                showItem={() => onOpenInvoice(invoice)}
-                downloading={downloading}
-                onDownloadItem={() => {
-                  onSaveBill(invoice);
-                }}
-                editItem={() => {
-                  navigate(`${invoice._id}/edit`);
-                }}
-                showVouchers={() => {
-                  navigate(`${invoice._id}/vouchers`, { state: { type: "invoice", data: invoice } });
-                }}
 
-                deleteItem={() => {
-                  setInvoice(invoice);
-                  onOpenDeleteModal();
-                }}
-              />
-            ))}
-            selectedKeys={{
-              num: t("invoice_ui.table.columns.invoice_no"),
-              date: t("invoice_ui.table.columns.invoice_date"),
-              partyName: t("invoice_ui.table.columns.recipient"),
-              status: t("invoice_ui.table.columns.status"),
-              grandTotal: t("invoice_ui.table.columns.total"),
-            }}
-            onAddNewItem={onClickAddNewInvoice}
-          />
-        )}
-        {invoice ? (
-          <BillModal
-            bill={invoice}
-            entity={"invoices"}
-            heading={t("invoice_ui.modal.heading")}
-            isOpen={isOpen}
-            onSaveBill={onSaveBill}
-            onClose={onClose}
-          />
-        ) : null}
-        {invoice ? (
-          <ShareBillModal
-            bill={invoice}
-            isOpen={isShareModalOpen}
-            onClose={toggleShareModal}
-            billType={"invoices"}
-          />
-        ) : null}
-        <AlertModal
-          confirmDisable={deleting}
-          body={t("invoice_ui.modal.delete_body")}
-          header={t("invoice_ui.modal.delete_header")}
-          isOpen={isDeleteModalOpen}
-          onClose={onCloseDeleteModal}
-          onConfirm={() => deleteInvoice(invoice)}
+    <Box p={4}>
+      {loading ? (
+        <Flex justifyContent={"center"} alignItems={"center"}>
+          <Spinner size={"md"} />
+        </Flex>
+      ) : (
+        <TableLayout
+          filter={
+            <TableDateFilter
+              dateFilter={dateFilter}
+              onChangeDateFilter={onChangeDateFilter}
+            />
+          }
+          limitKey={"invoices"}
+          showExport={{
+            onExport: toggleExportModal,
+            status: "idle",
+          }}
+          isAddDisabled={reachedLimit}
+          heading={t("invoice_ui.page.heading")}
+          tableData={invoices.map(invoiceTableMapper)}
+          caption={`${t("invoice_ui.page.total_found")} : ${totalCount}`}
+          operations={invoices.map((invoice) => (
+            <VertIconMenu
+              recordPaymentDisabled={voucherLimitReached}
+              recordPayment={() => {
+                setInvoice(invoice);
+                openRecordPaymentModal();
+              }}
+              shareItem={() => {
+                setInvoice(invoice);
+                toggleShareModal();
+              }}
+              openItem={() => {
+                navigate(`/${orgId}/receipt/invoices/${invoice._id}`);
+              }}
+              showItem={() => onOpenInvoice(invoice)}
+              downloading={downloading}
+              onDownloadItem={() => {
+                onSaveBill(invoice);
+              }}
+              editItem={() => {
+                navigate(`${invoice._id}/edit`);
+              }}
+              showVouchers={() => {
+                navigate(`${invoice._id}/vouchers`, { state: { type: "invoice", data: invoice } });
+              }}
+
+              deleteItem={() => {
+                setInvoice(invoice);
+                onOpenDeleteModal();
+              }}
+            />
+          ))}
+          selectedKeys={{
+            num: t("invoice_ui.table.columns.invoice_no"),
+            date: t("invoice_ui.table.columns.invoice_date"),
+            partyName: t("invoice_ui.table.columns.recipient"),
+            status: t("invoice_ui.table.columns.status"),
+            grandTotal: t("invoice_ui.table.columns.total"),
+          }}
+          onAddNewItem={onClickAddNewInvoice}
         />
-        {invoice ? (
-          <RecordPaymentModal
-            invoice={invoice}
-            fetchInvoices={fetchInvoices}
-            isOpen={isRecordPaymentModalOpen}
-            onClose={closeRecordPaymentModal}
-          />
-        ) : null}
+      )}
+      {invoice ? (
+        <BillModal
+          bill={invoice}
+          entity={"invoices"}
+          heading={t("invoice_ui.modal.heading")}
+          isOpen={isOpen}
+          onSaveBill={onSaveBill}
+          onClose={onClose}
+        />
+      ) : null}
+      {invoice ? (
+        <ShareBillModal
+          bill={invoice}
+          isOpen={isShareModalOpen}
+          onClose={toggleShareModal}
+          billType={"invoices"}
+        />
+      ) : null}
+      <AlertModal
+        confirmDisable={deleting}
+        body={t("invoice_ui.modal.delete_body")}
+        header={t("invoice_ui.modal.delete_header")}
+        isOpen={isDeleteModalOpen}
+        onClose={onCloseDeleteModal}
+        onConfirm={() => deleteInvoice(invoice)}
+      />
+      {invoice ? (
+        <RecordPaymentModal
+          invoice={invoice}
+          fetchInvoices={fetchInvoices}
+          isOpen={isRecordPaymentModalOpen}
+          onClose={closeRecordPaymentModal}
+        />
+      ) : null}
 
-        {loading ? null : (
-          <Pagination currentPage={currentPage} total={totalPages} />
-        )}
-        {isExportModalOpen ? (
-          <ExporterModal
-            isOpen={isExportModalOpen}
-            onClose={toggleExportModal}
-            downloadUrl={`/api/v1/organizations/${orgId}/invoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
-            defaultSelectedFields={{
-              partyName: t("invoice_ui.export.default_fields.party_name"),
-              billingAddress: t(
-                "invoice_ui.export.default_fields.billing_address",
-              ),
-              total: t("invoice_ui.export.default_fields.total"),
-              totalTax: t("invoice_ui.export.default_fields.total_tax"),
-              date: t("invoice_ui.export.default_fields.date"),
-              num: t("invoice_ui.export.default_fields.number"),
-              status: t("invoice_ui.export.default_fields.status"),
-              grandTotal: t("invoice_ui.export.default_fields.grand_total"),
-            }}
-            selectableFields={{
-              createdByEmail: t(
-                "invoice_ui.export.selectable_fields.created_by_email",
-              ),
-              createdByName: t(
-                "invoice_ui.export.selectable_fields.created_by_name",
-              ),
-              poNo: t("invoice_ui.export.selectable_fields.po_number"),
-              poDate: t("invoice_ui.export.selectable_fields.po_date"),
-              cgst: t("invoice_ui.export.selectable_fields.cgst"),
-              igst: t("invoice_ui.export.selectable_fields.igst"),
-              sgst: t("invoice_ui.export.selectable_fields.sgst"),
-              vat: t("invoice_ui.export.selectable_fields.vat"),
-              cess: t("invoice_ui.export.selectable_fields.cess"),
-              sal: t("invoice_ui.export.selectable_fields.sal"),
-              others: t("invoice_ui.export.selectable_fields.other_taxes"),
-            }}
-          />
-        ) : null}
-      </Box>
-    
+      {loading ? null : (
+        <Pagination currentPage={currentPage} total={totalPages} />
+      )}
+      {isExportModalOpen ? (
+        <ExporterModal
+          isOpen={isExportModalOpen}
+          onClose={toggleExportModal}
+          downloadUrl={`/api/v1/organizations/${orgId}/invoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
+          defaultSelectedFields={{
+            partyName: t("invoice_ui.export.default_fields.party_name"),
+            billingAddress: t(
+              "invoice_ui.export.default_fields.billing_address",
+            ),
+            total: t("invoice_ui.export.default_fields.total"),
+            totalTax: t("invoice_ui.export.default_fields.total_tax"),
+            date: t("invoice_ui.export.default_fields.date"),
+            num: t("invoice_ui.export.default_fields.number"),
+            status: t("invoice_ui.export.default_fields.status"),
+            grandTotal: t("invoice_ui.export.default_fields.grand_total"),
+          }}
+          selectableFields={{
+            createdByEmail: t(
+              "invoice_ui.export.selectable_fields.created_by_email",
+            ),
+            createdByName: t(
+              "invoice_ui.export.selectable_fields.created_by_name",
+            ),
+            poNo: t("invoice_ui.export.selectable_fields.po_number"),
+            poDate: t("invoice_ui.export.selectable_fields.po_date"),
+            cgst: t("invoice_ui.export.selectable_fields.cgst"),
+            igst: t("invoice_ui.export.selectable_fields.igst"),
+            sgst: t("invoice_ui.export.selectable_fields.sgst"),
+            vat: t("invoice_ui.export.selectable_fields.vat"),
+            cess: t("invoice_ui.export.selectable_fields.cess"),
+            sal: t("invoice_ui.export.selectable_fields.sal"),
+            others: t("invoice_ui.export.selectable_fields.other_taxes"),
+          }}
+        />
+      ) : null}
+    </Box>
+
   );
 }
