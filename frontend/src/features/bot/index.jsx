@@ -40,7 +40,7 @@ const ChatWidget = () => {
   const containerRef = useRef();
 
   const { isOpen: isResetOpen, onOpen: onResetOpen, onClose: onResetClose } = useDisclosure();
-  
+
   useOutsideClick({
     ref: containerRef,
     handler: () => {

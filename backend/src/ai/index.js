@@ -31,6 +31,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     create_expense_category: "Creating expense category...",
     get_activity_log: "Fetching history...",
     get_business_stats: "Fetching business performance data...",
+    list_document_vouchers: "Fetching list of vouchers...",
   };
 
   const toolPromises = toolCalls.map(async (tool) => {
@@ -105,10 +106,10 @@ const aiFactory = ({ provider, apiKey }) => {
       const MAX_ITERATIONS = 10;
       const toolCallHistory = new Set();
       const history = [...messages];
-
+      logger.info("Sending requests to AI Provider");
       while (iterations < MAX_ITERATIONS) {
         if (abortSignal?.aborted) throw new Error("AbortError");
-        
+
         iterations++;
         if (onProgress) onProgress({ type: "status", message: "Thinking..." });
 
@@ -132,7 +133,7 @@ const aiFactory = ({ provider, apiKey }) => {
           options: { temperature: 0, ...options, abortSignal }
         });
 
-
+        logger.info("Received some response from AI Provider")
 
         const aiMessage = response.message;
         history.push(aiMessage);
