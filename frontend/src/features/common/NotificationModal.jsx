@@ -114,7 +114,7 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     onRefreshCount();
     toast({
-      title: t("notifications.all_marked_read"),
+      title: t("notifications.all_marked_read", "All notifications marked as read"),
       status: "success",
       duration: 2000,
     });
