@@ -1,45 +1,43 @@
 import {
+  Badge,
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
   Heading,
+  HStack,
+  IconButton,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
+  Switch,
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorModeValue,
-  useToast,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
-  Text,
-  Badge,
-  HStack,
-  Divider,
-  Switch,
-  Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
-import { useState, useEffect, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiPlus, FiTrash2, FiCpu, FiKey } from "react-icons/fi";
-import instance from "../../../instance";
-import useProperty from "../../../hooks/useProperty";
+import { FiCpu, FiPlus, FiTrash2 } from "react-icons/fi";
 import SettingContext from "../../../contexts/SettingContext";
-import useAuth from "../../../hooks/useAuth";
-import { useIndexedDB } from "../../../hooks/useIndexedDB";
+import useProperty from "../../../hooks/useProperty";
+import instance from "../../../instance";
 
 export default function AiProviders({ formik }) {
 
@@ -47,8 +45,6 @@ export default function AiProviders({ formik }) {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const settingContext = useContext(SettingContext);
-  const { user } = useAuth();
-  const { deleteChatHistory } = useIndexedDB();
   const [currentSettings, setCurrentSettings] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -82,21 +78,13 @@ export default function AiProviders({ formik }) {
     fetchOrgSettings();
   }, [formik.values.organization]);
 
-  const clearchat = async () => {
-    try {
-      await instance.post(`/api/v1/organizations/${formik.values.organization}/chats/clear`);
-      await deleteChatHistory(user?._id);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
 
   const handleToggleActive = async (providerId) => {
     try {
       await instance.patch(
         `/api/v1/organizations/${formik.values.organization}/settings/ai-providers/${providerId}/active`
       );
-      await clearchat();
       toast({
         title: "Success",
         description: "Active provider switched",
@@ -184,7 +172,7 @@ export default function AiProviders({ formik }) {
   }));
 
   const providers = currentSettings?.setting?.aiProviders || [];
-  
+
   return (
     <Stack spacing={4}>
       <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">
@@ -192,7 +180,7 @@ export default function AiProviders({ formik }) {
           <FiCpu size={20} />
           <Heading fontSize={"lg"}>AI Providers</Heading>
         </HStack>
-        <Tooltip 
+        <Tooltip
           label={providers.length >= 3 ? "Maximum limit of 3 AI providers reached" : ""}
           isDisabled={providers.length < 3}
         >
@@ -229,8 +217,8 @@ export default function AiProviders({ formik }) {
                     </Badge>
                   </Td>
                   <Td>
-                    <Switch 
-                      colorScheme="blue" 
+                    <Switch
+                      colorScheme="blue"
                       isChecked={provider.isActive}
                       onChange={() => handleToggleActive(provider._id)}
                       isDisabled={providers.length === 1}
@@ -320,9 +308,9 @@ export default function AiProviders({ formik }) {
                           <Input
                             name={`fields.${field.label || field.value || field.name}`}
                             type={
-                              (field.label || field.value || field.name || "").toLowerCase().includes("key") || 
-                              (field.label || field.value || field.name || "").toLowerCase().includes("secret") 
-                                ? "password" 
+                              (field.label || field.value || field.name || "").toLowerCase().includes("key") ||
+                                (field.label || field.value || field.name || "").toLowerCase().includes("secret")
+                                ? "password"
                                 : "text"
                             }
                             placeholder={`Enter ${(field.name || field.label || "value").toLowerCase()}`}

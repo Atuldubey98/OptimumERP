@@ -32,7 +32,23 @@ const ConversationItem = ({ chat, isActive, onClick }) => {
 
   const getSnippet = () => {
     if (lastMessage?.content) {
-      return <MarkdownRenderer content={lastMessage.content} />;
+      const content = lastMessage.content.trim();
+      if (
+        content.startsWith("```") ||
+        content.includes("```") ||
+        content.startsWith("const ") ||
+        content.startsWith("import ") ||
+        content.startsWith("function ") ||
+        content.startsWith("{") ||
+        content.startsWith("[")
+      ) {
+        return "--";
+      }
+      const cleanText = content
+        .replace(/[#*`_\-]/g, "")
+        .replace(/\n+/g, " ")
+        .trim();
+      return cleanText || "--";
     }
     if (lastMessage?.tool_calls?.length > 0) {
       const labels = lastMessage.tool_calls.map(tc => toolLabelMap[tc.function.name] || tc.function.name);
