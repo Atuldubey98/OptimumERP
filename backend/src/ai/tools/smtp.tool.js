@@ -55,7 +55,7 @@ const smtpTools = [
           },
           replyToMessageId: {
             anyOf: [{ type: "string" }, { type: "null" }],
-            description: "The Message-ID of the email to reply to. Use this to keep the conversation in the same thread.",
+            description: "The Message-ID of the email to reply to. Use this to keep the conversation in the same thread. You can find this ID by calling 'get_activity_log' for the document and looking for 'messageId'.",
           },
         },
         required: ["to", "subject", "body"],

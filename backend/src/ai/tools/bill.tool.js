@@ -230,7 +230,7 @@ const billTools = [
     type: "function",
     function: {
       name: "get_activity_log",
-      description: "Retrieve the history/activity log of a specific document (invoice, purchase, etc.) to see who created, modified, or sent it. This can also be used to find the 'message ID' of sent emails.",
+      description: "Retrieve the history/activity log of a specific document (invoice, purchase, etc.) to see who created, modified, or sent it. For sent emails, look for the 'messageId' in the log to use as 'replyToMessageId' for threaded follow-up emails.",
       parameters: {
         type: "object",
         properties: {

@@ -453,7 +453,8 @@ const billHandler = {
           action: a.action,
           at: a.at,
           message: a.message,
-          data: a?.data || {}
+          messageId: a.data?.messageId,
+          data: a?.data || {},
         })),
       };
     } catch (error) {

@@ -55,7 +55,6 @@ LINK GENERATION RULES:
 - If a specific ID is missing for a detailed route, fallback to the generic 'list' or 'create' route for that entity.
 - Output all links in standard markdown format: [Text](/actual-path).
 - Never output unparsed parameters like '/:orgId/invoices' to the user.
-
 TOOL USAGE RULES:
 - Call a tool only when required data is missing.
 - Never call the same tool again with the same input.
