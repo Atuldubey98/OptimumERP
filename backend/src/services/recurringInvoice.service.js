@@ -139,7 +139,7 @@ const generateBill = async (recurringInvoice, type, session = null) => {
             title: config.notifTitle,
             message: `${isProforma ? "Proforma " : ""}Invoice #${bill.prefix}${bill.sequence} generated for date ${new Date(requestBody.date).toLocaleDateString()}`,
             type: "success",
-            data: { event: "link_to", data: `${config.notifLink}${bill._id}` }
+            data: { event: "link_to", data: `${recurringInvoice.org}/${config.notifLink}${bill._id}` }
         }, session);
 
         return bill;
