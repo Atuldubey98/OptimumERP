@@ -63,11 +63,17 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
     >
       <CardHeader>
         <Flex justifyContent="space-between" gap={4} alignItems="flex-start">
-          <HStack spacing={3} align="flex-start">
+          <HStack spacing={3} align="flex-start" minW="0" flex={1}>
             <Avatar size="md" name={item.name} />
-            <Box>
+            <Box minW="0" flex={1}>
               <CopyableText value={item._id}>
-                <Text noOfLines={1} fontSize="lg" fontWeight="semibold">
+                <Text
+                  noOfLines={2}
+                  textOverflow="ellipsis"
+                  wordBreak="break-word"
+                  fontSize="lg"
+                  fontWeight="semibold"
+                >
                   {item.name}
                 </Text>
               </CopyableText>
