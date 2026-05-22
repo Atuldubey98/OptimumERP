@@ -180,22 +180,18 @@ const recurringInvoiceCron = new CronJob(
       const recurringInvoices = await RecurringInvoice.find({ status: "active" }).populate("createdBy");
       logger.info("Recurring invoices found", { count: recurringInvoices.length });
       for (const ri of recurringInvoices) {
-        // Use a while loop to catch up on missed generations
         while (recurringInvoiceService.checkIfInvoiceHasToBeGenerated(ri)) {
           await executeMongoDbTransaction(async (session) => {
             try {
               await recurringInvoiceService.convertToInvoice(ri, session);
               await recurringInvoiceService.updateNextOccurrence(ri, session);
               logger.info(`Generated invoice for recurring invoice ${ri._id}. Catching up...`);
-              
-              // Update local object to reflect the new nextOccurrence for the next iteration of the while loop
               ri.nextOccurrence = recurringInvoiceService.calculateNextOccurrence(ri.nextOccurrence, ri.interval);
             } catch (err) {
               logger.error(`Error generating invoice for recurring invoice ${ri._id}:`, err);
-              throw err; // Re-throw to break the while loop for this specific RI
+              throw err;
             }
           }).catch(() => {
-            // Break the while loop if transaction fails
             return;
           });
         }
