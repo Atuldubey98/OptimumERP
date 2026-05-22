@@ -180,6 +180,9 @@ export default function EstimatesPage() {
                 editItem={() => {
                   navigate(`${estimate._id}/edit`);
                 }}
+                duplicateItem={() => {
+                  navigate(`create`, { state: { duplicateId: estimate._id } });
+                }}
                 deleteItem={() => {
                   setQuotation(estimate);
                   onOpenDeleteModal();

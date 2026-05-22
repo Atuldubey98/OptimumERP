@@ -2,7 +2,7 @@ import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import instance from "../instance";
@@ -13,6 +13,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   const { t } = useTranslation("common");
   const { getDefaultReceiptItem, receiptDefaults, toSmallestUnit, fromSmallestUnit } = useSetting();
   const defaultReceiptItem = getDefaultReceiptItem();
+  const location = useLocation();
 
   const invoiceSchema = Yup.object().shape({
     sequence: Yup.number()
@@ -123,9 +124,52 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     formik.setFieldValue("sequence", data.data);
     setStatus("success");
   });
+  const fetchDuplicateInvoice = requestAsyncHandler(async (dupId) => {
+    setStatus("loading");
+    const [{ data: invData }, { data: seqData }] = await Promise.all([
+      instance.get(`/api/v1/organizations/${orgId}/invoices/${dupId}`),
+      instance.get(`/api/v1/organizations/${orgId}/invoices/nextSequence`),
+    ]);
+    const {
+      party,
+      terms,
+      prefix,
+      items,
+      description,
+      billingAddress = "",
+      poDate = "",
+      poNo = "",
+    } = invData.data;
+    formik.setValues({
+      party: party._id,
+      terms,
+      sequence: seqData.data,
+      prefix,
+      dueDate: "",
+      date: moment().format("YYYY-MM-DD"),
+      status: "sent",
+      partyDetails: party,
+      items: items.map(({ _id, ...item }) => ({
+        ...item,
+        price: fromSmallestUnit(item.price),
+        tax: item.tax?._id || item.tax,
+        um: item.um?._id || item.um,
+      })),
+      description,
+      poDate: poDate ? poDate.split("T")[0] : "",
+      poNo,
+      billingAddress,
+      shippingCharges: fromSmallestUnit(invData.data.shippingCharges || 0),
+    });
+    setStatus("success");
+  });
   useEffect(() => {
     if (invoiceId) {
       fetchCurrentInvoice();
+      return;
+    }
+    if (location.state?.duplicateId) {
+      fetchDuplicateInvoice(location.state.duplicateId);
       return;
     }
     fetchNextInvoiceNumber();

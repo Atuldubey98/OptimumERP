@@ -11,6 +11,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import useAuth from "../../../hooks/useAuth";
 import { CiEdit, CiMoneyBill, CiSaveDown2 } from "react-icons/ci";
+import { FiCopy } from "react-icons/fi";
 import { FaMoneyCheck } from "react-icons/fa";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
@@ -25,6 +26,7 @@ import { MdOutlineFileOpen, MdOutlinePayments } from "react-icons/md";
 export default function VertIconMenu({
   showItem,
   editItem,
+  duplicateItem,
   deleteItem,
   onDownloadItem,
   showTransactions,
@@ -157,6 +159,11 @@ export default function VertIconMenu({
             onClick={showVouchers}
           >
             {t("common_ui.menu.vouchers")}
+          </MenuItem>
+        ) : null}
+        {duplicateItem ? (
+          <MenuItem icon={<FiCopy size={18} />} onClick={duplicateItem} command="⌘U">
+            {t("common_ui.actions.duplicate", { defaultValue: "Duplicate" })}
           </MenuItem>
         ) : null}
         {editItem ? (

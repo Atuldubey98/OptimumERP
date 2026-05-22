@@ -2,7 +2,7 @@ import { useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { defaultQuoteItem } from "../features/estimates/create/data";
@@ -12,6 +12,7 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function useEstimateForm() {
   const [status, setStatus] = useState("loading");
   const { t } = useTranslation("common");
+  const location = useLocation();
   const { getDefaultReceiptItem, receiptDefaults, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const quoteSchema = Yup.object().shape({
@@ -86,11 +87,46 @@ export default function useEstimateForm() {
       try {
         if (quoteId) {
           await fetchQuotation();
+        } else if (location.state?.duplicateId) {
+          await fetchDuplicateQuotation(location.state.duplicateId);
         } else {
           await fetchSequence();
         }
       } catch (error) {
         setStatus("error");
+      }
+      async function fetchDuplicateQuotation(dupId) {
+        setStatus("loading");
+        const [{ data: quoteData }, { data: seqData }] = await Promise.all([
+          instance.get(`/api/v1/organizations/${orgId}/quotes/${dupId}`),
+          instance.get(`/api/v1/organizations/${orgId}/quotes/nextQuoteNo`),
+        ]);
+        const {
+          party,
+          billingAddress = "",
+          terms,
+          prefix,
+          items,
+          description,
+        } = quoteData.data;
+        formik.setValues({
+          party: party._id,
+          terms,
+          prefix,
+          billingAddress,
+          sequence: seqData.data,
+          date: moment().format("YYYY-MM-DD"),
+          status: "draft",
+          items: items.map(({ _id, ...item }) => ({
+            ...item,
+            price: fromSmallestUnit(item.price),
+            tax: item.tax?._id || item.tax,
+            um: item.um?._id || item.um,
+          })),
+          description,
+          partyDetails: party,
+        });
+        setStatus("success");
       }
       async function fetchSequence() {
         setStatus("loading");

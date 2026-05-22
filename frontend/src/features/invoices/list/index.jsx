@@ -187,6 +187,9 @@ export default function InvoicesPage() {
               editItem={() => {
                 navigate(`${invoice._id}/edit`);
               }}
+              duplicateItem={() => {
+                navigate(`create`, { state: { duplicateId: invoice._id } });
+              }}
               showVouchers={() => {
                 navigate(`${invoice._id}/vouchers`, { state: { type: "invoice", data: invoice } });
               }}

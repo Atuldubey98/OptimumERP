@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import useAsyncCall from "./useAsyncCall";
 import * as Yup from "yup";
 import { useToast } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import moment from "moment";
@@ -13,6 +13,7 @@ import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
 export default function usePurchaseOrderForm({ saveAndNew }) {
   const [status, setStatus] = useState("loading");
   const { t } = useTranslation("common");
+  const location = useLocation();
   const { getDefaultReceiptItem, receiptDefaults, toSmallestUnit, fromSmallestUnit } = useCurrentOrgCurrency();
   const defaultReceiptItem = getDefaultReceiptItem();
   const purchaseOrderSchema = Yup.object().shape({
@@ -112,10 +113,49 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
     formik.setFieldValue("sequence", data.data);
     setStatus("success");
   });
+  const fetchDuplicatePurchaseOrder = requestAsyncHandler(async (dupId) => {
+    setStatus("loading");
+    const [{ data: poData }, { data: seqData }] = await Promise.all([
+      instance.get(`/api/v1/organizations/${orgId}/purchaseOrders/${dupId}`),
+      instance.get(`/api/v1/organizations/${orgId}/purchaseOrders/nextPurchaseOrderNo`),
+    ]);
+    const {
+      party,
+      terms,
+      prefix,
+      items,
+      description,
+      billingAddress = "",
+    } = poData.data;
+    formik.setValues({
+      party: party._id,
+      terms,
+      prefix,
+      sequence: seqData.data,
+      date: moment().format("YYYY-MM-DD"),
+      status: "sent",
+      partyDetails: party,
+      items: items.map(({ _id, ...item }) => ({
+        ...item,
+        price: fromSmallestUnit(item.price),
+        tax: item.tax?._id || item.tax,
+        um: item.um?._id || item.um,
+      })),
+      description,
+      billingAddress,
+      shippingCharges: fromSmallestUnit(poData.data.shippingCharges || 0),
+    });
+    setStatus("success");
+  });
   useEffect(() => {
     (async () => {
-      if (purchaseOrderId) await fetchPurchaseOrder();
-      else fetchNextInvoiceNumber();
+      if (purchaseOrderId) {
+        await fetchPurchaseOrder();
+      } else if (location.state?.duplicateId) {
+        await fetchDuplicatePurchaseOrder(location.state.duplicateId);
+      } else {
+        fetchNextInvoiceNumber();
+      }
     })();
   }, [purchaseOrderId]);
   const resetForm = async () => {

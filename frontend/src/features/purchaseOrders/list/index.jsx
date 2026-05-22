@@ -169,6 +169,9 @@ export default function PurchaseOrderPage() {
                   editItem={() => {
                     navigate(`${item._id}/edit`);
                   }}
+                  duplicateItem={() => {
+                    navigate(`create`, { state: { duplicateId: item._id } });
+                  }}
                   deleteItem={() => {
                     setSelectedPo(item);
                     onOpenDeleteModal();
