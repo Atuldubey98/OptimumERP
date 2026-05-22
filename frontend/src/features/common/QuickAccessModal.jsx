@@ -42,7 +42,10 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       description: t("common_ui.quick_access.descriptions.parties", {
         defaultValue: "Review your customers, vendors, and business relationships",
       }),
-      onClick: () => navigate(`/${orgId}/parties`),
+      onClick: () => {
+        navigate(`/${orgId}/parties`);
+        onClose();
+      },
       icon: <GoPeople size={50} />,
     },
     {
@@ -60,6 +63,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/invoices`);
+        onClose();
       },
       icon: <FaFileInvoiceDollar size={50} />,
     },
@@ -70,6 +74,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/invoices/create`);
+        onClose();
       },
       icon: <IoCreateOutline size={50} />,
     },
@@ -80,6 +85,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/estimates`);
+        onClose();
       },
       icon: <FaFileInvoice size={50} />,
     },
@@ -90,6 +96,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/purchases`);
+        onClose();
       },
       icon: <FaFileInvoice size={50} />,
     },
@@ -100,6 +107,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/purchases/create`);
+        onClose();
       },
       icon: <IoCreateOutline size={50} />,
     },
@@ -110,6 +118,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/estimates/create`);
+        onClose();
       },
       icon: <IoCreateOutline size={50} />,
     },
@@ -120,6 +129,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/reports/sale`);
+        onClose();
       },
       icon: <HiOutlineDocumentReport size={50} />,
     },
@@ -130,6 +140,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/products`);
+        onClose();
       },
       icon: <GoTag size={50} />,
     },
@@ -148,7 +159,10 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       description: t("common_ui.quick_access.descriptions.expenses", {
         defaultValue: "View expenses and keep operational costs under control",
       }),
-      onClick: () => navigate(`/${orgId}/expenses`),
+      onClick: () => {
+        navigate(`/${orgId}/expenses`);
+        onClose();
+      },
       icon: <GiExpense size={50} />,
     },
     {
@@ -158,6 +172,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/proformaInvoices`);
+        onClose();
       },
       icon: <LiaFileInvoiceDollarSolid size={50} />,
     },
@@ -168,6 +183,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/purchaseOrders`);
+        onClose();
       },
       icon: <IoCartOutline size={50} />,
     },
@@ -178,6 +194,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/purchaseOrders/create`);
+        onClose();
       },
       icon: <IoCreateOutline size={50} />,
     },
@@ -188,6 +205,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/proformaInvoices/create`);
+        onClose();
       },
       icon: <IoCreateOutline size={50} />,
     },
@@ -198,6 +216,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/contacts`);
+        onClose();
       },
       icon: <TiContacts size={50} />,
     },
@@ -210,6 +229,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/contacts?action=create`);
+        onClose();
       },
       icon: <IoCreateOutline size={50} />,
     },
@@ -220,6 +240,7 @@ export default function QuickAccessModal({ isOpen, onClose }) {
       }),
       onClick: () => {
         navigate(`/${orgId}/paymentVouchers`);
+        onClose();
       },
       icon: <FaFileInvoiceDollar size={50} />,
     },
