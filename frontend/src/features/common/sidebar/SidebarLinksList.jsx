@@ -52,12 +52,12 @@ export const SidebarLinksList = ({ onClose }) => {
   const renderLinks = (links) => {
     return links
       .filter(link => link.feature ? currentFeatures[link.feature] : true)
-      .map((link) => <HeaderLink headerLink={link} key={link.link} />);
+      .map((link) => <HeaderLink headerLink={link} key={link.link} onClick={onClose} />);
   };
 
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
-      <List onClick={onClose} spacing={1}>
+      <List spacing={1}>
         {renderLinks(mainLinks)}
         <Divider bg={bg} />
 
@@ -76,7 +76,7 @@ export const SidebarLinksList = ({ onClose }) => {
             {openSale ? <FiChevronDown /> : <FiChevronRight />}
           </Flex>
         </ListItem>
-        {openSale ? <SaleLinks /> : null}
+        {openSale ? <SaleLinks onClose={onClose} /> : null}
         <Divider bg={bg} />
 
 
@@ -95,6 +95,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/categories/${type}`,
             labelKey: "common_ui.sidebar.categories",
           }}
+          onClick={onClose}
         />
         <Divider bg={bg} />
 
@@ -106,6 +107,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/reports/${reportType}`,
             labelKey: "common_ui.sidebar.reports",
           }}
+          onClick={onClose}
         />
         <Divider bg={bg} />
 
@@ -117,6 +119,7 @@ export const SidebarLinksList = ({ onClose }) => {
               link: "/conversations",
               labelKey: "common_ui.sidebar.links.conversations",
             }}
+            onClick={onClose}
           />
         )}
         <ListItem
@@ -130,11 +133,10 @@ export const SidebarLinksList = ({ onClose }) => {
                 <Text>{t("common_ui.sidebar.settings")}</Text>
               </Flex>
             </Flex>
-            {openSettings ? <FiChevronDown /> : <FiChevronRight />}
+            {openSettings ? <SettingLinks onClose={onClose} /> : null}
           </Flex>
         </ListItem>
-        {openSettings ? <SettingLinks /> : null}
-        <Divider bg={bg} />
+        {openSettings ? null : <Divider bg={bg} />}
 
         <HeaderLink
           headerLink={{
@@ -142,6 +144,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/pricings`,
             labelKey: "common_ui.sidebar.plans",
           }}
+          onClick={onClose}
         />
         <HeaderLink
           headerLink={{
@@ -149,6 +152,7 @@ export const SidebarLinksList = ({ onClose }) => {
             link: `/about`,
             labelKey: "common_ui.sidebar.about",
           }}
+          onClick={onClose}
         />
       </List>
     </Container>

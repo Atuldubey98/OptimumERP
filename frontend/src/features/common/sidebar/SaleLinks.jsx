@@ -4,7 +4,7 @@ import saleLinks from "../../../constants/saleLinks";
 import HeaderLink from "./HeaderLink";
 import useAuth from "../../../hooks/useAuth";
 
-export default function SaleLinks() {
+export default function SaleLinks({ onClose }) {
   const { user } = useAuth();
   const currentFeatures = user?.features || {};
 
@@ -18,6 +18,7 @@ export default function SaleLinks() {
           <HeaderLink
             headerLink={saleLink}
             key={saleLink.link}
+            onClick={onClose}
           />
         ))}
     </List>

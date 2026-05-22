@@ -28,7 +28,7 @@ import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import useAuth from "../../../hooks/useAuth";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -40,6 +40,7 @@ export default function InvoicesPage() {
   const {
     items: invoices,
     reachedLimit,
+    reachedVouchersLimit: voucherLimitReached,
     dateFilter,
     onChangeDateFilter,
     currentPage,
@@ -54,7 +55,6 @@ export default function InvoicesPage() {
       select: "num date party status total totalTax shippingCharges org paymentVoucherBalance",
     },
   });
-  const { disable: voucherLimitReached } = useLimitsInFreePlan({ key: "paymentVouchers" });
   const loading = status === "loading";
   const navigate = useNavigate();
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();

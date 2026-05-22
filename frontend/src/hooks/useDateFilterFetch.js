@@ -11,6 +11,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
     currentPage: 0,
     items: [],
     reachedLimit: true,
+    reachedVouchersLimit: true,
   });
   const { requestAsyncHandler } = useAsyncCall();
   const [status, setStatus] = useState("loading");
@@ -133,6 +134,7 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
       currentPage: data.page,
       totalPages: data.totalPages,
       reachedLimit: data.reachedLimit,
+      reachedVouchersLimit: data.reachedVouchersLimit,
     });
     setStatus("success");
     return () => {
@@ -170,11 +172,12 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
   useEffect(() => {
     if (entity) fetchItems();
   }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
-  const { items, currentPage, totalCount, totalPages, reachedLimit } =
+  const { items, currentPage, totalCount, totalPages, reachedLimit, reachedVouchersLimit } =
     billItems;
   return {
     items,
     reachedLimit,
+    reachedVouchersLimit,
     onChangeDateFilter,
     dateFilter,
     status,

@@ -34,6 +34,11 @@ const paginate = async (options = {}, req, res) => {
     limit,
     totalPages,
     total,
+    reachedVouchersLimit: hasUserReachedCreationLimits({
+      relatedDocsCount: res.locals.organization.relatedDocsCount,
+      userLimits: req.session.user.limits,
+      key: "paymentVouchers",
+    }),
     reachedLimit: hasUserReachedCreationLimits({
       relatedDocsCount: res.locals.organization.relatedDocsCount,
       userLimits: req.session.user.limits,

@@ -2,7 +2,7 @@ import { ListItem, useColorModeValue, Flex, Icon, Box } from "@chakra-ui/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useParams } from "react-router-dom";
-export default function HeaderLink({ headerLink }) {
+export default function HeaderLink({ headerLink, onClick }) {
   const { orgId } = useParams();
   const bg = useColorModeValue("gray.300", "gray.600");
   const { t } = useTranslation("common");
@@ -11,7 +11,7 @@ export default function HeaderLink({ headerLink }) {
     : headerLink.label;
 
   return (
-    <ListItem key={headerLink.link}>
+    <ListItem key={headerLink.link} onClick={() => onClick?.()}>
       <NavLink to={orgId ? `/${orgId}${headerLink.link}` : "/organizations"}>
         {({ isActive }) => (
           <Flex

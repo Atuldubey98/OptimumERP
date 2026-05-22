@@ -15,7 +15,6 @@ import { purchaseStatusList } from "../../../constants/purchase";
 import useAsyncCall from "../../../hooks/useAsyncCall";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
-import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import instance from "../../../instance";
 import AlertModal from "../../common/AlertModal";
 import MainLayout from "../../common/main-layout";
@@ -42,6 +41,7 @@ export default function PurchasePage() {
     items: purchases,
     dateFilter,
     reachedLimit,
+    reachedVouchersLimit: voucherLimitReached,
     onChangeDateFilter,
     currentPage,
     totalPages,
@@ -55,7 +55,6 @@ export default function PurchasePage() {
       select: "num date party status total totalTax shippingCharges org",
     },
   });
-  const { disable: voucherLimitReached } = useLimitsInFreePlan({ key: "paymentVouchers" });
   const loading = status === "loading";
 
   const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();

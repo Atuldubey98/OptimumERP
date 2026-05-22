@@ -210,8 +210,13 @@ export default function VouchersPage() {
           {doc && (
             <Card variant="outline" shadow="sm">
               <CardBody>
-                <SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing={6}>
-                  <HStack>
+                <Flex
+                  wrap="wrap"
+                  gap={{ base: 4, md: 6 }}
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
                     <Icon as={FiFileText} color="blue.500" boxSize={5} />
                     <VStack align="start" spacing={0}>
                       <Text fontSize="xs" color="gray.500" fontWeight="bold">
@@ -223,7 +228,7 @@ export default function VouchersPage() {
                     </VStack>
                   </HStack>
 
-                  <HStack>
+                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
                     <Icon as={FiCalendar} color="orange.500" boxSize={5} />
                     <VStack align="start" spacing={0}>
                       <Text fontSize="xs" color="gray.500" fontWeight="bold">
@@ -235,7 +240,7 @@ export default function VouchersPage() {
                     </VStack>
                   </HStack>
 
-                  <HStack>
+                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
                     <Icon as={FiDollarSign} color="green.500" boxSize={5} />
                     <VStack align="start" spacing={0}>
                       <Text fontSize="xs" color="gray.500" fontWeight="bold">
@@ -247,7 +252,7 @@ export default function VouchersPage() {
                     </VStack>
                   </HStack>
 
-                  <HStack>
+                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
                     <Icon as={FiArrowDownCircle} color="purple.500" boxSize={5} />
                     <VStack align="start" spacing={0}>
                       <Text fontSize="xs" color="gray.500" fontWeight="bold">
@@ -259,7 +264,7 @@ export default function VouchersPage() {
                     </VStack>
                   </HStack>
 
-                  <HStack>
+                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
                     <Icon
                       as={balance <= 0 ? (docType === "invoice" ? FiArrowUpCircle : FiArrowDownCircle) : FiDollarSign}
                       color={balance <= 0 ? "green.500" : "red.500"}
@@ -274,7 +279,7 @@ export default function VouchersPage() {
                       </Text>
                     </VStack>
                   </HStack>
-                </SimpleGrid>
+                </Flex>
               </CardBody>
             </Card>
           )}

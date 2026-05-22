@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import settingsLinks from "../../../constants/settingsLinks";
 import SettingContext from "../../../contexts/SettingContext";
 import HeaderLink from "./HeaderLink";
-export default function SettingLinks() {
+export default function SettingLinks({ onClose }) {
   const settingContext = useContext(SettingContext);
   const currentRole = settingContext.role || "";
 
@@ -22,6 +22,7 @@ export default function SettingLinks() {
               link: setting.link,
             }}
             key={setting.link}
+            onClick={onClose}
           />
         ))}
     </List>
