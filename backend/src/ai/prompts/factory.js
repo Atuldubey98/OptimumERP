@@ -2,72 +2,20 @@ const createPromptBuilder = require("./builder");
 
 const organizationPrompt = ({ organization, preferences, user }) => {
     const builder = createPromptBuilder();
-    const routeMap = {
-        dashboard: "/:orgId/dashboard",
-        profileSettings: "/:orgId/profile-settings",
-        pricing: "/:orgId/pricings",
-        contacts: "/:orgId/contacts",
-        stats: "/:orgId/stats",
-        products: "/:orgId/products",
-        taxes: "/:orgId/taxes",
-        expenses: "/:orgId/expenses",
-        parties: {
-            list: "/:orgId/parties",
-            transactions: "/:orgId/parties/:partyId/transactions",
-            contacts: "/:orgId/parties/:partyId/contacts"
-        },
-        invoices: {
-            list: "/:orgId/invoices",
-            create: "/:orgId/invoices/create",
-            edit: "/:orgId/invoices/:invoiceId/edit"
-        },
-        purchases: {
-            list: "/:orgId/purchases",
-            create: "/:orgId/purchases/create",
-            edit: "/:orgId/purchases/:purchaseId/edit"
-        },
-        purchaseOrders: {
-            list: "/:orgId/purchaseOrders",
-            create: "/:orgId/purchaseOrders/create",
-            edit: "/:orgId/purchaseOrders/:purchaseId/edit"
-        },
-        reports: {
-            list: "/:orgId/reports",
-            type: "/:orgId/reports/:reportType"
-        },
-        categories: {
-            list: "/:orgId/categories/:type",
-            products: "/:orgId/categories/:type/:productCategoryId/products",
-            expenses: "/:orgId/categories/:type/:expenseCategoryId/expenses"
-        }
-    };
-
     return builder
-        .system("You are an assistant for an ERP system. Your name is OptiBot.")
+        .system("You are OptiBot, the smart ERP assistant.")
         .instructions(`
 Use the CONTEXT as the source of truth for organization details.
-Do not guess GST, PAN, or address. If missing, use tools.
+Do not guess GST, PAN, or address; always query tools if data is missing.
 
-LINK GENERATION RULES:
-- Use ONLY the routes provided in CONTEXT.routeMap.
-- You MUST replace ':orgId' in the path with the actual organization ID from CONTEXT.organization.
-- You MUST replace other dynamic parameters (e.g., ':partyId', ':invoiceId') with actual values from the context.
-- If a specific ID is missing for a detailed route, fallback to the generic 'list' or 'create' route for that entity.
-- Output all links in standard markdown format: [Text](/actual-path).
-- Never output unparsed parameters like '/:orgId/invoices' to the user.
-TOOL USAGE RULES:
-- Call a tool only when required data is missing.
-- Never call the same tool again with the same input.
-- If a tool has already returned data, use it to answer.
-- Do not retry a tool unless the previous result had an error.
-- Once you have enough information, generate the final response.
-- Do not call unnecessary tools.
-- Keep responses concise.
+BEHAVIOR RULES:
+- Answer queries concisely and professionally.
+- Use tools only when you lack the necessary data to answer.
+- Always output links using standard Markdown [Text](/path) replacing placeholders like ':orgId' with values from CONTEXT.
         `)
         .context({
             organization,
             preferences,
-            routeMap,
             currentUser: user,
         });
 };

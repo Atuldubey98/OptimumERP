@@ -14,9 +14,9 @@ const createOrgDto = Joi.object({
   currency: Joi.string().max(10).default("INR").label("Currency"),
   localeCode: Joi.string().max(20).default("en-IN").label("Locale Code"),
   location: Joi.object({
-    countryCode3: Joi.string().length(3).optional().label("Country Code"),
-    stateCode: Joi.string().max(10).optional().label("State Code"),
-  }).optional().label("Location"),
+    countryCode3: Joi.string().length(3).required().label("Country Code"),
+    stateCode: Joi.string().max(10).required().label("State Code"),
+  }).required().label("Location"),
 });
 
 const updateOrgDto = Joi.object({

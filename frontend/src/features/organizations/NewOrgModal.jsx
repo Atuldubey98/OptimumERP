@@ -123,12 +123,10 @@ export default function NewOrgModal({
         ...restOrg,
         financialYear: { start: financialYearStart, end: financialYearEnd },
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        ...(countryCode3 && {
-          location: {
-            countryCode3,
-            ...(stateCode && { stateCode }),
-          },
-        }),
+        location: {
+          countryCode3,
+          stateCode,
+        },
       });
       onAddedFetch();
       handleClose();
@@ -150,7 +148,7 @@ export default function NewOrgModal({
       return formik.values.panNo;
     }
     if (activeStep === 2) {
-      return formik.values.currency;
+      return formik.values.currency && formik.values.countryCode3 && formik.values.stateCode;
     }
     return true;
   };
@@ -391,7 +389,7 @@ export default function NewOrgModal({
                     
                     <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
                       {/* Country */}
-                      <FormControl>
+                      <FormControl isRequired>
                         <FormLabel>Country</FormLabel>
                         <Select
                           name="countryCode3"
@@ -408,7 +406,7 @@ export default function NewOrgModal({
                             );
                             formik.setFieldValue("stateCode", "");
                           }}
-                          isClearable
+                          isClearable={false}
                           placeholder="Select country..."
                           chakraStyles={{
                             control: (provided) => ({
@@ -421,7 +419,7 @@ export default function NewOrgModal({
                       </FormControl>
 
                       {/* State */}
-                      <FormControl isDisabled={stateOptions.length === 0}>
+                      <FormControl isRequired isDisabled={stateOptions.length === 0}>
                         <FormLabel>State / Province</FormLabel>
                         <Select
                           name="stateCode"
@@ -437,7 +435,7 @@ export default function NewOrgModal({
                               selected ? selected.value : ""
                             );
                           }}
-                          isClearable
+                          isClearable={false}
                           placeholder="Select state..."
                           chakraStyles={{
                             control: (provided) => ({

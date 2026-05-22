@@ -58,8 +58,14 @@ const orgSchema = new Schema(
       required: true,
     },
     location: {
-      countryCode3: String,
-      stateCode: String,
+      countryCode3: {
+        type: String,
+        required: true,
+      },
+      stateCode: {
+        type: String,
+        required: true,
+      },
     },
     createdBy: {
       type: Types.ObjectId,
