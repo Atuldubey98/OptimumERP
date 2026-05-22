@@ -190,6 +190,7 @@ const aiFactory = ({ provider, apiKey }) => {
       return { response: finalResponse, newMessages: [finalResponse] };
 
     } catch (error) {
+      if (process.env.NODE_ENV === "development") console.log(error)
       if (error.name === "AbortError" || error.message === "AbortError" || abortSignal?.aborted) {
         logger.info("Chat generation was aborted by the user.");
         const errorMessage = { role: "assistant", content: "Generation stopped." };
