@@ -82,9 +82,9 @@ export default function NotificationModal({ isOpen, onClose, onRefreshCount }) {
   };
 
   const handleNotificationClick = (notification) => {
-
     if (notification.data?.event === "link_to" && notification.data?.data) {
       navigate(`/${notification.data.data}`);
+      onClose()
     }
   };
 
