@@ -57,9 +57,7 @@ export const SidebarLinksList = ({ onClose }) => {
 
   return (
     <Container p={0} height={"100%"} overflowY={"auto"}>
-      <List spacing={1}>
-        
-
+      <List onClick={onClose} spacing={1}>
         {renderLinks(mainLinks)}
         <Divider bg={bg} />
 
