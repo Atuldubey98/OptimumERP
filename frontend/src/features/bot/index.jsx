@@ -6,7 +6,6 @@ import {
   VStack,
   useColorModeValue,
   useDisclosure,
-  useOutsideClick,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -37,36 +36,46 @@ const ChatWidget = () => {
   const scrollRef = useRef(null);
   const fileInputRef = useRef(null);
   const cancelRef = useRef();
-  const containerRef = useRef();
 
   const { isOpen: isResetOpen, onOpen: onResetOpen, onClose: onResetClose } = useDisclosure();
-
-  useOutsideClick({
-    ref: containerRef,
-    handler: () => {
-      if (isOpen && !isResetOpen) {
-        setIsOpen(false);
-      }
-    },
-  });
 
   const { orgId } = useParams();
   const navigate = useNavigate();
 
-  const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory, abortMessage } = useChatSocket(orgId);
-  const { setting } = useCurrentOrgCurrency();
   const [selectedModel, setSelectedModel] = useState(() => localStorage.getItem("selected_ai_model") || "");
+  const [selectedProviderId, setSelectedProviderId] = useState(() => localStorage.getItem("selected_ai_provider") || "");
+
+  const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory, abortMessage } = useChatSocket(orgId, selectedProviderId);
+  const { setting } = useCurrentOrgCurrency();
 
   const { value: AI_MODELS } = useProperty("AI_MODELS");
 
-  const activeProvider = useMemo(() => {
-    return setting?.aiProviders?.find((p) => p.isActive);
+  const activeProviders = useMemo(() => {
+    return setting?.aiProviders?.filter((p) => p.isActive) || [];
   }, [setting]);
 
+  // Auto-select first active provider if none selected or selection is gone
+  useEffect(() => {
+    if (activeProviders.length > 0) {
+      const isValid = activeProviders.some(p => p._id === selectedProviderId);
+      if (!selectedProviderId || !isValid) {
+        const first = activeProviders[0];
+        setSelectedProviderId(first._id);
+        localStorage.setItem("selected_ai_provider", first._id);
+      } else {
+        localStorage.setItem("selected_ai_provider", selectedProviderId);
+      }
+    }
+  }, [activeProviders, selectedProviderId]);
+
+  const selectedProvider = useMemo(() => {
+    return activeProviders.find(p => p._id === selectedProviderId);
+  }, [activeProviders, selectedProviderId]);
+
   const availableModels = useMemo(() => {
-    if (!AI_MODELS || !activeProvider) return [];
-    return AI_MODELS[activeProvider.provider] || [];
-  }, [activeProvider, AI_MODELS]);
+    if (!AI_MODELS || !selectedProvider) return [];
+    return AI_MODELS[selectedProvider.provider] || [];
+  }, [selectedProvider, AI_MODELS]);
 
   useEffect(() => {
     if (availableModels.length > 0) {
@@ -78,6 +87,7 @@ const ChatWidget = () => {
       }
     }
   }, [availableModels, selectedModel]);
+
 
   const { attachment, handleFileChange, clearAttachment } = useFileUpload();
   const { isListening, isSupported, startListening, stopListening } = useSpeechToText((transcript) => {
@@ -169,7 +179,6 @@ const ChatWidget = () => {
   return (
     <Portal>
       <Box
-        ref={containerRef}
         position="fixed"
         bottom={{ base: isOpen ? "0" : "8px", md: "20px" }}
         right={{ base: isOpen ? "0" : "8px", md: "20px" }}
@@ -199,7 +208,7 @@ const ChatWidget = () => {
 
                 <Box flex="1" overflowY="auto" overflowX="hidden" p={4} bg={messageAreaBg} ref={scrollRef}>
                   <VStack align="stretch" spacing={4} minHeight="100%">
-                    {!activeProvider ? (
+                    {activeProviders.length === 0 ? (
                       <SetupRequired
                         onNavigate={() => {
                           setIsOpen(false);
@@ -229,11 +238,17 @@ const ChatWidget = () => {
                   stopListening={stopListening}
                   fileInputRef={fileInputRef}
                   handleFileChange={handleFileChange}
-                  isConnected={isConnected && !!activeProvider}
+                  isConnected={isConnected && activeProviders.length > 0}
                   isTyping={isTyping}
                   selectedModel={selectedModel}
                   setSelectedModel={setSelectedModel}
                   availableModels={availableModels}
+                  activeProviders={activeProviders}
+                  selectedProviderId={selectedProviderId}
+                  setSelectedProviderId={(id) => {
+                    setSelectedProviderId(id);
+                    localStorage.setItem("selected_ai_provider", id);
+                  }}
                   abortMessage={abortMessage}
                 />
               </Flex>

@@ -98,33 +98,34 @@ const setActive = async (req, res) => {
     const { providerId } = req.params;
     const org = req.params.orgId;
 
-    await executeMongoDbTransaction(async (session) => {
-        await Setting.updateOne(
-            { org },
-            { $set: { "aiProviders.$[].isActive": false } },
-            { session }
-        );
+    const setting = await Setting.findOne({ org });
+    if (!setting) {
+        return res.status(404).json({ success: false, message: "Organization settings not found" });
+    }
 
-        const result = await Setting.updateOne(
-            { org, "aiProviders._id": providerId },
-            { $set: { "aiProviders.$.isActive": true } },
-            { session }
-        );
+    const provider = setting.aiProviders.find(p => p._id.toString() === providerId);
+    if (!provider) {
+        return res.status(404).json({ success: false, message: "Provider not found" });
+    }
 
-        if (result.matchedCount === 0) {
-            const error = new Error("Provider not found");
-            error.statusCode = 404;
-            throw error;
-        }
-    });
+    const result = await Setting.updateOne(
+        { org, "aiProviders._id": providerId },
+        { $set: { "aiProviders.$.isActive": !provider.isActive } }
+    );
+
+    if (result.matchedCount === 0) {
+        return res.status(404).json({ success: false, message: "Provider not found" });
+    }
 
     await invalidateSettingCache(org);
 
     return res.status(200).json({
         success: true,
-        message: "AI Provider activated successfully"
+        message: provider.isActive ? "AI Provider deactivated" : "AI Provider activated",
+        isActive: !provider.isActive,
     });
 };
+
 
 const createSmtp = async (req, res) => {
     const schema = Joi.object({

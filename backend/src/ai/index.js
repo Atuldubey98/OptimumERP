@@ -211,24 +211,25 @@ const aiFactory = ({ provider, apiKey }) => {
 
 };
 
-aiFactory.getAIInstanceForOrg = async (orgId) => {
+aiFactory.getAIInstanceForProvider = async (orgId, providerId) => {
   const settingService = require("../services/setting.service");
   const { decrypt } = require("../services/hashing.service");
 
   const settings = await settingService.getDetailedSettingForOrg(orgId);
-  const activeProvider = settings?.aiProviders?.find((p) => p.isActive);
+  const provider = settings?.aiProviders?.find(
+    (p) => p._id.toString() === providerId && p.isActive
+  );
 
-  if (!activeProvider) return { ai: null, settings };
+  if (!provider) return { ai: null, settings };
 
-  const apiKey = decrypt(activeProvider.fields.apiKey);
-  const providerType = activeProvider.provider;
-  logger.info(`Active Provider: ${providerType}`);
+  const apiKey = decrypt(provider.fields.apiKey);
+  logger.info(`Initializing provider: ${provider.provider} (${providerId})`);
 
   return {
-    ai: aiFactory({ provider: providerType, apiKey }),
+    ai: aiFactory({ provider: provider.provider, apiKey }),
     settings,
-    activeProviderId: activeProvider._id.toString(),
-    defaultModel: activeProvider.fields.defaultModel
+    providerType: provider.provider,
+    defaultModel: provider.fields.defaultModel,
   };
 };
 

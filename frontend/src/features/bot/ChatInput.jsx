@@ -1,7 +1,8 @@
 import { memo } from "react";
-import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Select, Icon, Tooltip } from "@chakra-ui/react";
+import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Icon, Tooltip, useDisclosure } from "@chakra-ui/react";
 import TextareaAutosize from "react-textarea-autosize";
-import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu, FiSquare } from "react-icons/fi";
+import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu, FiSquare, FiSettings } from "react-icons/fi";
+import ModelSelectModal from "./components/ModelSelectModal";
 import { motion } from "framer-motion";
 
 const pulse = keyframes`
@@ -28,9 +29,14 @@ const ChatInput = memo(({
   selectedModel,
   setSelectedModel,
   availableModels,
+  activeProviders,
+  selectedProviderId,
+  setSelectedProviderId,
   abortMessage
 }) => {
   const currentModel = availableModels.find(m => m.id === selectedModel);
+  const hasNoProvider = !activeProviders || activeProviders.length === 0;
+  const { isOpen: isModelModalOpen, onOpen: onModelModalOpen, onClose: onModelModalClose } = useDisclosure();
   return (
     <Box p={3} bg="gray.800" borderTopWidth="1px" borderColor="whiteAlpha.100" _light={{ bg: "white", borderColor: "gray.100" }}>
       <VStack align="stretch" spacing={2}>
@@ -111,27 +117,50 @@ const ChatInput = memo(({
             </HStack>
 
             <HStack spacing={2}>
-              {availableModels.length > 0 && (
-                <Select
-                  size="xs"
-                  width="auto"
-                  variant="unstyled"
-                  borderRadius="md"
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  fontSize="11px"
-                  color="whiteAlpha.600"
-                  _light={{ color: "gray.500" }}
-                  fontWeight="600"
-                  textAlign="right"
-                  cursor="pointer"
-                  iconSize="0"
-                >
-                  {availableModels.map((m) => (
-                    <option key={m.id} value={m.id}>{`${m.name}${m.vision ? "-(vision)" : ""}${m.thinking ? "-(thinking)" : ""}`}</option>
-                  ))}
-                </Select>
-              )}
+              <>
+                <Tooltip label={hasNoProvider ? "No AI provider configured" : "Select Model & Provider"} fontSize="xs" placement="top" hasArrow>
+                  <Box position="relative" display="inline-flex">
+                    <IconButton
+                      aria-label="Select Model"
+                      variant="ghost"
+                      size="sm"
+                      icon={<FiSettings size={16} />}
+                      onClick={onModelModalOpen}
+                      color={hasNoProvider ? "orange.400" : "whiteAlpha.600"}
+                      _light={{ color: hasNoProvider ? "orange.500" : "gray.400" }}
+                      _hover={{ bg: "whiteAlpha.200", _light: { bg: "gray.100" } }}
+                    />
+                    {hasNoProvider && (
+                      <Box
+                        position="absolute"
+                        top="-2px"
+                        right="-2px"
+                        bg="orange.400"
+                        borderRadius="full"
+                        w="14px"
+                        h="14px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        fontSize="9px"
+                        fontWeight="bold"
+                        color="white"
+                        lineHeight="1"
+                      >!</Box>
+                    )}
+                  </Box>
+                </Tooltip>
+                <ModelSelectModal
+                  isOpen={isModelModalOpen}
+                  onClose={onModelModalClose}
+                  availableModels={availableModels}
+                  selectedModel={selectedModel}
+                  onSelect={setSelectedModel}
+                  activeProviders={activeProviders}
+                  selectedProviderId={selectedProviderId}
+                  onSelectProvider={setSelectedProviderId}
+                />
+              </>
               {currentModel?.thinking && (
                 <Tooltip label="Thinking Model" fontSize="xs" placement="top" hasArrow>
                   <Flex align="center" px={1} cursor="help">

@@ -4,7 +4,7 @@ import instance from "../instance";
 import { useIndexedDB } from "./useIndexedDB";
 
 
-export const useChatSocket = (orgId) => {
+export const useChatSocket = (orgId, providerId) => {
   const { user } = useAuth();
   const userId = user?._id;
   const [messages, setMessages] = useState([]);
@@ -65,8 +65,8 @@ export const useChatSocket = (orgId) => {
   useEffect(() => {
     let reconnectionTimer;
     const connect = () => {
-      const wsUrl = `ws://localhost:3000?orgId=${orgId}`;
-      if (!orgId) return;
+      if (!orgId || !providerId) return;
+      const wsUrl = `ws://localhost:3000?orgId=${orgId}&providerId=${providerId}`;
       socket.current = new WebSocket(wsUrl);
 
       socket.current.onopen = () => setIsConnected(true);
@@ -113,7 +113,7 @@ export const useChatSocket = (orgId) => {
       clearTimeout(reconnectionTimer);
     };
 
-  }, [orgId]);
+  }, [orgId, providerId]);
 
   const sendMessage = (payload, userMessage) => {
     if (socket.current && isConnected) {

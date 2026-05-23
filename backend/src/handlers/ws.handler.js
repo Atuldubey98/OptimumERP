@@ -38,16 +38,28 @@ function getWsHandlers(wss) {
     try {
       const { query } = url.parse(request.url, true);
       const orgId = request.headers["orgid"] || query.orgId;
+      const providerId = query.providerId;
       const userId = request.session.user._id;
 
       ws.orgId = orgId;
       ws.userId = userId;
 
-      const { ai, settings, activeProviderId } = await aiFactory.getAIInstanceForOrg(orgId);
+      if (!providerId) {
+        ws.send(JSON.stringify({ event: "error", message: "No AI provider selected. Please select a provider to start chatting." }));
+        return;
+      }
+
+      const { ai, settings, providerType } = await aiFactory.getAIInstanceForProvider(orgId, providerId);
+
+      if (!ai) {
+        ws.send(JSON.stringify({ event: "error", message: "Selected AI provider is not available. Please check your settings." }));
+        return;
+      }
 
       ws.ai = ai;
       ws.settings = settings;
-      ws.activeProviderId = activeProviderId;
+      ws.providerId = providerId;
+      ws.providerType = providerType;
 
       const aiModelsProp = await propertyService.getByName("AI_MODELS");
       ws.aiModels = aiModelsProp?.value || {};
@@ -86,26 +98,8 @@ function getWsHandlers(wss) {
   const onMessage = async (ws, data, request) => {
     try {
       const body = JSON.parse(data);
-      const { query } = url.parse(request.url, true);
-      const orgId = ws.orgId || request.headers["orgid"] || query.orgId;
-      const userId = ws.userId || request.session.user._id;
-
-      if (!ws.ai) {
-        const { ai, settings, activeProviderId } = await aiFactory.getAIInstanceForOrg(orgId);
-        ws.ai = ai;
-        ws.settings = settings;
-        ws.activeProviderId = activeProviderId;
-      } else {
-        const { ai, settings, activeProviderId } = await aiFactory.getAIInstanceForOrg(orgId);
-        if (ws.activeProviderId !== activeProviderId) {
-          logger.info(`AI Provider changed for org ${orgId}. Refreshing instance.`);
-          ws.ai = ai;
-          ws.settings = settings;
-          ws.activeProviderId = activeProviderId;
-          const aiModelsProp = await propertyService.getByName("AI_MODELS");
-          ws.aiModels = aiModelsProp?.value || {};
-        }
-      }
+      const orgId = ws.orgId;
+      const userId = ws.userId;
 
       if (!ws.ai) {
         return ws.send(JSON.stringify({
@@ -114,8 +108,7 @@ function getWsHandlers(wss) {
         }));
       }
 
-      const activeProvider = ws.settings?.aiProviders?.find((p) => p.isActive);
-      const providerModels = ws.aiModels[activeProvider?.provider] || [];
+      const providerModels = ws.aiModels[ws.providerType] || [];
       const currentModelConfig = providerModels.find(m => m.id === body.model);
       const isVisionEnabled = currentModelConfig?.vision === true;
 
