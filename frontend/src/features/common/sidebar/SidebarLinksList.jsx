@@ -133,10 +133,11 @@ export const SidebarLinksList = ({ onClose }) => {
                 <Text>{t("common_ui.sidebar.settings")}</Text>
               </Flex>
             </Flex>
-            {openSettings ? <SettingLinks onClose={onClose} /> : null}
+            {openSettings ? <FiChevronDown /> : <FiChevronRight />}
           </Flex>
         </ListItem>
-        {openSettings ? null : <Divider bg={bg} />}
+        {openSettings ? <SettingLinks onClose={onClose} /> : null}
+        <Divider bg={bg} />
 
         <HeaderLink
           headerLink={{
