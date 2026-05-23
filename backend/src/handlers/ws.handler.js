@@ -10,6 +10,29 @@ const { dateUtils } = require("../utils.js");
 const chatService = require("../services/chat.service");
 const propertyService = require("../services/property.service");
 
+const pruneHistory = (messages, maxMessages = 25) => {
+  if (messages.length <= maxMessages) return messages;
+
+  const systemMessage = messages.find(m => m.role === "system");
+  const nonSystemMessages = messages.filter(m => m.role !== "system");
+
+  let pruned = nonSystemMessages.slice(-maxMessages);
+
+  while (pruned.length > 0 && pruned[0].role === "tool") {
+    const firstIndex = nonSystemMessages.indexOf(pruned[0]);
+    if (firstIndex > 0) {
+      pruned.unshift(nonSystemMessages[firstIndex - 1]);
+    } else {
+      break;
+    }
+  }
+
+  if (systemMessage) {
+    return [systemMessage, ...pruned];
+  }
+  return pruned;
+};
+
 function getWsHandlers(wss) {
   const onConnection = async (ws, request) => {
     try {
@@ -143,9 +166,10 @@ function getWsHandlers(wss) {
       ws.history.push(userMessage);
 
       const aiInputHistory = isVisionEnabled ? ws.history : ws.history.map(m => ({ ...m, images: undefined }));
+      const prunedInputHistory = pruneHistory(aiInputHistory, 25);
 
       const { response, newMessages } = await ws.ai.chat(body.model, {
-        messages: aiInputHistory,
+        messages: prunedInputHistory,
         body: { org: orgId, createdBy: userId, user: request.session.user },
         onProgress: (status) => ws.send(JSON.stringify(status)),
         abortSignal: signal,

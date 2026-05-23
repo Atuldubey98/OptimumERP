@@ -50,7 +50,8 @@ const clearChat = async (chatId, model) => {
             { role: "system", content: prompt },
             { role: "user", content: userContent || "New conversation" }
           ],
-          body: { org: orgId, createdBy: userId }
+          body: { org: orgId, createdBy: userId },
+          options: { tools: [] }
         });
 
         if (response?.content) {

@@ -130,7 +130,7 @@ const aiFactory = ({ provider, apiKey }) => {
             }
             return mapped;
           }),
-          tools,
+          tools: options.tools !== undefined ? options.tools : tools,
           options: { temperature: 0, ...options, abortSignal }
         });
 

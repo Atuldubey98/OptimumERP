@@ -5,6 +5,9 @@ const { executeMongoDbTransaction } = require("./crud.service");
 
 const getProductDetailsForAI = async (query, type, currentOrgId) => {
   try {
+    const settingService = require("./setting.service");
+    const { moneyUtils } = require("../utils");
+
     const filter = {
       $text: { $search: query },
       org: currentOrgId,
@@ -24,10 +27,17 @@ const getProductDetailsForAI = async (query, type, currentOrgId) => {
       return `Database response: No products found matching the search term "${query}".`;
     }
 
+    const displaySetting = await settingService.getDisplaySettingForOrg(currentOrgId);
+    const currencyConfig = displaySetting
+      ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)
+      : null;
+    const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+    const fromSmallest = (val) => moneyUtils.fromSmallestUnit(val || 0, decimalDigits);
+
     const formattedProducts = products
       .map((p) => {
         const codeStr = p.code ? ` (Code: ${p.code})` : "";
-        return `- ${p.name}${codeStr} [Type: ${p.type}]: Selling Price is ${p.sellingPrice}, Cost Price is ${p.costPrice}`;
+        return `- ${p.name}${codeStr} [Type: ${p.type}]: Selling Price is ${fromSmallest(p.sellingPrice)}, Cost Price is ${fromSmallest(p.costPrice)}`;
       })
       .join("\n");
     return `Database response: Found the following products:\n${formattedProducts}`;

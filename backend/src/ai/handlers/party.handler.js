@@ -139,13 +139,17 @@ const partyHandler = {
     const skip = (parsedPage - 1) * parsedLimit;
 
     const filter = { org: params.org };
+    const projection = {};
+    const sort = { createdAt: -1 };
 
     if (query && query.trim()) {
       filter.$text = { $search: query.trim() };
+      projection.score = { $meta: "textScore" };
+      sort.score = { $meta: "textScore" };
     }
     const [parties, total] = await Promise.all([
-      Party.find(filter, { score: { $meta: "textScore" } })
-        .sort({ createdAt: -1 })
+      Party.find(filter, projection)
+        .sort(sort)
         .skip(skip)
         .limit(parsedLimit).lean(),
       Party.countDocuments(filter)

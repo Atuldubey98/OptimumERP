@@ -3,13 +3,13 @@ const productService = require("../../services/product.service");
 const { getDetailedSettingForOrg, getDisplaySettingForOrg } = require("../../services/setting.service");
 const { getUmListForOrg } = require("../../services/um.service");
 const { moneyUtils } = require("../../utils");
-const formalizeProductForAi = (product) => {
+const formalizeProductForAi = (product, decimalDigits) => {
   if (!product) return null;
   return {
     _id: product._id,
     name: product.name,
-    sellingPrice: product.sellingPrice,
-    costPrice: product.costPrice,
+    sellingPrice: moneyUtils.fromSmallestUnit(product.sellingPrice || 0, decimalDigits),
+    costPrice: moneyUtils.fromSmallestUnit(product.costPrice || 0, decimalDigits),
     code: product.code,
     type: product.type,
   };
@@ -64,7 +64,7 @@ const productHandlers = {
       body.um = um;
       body.org = org;
       const product = await productService.create(body);
-      return formalizeProductForAi(product);
+      return formalizeProductForAi(product, decimalDigits);
     } catch (error) {
       throw error;
     }
