@@ -2,6 +2,7 @@ const { z } = require("zod");
 
 const createOrgDto = z.object({
   name: z.string().min(2).max(80).describe("Name"),
+  alias: z.string().min(2).max(80).describe("Alias"),
   address: z.string().describe("Address"),
   gstNo: z.string().optional().describe("GST Number"),
   createdBy: z.string().describe("Created By"),
@@ -21,6 +22,7 @@ const createOrgDto = z.object({
 
 const updateOrgDto = z.object({
   name: z.string().min(2).max(80).optional().describe("Name"),
+  alias: z.string().min(2).max(80).optional().describe("Alias"),
   address: z.string().optional().describe("Address"),
   gstNo: z.string().optional().describe("GST Number"),
   financialYear: z.object({

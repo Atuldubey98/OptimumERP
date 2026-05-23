@@ -22,7 +22,7 @@ const baseDocumentFields = {
   shippingCharges: z.coerce.number().int().min(0).default(0).optional().describe("Shipping Charges"),
   createdBy: z.string().optional().describe("Created By"),
   updatedBy: z.string().optional().describe("Updated By"),
-  poNo: z.string().optional().describe("PO Number"),
+  poNo: z.coerce.string().optional().describe("PO Number"),
   poDate: z.string().optional().describe("PO Date"),
   prefix: z.string().optional().describe("Prefix"),
   sequence: z.coerce.number().optional().describe("Sequence"),

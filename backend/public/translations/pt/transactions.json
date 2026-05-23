@@ -12,8 +12,8 @@
       "invoices": "Faturas",
       "purchase": "Compra",
       "balance": "Saldo",
-      "owe": "Você deve {{symbol}} {{amount}}.",
-      "receive": "Você receberá {{symbol}} {{amount}}",
+      "owe": "Você deve {{amount}}.",
+      "receive": "Você receberá {{amount}}",
       "all_settled": "Tudo liquidado",
       "bill_label": "{{count}} Conta {{status}}"
     },

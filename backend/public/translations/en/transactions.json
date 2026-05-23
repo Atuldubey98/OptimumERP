@@ -12,8 +12,8 @@
       "invoices": "Invoices",
       "purchase": "Purchase",
       "balance": "Balance",
-      "owe": "You owe {{symbol}} {{amount}}.",
-      "receive": "You will receive {{symbol}} {{amount}}",
+      "owe": "You owe {{amount}}.",
+      "receive": "You will receive {{amount}}",
       "all_settled": "All settled",
       "bill_label": "{{count}} Bill {{status}}"
     },
