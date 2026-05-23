@@ -1,22 +1,22 @@
-const { z } = require("zod");
+const Joi = require("joi");
 
-exports.createPartyDto = z.object({
-  name: z.string().min(2).max(80).describe("Name"),
-  shippingAddress: z.string().max(150).optional().describe("Shipping Address"),
-  billingAddress: z.string().min(3).max(150).describe("Billing Address"),
-  gstNo: z.string().optional().describe("GST Number"),
-  createdBy: z.string().describe("Created By"),
-  updatedBy: z.string().optional().describe("Updated By"),
-  panNo: z.string().optional().describe("PAN Number"),
-  org: z.string().describe("Organization"),
-});
+exports.createPartyDto = Joi.object({
+  name: Joi.string().min(2).max(80).required().label("Name"),
+  shippingAddress: Joi.string().allow("").max(150).label("Shipping address"),
+  billingAddress: Joi.string().min(3).max(150).required().label("Billing address"),
+  gstNo: Joi.string().label("GST Number").allow(""),
+  createdBy: Joi.string().required().label("Created by"),
+  updatedBy: Joi.string().label("Updated by"),
+  panNo: Joi.string().label("Pan Number").allow(""),
+  org: Joi.string().required().label("Organization"),
+}).options({ stripUnknown: true });
 
-exports.updatePartyDto = z.object({
-  name: z.string().min(2).max(80).optional().describe("Name"),
-  shippingAddress: z.string().max(150).optional().describe("Shipping Address"),
-  billingAddress: z.string().min(3).max(150).optional().describe("Billing Address"),
-  gstNo: z.string().optional().describe("GST Number"),
-  updatedBy: z.string().optional().describe("Updated By"),
-  org: z.string().optional().describe("Organization"),
-  panNo: z.string().optional().describe("PAN Number"),
-});
+exports.updatePartyDto = Joi.object({
+  name: Joi.string().min(2).max(80).label("Party name"),
+  shippingAddress: Joi.string().allow("").max(150).label("Shipping address"),
+  billingAddress: Joi.string().min(3).max(150).label("Billing Address"),
+  gstNo: Joi.string().allow("").label("GST No"),
+  updatedBy: Joi.string().label("Updated By"),
+  org : Joi.string().label("Organization"),
+  panNo: Joi.string().label("Pan No").allow(""),
+}).options({ stripUnknown: true });

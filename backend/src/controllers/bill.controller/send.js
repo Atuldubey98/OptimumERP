@@ -1,20 +1,20 @@
 const { isValidObjectId } = require("mongoose");
-const { z } = require("zod");
+const Joi = require("joi");
 const billService = require("../../services/bill.service");
 const contactService = require("../../services/contact.service");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 const Contact = require("../../models/contacts.model");
-const mailBodyDto = z.object({
-  to: z.array(z.string()).default([]),
-  cc: z.array(z.string()).default([]),
-  body: z.string().optional(),
-  subject: z.string().optional(),
+const mailBodyDto = Joi.object({
+  to: Joi.array().items(Joi.string()).default([]),
+  cc: Joi.array().items(Joi.string()).default([]),
+  body: Joi.string().allow(""),
+  subject: Joi.string(),
 });
 const send = async (options = {}, req, res) => {
   const { NotFound, Bill, prefixType } = options;
   const id = req.params.id;
   if (!isValidObjectId(id)) throw new NotFound();
-  const body = await mailBodyDto.parseAsync(req.body);
+  const body = await mailBodyDto.validateAsync(req.body);
 
   if (!body.to.length)
     return res

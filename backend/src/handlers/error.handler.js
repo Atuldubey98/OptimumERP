@@ -7,10 +7,7 @@ module.exports = (err, req, res, next) => {
   }
   let code = err.code || 500;
   let message;
-  if (err.name === "ZodError") {
-    code = 422;
-    message = err.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join(', ');
-  } else if (err.name === "ValidationError") {
+  if (err.name === "ValidationError") {
     code = 422;
     message = err.message;
   } else if (err.name === "MongoServerError") {

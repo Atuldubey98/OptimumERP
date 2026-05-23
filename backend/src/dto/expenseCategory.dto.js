@@ -1,12 +1,11 @@
-const { z } = require("zod");
-
-const expenseCategoryDto = z.object({
-  name: z.string().max(80).describe("Name"),
-  description: z.string().max(150).optional().describe("Description"),
-  enabled: z.boolean().optional().describe("Enabled"),
-  createdBy: z.string().describe("Created By"),
-  updatedBy: z.string().optional().describe("Updated By"),
-  org: z.string().optional().describe("Organization"),
-});
+const Joi = require("joi");
+const expenseCategoryDto = Joi.object({
+  name: Joi.string().label("Name").required().max(80),
+  description: Joi.string().label("Description").optional().max(150).allow(""),
+  enabled: Joi.boolean().label("Enabled").optional(),
+  createdBy: Joi.string().label("Created By").required(),
+  updatedBy: Joi.string().optional(),
+  org: Joi.string().optional(),
+}).options({ stripUnknown: true });
 
 module.exports = { expenseCategoryDto };

@@ -1,9 +1,9 @@
-const { z } = require("zod");
+const Joi = require("joi");
 
-const productCategoryDto = z.object({
-  name: z.string().min(3).max(80).describe("Name"),
-  description: z.string().min(3).max(150).describe("Description"),
-  enabled: z.boolean().optional().describe("Enabled"),
+const productCategoryDto = Joi.object({
+  name: Joi.string().required().min(3).max(80),
+  description: Joi.string().required().min(3).max(150),
+  enabled: Joi.boolean().label("Enabled").optional(),
 });
 
 module.exports = productCategoryDto;

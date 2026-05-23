@@ -6,7 +6,7 @@ const {
 } = require("../../services/auth.service");
 const logger = require("../../logger");
 const register = async (req, res) => {
-  const body = await registerUserDto.parseAsync(req.body);
+  const body = await registerUserDto.validateAsync(req.body);
   const isDevelopmentEnv = process.env.NODE_ENV === "development";
   const shouldSendEmail = process.env.NODE_MAILER_HOST;
   const userActive = isDevelopmentEnv || !shouldSendEmail;

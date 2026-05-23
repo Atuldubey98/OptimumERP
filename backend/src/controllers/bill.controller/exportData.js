@@ -1,27 +1,27 @@
 const { Types } = require("mongoose");
-const { z } = require("zod");
+const Joi = require("joi");
 const { makeReportExcelBuffer } = require("../../services/report.service");
-const billSchema = z.object({
-  partyName: z.coerce.number().optional(),
-  billingAddress: z.coerce.number().optional(),
-  date: z.coerce.number().optional(),
-  total: z.coerce.number().optional(),
-  totalTax: z.coerce.number().optional(),
-  shippingCharges: z.coerce.number().optional(),
-  num: z.coerce.number().optional(),
-  status: z.coerce.number().optional(),
-  createdByName: z.coerce.number().optional(),
-  createdByEmail: z.coerce.number().optional(),
-  poNo: z.coerce.number().optional(),
-  poDate: z.coerce.number().optional(),
-  cgst: z.coerce.number().optional(),
-  igst: z.coerce.number().optional(),
-  sgst: z.coerce.number().optional(),
-  vat: z.coerce.number().optional(),
-  cess: z.coerce.number().optional(),
-  sal: z.coerce.number().optional(),
-  others: z.coerce.number().optional(),
-  grandTotal: z.coerce.number().optional(),
+const billSchema = Joi.object({
+  partyName: Joi.number().optional(),
+  billingAddress: Joi.number().optional(),
+  date: Joi.number().optional(),
+  total: Joi.number().optional(),
+  totalTax: Joi.number().optional(),
+  shippingCharges: Joi.number().optional(),
+  num: Joi.number().optional(),
+  status: Joi.number().optional(),
+  createdByName: Joi.number().optional(),
+  createdByEmail: Joi.number().optional(),
+  poNo: Joi.number().optional(),
+  poDate: Joi.number().optional(),
+  cgst: Joi.number().optional(),
+  igst: Joi.number().optional(),
+  sgst: Joi.number().optional(),
+  vat: Joi.number().optional(),
+  cess: Joi.number().optional(),
+  sal: Joi.number().optional(),
+  others: Joi.number().optional(),
+  grandTotal: Joi.number().optional(),
 });
 
 const exportData = async (options = {}, req, res) => {
@@ -29,7 +29,7 @@ const exportData = async (options = {}, req, res) => {
   const exportType = ["excel"].includes(req.params.exportType)
     ? req.params.exportType
     : "excel";
-  const project = await billSchema.parseAsync(req.query.select || {});
+  const project = await billSchema.validateAsync(req.query.select);
   const filter = {
     date: {
       $gte: new Date(req.query.startDate),

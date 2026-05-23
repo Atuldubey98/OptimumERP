@@ -1,15 +1,15 @@
-const { z } = require("zod");
+const Joi = require("joi");
 const Otp = require("../../models/otp.model");
 const User = require("../../models/user.model");
 const { UserNotFound, InvalidOtp } = require("../../errors/user.error");
 const bcryptjs = require("bcryptjs");
-const bodyJoi = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
-  otp: z.string(),
+const bodyJoi = Joi.object({
+  email: Joi.string().email().required().label("Email"),
+  password: Joi.string().required().min(8).max(20).label("Password"),
+  otp: Joi.string().required().label("OTP"),
 });
 const verifyForgotPasswordOtp = async (req, res) => {
-  const body = await bodyJoi.parseAsync(req.body);
+  const body = await bodyJoi.validateAsync(req.body);
   const user = await User.findOne({ email: body.email });
   if (!user) throw new UserNotFound();
   const filter = {

@@ -1,14 +1,15 @@
-const { z } = require("zod");
-
-const taxDto = z.object({
-  name: z.string().max(8).describe("Name"),
-  description: z.string().max(80).optional().describe("Description"),
-  type: z.enum(["single", "grouped"]).default("single").describe("Type"),
-  category: z.enum(["igst", "sgst", "cgst", "vat", "cess", "sal", "others", "none"]).describe("Category"),
-  children: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/)).optional().describe("Children"),
-  percentage: z.coerce.number().min(0).max(100).default(0).optional().describe("Percentage"),
-  enabled: z.boolean().default(true).optional().describe("Enabled"),
-  createdBy: z.string().describe("Created By"),
+const Joi = require("joi");
+const taxDto = Joi.object({
+  name: Joi.string().required().max(8),
+  description: Joi.string().max(80).allow(""),
+  type: Joi.string().valid("single", "grouped").default("single").required(),
+  category: Joi.string()
+    .valid("igst", "sgst", "cgst", "vat", "cess", "sal", "others", "none")
+    .required(),
+  children: Joi.array().items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)),
+  percentage: Joi.number().min(0).max(100).default(0),
+  enabled: Joi.boolean().default(true).optional(),
+  createdBy: Joi.string().required(),
 });
 
 module.exports = { taxDto };

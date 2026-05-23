@@ -19,7 +19,7 @@ const formalizePartyForAi = (party) => {
 
 const partyHandler = {
   create_party: async ({ org, createdBy, user, ...params }) => {
-    const body = await createPartyDto.parseAsync({ 
+    const body = await createPartyDto.validateAsync({ 
       ...params, 
       org: org?.toString(), 
       createdBy: createdBy?.toString() 

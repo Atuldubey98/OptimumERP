@@ -1,14 +1,14 @@
 const { isValidObjectId } = require("mongoose");
 const { InvoiceNotFound } = require("../../errors/invoice.error");
-const { z } = require("zod");
+const Joi = require("joi");
 const { addPaymentToDoc } = require("../../services/paymentVoucher.service");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 
-const paymentDto = z.object({
-  description: z.string(),
-  amount: z.number().int(),
-  paymentMode: z.string().optional(),
-  date: z.string(),
+const paymentDto = Joi.object({
+  description: Joi.string().allow("").required().label("Description"),
+  amount: Joi.number().integer().required().label("Amount"),
+  paymentMode: Joi.string().allow("").label("Payment Mode"),
+  date: Joi.string().required().label("Date"),
 });
 
 const payment = async (req, res) => {
@@ -17,7 +17,7 @@ const payment = async (req, res) => {
   const userId = req.session.user._id;
   
   if (!isValidObjectId(id)) throw new InvoiceNotFound();
-  const body = await paymentDto.parseAsync(req.body);
+  const body = await paymentDto.validateAsync(req.body);
 
   await executeMongoDbTransaction(async (session) => {
     await addPaymentToDoc({

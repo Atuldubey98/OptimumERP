@@ -43,7 +43,7 @@ const productHandlers = {
         ...(params.sellingPrice != null && { sellingPrice: toSmallest(params.sellingPrice) }),
       };
 
-      const body = await productDto.parseAsync({ ...rawParams, createdBy: createdBy?.toString() });
+      const body = await productDto.validateAsync({ ...rawParams, createdBy: createdBy?.toString() });
       const setting = await getDetailedSettingForOrg(org);
       let um = setting?.receiptDefaults?.um?._id?.toString();
       if (body?.um) {

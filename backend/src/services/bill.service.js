@@ -182,7 +182,7 @@ exports.saveBill = async ({
   user,
   session,
 }) => {
-  const body = await dto.parseAsync(requestBody);
+  const body = await dto.validateAsync(requestBody);
   const totalWithTaxes = await calculateTaxes(body.items, body.org);
   const shippingCharges = parseFloat(body.shippingCharges) || 0;
   const { setting, counterKey } = await getCurrentSequenceCounter({

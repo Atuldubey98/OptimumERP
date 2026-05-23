@@ -1,12 +1,11 @@
-const { z } = require("zod");
-
-const umDto = z.object({
-  name: z.string().max(20).describe("Name"),
-  description: z.string().max(80).optional().describe("Description"),
-  unit: z.string().max(10).describe("Unit"),
-  enabled: z.boolean().default(true).optional().describe("Enabled"),
-  createdBy: z.string().length(24).describe("Created By"),
-  updatedBy: z.string().length(24).optional().describe("Updated By"),
+const Joi = require("joi");
+const umDto = Joi.object({
+  name: Joi.string().max(20).required(),
+  description: Joi.string().max(80).optional(),
+  unit: Joi.string().max(10).required(),
+  enabled: Joi.boolean().default(true),
+  createdBy: Joi.string().hex().length(24).required(),
+  updatedBy: Joi.string().hex().length(24).optional(),
 });
 
 module.exports = { umDto };

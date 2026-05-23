@@ -2,7 +2,7 @@ const { umDto } = require("../../dto/um.dto");
 const Um = require("../../models/um.model");
 const { invalidateUmCache } = require("../../services/um.service");
 const update = async (req, res) => {
-  const body = await umDto.parseAsync(req.body);
+  const body = await umDto.validateAsync(req.body);
   const um = await Um.findOneAndUpdate(
     {
       org: req.params.orgId,

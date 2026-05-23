@@ -1,14 +1,14 @@
-const { z } = require("zod");
+const Joi = require("joi");
 
-const contactDto = z.object({
-  name: z.string().min(2).max(40).describe("Name"),
-  email: z.string().email().max(40).describe("Email"),
-  party: z.string().nullable().default(null).optional().describe("Party"),
-  telephone: z.string().optional().describe("Telephone"),
-  description: z.string().max(80).optional().describe("Description"),
-  type: z.string().describe("Type"),
-  createdBy: z.string().describe("Created By"),
-  updatedBy: z.string().optional().describe("Updated By"),
-});
+const contactDto = Joi.object({
+  name: Joi.string().label("Name").required().min(2).max(40),
+  email: Joi.string().label("Email").email().max(40).required(),
+  party: Joi.string().optional().allow(null).default(null),
+  telephone: Joi.string().label("Telephone").optional().allow(""),
+  description: Joi.string().allow("").optional().max(80),
+  type: Joi.string().required(),
+  createdBy: Joi.string().required(),
+  updatedBy: Joi.string().optional(),
+}).options({ stripUnknown: true });
 
 module.exports = { contactDto };

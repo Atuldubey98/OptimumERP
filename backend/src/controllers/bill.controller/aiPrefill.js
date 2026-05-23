@@ -2,27 +2,24 @@ const aiFactory = require("../../ai");
 const settingService = require("../../services/setting.service");
 const renderEngineService = require("../../services/renderEngine.service.js");
 const { decrypt } = require("../../services/hashing.service");
-const { z } = require("zod");
+const Joi = require("joi");
 const factory = require("../../ai/prompts/factory");
 
-const prefillSchema = z.object({
-  model: z.string(),
-  attachment: z.object({
-    type: z.string(),
-    content: z.string(),
-  }),
-  type: z.string().default("invoices"),
-});
+const prefillSchema = Joi.object({
+  model: Joi.string().required().label("Model"),
+  attachment: Joi.object({
+    type: Joi.string().required(),
+    content: Joi.string().required(),
+  })
+    .required()
+    .label("Attachment"),
+  type: Joi.string().default("invoices").label("Type"),
+}).options({ stripUnknown: true });
 
 const aiPrefill = async (options = {}, req, res) => {
-  let value;
-  try {
-    value = await prefillSchema.parseAsync(req.body);
-  } catch (error) {
-    if (error.name === "ZodError") {
-      return res.status(400).json({ message: error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join(', ') });
-    }
-    throw error;
+  const { value, error } = prefillSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.message });
   }
 
   const { model, attachment, type } = value;

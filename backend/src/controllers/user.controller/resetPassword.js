@@ -1,14 +1,14 @@
-const { z } = require("zod");
+const Joi = require("joi");
 const User = require("../../models/user.model");
 const bcryptjs = require("bcryptjs");
 const { PasswordDoesNotMatch } = require("../../errors/user.error");
-const bodyJoi = z.object({
-  currentPassword: z.string(),
-  newPassword: z.string(),
+const bodyJoi = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string().required(),
 });
 const resetPassword = async (req, res) => {
   const user = await User.findById(req.session.user._id);
-  const { currentPassword, newPassword } = await bodyJoi.parseAsync(
+  const { currentPassword, newPassword } = await bodyJoi.validateAsync(
     req.body
   );
   const isPasswordMatching = await bcryptjs.compare(

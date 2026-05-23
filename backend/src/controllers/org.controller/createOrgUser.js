@@ -6,7 +6,7 @@ const logger = require("../../logger");
 const { registerUser } = require("../../services/auth.service");
 
 const createOrgUser = async (req, res) => {
-  const body = await orgUserDto.parseAsync(req.body);
+  const body = await orgUserDto.validateAsync(req.body);
   const registeredUser = await registerUser({
     ...body,
     attributes: body.useAdminSMTP ? req.session?.user?.attributes : {},

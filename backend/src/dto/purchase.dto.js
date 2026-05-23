@@ -1,10 +1,30 @@
-const { z } = require("zod");
-const { baseDocumentFields } = require("./common.dto.js");
-
-const purchaseDto = z.object({
-  ...baseDocumentFields,
-  num: z.string().describe("Number"),
-  status: z.enum(["unpaid", "paid"]).default("unpaid").optional().describe("Status"),
+const Joi = require("joi");
+const itemSchema = Joi.object({
+  name: Joi.string().required().label("Item name"),
+  price: Joi.number().integer().required().label("Price"),
+  quantity: Joi.number().required().label("Quantity"),
+  code: Joi.string().allow("").optional().label("HSN/SAC Code"),
+  um: Joi.string().default("none").label("Unit of measurement"),
+  tax: Joi.string().default("none").label("GST applicable"),
+  product: Joi.string().allow("", null).optional().label("Product ID"),
 });
+
+const purchaseDto = Joi.object({
+  party: Joi.string().required().label("Party"),
+  description: Joi.string().optional().allow("").label("Description"),
+  org: Joi.string().optional().label("Organization"),
+  billingAddress: Joi.string().required().label("Party Address"),
+  terms: Joi.string().optional().allow("").label("Terms & Conditions"),
+  items: Joi.array().items(itemSchema).required().label("Invoice Items"),
+  date: Joi.date().required().label("Purchase Invoice date"),
+  shippingCharges: Joi.number().integer().min(0).default(0).label("Shipping Charges"),
+  createdBy: Joi.string().optional(),
+  updatedBy: Joi.string().optional(),
+  num: Joi.string().label("Purchase No.").required(),
+  status: Joi.string()
+    .default("unpaid")
+    .valid("unpaid", "paid")
+    .label("Status"),
+}).options({ stripUnknown: true });
 
 module.exports = { purchaseDto };

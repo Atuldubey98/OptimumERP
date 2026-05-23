@@ -1,12 +1,34 @@
-const { z } = require("zod");
-const { baseDocumentFields } = require("./common.dto.js");
-
-const invoiceDto = z.object({
-  ...baseDocumentFields,
-  prefix: z.string().describe("Prefix"),
-  sequence: z.coerce.number().describe("Sequence"),
-  dueDate: z.string().optional().describe("Due Date"),
-  status: z.enum(["draft", "sent", "pending"]).default("draft").optional().describe("Status"),
+const Joi = require("joi");
+const itemSchema = Joi.object({
+  name: Joi.string().required().label("Item name"),
+  price: Joi.number().integer().required().label("Price"),
+  quantity: Joi.number().required().label("Quantity"),
+  code: Joi.string().allow("").optional().label("Code"),
+  um: Joi.string().label("Unit of measurement"),
+  tax: Joi.string().label("GST applicable"),
+  product: Joi.string().allow("", null).optional().label("Product ID"),
 });
+
+const invoiceDto = Joi.object({
+  party: Joi.string().required().label("Party"),
+  billingAddress: Joi.string().required().label("Billing Address"),
+  description: Joi.string().optional().allow("").label("Description"),
+  terms: Joi.string().optional().allow("").label("Terms and Conditions"),
+  items: Joi.array().items(itemSchema).required().label("Invoice Items"),
+  date: Joi.date().required().label("Invoice date"),
+  prefix: Joi.string().required().allow("").label("Prefix"),
+  org: Joi.string().optional().label("Organization"),
+  sequence: Joi.number().label("Invoice No.").required(),
+  poNo: Joi.string().label("PO Number").allow("").optional(),
+  poDate: Joi.string().label("PO Date").allow("").optional(),
+  dueDate: Joi.string().label("Due Date").allow("").optional(),
+  shippingCharges: Joi.number().integer().min(0).default(0).label("Shipping Charges"),
+  status: Joi.string()
+    .default("draft")
+    .valid("draft", "sent", "pending")
+    .label("Status"),
+  createdBy: Joi.string().optional().label("Created By"),
+  updatedBy: Joi.string().optional().label("Updated By"),
+}).options({ stripUnknown: true });
 
 module.exports = { invoiceDto };

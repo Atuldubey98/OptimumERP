@@ -15,7 +15,7 @@ const {
 } = require("../../services/auth.service");
 
 const login = async (req, res) => {
-  const body = await loginUserDto.parseAsync(req.body);
+  const body = await loginUserDto.validateAsync(req.body);
   const { email, password } = body;
   const user = await User.findByEmailId(email);
   if (!user || !user.active || !user.password) throw new UserNotFound();

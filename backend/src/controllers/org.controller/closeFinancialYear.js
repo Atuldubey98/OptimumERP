@@ -1,23 +1,23 @@
-const { z } = require("zod");
+const Joi = require("joi");
 const Setting = require("../../models/settings.model");
 const { invalidateSettingCache } = require("../../services/setting.service");
 
 const closeFinancialYear = async (req, res) => {
   const orgId = req.params.orgId;
-  const body = await z.object({
-    financialYear: z.object({
-      start: z.string(),
-      end: z.string(),
-    }),
-    transactionPrefix: z.object({
-      invoice: z.string().optional(),
-      quotation: z.string().optional(),
-      purchaseOrder: z.string().optional(),
-      proformaInvoice: z.string().optional(),
-      saleOrder: z.string().optional(),
-      paymentVoucher: z.string().optional(),
-    }),
-  }).parseAsync(req.body);
+  const body = await Joi.object({
+    financialYear: {
+      start: Joi.string().required(),
+      end: Joi.string().required(),
+    },
+    transactionPrefix: {
+      invoice: Joi.string().allow(""),
+      quotation: Joi.string().allow(""),
+      purchaseOrder: Joi.string().allow(""),
+      proformaInvoice: Joi.string().allow(""),
+      saleOrder: Joi.string().allow(""),
+      paymentVoucher: Joi.string().allow(""),
+    },
+  }).validateAsync(req.body);
   const setting = await Setting.findOneAndUpdate(
     { org: orgId },
     {

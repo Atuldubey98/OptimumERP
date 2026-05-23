@@ -3,7 +3,7 @@ const OrgModel = require("../../models/org.model");
 const Um = require("../../models/um.model");
 const { invalidateUmCache } = require("../../services/um.service");
 const create = async (req, res) => {
-  const body = await umDto.parseAsync(req.body);
+  const body = await umDto.validateAsync(req.body);
   body.org = req.params.orgId;
   const um = new Um(body);
   await um.save();
