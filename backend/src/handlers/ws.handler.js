@@ -170,14 +170,13 @@ function getWsHandlers(wss) {
 
       ws.history.push(...newMessages);
 
-      await chatService.addMessages(ws.chatId, [userMessage, ...newMessages]);
-
       ws.send(JSON.stringify({
         event: "ai_response",
         message: response.content,
         downloads: response.downloads || [],
       }));
-
+      chatService.addMessages(ws.chatId, [userMessage, ...newMessages])
+        .catch((err) => logger.error(`Failed to persist messages: ${err.message}`));
     } catch (error) {
       logger.error(`WebSocket Error: ${error.message}`);
       if (config.NODE_ENV === "development") console.log(error);
