@@ -3,6 +3,18 @@ const productService = require("../../services/product.service");
 const { getDetailedSettingForOrg, getDisplaySettingForOrg } = require("../../services/setting.service");
 const { getUmListForOrg } = require("../../services/um.service");
 const { moneyUtils } = require("../../utils");
+const formalizeProductForAi = (product) => {
+  if (!product) return null;
+  return {
+    _id: product._id,
+    name: product.name,
+    sellingPrice: product.sellingPrice,
+    costPrice: product.costPrice,
+    code: product.code,
+    type: product.type,
+  };
+};
+
 const productHandlers = {
   get_product_details: async (params) => {
     try {
@@ -52,7 +64,7 @@ const productHandlers = {
       body.um = um;
       body.org = org;
       const product = await productService.create(body);
-      return product;
+      return formalizeProductForAi(product);
     } catch (error) {
       throw error;
     }

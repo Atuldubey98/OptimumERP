@@ -5,6 +5,18 @@ const { moneyUtils } = require("../../utils");
 
 const { createPartyDto } = require("../../dto/party.dto");
 
+const formalizePartyForAi = (party) => {
+  if (!party) return null;
+  return {
+    _id: party._id,
+    name: party.name,
+    shippingAddress: party.shippingAddress,
+    billingAddress: party.billingAddress,
+    gstNo: party.gstNo,
+    panNo: party.panNo,
+  };
+};
+
 const partyHandler = {
   create_party: async ({ org, createdBy, user, ...params }) => {
     const body = await createPartyDto.parseAsync({ 
@@ -12,12 +24,13 @@ const partyHandler = {
       org: org?.toString(), 
       createdBy: createdBy?.toString() 
     });
-    return partyService.create(body);
+    const party = await partyService.create(body);
+    return formalizePartyForAi(party);
   },
   get_party: async (params) => {
     try {
       const party = await partyService.findOne({ ...params, select: "name billingAddress shippingAddress createdAt gstNo panNo" });
-      return party;
+      return formalizePartyForAi(party);
     } catch (error) {
       return {
         error: true,
@@ -139,7 +152,7 @@ const partyHandler = {
     ]);
 
     return {
-      data: parties,
+      data: parties.map(formalizePartyForAi),
       pagination: {
         total,
         page: parsedPage,

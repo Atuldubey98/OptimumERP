@@ -7,6 +7,21 @@ const Purchase = require("../../models/purchase.model");
 const { moneyUtils } = require("../../utils");
 const settingService = require("../../services/setting.service");
 
+const formalizePaymentVoucherForAi = (v, decimalDigits) => {
+  if (!v) return null;
+  return {
+    _id: v._id,
+    num: v.num,
+    partyName: v.party?.name || v.party,
+    amount: moneyUtils.fromSmallestUnit(v.amount, decimalDigits),
+    paymentMode: v.paymentMode,
+    date: v.date,
+    voucherType: v.voucherType,
+    description: v.description,
+    refDocModel: v.refDocModel,
+  };
+};
+
 const createPaymentVoucher = async (params) => {
   const { org, createdBy, user, ...body } = params;
 
@@ -50,7 +65,7 @@ const createPaymentVoucher = async (params) => {
     });
   });
 
-  return voucher;
+  return formalizePaymentVoucherForAi(await PaymentVoucher.findById(voucher._id).populate("party", "name").lean(), decimalDigits);
 };
 
 const findPaymentVoucher = async (params) => {
@@ -62,7 +77,11 @@ const findPaymentVoucher = async (params) => {
   if (!voucher) {
     throw new Error("Payment voucher not found");
   }
-  return voucher;
+  const displaySetting = await settingService.getDisplaySettingForOrg(params.org);
+  const currencyConfig = await moneyUtils.getCurrencyConfigByCode(displaySetting?.currency || "INR");
+  const decimalDigits = currencyConfig?.decimal_digits ?? 2;
+
+  return formalizePaymentVoucherForAi(voucher, decimalDigits);
 };
 
 const listDocumentVouchers = async (params) => {
@@ -86,10 +105,7 @@ const listDocumentVouchers = async (params) => {
 
   const decimalDigits = currencyConfig?.decimal_digits ?? 2;
 
-  return vouchers.map(v => ({
-    ...v,
-    amount: moneyUtils.fromSmallestUnit(v.amount, decimalDigits)
-  }));
+  return vouchers.map(v => formalizePaymentVoucherForAi(v, decimalDigits));
 };
 
 const paymentVoucherHandler = {

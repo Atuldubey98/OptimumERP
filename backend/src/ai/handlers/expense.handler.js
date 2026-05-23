@@ -5,6 +5,26 @@ const { getDisplaySettingForOrg } = require("../../services/setting.service");
 const { moneyUtils } = require("../../utils");
 const Expense = require("../../models/expense.model");
 
+const formalizeExpenseForAi = (expense, decimalDigits) => {
+  if (!expense) return null;
+  return {
+    _id: expense._id,
+    name: expense.name,
+    amount: moneyUtils.fromSmallestUnit(expense.amount, decimalDigits),
+    category: expense.category?.name || expense.category || "Uncategorized",
+    date: expense.date,
+    refNo: expense.refNo,
+  };
+};
+
+const formalizeExpenseCategoryForAi = (category) => {
+  if (!category) return null;
+  return {
+    _id: category._id,
+    name: category.name,
+  };
+};
+
 const expenseHandlers = {
   list_expenses: async (params) => {
     try {
@@ -13,7 +33,6 @@ const expenseHandlers = {
         ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)
         : null;
       const decimalDigits = currencyConfig?.decimal_digits ?? 2;
-      const fromSmallest = (val) => moneyUtils.fromSmallestUnit(val, decimalDigits);
 
       const filter = { org: params.org };
       if (params.category) {
@@ -42,11 +61,7 @@ const expenseHandlers = {
         .limit(20)
         .lean();
 
-      return expenses.map(e => ({
-        ...e,
-        amount: fromSmallest(e.amount),
-        category: e.category?.name || "Uncategorized"
-      }));
+      return expenses.map(e => formalizeExpenseForAi(e, decimalDigits));
     } catch (error) {
       throw error;
     }
@@ -89,7 +104,7 @@ const expenseHandlers = {
       body.org = org;
 
       const expense = await expenseService.createExpense(body);
-      return expense;
+      return formalizeExpenseForAi(await Expense.findById(expense._id).populate("category").lean(), decimalDigits);
     } catch (error) {
       throw error;
     }
@@ -97,7 +112,8 @@ const expenseHandlers = {
 
   list_expense_categories: async (params) => {
     try {
-      return await expenseCategoryService.getExpenseCategoryListForOrg(params.org);
+      const categories = await expenseCategoryService.getExpenseCategoryListForOrg(params.org);
+      return categories.map(formalizeExpenseCategoryForAi);
     } catch (error) {
       throw error;
     }
@@ -107,7 +123,7 @@ const expenseHandlers = {
     try {
       const category = await expenseCategoryService.create(params);
       expenseCategoryService.invalidateExpenseCategoryCache(params.org);
-      return category;
+      return formalizeExpenseCategoryForAi(category);
     } catch (error) {
       throw error;
     }
