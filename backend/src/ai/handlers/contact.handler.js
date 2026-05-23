@@ -24,7 +24,7 @@ const contactHandler = {
     const contacts = await contactService.getAll({
       filter,
       limit: 10,
-      sort: { createdAt: -1 },
+      sort: params.query ? { score: { $meta: "textScore" } } : { createdAt: -1 },
       shouldPaginate: false,
     });
     return contacts;
