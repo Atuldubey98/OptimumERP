@@ -6,7 +6,7 @@ const taxDto = z.object({
   type: z.enum(["single", "grouped"]).default("single").describe("Type"),
   category: z.enum(["igst", "sgst", "cgst", "vat", "cess", "sal", "others", "none"]).describe("Category"),
   children: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/)).optional().describe("Children"),
-  percentage: z.number().min(0).max(100).default(0).optional().describe("Percentage"),
+  percentage: z.coerce.number().min(0).max(100).default(0).optional().describe("Percentage"),
   enabled: z.boolean().default(true).optional().describe("Enabled"),
   createdBy: z.string().describe("Created By"),
 });

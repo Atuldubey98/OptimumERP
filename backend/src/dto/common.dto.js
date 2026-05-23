@@ -2,8 +2,8 @@ const { z } = require("zod");
 
 const itemSchema = z.object({
   name: z.string().describe("Name"),
-  price: z.number().int().describe("Price"),
-  quantity: z.number().describe("Quantity"),
+  price: z.coerce.number().int().describe("Price"),
+  quantity: z.coerce.number().describe("Quantity"),
   code: z.string().optional().describe("Code"),
   um: z.string().optional().describe("Unit of Measurement"),
   tax: z.string().optional().describe("Tax"),
@@ -19,13 +19,13 @@ const baseDocumentFields = {
   org: z.string().optional().describe("Organization"),
   items: z.array(itemSchema).describe("Items"),
   date: z.union([z.string(), z.date()]).describe("Date"),
-  shippingCharges: z.number().int().min(0).default(0).optional().describe("Shipping Charges"),
+  shippingCharges: z.coerce.number().int().min(0).default(0).optional().describe("Shipping Charges"),
   createdBy: z.string().optional().describe("Created By"),
   updatedBy: z.string().optional().describe("Updated By"),
   poNo: z.string().optional().describe("PO Number"),
   poDate: z.string().optional().describe("PO Date"),
   prefix: z.string().optional().describe("Prefix"),
-  sequence: z.number().optional().describe("Sequence"),
+  sequence: z.coerce.number().optional().describe("Sequence"),
   status: z.string().optional().describe("Status"),
 };
 

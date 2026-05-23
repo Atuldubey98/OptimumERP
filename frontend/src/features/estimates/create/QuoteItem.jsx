@@ -165,7 +165,7 @@ function QuoteItem({
                 formik.setFieldValue(`items[${index}].quantity`, value);
               }}
             >
-              <NumberInputField placeholder={t("quote_ui.form.quantity_placeholder")} />
+              <NumberInputField type="number" placeholder={t("quote_ui.form.quantity_placeholder")} />
               <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />

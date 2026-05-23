@@ -2,8 +2,8 @@ const { z } = require("zod");
 
 const productDto = z.object({
   name: z.string().describe("Name"),
-  costPrice: z.number().int().optional().describe("Cost Price"),
-  sellingPrice: z.number().int().optional().describe("Selling Price"),
+  costPrice: z.coerce.number().int().optional().describe("Cost Price"),
+  sellingPrice: z.coerce.number().int().optional().describe("Selling Price"),
   description: z.string().max(200).optional().describe("Description"),
   um: z.string().optional().describe("Unit of Measurement"),
   type: z.enum(["goods", "service"]).describe("Type"),

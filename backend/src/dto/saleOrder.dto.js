@@ -4,7 +4,7 @@ const { baseDocumentFields } = require("./common.dto.js");
 const saleOrderDto = z.object({
   ...baseDocumentFields,
   createdBy: z.string().describe("Created By"),
-  soNo: z.number().optional().describe("SO Number"),
+  soNo: z.coerce.number().optional().describe("SO Number"),
   status: z.enum(["draft", "sent", "pending"]).default("draft").optional().describe("Status"),
 });
 

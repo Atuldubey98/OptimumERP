@@ -12,7 +12,7 @@ const frequencyFields = {
   interval: z.enum(["weekly", "monthly", "yearly", "quarterly", "triannually", "semiannually", "half_yearly", "daily"]).describe("Interval"),
   startDate: z.union([z.string(), z.date()]).describe("Start Date"),
   endDate: z.union([z.string(), z.date()]).describe("End Date"),
-  dateOfEveryMonth: z.number().min(1).max(31).optional().describe("Date Of Every Month"),
+  dateOfEveryMonth: z.coerce.number().min(1).max(31).optional().describe("Date Of Every Month"),
   dayOfEveryWeek: z.enum(["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]).optional().describe("Day Of Every Week"),
 };
 
