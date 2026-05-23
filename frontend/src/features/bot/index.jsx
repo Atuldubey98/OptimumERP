@@ -197,7 +197,7 @@ const ChatWidget = () => {
                   showReset={messages.length > 0}
                 />
 
-                <Box flex="1" overflowY="auto" p={4} bg={messageAreaBg} ref={scrollRef}>
+                <Box flex="1" overflowY="auto" overflowX="hidden" p={4} bg={messageAreaBg} ref={scrollRef}>
                   <VStack align="stretch" spacing={4} minHeight="100%">
                     {!activeProvider ? (
                       <SetupRequired

@@ -20,7 +20,7 @@ const chatSchema = new Schema(
       {
         role: {
           type: String,
-          enum: ["system", "user", "assistant", "tool"],
+          enum: ["system", "user", "assistant", "tool", "ai"],
           required: true,
         },
         content: {

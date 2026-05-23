@@ -8,10 +8,9 @@ const MessageList = ({ messages, formatTime }) => {
       {messages.map((msg, i) => (
         <motion.div
           key={msg.id || `${i}-${msg.timestamp}`}
-          initial={{ opacity: 0, x: msg.role === "user" ? 20 : -20 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-          layout
         >
           <MessageItem msg={msg} formatTime={formatTime} />
         </motion.div>
