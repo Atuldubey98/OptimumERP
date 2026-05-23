@@ -7,7 +7,7 @@ const Transaction = require("../../models/transaction.model.js");
 const { executeMongoDbTransaction } = require("../../services/crud.service.js");
 const settingService = require("../../services/setting.service.js");
 const create = async (req, res) => {
-  const body = await expenseDto.validateAsync(req.body);
+  const body = await expenseDto.parseAsync(req.body);
   body.org = req.params.orgId;
 
   await executeMongoDbTransaction(async (session) => {

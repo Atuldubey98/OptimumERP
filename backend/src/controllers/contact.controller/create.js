@@ -1,7 +1,7 @@
 const { contactDto } = require("../../dto/contact.dto");
 const contactService = require("../../services/contact.service");
 const create = async (req, res) => {
-  const body = await contactDto.validateAsync(req.body);
+  const body = await contactDto.parseAsync(req.body);
   const contact = await contactService.create({
     ...body,
     org: req.params.orgId,

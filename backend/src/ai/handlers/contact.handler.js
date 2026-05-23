@@ -5,7 +5,7 @@ const { ContactNotFound } = require("../../errors/contact.error");
 
 const contactHandler = {
   create_contact: async ({ org, createdBy, user, ...params }) => {
-    const body = await contactDto.validateAsync({ ...params, createdBy: createdBy?.toString() });
+    const body = await contactDto.parseAsync({ ...params, createdBy: createdBy?.toString() });
     const contact = await contactService.create({
       ...body,
       org,

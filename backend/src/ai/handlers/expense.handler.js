@@ -85,7 +85,7 @@ const expenseHandlers = {
         org
       };
 
-      const body = await expenseDto.validateAsync({ ...rawParams, createdBy: createdBy?.toString() });
+      const body = await expenseDto.parseAsync({ ...rawParams, createdBy: createdBy?.toString() });
       body.org = org;
 
       const expense = await expenseService.createExpense(body);

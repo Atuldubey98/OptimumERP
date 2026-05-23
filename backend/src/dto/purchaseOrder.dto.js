@@ -1,38 +1,14 @@
-const Joi = require("joi");
-const itemSchema = Joi.object({
-  name: Joi.string().required(),
-  price: Joi.number().integer().required(),
-  quantity: Joi.number().required(),
-  um: Joi.string().default("none"),
-  code: Joi.string().label("HSN/SAC Code").allow(""),
-  tax: Joi.string().default("none"),
-  product: Joi.string().allow("", null).optional().label("Product ID"),
-});
+const { z } = require("zod");
+const { baseDocumentFields } = require("./common.dto.js");
 
-const purchaseOrderDto = Joi.object({
-  party: Joi.string().required().label("Party"),
-  org: Joi.string().required().label("Party"),
-  sequence: Joi.number().required(),
-  discount: Joi.number()
-    .default(0)
-    .label("Discount")
-    .min(0)
-    .max(100)
-    .optional(),
-  date: Joi.string().required().label("PO Date"),
-  prefix: Joi.string().label("Prefix").allow("").optional(),
-  description: Joi.string().allow("").label("Description"),
-  billingAddress: Joi.string().required().label("Billing Address"),
-  items: Joi.array().items(itemSchema).required().label("Items"),
-  shippingCharges: Joi.number().integer().min(0).default(0).label("Shipping Charges"),
-  terms: Joi.string().allow("").label("Terms"),
-  num: Joi.string().default("").allow(""),
-  status: Joi.string()
-    .default("draft")
-    .valid("draft", "sent", "paid")
-    .label("Status"),
-  createdBy: Joi.string().optional().label("Created By"),
-  updatedBy: Joi.string().optional().label("Updated By"),
-}).options({ stripUnknown: true });
+const purchaseOrderDto = z.object({
+  ...baseDocumentFields,
+  org: z.string().describe("Organization"),
+  sequence: z.number().describe("Sequence"),
+  discount: z.number().min(0).max(100).default(0).optional().describe("Discount"),
+  prefix: z.string().optional().describe("Prefix"),
+  num: z.string().optional().describe("Number"),
+  status: z.enum(["draft", "sent", "paid"]).default("draft").optional().describe("Status"),
+});
 
 module.exports = { purchaseOrderDto };

@@ -12,7 +12,7 @@ const Um = require("../../models/um.model");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 
 const create = async (req, res) => {
-  const body = await createOrgDto.validateAsync(req.body);
+  const body = await createOrgDto.parseAsync(req.body);
   const org = await executeMongoDbTransaction(async (session) => {
     const organization = new Org(body);
     organization.relatedDocsCount.expenseCategories = expenseCategories.length;

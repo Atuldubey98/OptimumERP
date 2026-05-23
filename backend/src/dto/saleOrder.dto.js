@@ -1,28 +1,11 @@
-const Joi = require("joi");
-const itemSchema = Joi.object({
-  name: Joi.string().required().label("Item name"),
-  price: Joi.number().integer().required().label("Price"),
-  quantity: Joi.number().required().label("Quantity"),
-  code: Joi.string().allow("").optional().label("Code"),
-  um: Joi.string().default("none").label("Unit of measurement"),
-  gst: Joi.string().default("none").label("GST applicable"),
-  product: Joi.string().allow("", null).optional().label("Product ID"),
-});
+const { z } = require("zod");
+const { baseDocumentFields } = require("./common.dto.js");
 
-const saleOrderDto = Joi.object({
-  party: Joi.string().required().label("Party"),
-  billingAddress: Joi.string().required().label("Billing Address"),
-  description: Joi.string().optional().allow("").label("Description"),
-  terms: Joi.string().optional().allow("").label("Terms and Conditions"),
-  items: Joi.array().items(itemSchema).required().label("Items"),
-  date: Joi.date().required().label("Date"),
-  soNo: Joi.number().label("SO Number").allow("").optional(),
-  status: Joi.string()
-    .default("draft")
-    .valid("draft", "sent", "pending")
-    .label("Status"),
-  createdBy: Joi.string().required().label("Created By"),
-  updatedBy: Joi.string().optional().label("Updated By"),
-}).options({ stripUnknown: true });
+const saleOrderDto = z.object({
+  ...baseDocumentFields,
+  createdBy: z.string().describe("Created By"),
+  soNo: z.number().optional().describe("SO Number"),
+  status: z.enum(["draft", "sent", "pending"]).default("draft").optional().describe("Status"),
+});
 
 module.exports = { saleOrderDto };

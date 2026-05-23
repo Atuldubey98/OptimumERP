@@ -1,13 +1,11 @@
-const Joi = require("joi");
+const { z } = require("zod");
 const { OrgNotFound } = require("../../errors/org.error");
 const Product = require("../../models/product.model");
 const OrgModel = require("../../models/org.model");
 const { productDto } = require("../../dto/product.dto");
 
 const bulkCreate = async (req, res) => {
-  const body = await Joi.array()
-    .items(productDto)
-    .validateAsync(req.body.items);
+  const body = await z.array(productDto).parseAsync(req.body.items);
   const orgId = req.params.orgId;
   if (!orgId) throw new OrgNotFound();
   const productsToInsert = body.map((product) => ({

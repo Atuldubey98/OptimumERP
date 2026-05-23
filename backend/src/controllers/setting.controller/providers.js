@@ -1,41 +1,28 @@
-const Joi = require("joi");
+const { z } = require("zod");
 const { getProvider } = require("../../ai/providers");
 const Setting = require("../../models/settings.model");
 const { encrypt } = require("../../services/hashing.service");
 const { invalidateSettingCache } = require("../../services/setting.service");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
 
-const create = async (req, res) => {
-    const schema = Joi.object({
-        name: Joi.string().required(),
-        provider: Joi.string().valid("grok", "ollama").required(),
-        fields: Joi.object({
-            apiKey: Joi.string().required(),
-        }).required(),
-    });
-
-    const value = await schema.validateAsync(req.body);
-
+const addProvider = async (req, res, providerField, getFieldsToSave, schema, validateFn) => {
+    const value = await schema.parseAsync(req.body);
     const org = req.params.orgId;
     const { name, provider, fields } = value;
 
-    const aiProvider = getProvider(provider, {
-        apiKey: fields.apiKey,
-    });
+    if (validateFn) validateFn(provider, fields);
 
-    const encryptedApiKey = encrypt(fields.apiKey);
+    const fieldsToSave = getFieldsToSave(fields);
 
     const currentSetting = await Setting.findOne({ org });
-    const isActive = !currentSetting.aiProviders || currentSetting.aiProviders.length === 0;
+    const isActive = !currentSetting[providerField] || currentSetting[providerField].length === 0;
 
     const result = await Setting.updateOne({ org }, {
         $push: {
-            aiProviders: {
+            [providerField]: {
                 name,
                 provider,
-                fields: {
-                    apiKey: encryptedApiKey
-                },
+                fields: fieldsToSave,
                 isActive
             }
         }
@@ -45,15 +32,15 @@ const create = async (req, res) => {
         return res.status(404).json({ success: false, message: "Organization settings not found" });
     }
 
-    await invalidateSettingCache(org);
+    invalidateSettingCache(org);
 
     return res.status(201).json({
         success: true,
-        message: "AI Provider added successfully"
+        message: `${providerField === 'aiProviders' ? 'AI' : 'SMTP'} Provider added successfully`
     });
 };
 
-const remove = async (req, res) => {
+const deleteProvider = async (req, res, providerField) => {
     const { providerId } = req.params;
     const org = req.params.orgId;
 
@@ -65,49 +52,49 @@ const remove = async (req, res) => {
             throw error;
         }
 
-        const providerToRemove = setting.aiProviders.find(p => p._id.toString() === providerId);
+        const providerToRemove = setting[providerField].find(p => p._id.toString() === providerId);
         const wasActive = providerToRemove?.isActive;
 
         await Setting.updateOne({ org }, {
             $pull: {
-                aiProviders: { _id: providerId }
+                [providerField]: { _id: providerId }
             }
         }, { session });
 
         if (wasActive) {
             const updatedSetting = await Setting.findOne({ org }).session(session);
-            if (updatedSetting.aiProviders.length > 0) {
+            if (updatedSetting[providerField] && updatedSetting[providerField].length > 0) {
                 await Setting.updateOne(
-                    { org, "aiProviders.0": { $exists: true } },
-                    { $set: { "aiProviders.0.isActive": true } },
+                    { org, [`${providerField}.0`]: { $exists: true } },
+                    { $set: { [`${providerField}.0.isActive`]: true } },
                     { session }
                 );
             }
         }
     });
 
-    await invalidateSettingCache(org);
+    invalidateSettingCache(org);
 
     return res.status(200).json({
         success: true,
-        message: "AI Provider removed successfully"
+        message: `${providerField === 'aiProviders' ? 'AI' : 'SMTP'} Provider removed successfully`
     });
 };
 
-const setActive = async (req, res) => {
+const activateProvider = async (req, res, providerField) => {
     const { providerId } = req.params;
     const org = req.params.orgId;
 
     await executeMongoDbTransaction(async (session) => {
         await Setting.updateOne(
             { org },
-            { $set: { "aiProviders.$[].isActive": false } },
+            { $set: { [`${providerField}.$[].isActive`]: false } },
             { session }
         );
 
         const result = await Setting.updateOne(
-            { org, "aiProviders._id": providerId },
-            { $set: { "aiProviders.$.isActive": true } },
+            { org, [`${providerField}._id`]: providerId },
+            { $set: { [`${providerField}.$.isActive`]: true } },
             { session }
         );
 
@@ -122,128 +109,46 @@ const setActive = async (req, res) => {
 
     return res.status(200).json({
         success: true,
-        message: "AI Provider activated successfully"
+        message: `${providerField === 'aiProviders' ? 'AI' : 'SMTP'} Provider activated successfully`
     });
 };
 
-const createSmtp = async (req, res) => {
-    const schema = Joi.object({
-        name: Joi.string().required(),
-        provider: Joi.string().valid("gmail", "brevo").required(),
-        fields: Joi.object({
-            user: Joi.string().required(),
-            pass: Joi.string().required(),
-            port: Joi.number().required(),
-            secure: Joi.boolean().required(),
-        }).required(),
-    });
+const aiSchema = z.object({
+    name: z.string(),
+    provider: z.enum(["grok", "ollama"]),
+    fields: z.object({
+        apiKey: z.string(),
+    }),
+});
 
-    const value = await schema.validateAsync(req.body);
-    const org = req.params.orgId;
-    const { name, provider, fields } = value;
+const create = (req, res) => addProvider(
+    req, res, 'aiProviders',
+    (fields) => ({ apiKey: encrypt(fields.apiKey) }),
+    aiSchema,
+    (provider, fields) => getProvider(provider, { apiKey: fields.apiKey })
+);
 
-    const encryptedPass = encrypt(fields.pass);
+const remove = (req, res) => deleteProvider(req, res, 'aiProviders');
+const setActive = (req, res) => activateProvider(req, res, 'aiProviders');
 
-    const currentSetting = await Setting.findOne({ org });
-    const isActive = !currentSetting.smtpProviders || currentSetting.smtpProviders.length === 0;
+const smtpSchema = z.object({
+    name: z.string(),
+    provider: z.enum(["gmail", "brevo"]),
+    fields: z.object({
+        user: z.string(),
+        pass: z.string(),
+        port: z.number(),
+        secure: z.boolean(),
+    }),
+});
 
-    const result = await Setting.updateOne({ org }, {
-        $push: {
-            smtpProviders: {
-                name,
-                provider,
-                fields: {
-                    ...fields,
-                    pass: encryptedPass
-                },
-                isActive
-            }
-        }
-    });
+const createSmtp = (req, res) => addProvider(
+    req, res, 'smtpProviders',
+    (fields) => ({ ...fields, pass: encrypt(fields.pass) }),
+    smtpSchema
+);
 
-    if (result.matchedCount === 0) {
-        return res.status(404).json({ success: false, message: "Organization settings not found" });
-    }
-
-    await invalidateSettingCache(org);
-
-    return res.status(201).json({
-        success: true,
-        message: "SMTP Provider added successfully"
-    });
-};
-
-const removeSmtp = async (req, res) => {
-    const { providerId } = req.params;
-    const org = req.params.orgId;
-
-    await executeMongoDbTransaction(async (session) => {
-        const setting = await Setting.findOne({ org }).session(session);
-        if (!setting) {
-            const error = new Error("Organization settings not found");
-            error.statusCode = 404;
-            throw error;
-        }
-
-        const providerToRemove = setting.smtpProviders.find(p => p._id.toString() === providerId);
-        const wasActive = providerToRemove?.isActive;
-
-        await Setting.updateOne({ org }, {
-            $pull: {
-                smtpProviders: { _id: providerId }
-            }
-        }, { session });
-
-        if (wasActive) {
-            const updatedSetting = await Setting.findOne({ org }).session(session);
-            if (updatedSetting.smtpProviders.length > 0) {
-                await Setting.updateOne(
-                    { org, "smtpProviders.0": { $exists: true } },
-                    { $set: { "smtpProviders.0.isActive": true } },
-                    { session }
-                );
-            }
-        }
-    });
-
-    await invalidateSettingCache(org);
-
-    return res.status(200).json({
-        success: true,
-        message: "SMTP Provider removed successfully"
-    });
-};
-
-const setActiveSmtp = async (req, res) => {
-    const { providerId } = req.params;
-    const org = req.params.orgId;
-
-    await executeMongoDbTransaction(async (session) => {
-        await Setting.updateOne(
-            { org },
-            { $set: { "smtpProviders.$[].isActive": false } },
-            { session }
-        );
-
-        const result = await Setting.updateOne(
-            { org, "smtpProviders._id": providerId },
-            { $set: { "smtpProviders.$.isActive": true } },
-            { session }
-        );
-
-        if (result.matchedCount === 0) {
-            const error = new Error("Provider not found");
-            error.statusCode = 404;
-            throw error;
-        }
-    });
-
-    await invalidateSettingCache(org);
-
-    return res.status(200).json({
-        success: true,
-        message: "SMTP Provider activated successfully"
-    });
-};
+const removeSmtp = (req, res) => deleteProvider(req, res, 'smtpProviders');
+const setActiveSmtp = (req, res) => activateProvider(req, res, 'smtpProviders');
 
 module.exports = { create, remove, setActive, createSmtp, removeSmtp, setActiveSmtp };

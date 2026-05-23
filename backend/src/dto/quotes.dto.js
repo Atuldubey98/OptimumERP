@@ -1,32 +1,11 @@
-const Joi = require("joi");
-const itemSchema = Joi.object({
-  name: Joi.string().required(),
-  price: Joi.number().integer().required(),
-  quantity: Joi.number().required(),
-  um: Joi.string().default("none"),
-  code : Joi.string().default("HSN/SAC Code").allow(""),
-  tax: Joi.string().default("none"),
-  product: Joi.string().allow("", null).optional().label("Product ID"),
-});
+const { z } = require("zod");
+const { baseDocumentFields } = require("./common.dto.js");
 
-const quoteDto = Joi.object({
-  party: Joi.string().required().label("Party"),
-  description: Joi.string().optional().allow("").label("Description"),
-  billingAddress: Joi.string().required().label("Party Address"),
-  terms: Joi.string().optional().allow("").label("Terms and Conditions"),
-  prefix : Joi.string().required().allow("").label("Prefix"),
-  org : Joi.string().optional(),
-  items: Joi.array().items(itemSchema).required().label("Quotation Items"),
-  date: Joi.date().required().label("Quotation date"),
-  sequence: Joi.number()
-    .required()
-    .label("Quote No."),
-  status: Joi.string()
-    .default("draft")
-    .valid("draft", "pending", "sent", "accepted", "declined")
-    .label("Status"),
-  createdBy: Joi.string().optional().label("Created By"),
-  updatedBy: Joi.string().optional().label("Updated By"),
-}).options({ stripUnknown: true });
+const quoteDto = z.object({
+  ...baseDocumentFields,
+  prefix: z.string().describe("Prefix"),
+  sequence: z.number().describe("Sequence"),
+  status: z.enum(["draft", "pending", "sent", "accepted", "declined"]).default("draft").optional().describe("Status"),
+});
 
 module.exports = { quoteDto };

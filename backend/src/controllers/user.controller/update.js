@@ -1,10 +1,10 @@
-const Joi = require("joi");
+const { z } = require("zod");
 const User = require("../../models/user.model");
-const userDto = Joi.object({
-  name: Joi.string().label("Name").min(3).max(60).required(),
+const userDto = z.object({
+  name: z.string().min(3).max(60),
 });
 const update = async (req, res) => {
-  const body = await userDto.validateAsync(req.body);
+  const body = await userDto.parseAsync(req.body);
   await User.findOneAndUpdate(
     {
       _id: req.session.user._id,

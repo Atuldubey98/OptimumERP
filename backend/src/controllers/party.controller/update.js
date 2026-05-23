@@ -4,7 +4,7 @@ const Party = require("../../models/party.model");
 
 const update = async (req, res) => {
   if (!req.params.partyId) throw new PartyNotFound();
-  const body = await updatePartyDto.validateAsync(req.body);
+  const body = await updatePartyDto.parseAsync(req.body);
   const updatedParty = await Party.findOneAndUpdate(
     { _id: req.params.partyId, org: req.params.orgId },
     body

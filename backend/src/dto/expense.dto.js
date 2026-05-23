@@ -1,13 +1,13 @@
-const Joi = require("joi");
+const { z } = require("zod");
 
-const expenseDto = Joi.object({
-  description: Joi.string().required().label("Description"),
-  amount: Joi.number().integer().required().label("Amount"),
-  category: Joi.string().allow(null),
-  date: Joi.string().optional(),
-  createdBy: Joi.string().optional(),
-  updatedBy: Joi.string().optional(),
-  org: Joi.string().optional(),
-}).options({ stripUnknown: true });
+const expenseDto = z.object({
+  description: z.string().describe("Description"),
+  amount: z.number().int().describe("Amount"),
+  category: z.string().nullable().optional().describe("Category"),
+  date: z.string().optional().describe("Date"),
+  createdBy: z.string().optional().describe("Created By"),
+  updatedBy: z.string().optional().describe("Updated By"),
+  org: z.string().optional().describe("Organization"),
+});
 
 module.exports = { expenseDto };

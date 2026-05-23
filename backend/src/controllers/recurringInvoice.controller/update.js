@@ -3,7 +3,7 @@ const { RecurringInvoiceNotFound } = require("../../errors/recurringInvoice.erro
 const recurringInvoiceService = require("../../services/recurringInvoice.service");
 
 const update = async (req, res) => {
-    const body = await updateRecurringInvoiceDto.validateAsync(req.body);
+    const body = await updateRecurringInvoiceDto.parseAsync(req.body);
     const filter = {
         _id: req.params.recurringInvoiceId,
         org: req.params.orgId,

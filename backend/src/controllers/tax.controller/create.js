@@ -24,7 +24,7 @@ const calculateTotalPercentageForSingleTaxes = async (taxIds = [], orgId) => {
 };
 
 const create = async (req, res) => {
-  const body = await taxDto.validateAsync(req.body);
+  const body = await taxDto.parseAsync(req.body);
   body.org = req.params.orgId;
   const tax = new Tax(body);
   if (tax.category === "none") {

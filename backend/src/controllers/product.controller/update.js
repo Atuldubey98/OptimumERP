@@ -8,7 +8,7 @@ const update = async (req, res) => {
   const orgId = req.params.orgId;
   if (!productId) throw new ProductNotFound();
   if (!orgId) throw new OrgNotFound();
-  const body = await productDto.validateAsync(req.body);
+  const body = await productDto.parseAsync(req.body);
   const updatedProduct = await Product.findOneAndUpdate(
     { _id: productId, org: orgId },
     body,
