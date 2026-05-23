@@ -185,7 +185,7 @@ const billTools = [
               type: "object",
               properties: {
                 name: { type: "string" },
-                code: { type: "string", description: "HSN/Code of the system" },
+                code: { type: "string", description: "HSN/SAC/Code of the item. GENERATE only when not provided" },
                 quantity: { type: "number" },
                 price: { type: "number" },
                 um: { type: "string" },
