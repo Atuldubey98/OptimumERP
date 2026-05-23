@@ -2,7 +2,7 @@ const chatService = require("../../services/chat.service");
 const requestAsyncHandler = require("../../handlers/requestAsync.handler");
 
 const clearChat = requestAsyncHandler(async (req, res) => {
-  const { chatId, model } = req.body;
+  const { chatId, model, providerId } = req.body;
   const { orgId } = req.params;
   const userId = req.user?._id;
 
@@ -12,7 +12,7 @@ const clearChat = requestAsyncHandler(async (req, res) => {
     targetChatId = activeChat._id;
   }
 
-  await chatService.clearChat(targetChatId, model);
+  await chatService.clearChat(targetChatId, model, providerId);
 
   res.status(200).json({
     success: true,

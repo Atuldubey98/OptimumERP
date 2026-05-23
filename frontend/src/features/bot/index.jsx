@@ -141,7 +141,7 @@ const ChatWidget = () => {
   const handleConfirmReset = async () => {
     setIsClearing(true);
     try {
-      await clearHistory(selectedModel);
+      await clearHistory(selectedModel, selectedProviderId);
       onResetClose();
     } finally {
       setIsClearing(false);

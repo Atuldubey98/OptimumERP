@@ -22,7 +22,7 @@ const getChatById = async (chatId) => {
 };
 
 
-const clearChat = async (chatId, model) => {
+const clearChat = async (chatId, model, providerId) => {
   const chat = await Chat.findById(chatId);
 
   if (!chat || !chat.isActive) return null;
@@ -39,7 +39,20 @@ const clearChat = async (chatId, model) => {
     (async () => {
       const aiFactory = require("../ai");
       const factory = require("../ai/prompts/factory");
-      const { ai, defaultModel } = await aiFactory.getAIInstanceForOrg(orgId);
+
+      let ai, defaultModel;
+      if (providerId) {
+        ({ ai, defaultModel } = await aiFactory.getAIInstanceForProvider(orgId, providerId));
+      } else {
+        // Fallback: pick first active provider for title generation
+        const settingService = require("../services/setting.service");
+        const { decrypt } = require("../services/hashing.service");
+        const settings = await settingService.getDetailedSettingForOrg(orgId);
+        const activeProvider = settings?.aiProviders?.find((p) => p.isActive);
+        if (activeProvider) {
+          ({ ai, defaultModel } = await aiFactory.getAIInstanceForProvider(orgId, activeProvider._id.toString()));
+        }
+      }
 
       if (ai) {
         const prompt = factory.titlePrompt().build();
