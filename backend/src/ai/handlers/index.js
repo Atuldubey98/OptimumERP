@@ -7,20 +7,18 @@ const expenseHandlers = require("./expense.handler");
 const reportHandlers = require("./report.handler");
 const dashboardHandlers = require("./dashboard.handler");
 const smtpHandler = require("./smtp.handler");
+const handlers = {
+  ...billHandler,
+  ...partyHandler,
+  ...productHandlers,
+  ...contactHandlers,
+  ...paymentVoucherHandler,
+  ...expenseHandlers,
+  ...reportHandlers,
+  ...dashboardHandlers,
+  ...smtpHandler,
 
-const getHandler = (handlerName) => {
-  const handlers = {
-    ...billHandler,
-    ...partyHandler,
-    ...productHandlers,
-    ...contactHandlers,
-    ...paymentVoucherHandler,
-    ...expenseHandlers,
-    ...reportHandlers,
-    ...dashboardHandlers,
-    ...smtpHandler,
-
-  };
-  return handlers[handlerName];
 };
+const getHandler = (handlerName) => handlers[handlerName];
+
 module.exports = getHandler;
