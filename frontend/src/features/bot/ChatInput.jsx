@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Icon, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, VStack, Tag, TagLabel, TagCloseButton, Flex, IconButton, HStack, Circle, keyframes, Icon, Tooltip, useDisclosure, Text } from "@chakra-ui/react";
 import TextareaAutosize from "react-textarea-autosize";
 import { FiMic, FiPaperclip, FiSend, FiImage as FiImageIcon, FiFileText, FiCpu, FiSquare, FiSettings } from "react-icons/fi";
 import ModelSelectModal from "./components/ModelSelectModal";
@@ -37,6 +37,8 @@ const ChatInput = memo(({
   const currentModel = availableModels.find(m => m.id === selectedModel);
   const hasNoProvider = !activeProviders || activeProviders.length === 0;
   const { isOpen: isModelModalOpen, onOpen: onModelModalOpen, onClose: onModelModalClose } = useDisclosure();
+  const charsLeft = 1000 - (input || "").length;
+
   return (
     <Box p={3} bg="gray.800" borderTopWidth="1px" borderColor="whiteAlpha.100" _light={{ bg: "white", borderColor: "gray.100" }}>
       <VStack align="stretch" spacing={2}>
@@ -67,7 +69,17 @@ const ChatInput = memo(({
             maxRows={5}
             placeholder={isListening ? "Listening..." : "Ask me anything..."}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              let val = e.target.value;
+              // Trim leading whitespace
+              val = val.replace(/^\s+/, "");
+              // Replace consecutive spaces with a single space
+              val = val.replace(/ +/g, " ");
+              // Limit characters to 1000
+              if (val.length <= 1000) {
+                setInput(val);
+              }
+            }}
             onKeyDown={handleKeyDown}
             fontSize="13px"
             width="100%"
@@ -78,6 +90,7 @@ const ChatInput = memo(({
             _light={{ color: "gray.800" }}
             _focus={{ outline: "none" }}
             style={{ resize: "none" }}
+            maxLength={1000}
           />
 
           <Flex px={2} pb={2} justify="space-between" align="center">
@@ -115,6 +128,17 @@ const ChatInput = memo(({
                 </>
               )}
             </HStack>
+
+            <Text
+              fontSize="xs"
+              fontWeight="medium"
+              color={charsLeft <= 100 ? "red.400" : charsLeft <= 200 ? "orange.400" : "whiteAlpha.500"}
+              _light={{
+                color: charsLeft <= 100 ? "red.500" : charsLeft <= 200 ? "orange.500" : "gray.400"
+              }}
+            >
+              {(input || "").length}/1000
+            </Text>
 
             <HStack spacing={2}>
               <>
@@ -193,7 +217,7 @@ const ChatInput = memo(({
                   size="sm"
                   icon={<FiSend size={14} />}
                   onClick={handleSend}
-                  isDisabled={!isConnected || (!input.trim() && !attachment)}
+                  isDisabled={!isConnected || (!(input || "").trim() && !attachment)}
                   borderRadius="lg"
                   boxShadow="md"
                   _hover={{ transform: "scale(1.05)" }}

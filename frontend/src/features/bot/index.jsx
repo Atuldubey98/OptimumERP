@@ -91,7 +91,8 @@ const ChatWidget = () => {
 
   const { attachment, handleFileChange, clearAttachment } = useFileUpload();
   const { isListening, isSupported, startListening, stopListening } = useSpeechToText((transcript) => {
-    setInput(transcript);
+    let clean = transcript.replace(/^\s+/, "").replace(/ +/g, " ");
+    setInput(clean.slice(0, 1000));
   });
 
   const scrollToBottom = useCallback(() => {
