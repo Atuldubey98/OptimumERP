@@ -10,6 +10,8 @@ const updateDto = Joi.object({
   date: Joi.string().label("Date"),
   party: Joi.string().label("Party"),
   voucherType: Joi.string().valid("receipt", "payment").label("Voucher Type"),
+  refDoc: Joi.string().allow(null).label("Reference Document"),
+  refDocModel: Joi.string().valid("invoice", "purchase").allow(null).label("Reference Document Model"),
 }).min(1);
 
 const update = async (req, res) => {
