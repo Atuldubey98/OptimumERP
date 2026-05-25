@@ -126,8 +126,6 @@ export default function PurchasePage() {
     onOpen: openPayout,
     onClose: closePayout,
   } = useDisclosure();
-  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
-  useDisclosure();
   const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
     useDisclosure();
   return (
@@ -146,10 +144,6 @@ export default function PurchasePage() {
                 dateFilter={dateFilter}
               />
             }
-            showExport={{
-              onExport: toggleExportModal,
-              status: "idle",
-            }}
             limitKey={"purchases"}
             heading={t("purchase_ui.page.heading")}
             tableData={purchases.map(purchaseTableMapper)}
@@ -233,33 +227,6 @@ export default function PurchasePage() {
         {loading ? null : (
           <Pagination currentPage={currentPage} total={totalPages} />
         )}
-        {isExportModalOpen ? (
-          <ExporterModal
-            isOpen={isExportModalOpen}
-            onClose={toggleExportModal}
-            downloadUrl={`/api/v1/organizations/${orgId}/purchases/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
-            defaultSelectedFields={{
-              partyName: t("purchase_ui.export.default_fields.party_name"),
-              billingAddress: t("purchase_ui.export.default_fields.billing_address"),
-              total: t("purchase_ui.export.default_fields.total"),
-              totalTax: t("purchase_ui.export.default_fields.total_tax"),
-              num: t("purchase_ui.export.default_fields.num"),
-              status: t("purchase_ui.export.default_fields.status"),
-              grandTotal: t("purchase_ui.export.default_fields.grand_total"),
-            }}
-            selectableFields={{
-              createdByEmail: t("purchase_ui.export.selectable_fields.created_by_email"),
-              createdByName: t("purchase_ui.export.selectable_fields.created_by_name"),
-              cgst: t("purchase_ui.export.selectable_fields.cgst"),
-              igst: t("purchase_ui.export.selectable_fields.igst"),
-              sgst: t("purchase_ui.export.selectable_fields.sgst"),
-              vat: t("purchase_ui.export.selectable_fields.vat"),
-              cess: t("purchase_ui.export.selectable_fields.cess"),
-              sal: t("purchase_ui.export.selectable_fields.sal"),
-              others: t("purchase_ui.export.selectable_fields.others"),
-            }}
-          />
-        ) : null}
       </Box>
     
   );

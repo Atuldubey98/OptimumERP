@@ -133,8 +133,6 @@ export default function EstimatesPage() {
     }
   };
   const deleting = estimateStatus === "deleting";
-  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
-    useDisclosure();
   const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
     useDisclosure();
   return (
@@ -154,10 +152,6 @@ export default function EstimatesPage() {
               />
             }
             limitKey={"quotes"}
-            showExport={{
-              onExport: toggleExportModal,
-              status: "idle",
-            }}
             heading={t("quote_ui.page.heading")}
             tableData={estimates.map(estimateTableMapper)}
             caption={t("quote_ui.page.total_estimates_found", { count: totalCount })}
@@ -228,35 +222,6 @@ export default function EstimatesPage() {
         {loading ? null : (
           <Pagination total={totalPages} currentPage={currentPage} />
         )}
-        {isExportModalOpen ? (
-          <ExporterModal
-            isOpen={isExportModalOpen}
-            onClose={toggleExportModal}
-            downloadUrl={`/api/v1/organizations/${orgId}/quotes/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
-            defaultSelectedFields={{
-              partyName: t("quote_ui.export.default_fields.party_name"),
-              billingAddress: t("quote_ui.export.default_fields.billing_address"),
-              total: t("quote_ui.export.default_fields.total"),
-              totalTax: t("quote_ui.export.default_fields.total_tax"),
-              num: t("quote_ui.export.default_fields.num"),
-              status: t("quote_ui.export.default_fields.status"),
-              grandTotal: t("quote_ui.export.default_fields.grand_total"),
-            }}
-            selectableFields={{
-              createdByEmail: t("quote_ui.export.optional_fields.created_by_email"),
-              createdByName: t("quote_ui.export.optional_fields.created_by_name"),
-              poNo: t("quote_ui.export.optional_fields.po_no"),
-              poDate: t("quote_ui.export.optional_fields.po_date"),
-              cgst: t("quote_ui.export.optional_fields.cgst"),
-              igst: t("quote_ui.export.optional_fields.igst"),
-              sgst: t("quote_ui.export.optional_fields.sgst"),
-              vat: t("quote_ui.export.optional_fields.vat"),
-              cess: t("quote_ui.export.optional_fields.cess"),
-              sal: t("quote_ui.export.optional_fields.sal"),
-              others: t("quote_ui.export.optional_fields.others"),
-            }}
-          />
-        ) : null}
       </Box>
     
   );

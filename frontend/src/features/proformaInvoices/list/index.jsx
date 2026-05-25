@@ -165,8 +165,6 @@ export default function ProformaInvoicesPage() {
       setProformaInvoiceStatus("idle");
     }
   };
-  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
-    useDisclosure();
   const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
     useDisclosure();
   const makeProformaListMapper = (item) => ({
@@ -192,10 +190,6 @@ export default function ProformaInvoicesPage() {
           </Flex>
         ) : (
           <TableLayout
-            showExport={{
-              status: "idle",
-              onExport: toggleExportModal,
-            }}
             isAddDisabled={reachedLimit}
             limitKey={"proformaInvoices"}
             caption={`${t("proforma_invoice_ui.page.total_found")} : ${totalCount}`}
@@ -278,42 +272,6 @@ export default function ProformaInvoicesPage() {
           isOpen={isShareModalOpen}
           onClose={toggleShareModal}
           billType={"proformaInvoices"}
-        />
-      ) : null}
-      {isExportModalOpen ? (
-        <ExporterModal
-          isOpen={isExportModalOpen}
-          onClose={toggleExportModal}
-          downloadUrl={`/api/v1/organizations/${orgId}/proformaInvoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
-          defaultSelectedFields={{
-            partyName: t(
-              "proforma_invoice_ui.export.default_fields.party_name",
-            ),
-            billingAddress: t(
-              "proforma_invoice_ui.export.default_fields.billing_address",
-            ),
-            total: t("proforma_invoice_ui.export.default_fields.total"),
-            totalTax: t("proforma_invoice_ui.export.default_fields.total_tax"),
-            num: t("proforma_invoice_ui.export.default_fields.num"),
-            status: t("proforma_invoice_ui.export.default_fields.status"),
-          }}
-          selectableFields={{
-            createdByEmail: t(
-              "proforma_invoice_ui.export.selectable_fields.created_by_email",
-            ),
-            createdByName: t(
-              "proforma_invoice_ui.export.selectable_fields.created_by_name",
-            ),
-            poNo: t("proforma_invoice_ui.export.selectable_fields.po_no"),
-            poDate: t("proforma_invoice_ui.export.selectable_fields.po_date"),
-            cgst: t("proforma_invoice_ui.export.selectable_fields.cgst"),
-            igst: t("proforma_invoice_ui.export.selectable_fields.igst"),
-            sgst: t("proforma_invoice_ui.export.selectable_fields.sgst"),
-            vat: t("proforma_invoice_ui.export.selectable_fields.vat"),
-            cess: t("proforma_invoice_ui.export.selectable_fields.cess"),
-            sal: t("proforma_invoice_ui.export.selectable_fields.sal"),
-            others: t("proforma_invoice_ui.export.selectable_fields.others"),
-          }}
         />
       ) : null}
     </>

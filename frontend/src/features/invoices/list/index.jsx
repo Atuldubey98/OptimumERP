@@ -136,8 +136,6 @@ export default function InvoicesPage() {
     onOpen: openRecordPaymentModal,
     onClose: closeRecordPaymentModal,
   } = useDisclosure();
-  const { isOpen: isExportModalOpen, onToggle: toggleExportModal } =
-    useDisclosure();
   const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
     useDisclosure();
 
@@ -157,10 +155,6 @@ export default function InvoicesPage() {
             />
           }
           limitKey={"invoices"}
-          showExport={{
-            onExport: toggleExportModal,
-            status: "idle",
-          }}
           isAddDisabled={reachedLimit}
           heading={t("invoice_ui.page.heading")}
           tableData={invoices.map(invoiceTableMapper)}
@@ -248,42 +242,6 @@ export default function InvoicesPage() {
       {loading ? null : (
         <Pagination currentPage={currentPage} total={totalPages} />
       )}
-      {isExportModalOpen ? (
-        <ExporterModal
-          isOpen={isExportModalOpen}
-          onClose={toggleExportModal}
-          downloadUrl={`/api/v1/organizations/${orgId}/invoices/export?startDate=${dateFilter.startDate}&endDate=${dateFilter.endDate}`}
-          defaultSelectedFields={{
-            partyName: t("invoice_ui.export.default_fields.party_name"),
-            billingAddress: t(
-              "invoice_ui.export.default_fields.billing_address",
-            ),
-            total: t("invoice_ui.export.default_fields.total"),
-            totalTax: t("invoice_ui.export.default_fields.total_tax"),
-            date: t("invoice_ui.export.default_fields.date"),
-            num: t("invoice_ui.export.default_fields.number"),
-            status: t("invoice_ui.export.default_fields.status"),
-            grandTotal: t("invoice_ui.export.default_fields.grand_total"),
-          }}
-          selectableFields={{
-            createdByEmail: t(
-              "invoice_ui.export.selectable_fields.created_by_email",
-            ),
-            createdByName: t(
-              "invoice_ui.export.selectable_fields.created_by_name",
-            ),
-            poNo: t("invoice_ui.export.selectable_fields.po_number"),
-            poDate: t("invoice_ui.export.selectable_fields.po_date"),
-            cgst: t("invoice_ui.export.selectable_fields.cgst"),
-            igst: t("invoice_ui.export.selectable_fields.igst"),
-            sgst: t("invoice_ui.export.selectable_fields.sgst"),
-            vat: t("invoice_ui.export.selectable_fields.vat"),
-            cess: t("invoice_ui.export.selectable_fields.cess"),
-            sal: t("invoice_ui.export.selectable_fields.sal"),
-            others: t("invoice_ui.export.selectable_fields.other_taxes"),
-          }}
-        />
-      ) : null}
     </Box>
 
   );
