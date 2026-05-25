@@ -8,10 +8,11 @@ const sessionOptions = {
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
+    touchAfter: 3600
   }),
   cookie: {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: NODE_ENV === "production",
     maxAge: SESSION_AGE,
   },
