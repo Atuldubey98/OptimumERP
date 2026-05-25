@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useParams } from "react-router-dom";
 import instance from "../instance";
 import useCurrentOrgCurrency from "./useCurrentOrgCurrency";
+import { useToast } from "@chakra-ui/react";
 const createProductDto = (t) =>
   Yup.object({
     name: Yup.string()
@@ -32,6 +33,7 @@ const createProductDto = (t) =>
   });
 export default function useProductForm(onAddedFetch, onCloseDrawer) {
   const { t } = useTranslation("common");
+  const toast = useToast();
   const { requestAsyncHandler } = useAsyncCall();
   const { toSmallestUnit } = useCurrentOrgCurrency();
   const { orgId = "" } = useParams();
@@ -77,6 +79,13 @@ export default function useProductForm(onAddedFetch, onCloseDrawer) {
       );
 
       if (onAddedFetch) onAddedFetch(response.data.data);
+      toast({
+        title: t("common_ui.toasts.success"),
+        description: response.data.message,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       onCloseDrawer();
       formik.resetForm();
       setSubmitting(false);
