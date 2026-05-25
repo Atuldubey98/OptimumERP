@@ -185,7 +185,7 @@ function getWsHandlers(wss) {
   };
 
   const onClose = (ws) => {
-    logger.debug(`AI Chat session closed for user ${ws.userId} in org ${ws.orgId}`);
+    logger.debug(`AI Chat session closed for user ${ws.user}`);
   };
 
   const onUpgrade = (request, socket, head) => {
