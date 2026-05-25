@@ -7,6 +7,9 @@ i18next
   .use(Backend)
   .use(middleware.LanguageDetector)
   .init({
+    debug: process.env.NODE_ENV === "development",
+    initAsync: false,
+    initImmediate: false,
     fallbackLng: "en",
     preload: ["en", "pt"],
     showSupportNotice: false,
@@ -39,7 +42,6 @@ i18next
         __dirname,
         "../public/translations/{{lng}}/{{ns}}.json",
       ),
-      expirationTime: 24 * 60 * 60 * 1000,
     },
 
     detection: {

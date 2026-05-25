@@ -8,7 +8,7 @@ const create = async (req, res) => {
   });
   return res
     .status(200)
-    .json({ data: contact, message: req.t("contact:contact:created") });
+    .json({ data: contact, message: req.t("contact:contact.created") });
 };
 
 module.exports = create;

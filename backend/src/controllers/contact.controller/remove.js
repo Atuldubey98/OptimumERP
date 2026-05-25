@@ -7,7 +7,7 @@ const remove = async (req, res) => {
   });
   return res
     .status(200)
-    .json({ message: req.t("contact:contact:deleted"), data: contact.id });
+    .json({ message: req.t("contact:contact.deleted"), data: contact.id });
 };
 
 module.exports = remove;

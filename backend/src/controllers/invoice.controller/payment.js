@@ -31,7 +31,7 @@ const payment = async (req, res) => {
     });
   });
 
-  return res.status(201).json({ message: req.t('invoice:invoice:payment_added') });
+  return res.status(201).json({ message: req.t('invoice:invoice.payment_added') });
 };
 
 module.exports = payment;
