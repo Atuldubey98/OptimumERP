@@ -7,9 +7,14 @@ const { registerUser } = require("../../services/auth.service");
 
 const createOrgUser = async (req, res) => {
   const body = await orgUserDto.validateAsync(req.body);
+  const isDevelopmentEnv = process.env.NODE_ENV === "development";
+  const shouldSendEmail = process.env.NODE_MAILER_HOST;
+  const userActive = isDevelopmentEnv || !shouldSendEmail;
   const registeredUser = await registerUser({
     ...body,
     attributes: body.useAdminSMTP ? req.session?.user?.attributes : {},
+    active: userActive,
+    verifiedEmail: userActive,
   });
   const org = await OrgModel.findById(req.params.orgId);
 
