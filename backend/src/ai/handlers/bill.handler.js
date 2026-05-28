@@ -309,6 +309,10 @@ const billHandler = {
   },
   find_bills: async (params) => {
     try {
+      if (params.billId || params.billNumber) {
+        return billHandler.find_bill(params);
+      }
+
       const filter = { org: params.org };
 
       if (params.type) {

@@ -23,10 +23,13 @@ const contactHandler = {
     return formalizeContactForAi(await contact.populate("party", "name"));
   },
   get_contacts: async (params) => {
+    if (params.contactId) {
+      return contactHandler.get_contact(params);
+    }
     const filter = {
       org: params.org,
     };
-    if (params.party && isValidObjectId(filter.party)) {
+    if (params.party && isValidObjectId(params.party)) {
       filter.party = params.party;
     }
     if (params.query) filter.$text = { $search: params.query };

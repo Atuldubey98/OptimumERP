@@ -128,6 +128,9 @@ const partyHandler = {
     }
   },
   get_parties: async (params) => {
+    if (params.partyId || params.name) {
+      return partyHandler.get_party(params);
+    }
     const {
       query = "",
       page = 1,

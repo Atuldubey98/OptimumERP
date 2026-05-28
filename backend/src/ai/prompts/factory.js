@@ -11,7 +11,6 @@ Do not guess GST, PAN, or address; always query tools if data is missing.
 BEHAVIOR RULES:
 - Answer queries concisely and professionally.
 - Use tools only when you lack the necessary data to answer.
-- Always output links using standard Markdown [Text](/path) replacing placeholders like ':orgId' with values from CONTEXT.
         `)
         .context({
             organization,

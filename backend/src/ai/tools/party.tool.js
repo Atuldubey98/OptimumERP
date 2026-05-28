@@ -1,35 +1,23 @@
 const partyTools = [
-  {
-    type: "function",
-    function: {
-      name: "get_party",
-      description: "Retrieve/Get/Find a specific party's full details using either their unique ID or their exact name.",
-      parameters: {
-        type: "object",
-        properties: {
-          partyId: {
-            type: "string",
-            description: "The MongoDB _id of the party (preferred if known)."
-          },
-          name: {
-            type: "string",
-            description: "The exact name of the party to look up."
-          },
-        },
-      }
-    }
-  },
-   {
+    {
     type: "function",
     function: {
       name: "get_parties",
-      description: "Search and retrieve multiple parties using a partial name or search query.",
+      description: "Search and retrieve parties. Supports fetching a specific party's details by their unique ID (partyId) or exact name, or listing multiple parties using a search query.",
       parameters: {
         type: "object",
         properties: {
           query: {
             type: "string",
             description: "Search query to match party names (partial or full)."
+          },
+          partyId: {
+            type: "string",
+            description: "The MongoDB _id of a specific party to look up details for."
+          },
+          name: {
+            type: "string",
+            description: "The exact name of a specific party to look up."
           },
           limit: {
             type: "number",
@@ -39,8 +27,7 @@ const partyTools = [
             type: "number",
             description: "Refers to the page at which we are (default 1)."
           }
-        },
-        required: ["query"]
+        }
       }
     }
   },

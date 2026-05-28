@@ -35,7 +35,7 @@ const billTools = [
     type: "function",
     function: {
       name: "find_bills",
-      description: "Search for multiple documents (invoices, purchases, etc.) using the transaction registry. Supports filtering by party, type, amount, and date.",
+      description: "Search for billing documents or retrieve details of a specific bill/invoice. Supports retrieving a specific document by its billNumber or billId, or searching for multiple documents using filters like party, type, amount, and date.",
       parameters: {
         type: "object",
         properties: {
@@ -50,7 +50,7 @@ const billTools = [
               "purchase_order",
               "payment_voucher",
             ],
-            description: "Filter by document type.",
+            description: "Filter by document type. Required if searching by billNumber or billId.",
           },
           partyName: {
             type: "string",
@@ -80,40 +80,15 @@ const billTools = [
             type: "string",
             description: "Filter by party ID (MongoDB _id).",
           },
-        },
-      },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "find_bill",
-      description:
-        "Retrieve details of a specific bill or invoice using its number or unique ID.",
-      parameters: {
-        type: "object",
-        properties: {
-          type: {
-            type: "string",
-            enum: [
-              "invoice",
-              "purchase",
-              "proforma_invoice",
-              "quotes",
-              "purchase_order",
-            ],
-            description: "The category of the document.",
-          },
           billId: {
             type: "string",
-            description: "The MongoDB _id of the bill.",
+            description: "The MongoDB _id of a specific bill to retrieve details for.",
           },
           billNumber: {
             type: "string",
-            description: "The human-readable number (e.g., 'INV-001').",
+            description: "The human-readable number (e.g., 'INV-001') of a specific bill to retrieve details for.",
           },
         },
-        required: ["billNumber", "type"],
       },
     },
   },

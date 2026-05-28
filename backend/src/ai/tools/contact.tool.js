@@ -64,8 +64,7 @@ const contactTools = [
     type: "function",
     function: {
       name: "get_contacts",
-      description:
-        "Retrieve a list of contacts with optional filtering",
+      description: "Retrieve a list of contacts with optional filtering, or fetch a specific contact using its unique ID.",
       parameters: {
         type: "object",
         properties: {
@@ -77,24 +76,11 @@ const contactTools = [
             type: "string",
             description: "Search query to find contacts",
           },
-        },
-      },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "get_contact",
-      description: "Retrieve details of a specific contact using its unique ID.",
-      parameters: {
-        type: "object",
-        properties: {
           contactId: {
             type: "string",
-            description: "The unique ID (ObjectId) of the contact.",
+            description: "Optional unique ID (ObjectId) of a specific contact to retrieve.",
           },
         },
-        required: ["contactId"],
       },
     },
   },
