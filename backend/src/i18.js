@@ -7,7 +7,6 @@ i18next
   .use(Backend)
   .use(middleware.LanguageDetector)
   .init({
-    debug: process.env.NODE_ENV === "development",
     initAsync: false,
     initImmediate: false,
     fallbackLng: "en",
