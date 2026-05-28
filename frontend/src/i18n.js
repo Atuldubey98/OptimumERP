@@ -12,6 +12,7 @@ i18n
   .init({
     fallbackLng: "en",
     supportedLngs: ["en", "pt"],
+    load: "languageOnly",
     ns: [
       "health","common","admin","categories","contact","dashboard",
       "quote","expense","forgot-password","invoice","user","org",

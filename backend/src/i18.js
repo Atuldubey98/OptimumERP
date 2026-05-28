@@ -11,7 +11,9 @@ i18next
     initAsync: false,
     initImmediate: false,
     fallbackLng: "en",
+    supportedLngs: ["en", "pt"],
     preload: ["en", "pt"],
+    load: "languageOnly",
     showSupportNotice: false,
     ns: [
       "health",
