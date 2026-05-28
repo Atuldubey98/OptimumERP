@@ -53,7 +53,7 @@ export default function useEstimateForm() {
       status: "draft",
       items: [defaultReceiptItem],
       prefix: "",
-      terms: receiptDefaults.terms?.quote,
+      terms: receiptDefaults?.terms?.quote,
       description: "",
     },
     validationSchema: quoteSchema,
