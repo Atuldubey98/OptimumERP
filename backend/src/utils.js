@@ -77,4 +77,45 @@ const moneyUtils = {
     return currencyConfig.value[code];
   }
 };
-module.exports = { dateUtils, moneyUtils };
+const cleanPayloadForAi = (val) => {
+  if (val === null || val === undefined) return undefined;
+
+  if (Array.isArray(val)) {
+    const cleaned = val.map(cleanPayloadForAi).filter(x => x !== undefined);
+    return cleaned.length > 0 ? cleaned : undefined;
+  }
+
+  if (typeof val === "object") {
+    if (val.constructor && val.constructor.name === "ObjectId") {
+      return val.toString();
+    }
+    if (typeof val.toObject === "function") {
+      val = val.toObject();
+    }
+
+    const cleaned = {};
+    let hasKeys = false;
+    for (const key in val) {
+      if (Object.prototype.hasOwnProperty.call(val, key)) {
+        if (["__v", "org", "createdBy", "updatedBy", "isDeleted", "deleted", "deletedAt"].includes(key)) {
+          continue;
+        }
+        const cleanedVal = cleanPayloadForAi(val[key]);
+        if (
+          cleanedVal !== undefined &&
+          cleanedVal !== "" &&
+          !(Array.isArray(cleanedVal) && cleanedVal.length === 0)
+        ) {
+          cleaned[key] = cleanedVal;
+          hasKeys = true;
+        }
+      }
+    }
+    return hasKeys ? cleaned : undefined;
+  }
+
+  return val;
+};
+
+module.exports = { dateUtils, moneyUtils, cleanPayloadForAi };
+

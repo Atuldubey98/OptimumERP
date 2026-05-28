@@ -150,6 +150,7 @@ const ChatInput = memo(({
                       size="sm"
                       icon={<FiSettings size={16} />}
                       onClick={onModelModalOpen}
+                      isDisabled={isTyping}
                       color={hasNoProvider ? "orange.400" : "whiteAlpha.600"}
                       _light={{ color: hasNoProvider ? "orange.500" : "gray.400" }}
                       _hover={{ bg: "whiteAlpha.200", _light: { bg: "gray.100" } }}

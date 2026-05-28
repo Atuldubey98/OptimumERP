@@ -235,6 +235,33 @@ const upsertBill = async (params) => {
     throw error;
   }
 };
+const cleanBillDetailForAi = (billDetail) => {
+  if (!billDetail) return null;
+  const bill = billDetail.entity || {};
+  return {
+    _id: bill._id,
+    num: billDetail.num || bill.num,
+    date: bill.date,
+    status: bill.status,
+    party: bill.party?.name || bill.party,
+    items: (billDetail.items || []).map(item => ({
+      name: item.name,
+      quantity: item.quantity,
+      code: item.code,
+      gst: item.gst,
+      taxAmount: item.taxAmount,
+      um: item.um,
+      price: item.price,
+      total: item.total
+    })),
+    total: billDetail.total,
+    shippingCharges: billDetail.shippingCharges,
+    grandTotal: billDetail.grandTotal,
+    amountInWords: billDetail.amountToWords,
+    currencySymbol: billDetail.currencySymbol,
+  };
+};
+
 const normalizeBillDetailForAI = async (billDetail, orgId) => {
   if (billDetail && billDetail.entity) {
     const displaySetting = await settingService.getDisplaySettingForOrg(orgId);
@@ -253,7 +280,7 @@ const normalizeBillDetailForAI = async (billDetail, orgId) => {
       );
     }
   }
-  return billDetail;
+  return cleanBillDetailForAi(billDetail);
 };
 const billHandler = {
   download_bill: async (params) => {
@@ -373,19 +400,6 @@ const billHandler = {
           (t.total || 0) + (t.totalTax || 0) + (t.shippingCharges || 0),
         ),
         status: t.doc?.status || "N/A",
-        downloadUrl: (() => {
-          const routeMap = {
-            invoice: "invoices",
-            purchase: "purchases",
-            expense: "expenses",
-            quotes: "quotes",
-            proforma_invoice: "proformaInvoices",
-            purchase_order: "purchaseOrders",
-            payment_voucher: "paymentVouchers",
-          };
-          const route = routeMap[t.docModel] || t.docModel + "s";
-          return `/api/v1/organizations/${params.org}/${route}/${t.doc?._id || t._id}/download`;
-        })(),
       }));
     } catch (error) {
       throw error;

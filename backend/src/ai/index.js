@@ -2,6 +2,7 @@ const getHandler = require("./handlers");
 const tools = require("./tools");
 const logger = require("../logger");
 const { getProvider } = require("./providers");
+const { cleanPayloadForAi } = require("../utils");
 
 const executeTools = async ({ toolCalls, body, onProgress }) => {
   logger.info(
@@ -67,7 +68,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
         role: "tool",
         content: JSON.stringify({
           success: true,
-          data: result,
+          data: cleanPayloadForAi(result) ?? {},
         }),
         fullData: result,
         tool_call_id: tool.id,
