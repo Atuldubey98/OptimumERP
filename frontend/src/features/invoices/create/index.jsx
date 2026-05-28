@@ -13,13 +13,11 @@ import {
   Spinner,
   Switch,
   Textarea,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { FormikProvider } from "formik";
 import { useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineSave } from "react-icons/ai";
-import { BsStars } from "react-icons/bs";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useInvoicesForm from "../../../hooks/useInvoicesForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
@@ -38,8 +36,6 @@ import useTaxes from "../../../hooks/useTaxes";
 import useUms from "../../../hooks/useUms";
 import BannerWithLabel from "../../common/BannerWithLabel";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
-import AIPrefillModal from "../../common/AIPrefillModal";
-import useAuth from "../../../hooks/useAuth";
 
 export default function CreateInvoicePage() {
   const { t } = useTranslation("invoice");
@@ -50,14 +46,6 @@ export default function CreateInvoicePage() {
   const { formik, status } = useInvoicesForm({
     saveAndNew,
   });
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handlePrefill = (data) => {
-    formik.setValues({
-      ...formik.values,
-      ...data,
-    });
-  };
 
   const deferredItems = useDeferredValue(formik.values.items);
   const loading = status === "loading";
@@ -65,9 +53,6 @@ export default function CreateInvoicePage() {
     key: "invoices",
   });
   const hasError = status === "error";
-  const { user } = useAuth();
-  const currentFeatures = user?.features || {};
-  const bot = currentFeatures?.bot ?? false;
   return (
 
     <Box p={5}>
@@ -85,34 +70,24 @@ export default function CreateInvoicePage() {
           <form onSubmit={formik.handleSubmit}>
             <Flex gap={5} justifyContent={"flex-end"} alignItems={"center"}>
               {formik.values._id ? null : (
-                <>
-                  {bot && <Button
+                <FormControl
+                  display="flex"
+                  justifyContent={"flex-end"}
+                  alignItems="center"
+                  w="auto"
+                >
+                  <FormLabel htmlFor="save-and-new" mb="0" fontSize="sm" fontWeight="medium">
+                    {t("invoice_ui.form.save_and_new_label")}
+                  </FormLabel>
+                  <Switch
                     colorScheme="blue"
-                    size="md"
-                    leftIcon={<BsStars />}
-                    onClick={onOpen}
-                  >
-                    Smart Fill
-                  </Button>}
-                  <FormControl
-                    display="flex"
-                    justifyContent={"flex-end"}
-                    alignItems="center"
-                    w="auto"
-                  >
-                    <FormLabel htmlFor="save-and-new" mb="0" fontSize="sm" fontWeight="medium">
-                      {t("invoice_ui.form.save_and_new_label")}
-                    </FormLabel>
-                    <Switch
-                      colorScheme="blue"
-                      onChange={(e) => {
-                        onToggleSaveAndNew(e.currentTarget.checked);
-                      }}
-                      isChecked={saveAndNew}
-                      id="save-and-new"
-                    />
-                  </FormControl>
-                </>
+                    onChange={(e) => {
+                      onToggleSaveAndNew(e.currentTarget.checked);
+                    }}
+                    isChecked={saveAndNew}
+                    id="save-and-new"
+                  />
+                </FormControl>
               )}
               <Button
                 isDisabled={formik.values._id ? false : disable}
@@ -230,11 +205,6 @@ export default function CreateInvoicePage() {
             </Grid>
           </form>
         )}
-        <AIPrefillModal
-          isOpen={isOpen}
-          onClose={onClose}
-          onPrefill={handlePrefill}
-        />
       </FormikProvider>
     </Box>
 

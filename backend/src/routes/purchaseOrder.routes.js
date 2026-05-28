@@ -18,7 +18,6 @@ const {
   exportData,
   remove,
   update,
-  aiPrefill,
   activities,
 } = require("../controllers/purchaseOrder.controller");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -31,7 +30,6 @@ purchaseOrderRouter.post(
   limitFreePlanOnCreateEntityForOrganization("purchaseOrders"),
   requestAsyncHandler(create)
 );
-purchaseOrderRouter.post("/ai-prefill", requestAsyncHandler(aiPrefill));
 
 purchaseOrderRouter.get(
   "/nextPurchaseOrderNo",

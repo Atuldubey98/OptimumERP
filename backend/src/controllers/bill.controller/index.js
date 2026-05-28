@@ -7,7 +7,6 @@ const htmlView = require("./htmlView");
 const download = require("./download");
 const exportData = require("./exportData");
 const send = require("./send");
-const aiPrefill = require("./aiPrefill");
 const activities = require("./activities");
 const getController = (options) => {
   return {
@@ -20,7 +19,6 @@ const getController = (options) => {
     download: (req, res) => download(options, req, res),
     exportData: (req, res) => exportData(options, req, res),
     send: (req, res) => send(options, req, res),
-    aiPrefill: (req, res) => aiPrefill(options, req, res),
     activities: (req, res) => activities(options, req, res),
   };
 };

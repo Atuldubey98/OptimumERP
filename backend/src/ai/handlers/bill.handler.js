@@ -205,27 +205,6 @@ const upsertBill = async (params) => {
     const requestBody = await makeRequestBody();
     logger.info("Bill Body " + JSON.stringify(requestBody));
 
-    if (params.dryRun) {
-      const displaySetting = await settingService.getDisplaySettingForOrg(params.org);
-      const currencyConfig = displaySetting
-        ? await moneyUtils.getCurrencyConfigByCode(displaySetting.currency)
-        : null;
-      const decimalDigits = currencyConfig?.decimal_digits ?? 2;
-      const fromSmallest = (val) => moneyUtils.fromSmallestUnit(val, decimalDigits);
-
-      return {
-        ...requestBody,
-        partyDetails: party,
-        items: requestBody.items.map(item => ({
-          ...item,
-          price: fromSmallest(item.price),
-        })),
-        shippingCharges: fromSmallest(requestBody.shippingCharges || 0),
-        dryRun: true,
-        message: "Data extracted successfully. You can now review and save the document.",
-      };
-    }
-
     const bill = await executeMongoDbTransaction(async (session) => {
       const billDoc = await billService.saveBill({
         ...modelProps,
