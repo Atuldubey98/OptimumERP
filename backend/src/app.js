@@ -20,18 +20,12 @@ app.set("views", path.join(__dirname, "/views"));
 
 if (process.env.NETWORK_STORAGE_PATH) {
   logger.info(`Using network storage at ${process.env.NETWORK_STORAGE_PATH}`);
-  app.use(
-    "/uploads/logos",
-    express.static(path.join(process.env.NETWORK_STORAGE_PATH, "logos")),
-  );
-  app.use(
-    "/uploads/avatars",
-    express.static(path.join(process.env.NETWORK_STORAGE_PATH, "avatars")),
-  );
-  app.use(
-    "/uploads/signatures",
-    express.static(path.join(process.env.NETWORK_STORAGE_PATH, "signatures")),
-  );
+  const folders = ["logos", "avatars", "signatures"];
+  for (let folder of folders) {
+    const folderPath = path.join(process.env.NETWORK_STORAGE_PATH, folder);
+    const route = `/uploads/${folder}`;
+    app.use(route, express.static(folderPath));
+  }
 }
 
 app.use(express.json({ limit: "5mb" }));
