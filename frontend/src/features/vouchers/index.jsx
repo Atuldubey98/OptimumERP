@@ -37,6 +37,8 @@ import VertIconMenu from "../common/table-layout/VertIconMenu";
 import TableDateFilter from "../invoices/list/TableDateFilter";
 import VoucherModal from "./VoucherModal";
 import useProperty from "../../hooks/useProperty";
+import DocSummaryCard from "./DocSummaryCard";
+import VoucherDetailDrawer from "./VoucherDetailDrawer";
 
 export default function VouchersPage() {
   const { t } = useTranslation("invoice");
@@ -84,7 +86,7 @@ export default function VouchersPage() {
     storageKey: "dateFilter:vouchers",
     extraParams: {
       ...extraParams,
-      select: "num date party voucherType refDoc refDocModel amount paymentMode org",
+      select: "num date party voucherType refDoc refDocModel amount paymentMode org description financialYear createdAt",
     },
   });
 
@@ -104,6 +106,12 @@ export default function VouchersPage() {
     isOpen: isVoucherModalOpen,
     onOpen: onOpenVoucherModal,
     onClose: onCloseVoucherModal,
+  } = useDisclosure();
+
+  const {
+    isOpen: isDetailDrawerOpen,
+    onOpen: onOpenDetailDrawer,
+    onClose: onCloseDetailDrawer,
   } = useDisclosure();
 
   const [deleteStatus, setDeleteStatus] = useState("idle");
@@ -148,6 +156,11 @@ export default function VouchersPage() {
   const handleAdd = () => {
     setSelectedVoucher(null);
     onOpenVoucherModal();
+  };
+
+  const handleView = (voucher) => {
+    setSelectedVoucher(voucher);
+    onOpenDetailDrawer();
   };
 
   useEffect(() => {
@@ -207,82 +220,7 @@ export default function VouchersPage() {
         </Flex>
       ) : (
         <Stack spacing={6}>
-          {doc && (
-            <Card variant="outline" shadow="sm">
-              <CardBody>
-                <Flex
-                  wrap="wrap"
-                  gap={{ base: 4, md: 6 }}
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
-                    <Icon as={FiFileText} color="blue.500" boxSize={5} />
-                    <VStack align="start" spacing={0}>
-                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                        {docType?.toUpperCase()} #
-                      </Text>
-                      <Text fontSize="md" fontWeight="bold">
-                        {doc.num}
-                      </Text>
-                    </VStack>
-                  </HStack>
-
-                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
-                    <Icon as={FiCalendar} color="orange.500" boxSize={5} />
-                    <VStack align="start" spacing={0}>
-                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                        DATE
-                      </Text>
-                      <Text fontSize="md">
-                        {moment(doc.date).format("LL")}
-                      </Text>
-                    </VStack>
-                  </HStack>
-
-                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
-                    <Icon as={FiDollarSign} color="green.500" boxSize={5} />
-                    <VStack align="start" spacing={0}>
-                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                        TOTAL AMOUNT
-                      </Text>
-                      <Text fontSize="md" fontWeight="bold">
-                        {formatSmallestUnitWithSymbol(grandTotal)}
-                      </Text>
-                    </VStack>
-                  </HStack>
-
-                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
-                    <Icon as={FiArrowDownCircle} color="purple.500" boxSize={5} />
-                    <VStack align="start" spacing={0}>
-                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                        {docType === "invoice" ? "AMOUNT RECEIVED" : "AMOUNT PAID"}
-                      </Text>
-                      <Text fontSize="md" fontWeight="bold" color="purple.600">
-                        {formatSmallestUnitWithSymbol(doc.paymentVoucherBalance || 0)}
-                      </Text>
-                    </VStack>
-                  </HStack>
-
-                  <HStack flex={{ base: "1 1 140px", md: "1" }} minW="140px">
-                    <Icon
-                      as={balance <= 0 ? (docType === "invoice" ? FiArrowUpCircle : FiArrowDownCircle) : FiDollarSign}
-                      color={balance <= 0 ? "green.500" : "red.500"}
-                      boxSize={5}
-                    />
-                    <VStack align="start" spacing={0}>
-                      <Text fontSize="xs" color="gray.500" fontWeight="bold">
-                        {balance === 0 ? "STATUS" : (balance < 0 ? (docType === "invoice" ? "EXTRA RECEIVED" : "EXTRA PAID") : "BALANCE DUE")}
-                      </Text>
-                      <Text fontSize="md" fontWeight="bold" color={balance <= 0 ? "green.600" : "red.600"}>
-                        {balance === 0 ? "SETTLED" : formatSmallestUnitWithSymbol(Math.abs(balance))}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Flex>
-              </CardBody>
-            </Card>
-          )}
+          <DocSummaryCard doc={doc} docType={docType} grandTotal={grandTotal} balance={balance} />
 
           <TableLayout
             isAddDisabled={reachedLimit}
@@ -297,6 +235,7 @@ export default function VouchersPage() {
             caption={`Total vouchers found : ${totalCount}`}
             operations={vouchers.map((voucher) => (
               <VertIconMenu
+                showItem={() => handleView(voucher)}
                 editItem={() => handleEdit(voucher)}
                 deleteItem={() => {
                   setSelectedVoucher(voucher);
@@ -309,9 +248,7 @@ export default function VouchersPage() {
               date: "Date",
               partyName: "Party",
               type: "Type",
-              linkedDoc: "Linked Doc",
               amount: "Amount",
-              mode: "Mode",
             }}
             onAddNewItem={handleAdd}
           />
@@ -327,6 +264,12 @@ export default function VouchersPage() {
         refDocId={invoiceId || purchaseId}
         refDocModel={invoiceId ? "invoice" : purchaseId ? "purchase" : null}
         doc={doc}
+      />
+
+      <VoucherDetailDrawer
+        isOpen={isDetailDrawerOpen}
+        onClose={onCloseDetailDrawer}
+        voucher={selectedVoucher}
       />
 
       <AlertModal
