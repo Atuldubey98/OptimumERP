@@ -387,7 +387,7 @@ const billHandler = {
         .populate("party")
         .populate("doc")
         .sort({ date: -1 })
-        .limit(20)
+        .limit(10)
         .lean();
 
       return transactions.map((t) => ({
