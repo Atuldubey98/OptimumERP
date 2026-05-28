@@ -117,5 +117,13 @@ const cleanPayloadForAi = (val) => {
   return val;
 };
 
-module.exports = { dateUtils, moneyUtils, cleanPayloadForAi };
+const escapeTextSearch = (query) => {
+  if (!query) return "";
+  const cleanQuery = query.toString().trim();
+  return cleanQuery.startsWith('"') && cleanQuery.endsWith('"')
+    ? cleanQuery
+    : `"${cleanQuery}"`;
+};
+
+module.exports = { dateUtils, moneyUtils, cleanPayloadForAi, escapeTextSearch };
 

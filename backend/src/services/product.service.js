@@ -6,10 +6,10 @@ const { executeMongoDbTransaction } = require("./crud.service");
 const getProductDetailsForAI = async (query, type, currentOrgId) => {
   try {
     const settingService = require("./setting.service");
-    const { moneyUtils } = require("../utils");
+    const { moneyUtils, escapeTextSearch } = require("../utils");
 
     const filter = {
-      $text: { $search: query },
+      $text: { $search: escapeTextSearch(query) },
       org: currentOrgId,
     };
 

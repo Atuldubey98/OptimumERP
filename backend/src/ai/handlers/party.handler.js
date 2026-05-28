@@ -1,7 +1,7 @@
 const Party = require("../../models/party.model");
 const partyService = require("../../services/party.service");
 const settingService = require("../../services/setting.service")
-const { moneyUtils } = require("../../utils");
+const { moneyUtils, escapeTextSearch } = require("../../utils");
 
 const { createPartyDto } = require("../../dto/party.dto");
 
@@ -19,10 +19,10 @@ const formalizePartyForAi = (party) => {
 
 const partyHandler = {
   create_party: async ({ org, createdBy, user, ...params }) => {
-    const body = await createPartyDto.validateAsync({ 
-      ...params, 
-      org: org?.toString(), 
-      createdBy: createdBy?.toString() 
+    const body = await createPartyDto.validateAsync({
+      ...params,
+      org: org?.toString(),
+      createdBy: createdBy?.toString()
     });
     const party = await partyService.create(body);
     return formalizePartyForAi(party);
@@ -146,7 +146,7 @@ const partyHandler = {
     const sort = { createdAt: -1 };
 
     if (query && query.trim()) {
-      filter.$text = { $search: query.trim() };
+      filter.$text = { $search: escapeTextSearch(query) };
       projection.score = { $meta: "textScore" };
       sort.score = { $meta: "textScore" };
     }
