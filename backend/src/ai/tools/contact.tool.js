@@ -24,15 +24,11 @@ const contactTools = [
             type: "string",
             description: "Telephone number of the contact.",
           },
-          description: {
-            type: "string",
-            description:
-              "Brief details about the contact. Maximum 80 characters.",
-          },
           type: {
             type: "string",
             description:
               "Type classification of the contact.(default : unknown)",
+            default: "unknown",
             enum: [
               "unknown",
               "customer",
@@ -46,14 +42,6 @@ const contactTools = [
               "service",
               "contractor",
             ],
-          },
-          createdBy: {
-            type: "string",
-            description: "Identifier of the user who created the contact.",
-          },
-          updatedBy: {
-            type: "string",
-            description: "Identifier of the user who last updated the contact.",
           },
         },
         required: ["name", "type", "email"],

@@ -6,7 +6,7 @@ const contactDto = Joi.object({
   party: Joi.string().optional().allow(null).default(null),
   telephone: Joi.string().label("Telephone").optional().allow(""),
   description: Joi.string().allow("").optional().max(80),
-  type: Joi.string().required(),
+  type: Joi.string().default("unknown"),
   createdBy: Joi.string().required(),
   updatedBy: Joi.string().optional(),
 }).options({ stripUnknown: true });
