@@ -44,6 +44,7 @@ const ChatWidget = () => {
 
   const [selectedModel, setSelectedModel] = useState(() => localStorage.getItem("selected_ai_model") || "");
   const [selectedProviderId, setSelectedProviderId] = useState(() => localStorage.getItem("selected_ai_provider") || "");
+  const [pendingProviderId, setPendingProviderId] = useState(null);
 
   const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory, abortMessage } = useChatSocket(orgId, selectedProviderId);
   const { setting } = useCurrentOrgCurrency();
@@ -139,10 +140,20 @@ const ChatWidget = () => {
 
 
 
+  const handleResetClose = () => {
+    setPendingProviderId(null);
+    onResetClose();
+  };
+
   const handleConfirmReset = async () => {
     setIsClearing(true);
     try {
       await clearHistory(selectedModel, selectedProviderId);
+      if (pendingProviderId) {
+        setSelectedProviderId(pendingProviderId);
+        localStorage.setItem("selected_ai_provider", pendingProviderId);
+        setPendingProviderId(null);
+      }
       onResetClose();
     } finally {
       setIsClearing(false);
@@ -246,9 +257,15 @@ const ChatWidget = () => {
                   availableModels={availableModels}
                   activeProviders={activeProviders}
                   selectedProviderId={selectedProviderId}
-                  setSelectedProviderId={(id) => {
-                    setSelectedProviderId(id);
-                    localStorage.setItem("selected_ai_provider", id);
+                  setSelectedProviderId={(id, closeSettingsModal) => {
+                    if (messages.length > 0) {
+                      setPendingProviderId(id);
+                      if (closeSettingsModal) closeSettingsModal();
+                      onResetOpen();
+                    } else {
+                      setSelectedProviderId(id);
+                      localStorage.setItem("selected_ai_provider", id);
+                    }
                   }}
                   abortMessage={abortMessage}
                 />
@@ -273,7 +290,7 @@ const ChatWidget = () => {
 
         <ResetDialog
           isOpen={isResetOpen}
-          onClose={onResetClose}
+          onClose={handleResetClose}
           onConfirm={handleConfirmReset}
           cancelRef={cancelRef}
           isClearing={isClearing}

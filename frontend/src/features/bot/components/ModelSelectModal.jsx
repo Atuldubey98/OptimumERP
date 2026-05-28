@@ -52,14 +52,20 @@ const ModelSelectModal = ({
   onSelectProvider,
 }) => {
   const [search, setSearch] = useState("");
+  const [onlyVision, setOnlyVision] = useState(false);
+  const [onlyThinking, setOnlyThinking] = useState(false);
 
   const filteredModels = useMemo(() => {
     return availableModels.filter(
-      (m) =>
-        m.name.toLowerCase().includes(search.toLowerCase()) ||
-        m.id.toLowerCase().includes(search.toLowerCase())
+      (m) => {
+        const matchesSearch = m.name.toLowerCase().includes(search.toLowerCase()) ||
+          m.id.toLowerCase().includes(search.toLowerCase());
+        const matchesVision = !onlyVision || m.vision === true;
+        const matchesThinking = !onlyThinking || m.thinking === true;
+        return matchesSearch && matchesVision && matchesThinking;
+      }
     );
-  }, [availableModels, search]);
+  }, [availableModels, search, onlyVision, onlyThinking]);
 
   const bg = useColorModeValue("white", "gray.800");
   const color = useColorModeValue("gray.800", "white");
@@ -131,7 +137,7 @@ const ModelSelectModal = ({
               <ChakraReactSelect
                 options={providerOptions}
                 value={selectedOption}
-                onChange={(opt) => opt && onSelectProvider(opt.value)}
+                onChange={(opt) => opt && onSelectProvider(opt.value, onClose)}
                 formatOptionLabel={formatOptionLabel}
                 formatGroupLabel={formatOptionLabel}
                 isSearchable={false}
@@ -139,17 +145,23 @@ const ModelSelectModal = ({
                   container: (base) => ({ ...base, fontSize: "sm" }),
                   control: (base) => ({
                     ...base,
+                    borderRadius: "lg",
+                    bg: bg,
                     borderColor: selectedOption
                       ? PROVIDER_COLORS[selectedOption.provider]?.dot || borderColor
                       : borderColor,
-                    boxShadow: "none",
+                    boxShadow: "sm",
                     _hover: { borderColor: PROVIDER_COLORS[selectedOption?.provider]?.dot || borderColor },
                   }),
-                  option: (base, { isSelected }) => ({
+                  menu: (base) => ({
                     ...base,
-                    bg: isSelected
-                      ? useColorModeValue("gray.100", "whiteAlpha.200")
-                      : "transparent",
+                    bg: bg,
+                    borderColor: borderColor,
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    bg: state.isFocused ? hoverBg : (state.isSelected ? useColorModeValue("gray.100", "whiteAlpha.200") : bg),
+                    color: color,
                   }),
                 }}
               />
@@ -176,6 +188,49 @@ const ModelSelectModal = ({
             />
           </InputGroup>
 
+          <HStack spacing={2} mb={3} wrap="wrap">
+            <Badge
+              px={2.5}
+              py={1}
+              borderRadius="full"
+              cursor="pointer"
+              variant={onlyVision ? "solid" : "outline"}
+              colorScheme="purple"
+              onClick={() => setOnlyVision(!onlyVision)}
+              display="flex"
+              alignItems="center"
+              fontSize="0.75rem"
+              fontWeight="600"
+              textTransform="none"
+              userSelect="none"
+              transition="all 0.15s ease"
+              _hover={{ transform: "translateY(-1px)", boxShadow: "sm" }}
+              _active={{ transform: "translateY(0)" }}
+            >
+              👁️ Vision
+            </Badge>
+            <Badge
+              px={2.5}
+              py={1}
+              borderRadius="full"
+              cursor="pointer"
+              variant={onlyThinking ? "solid" : "outline"}
+              colorScheme="green"
+              onClick={() => setOnlyThinking(!onlyThinking)}
+              display="flex"
+              alignItems="center"
+              fontSize="0.75rem"
+              fontWeight="600"
+              textTransform="none"
+              userSelect="none"
+              transition="all 0.15s ease"
+              _hover={{ transform: "translateY(-1px)", boxShadow: "sm" }}
+              _active={{ transform: "translateY(0)" }}
+            >
+              🧠 Thinking
+            </Badge>
+          </HStack>
+
           <VStack
             align="stretch"
             spacing={2}
@@ -193,7 +248,7 @@ const ModelSelectModal = ({
             )}
             {filteredModels.length === 0 && availableModels.length > 0 && (
               <Text textAlign="center" color={subText} py={4} fontSize="sm">
-                No models found matching &quot;{search}&quot;.
+                No models found matching the selected criteria.
               </Text>
             )}
             {filteredModels.map((m) => (
