@@ -14,6 +14,7 @@ const {
 } = require("../constants/entities");
 const { isValidObjectId, default: mongoose } = require("mongoose");
 const logger = require("../logger");
+const { escapeTextSearch } = require("../utils");
 
 exports.executeMongoDbTransaction = async (operationsCallback) => {
   const session = await mongoose.startSession();
@@ -36,7 +37,7 @@ exports.getPaginationParams = async ({
   const filter = {
     org: params?.orgId,
   };
-  if (query.search) filter.$text = { $search: query?.search };
+  if (query.search) filter.$text = { $search: escapeTextSearch(query?.search) };
   switch (modelName) {
     case CONTACTS:
       if (query.type) filter.type = query.type;

@@ -20,6 +20,7 @@ const downloadPartyTransactionSummary = async (req, res) => {
   const decimalDigits = currencyConfig?.decimal_digits ?? 2;
   const precisionFactor = Math.pow(10, decimalDigits);
 
+  const { escapeTextSearch } = require("../../utils");
   const search = req.query.search;
   const party = await Party.findOne({
     _id: req.params.partyId,
@@ -27,7 +28,7 @@ const downloadPartyTransactionSummary = async (req, res) => {
   const transactionTypes = req.query.transactionTypes;
   if (transactionTypes && typeof transactionTypes === "string")
     filter.docModel = { $in: transactionTypes.split(",") };
-  if (search) filter.$text = { $search: search };
+  if (search) filter.$text = { $search: escapeTextSearch(search) };
 
   if (req.query.startDate && req.query.endDate) {
     filter.date = {

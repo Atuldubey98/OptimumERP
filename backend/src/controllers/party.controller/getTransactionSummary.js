@@ -11,6 +11,7 @@ const getTransactionSummary = async (req, res) => {
     org: req.params.orgId,
     party: req.params.partyId,
   };
+  const { escapeTextSearch } = require("../../utils");
   const search = req.query.search;
   const party = await Party.findOne({
     org: req.params.orgId,
@@ -21,7 +22,7 @@ const getTransactionSummary = async (req, res) => {
   const transactionTypes = req.query.transactionTypes;
   if (transactionTypes && typeof transactionTypes === "string")
     filter.docModel = { $in: transactionTypes.split(",") };
-  if (search) filter.$text = { $search: search };
+  if (search) filter.$text = { $search: escapeTextSearch(search) };
 
   if (req.query.startDate && req.query.endDate) {
     filter.date = {
