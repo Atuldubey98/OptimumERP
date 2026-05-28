@@ -58,7 +58,6 @@ const partyTools = [
         type: "object",
         properties: {
           partyId: { type: "string" },
-          name: { type: "string" },
           duration: {
             type: "string",
             enum: ["7d", "30d", "60d", "90d", "1w", "1m"]
