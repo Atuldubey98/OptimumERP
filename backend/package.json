@@ -5,12 +5,12 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "prestart": "export NODE_ENV=production && npm run seeder",
-    "start": "node .",
-    "cron": "node src/cron.js",
-    "cron:dev": "export NODE_ENV=development && node src/cron.js",
+    "prestart": "cross-env NODE_ENV=production npm run seeder",
+    "start": "cross-env NODE_ENV=production node .",
+    "cron": "cross-env NODE_ENV=production node src/cron.js",
+    "cron:dev": "cross-env NODE_ENV=development node src/cron.js",
     "seeder": "node src/seeder.js",
-    "dev": "export NODE_ENV=development && npm run seeder && nodemon ."
+    "dev": "cross-env NODE_ENV=development npm run seeder && cross-env NODE_ENV=development nodemon ."
   },
   "author": "",
   "license": "ISC",
@@ -48,6 +48,7 @@
     "ws": "^8.20.0"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "lorem-ipsum": "^2.0.8"
   }
 }
