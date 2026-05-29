@@ -1,6 +1,7 @@
 import {
   Box,
   ButtonGroup,
+  Badge,
   Divider,
   Flex,
   IconButton,
@@ -178,6 +179,17 @@ export default function ReceiptDisplay({ receipt, meta }) {
     },
   ].filter((field) => field.value);
 
+  const grandTotal =
+    Number(receipt.total || 0) +
+    Number(receipt.totalTax || 0) +
+    Number(receipt.shippingCharges || 0);
+  const received = Number(receipt.paymentVoucherBalance || 0);
+  const balanceDue = grandTotal - received;
+  const isOverdue =
+    receipt.dueDate &&
+    new Date(receipt.dueDate) < new Date() &&
+    balanceDue > 0;
+
   return (
     <Stack
       spacing={2}
@@ -188,7 +200,14 @@ export default function ReceiptDisplay({ receipt, meta }) {
       maxW={"5xl"}
     >
       <Flex justifyContent={"space-between"} alignItems={"center"}>
-        <BackButtonHeader heading={`${meta.label} #${receipt.num}`} />
+        <Flex alignItems={"center"} gap={2}>
+          <BackButtonHeader heading={`${meta.label} #${receipt.num}`} />
+          {isOverdue && (
+            <Badge colorScheme="red" fontSize="xs" px={2} py={1} borderRadius="md">
+              OVERDUE
+            </Badge>
+          )}
+        </Flex>
         <ButtonGroup>
           <ReceiptMenu headerButtons={headerButtons} />
           <IconButton
