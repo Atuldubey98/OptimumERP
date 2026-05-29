@@ -1,34 +1,33 @@
 import {
   Box,
-  Skeleton,
   SimpleGrid,
+  Skeleton,
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import moment from "moment";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FaFileInvoice,
   FaFileInvoiceDollar,
   FaMoneyBillTrendUp,
 } from "react-icons/fa6";
+import { GiExpense } from "react-icons/gi";
+import { GoPeople } from "react-icons/go";
 import { useNavigate, useParams } from "react-router-dom";
 import { invoiceStatusList } from "../../constants/invoice";
 import { purchaseStatusList } from "../../constants/purchase";
 import useAsyncCall from "../../hooks/useAsyncCall";
 import useAuth from "../../hooks/useAuth";
 import instance from "../../instance";
-import MainLayout from "../common/main-layout";
 import { statusList } from "../estimates/create/data";
 import Status from "../estimates/list/Status";
+import DashboardPageHeader from "./DashboardPageHeader";
 import DashboardTable from "./DashboardTable";
 import Dashcard from "./Dashcard";
-import DashboardPageHeader from "./DashboardPageHeader";
 import GuideTourModal from "./GuideTourModal";
-import { GoPeople } from "react-icons/go";
-import { GiExpense } from "react-icons/gi";
 export default function DashboardPage() {
   const { t } = useTranslation("dashboard");
   const dashboardEntityConfiguration = {
@@ -36,7 +35,7 @@ export default function DashboardPage() {
       label: t("dashboard_ui.entities.invoices"),
       Icon: FaFileInvoiceDollar,
       tableHeading: t("dashboard_ui.tables.recent_sales"),
-      route : "invoices",
+      route: "invoices",
       statusConfig: invoiceStatusList,
     },
     parties: {
@@ -49,14 +48,14 @@ export default function DashboardPage() {
     },
     purchases: {
       label: t("dashboard_ui.entities.purchases"),
-      route : "purchases",
+      route: "purchases",
       Icon: FaMoneyBillTrendUp,
       tableHeading: t("dashboard_ui.tables.recent_purchase"),
       statusConfig: purchaseStatusList,
     },
     quotes: {
       label: t("dashboard_ui.entities.quotes"),
-      route : "estimates",
+      route: "estimates",
       Icon: FaFileInvoice,
       tableHeading: t("dashboard_ui.tables.recent_estimates"),
       statusConfig: statusList,
@@ -117,9 +116,9 @@ export default function DashboardPage() {
     { label: t("dashboard_ui.periods.this_year"), value: "thisYear" },
   ], [t]);
 
-  const currentPeriodOption = useMemo(() => 
+  const currentPeriodOption = useMemo(() =>
     periods.find((period) => period.value === currentPeriod) || periods[1]
-  , [periods, currentPeriod]);
+    , [periods, currentPeriod]);
 
   const currentPeriodLabel = currentPeriodOption.label;
   const timeGreeting = useMemo(() => {
@@ -153,73 +152,73 @@ export default function DashboardPage() {
     total: item.total,
     totalTax: item.totalTax,
     status: <Status status={item.status} statusList={itemStatusList} />,
-    date: moment(item.date).format("DD-MM-YYYY"),
+    date: moment(item.date).format("LL"),
   });
   return (
-    
-     <Box mx={4}>
-       <Stack spacing={{ base: 6, md: 8 }}>
-          <DashboardPageHeader
-            greetingPrefix={t("dashboard_ui.greeting.hi", {
-              defaultValue: "Hi",
-            })}
-            userName={auth?.user?.name}
-            timeGreeting={timeGreeting}
-            subtitle={t("dashboard_ui.overview_subtitle")}
-            actions={
-              <Select
-                options={periods}
-                onChange={(option) => {
-                  setCurrentPeriod(option.value);
-                }}
-                value={currentPeriodOption}
-              />
-            }
-          />
 
-          <SimpleGrid columns={{ base: 1, md: 2, xl: 5 }} spacing={5}>
-            {Object.entries(dashboard.counts).map(([entity, count], index) => {
-              const { Icon, label } = dashboardEntityConfiguration[entity];
-              return (
-                <Skeleton w="100%" isLoaded={!loading} key={index} borderRadius="2xl">
-                  <Dashcard
-                    period={currentPeriodLabel}
-                    dashType={label}
-                    icon={<Icon size={30} />}
-                    dashTotal={count}
-                  />
-                </Skeleton>
-              );
-            })}
-          </SimpleGrid>
+    <Box mx={4}>
+      <Stack spacing={{ base: 6, md: 8 }}>
+        <DashboardPageHeader
+          greetingPrefix={t("dashboard_ui.greeting.hi", {
+            defaultValue: "Hi",
+          })}
+          userName={auth?.user?.name}
+          timeGreeting={timeGreeting}
+          subtitle={t("dashboard_ui.overview_subtitle")}
+          actions={
+            <Select
+              options={periods}
+              onChange={(option) => {
+                setCurrentPeriod(option.value);
+              }}
+              value={currentPeriodOption}
+            />
+          }
+        />
 
-          <Stack spacing={5}>
-            {Object.entries(dashboard.tables).map(([entity, items], index) => {
-              const { tableHeading, statusConfig, route } =
-                dashboardEntityConfiguration[entity];
-              return (
-                <Skeleton key={index} isLoaded={!loading} borderRadius="2xl">
-                  <DashboardTable
-                    heading={tableHeading}
-                    tableRows={items.map(
-                      dashboardReceiptTableMapper(statusConfig)
-                    )}
-                    tableHeads={[
-                      t("dashboard_ui.tables.headers.num"),
-                      t("dashboard_ui.tables.headers.party_name"),
-                      t("dashboard_ui.tables.headers.total"),
-                      t("dashboard_ui.tables.headers.status"),
-                      t("dashboard_ui.tables.headers.date"),
-                    ]}
-                    onViewMore={() => navigate(`/${orgId}/${route}`)}
-                  />
-                </Skeleton>
-              );
-            })}
-          </Stack>
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 5 }} spacing={5}>
+          {Object.entries(dashboard.counts).map(([entity, count], index) => {
+            const { Icon, label } = dashboardEntityConfiguration[entity];
+            return (
+              <Skeleton w="100%" isLoaded={!loading} key={index} borderRadius="2xl">
+                <Dashcard
+                  period={currentPeriodLabel}
+                  dashType={label}
+                  icon={<Icon size={30} />}
+                  dashTotal={count}
+                />
+              </Skeleton>
+            );
+          })}
+        </SimpleGrid>
+
+        <Stack spacing={5}>
+          {Object.entries(dashboard.tables).map(([entity, items], index) => {
+            const { tableHeading, statusConfig, route } =
+              dashboardEntityConfiguration[entity];
+            return (
+              <Skeleton key={index} isLoaded={!loading} borderRadius="2xl">
+                <DashboardTable
+                  heading={tableHeading}
+                  tableRows={items.map(
+                    dashboardReceiptTableMapper(statusConfig)
+                  )}
+                  tableHeads={[
+                    t("dashboard_ui.tables.headers.num"),
+                    t("dashboard_ui.tables.headers.party_name"),
+                    t("dashboard_ui.tables.headers.total"),
+                    t("dashboard_ui.tables.headers.status"),
+                    t("dashboard_ui.tables.headers.date"),
+                  ]}
+                  onViewMore={() => navigate(`/${orgId}/${route}`)}
+                />
+              </Skeleton>
+            );
+          })}
         </Stack>
+      </Stack>
       <GuideTourModal isOpen={isGuideTourOpen} onClose={onCloseGuidedTour} />
-     </Box>
-    
+    </Box>
+
   );
 }
