@@ -4,36 +4,50 @@ const UserActivatedPlan = require("../../models/userActivatedPlans.model");
 const OrgUser = require("../../models/orgUser.model");
 const logger = require("../../logger");
 const { registerUser } = require("../../services/auth.service");
+const { executeMongoDbTransaction } = require("../../services/crud.service");
 
 const createOrgUser = async (req, res) => {
   const body = await orgUserDto.validateAsync(req.body);
   const isDevelopmentEnv = process.env.NODE_ENV === "development";
   const shouldSendEmail = process.env.NODE_MAILER_HOST;
   const userActive = isDevelopmentEnv || !shouldSendEmail;
-  const registeredUser = await registerUser({
-    ...body,
-    attributes: body.useAdminSMTP ? req.session?.user?.attributes : {},
-    active: userActive,
-    verifiedEmail: userActive,
-  });
-  const org = await OrgModel.findById(req.params.orgId);
 
-  await UserActivatedPlan.create({
-    user: registeredUser.id,
-    plan: req.session?.user?.currentPlan?.plan,
-    purchasedBy: org.createdBy,
-    expiresOn: req.session?.user.currentPlan?.expiresOn,
-    purchasedOn: req.session?.user.currentPlan?.purchasedOn,
+  await executeMongoDbTransaction(async (session) => {
+    const registeredUser = await registerUser({
+      ...body,
+      attributes: body.useAdminSMTP ? req.session?.user?.attributes : {},
+      active: userActive,
+      verifiedEmail: userActive,
+      session,
+    });
+    
+    const org = await OrgModel.findById(req.params.orgId).session(session);
+
+    await UserActivatedPlan.create(
+      [
+        {
+          user: registeredUser.id,
+          plan: req.session?.user?.currentPlan?.plan,
+          purchasedBy: org.createdBy,
+          expiresOn: req.session?.user.currentPlan?.expiresOn,
+          purchasedOn: req.session?.user.currentPlan?.purchasedOn,
+        },
+      ],
+      { session }
+    );
+
+    const orgUser = new OrgUser({
+      org: req.params.orgId,
+      user: registeredUser.id,
+      role: body.role,
+    });
+    await orgUser.save({ session });
+
+    org.relatedDocsCount.organizationUsers++;
+    await org.save({ session });
+    logger.info(`Organization user created with id ${orgUser.id}`);
   });
-  const orgUser = new OrgUser({
-    org: req.params.orgId,
-    user: registeredUser.id,
-    role: body.role,
-  });
-  await orgUser.save();
-  org.relatedDocsCount.organizationUsers++;
-  await org.save();
-  logger.info(`Organization user created with id ${orgUser.id}`);
+
   return res
     .status(201)
     .json({ message: req.t('user:user.registered') });

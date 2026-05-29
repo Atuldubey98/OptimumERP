@@ -21,8 +21,8 @@ const paginate = async (options = {}, req, res) => {
   }
 
   const bills = await query
-    .populate("party")
-    .populate("org")
+    .populate("party", "name billingAddress")
+    .populate("org", "name")
     .select(req.query.select)
     .skip(skip)
     .limit(limit)

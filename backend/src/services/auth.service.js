@@ -16,11 +16,12 @@ exports.registerUser = async ({
   attributes = {},
   active = false,
   verifiedEmail = false,
+  session,
 }) => {
-  const existingUser = await UserModel.findByEmailId(email);
+  const existingUser = await UserModel.findByEmailId(email).session(session);
   if (existingUser) throw new UserDuplicate();
   const hashedPassword = await getHashedString(password);
-  const registeredUser = await UserModel.create({
+  const registeredUser = new UserModel({
     email,
     password: hashedPassword,
     name,
@@ -28,6 +29,7 @@ exports.registerUser = async ({
     verifiedEmail,
     active,
   });
+  await registeredUser.save({ session });
   return registeredUser;
 };
 

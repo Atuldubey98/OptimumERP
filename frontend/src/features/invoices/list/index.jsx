@@ -52,7 +52,7 @@ export default function InvoicesPage() {
     entity: "invoices",
     storageKey: "dateFilter:invoices",
     extraParams: {
-      select: "num date party status total totalTax shippingCharges org paymentVoucherBalance",
+      select: "num date party status total totalTax shippingCharges paymentVoucherBalance",
     },
   });
   const loading = status === "loading";
