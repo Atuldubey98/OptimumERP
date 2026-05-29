@@ -1,4 +1,4 @@
-import { Heading, Link, SimpleGrid, Stack, Text, Flex, Spinner } from "@chakra-ui/react";
+import { Heading, Link, SimpleGrid, Text, Flex, Spinner, Box, VStack, useColorModeValue } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PricingCard from "./PricingCard";
@@ -31,32 +31,61 @@ export default function PricingPage() {
   }
 
   return (
-    <Stack spacing={5} p={4}>
-      <Heading fontSize={"xl"}>{t("pricing_ui.page.heading")}</Heading>
-      <Text>{t("pricing_ui.page.subtitle")}</Text>
-      <Text>
-        {t("pricing_ui.page.contact_text")}{" "}
-        <Link href="mailto:optimumerp2024@gmail.com">
-          optimumerp2024@gmail.com
-        </Link>
-      </Text>
-      <SimpleGrid gap={8} minChildWidth={350}>
+    <Box maxW="1200px" mx="auto" px={{ base: 4, md: 8 }} py={{ base: 8, md: 12 }}>
+      <VStack spacing={4} textAlign="center" mb={12}>
+        <Heading
+          as="h1"
+          fontSize={{ base: "3xl", md: "4xl" }}
+          fontWeight="extrabold"
+          color={useColorModeValue("blue.600", "blue.400")}
+          lineHeight="1.2"
+        >
+          {t("pricing_ui.page.heading")}
+        </Heading>
+        <Text
+          fontSize={{ base: "md", md: "lg" }}
+          color={useColorModeValue("gray.600", "gray.400")}
+          maxW="2xl"
+          mx="auto"
+        >
+          {t("pricing_ui.page.subtitle")}
+        </Text>
+        <Box
+          p={3}
+          px={6}
+          borderRadius="full"
+          bg={useColorModeValue("blue.50", "whiteAlpha.50")}
+          borderWidth="1px"
+          borderColor={useColorModeValue("blue.100", "whiteAlpha.100")}
+          fontSize="sm"
+          color={useColorModeValue("blue.600", "blue.300")}
+          fontWeight="medium"
+          display="inline-flex"
+          alignItems="center"
+          gap={2}
+        >
+          {t("pricing_ui.page.contact_text")}{" "}
+          <Link
+            href="mailto:optimumerp2024@gmail.com"
+            fontWeight="bold"
+            color={useColorModeValue("blue.700", "blue.200")}
+            _hover={{ textDecoration: "underline" }}
+          >
+            optimumerp2024@gmail.com
+          </Link>
+        </Box>
+      </VStack>
+
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8} justifyItems="center" alignItems="stretch">
         {plans.map((plan, index) => (
           <PricingCard
             plan={plan.key}
             key={index}
-            price={
-              <>
-                ₹{plan.price}{" "}
-                <Text fontSize={"sm"} as="span">
-                  / Year
-                </Text>
-              </>
-            }
+            price={plan.price}
             planOfferings={plan.featureList}
           />
         ))}
       </SimpleGrid>
-    </Stack>
+    </Box>
   );
 }
