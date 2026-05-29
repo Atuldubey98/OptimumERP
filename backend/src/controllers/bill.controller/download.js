@@ -7,7 +7,7 @@ const { getDisplaySettingForOrg } = require("../../services/setting.service");
 const templator = require("../../views/templates/templator");
 const logger = require("../../logger");
 const fs = require("fs/promises");
-const path = require("path");
+const { getStoragePath } = require("../../storages");
 
 const download = async (options = {}, req, res) => {
   const { NotFound, Bill } = options;
@@ -61,7 +61,8 @@ const download = async (options = {}, req, res) => {
 module.exports = download;
 
 async function getBase64Url(url) {
-  const buffer = await fs.readFile(path.join(process.cwd(), url));
+  const filePath = getStoragePath(url);
+  const buffer = await fs.readFile(filePath);
   const base64 = buffer.toString("base64");
   return `data:image/${url.split(".").pop()};base64,${base64}`;
 }

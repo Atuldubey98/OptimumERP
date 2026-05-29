@@ -1,3 +1,5 @@
+const path = require("path");
+
 const folders = {
     LOGOS: "logos",
     AVATARS: "avatars",
@@ -14,4 +16,12 @@ const makeFilePathFromService = (fileName, bucket = folders.LOGOS) => {
 const getRouteFromFolder = (folder) => {
     return `/uploads/${folder}`;
 }
-module.exports = { makeFilePathFromService, folders, storages, getRouteFromFolder }
+const getStoragePath = (url) => {
+    const storageRoot = process.env.NETWORK_STORAGE_PATH || path.join(process.cwd(), "uploads");
+    if (url) {
+        const relativePath = url.replace(/^\/?uploads\//, "");
+        return path.join(storageRoot, relativePath);
+    }
+    return storageRoot;
+}
+module.exports = { makeFilePathFromService, folders, storages, getRouteFromFolder, getStoragePath }
