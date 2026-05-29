@@ -1,8 +1,9 @@
 const Setting = require("../../models/settings.model");
 const { invalidateSettingCache } = require("../../services/setting.service");
+const { makeFilePathFromService } = require("../../storages");
 
 const uploadSignature = async (req, res) => {
-  const path = req.file.path;
+  const path = makeFilePathFromService(req.file.filename, "signatures");
   await Setting.updateOne(
     { org: req.params.orgId },
     { signature: path },

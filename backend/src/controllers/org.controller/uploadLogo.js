@@ -1,7 +1,8 @@
 const OrgModel = require("../../models/org.model");
+const { makeFilePathFromService } = require("../../storages");
 
 const uploadLogo = async (req, res) => {
-  const path = req.file.path;
+  const path = makeFilePathFromService(req.file.filename, "logos");
   await OrgModel.updateOne(
     { _id: req.params.orgId },
     { logo: path },

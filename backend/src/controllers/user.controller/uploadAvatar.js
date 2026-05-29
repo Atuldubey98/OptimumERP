@@ -1,6 +1,7 @@
 const User = require("../../models/user.model");
+const { makeFilePathFromService } = require("../../storages");
 const uploadAvatar = async (req, res) => {
-  const path = req.file.path;
+  const path = makeFilePathFromService(req.file.filename, "avatars");
   const user = req.session.user;
   const userUpdates = { avatar: path };
   await User.updateOne({ _id: user._id }, userUpdates, { lean: true });
