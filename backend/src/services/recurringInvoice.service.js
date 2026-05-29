@@ -80,10 +80,17 @@ const generateBill = async (recurringInvoice, type, session = null) => {
             session,
         });
 
+        const nextDate = recurringInvoice.nextOccurrence || recurringInvoice.startDate;
+        const scheduledDate = new Date(nextDate);
+        scheduledDate.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const invoiceDate = scheduledDate < today ? new Date() : nextDate;
+
         const requestBody = {
             org: String(recurringInvoice.org),
             party: String(recurringInvoice.party?._id || recurringInvoice.party),
-            date: recurringInvoice.nextOccurrence || recurringInvoice.startDate,
+            date: invoiceDate,
             sequence,
             prefix: setting.transactionPrefix?.[config.prefixKey] || "",
             poNo: recurringInvoice.poNo,
@@ -187,9 +194,17 @@ exports.updateNextOccurrence = async (recurringInvoice, session = null) => {
     const baseDate = recurringInvoice.nextOccurrence || recurringInvoice.startDate;
     const nextOccurrence = exports.calculateNextOccurrence(baseDate, recurringInvoice.interval);
 
+    const endDate = new Date(recurringInvoice.endDate);
+    endDate.setHours(23, 59, 59, 999);
+
+    const updateFields = { nextOccurrence };
+    if (nextOccurrence > endDate) {
+        updateFields.status = "cancelled";
+    }
+
     await RecurringInvoice.updateOne(
         { _id: recurringInvoice._id },
-        { $set: { nextOccurrence } },
+        { $set: updateFields },
         { session }
     );
     return nextOccurrence;

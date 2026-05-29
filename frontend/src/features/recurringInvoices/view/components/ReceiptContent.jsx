@@ -42,15 +42,36 @@ export default function ReceiptContent({ ri }) {
             </Badge>
           )}
         </VStack>
-        <VStack align={{ base: "start", md: "end" }} spacing={1}>
-          <Text fontSize="xs" fontWeight="bold" color="gray.400" textTransform="uppercase">
+        <VStack align="stretch" spacing={2} minW="260px">
+          <Text fontSize="xs" fontWeight="bold" color="gray.400" textTransform="uppercase" align={{ base: "left", md: "right" }} mb={1}>
             Plan Details
           </Text>
-          {ri.poNo && <Text fontSize="sm"><b>PO # :</b> {ri.poNo}</Text>}
-          {ri.poDate && <Text fontSize="sm"><b>PO Date :</b> {moment(ri.poDate).format("LL")}</Text>}
-          <Text fontSize="sm"><b>Starts:</b> {moment(ri.startDate).format("LL")}</Text>
-          <Text fontSize="sm"><b>Ends:</b> {ri.endDate ? moment(ri.endDate).format("LL") : "Never"}</Text>
-          <Text fontSize="sm"><b>Last Run:</b> {ri.lastGeneratedDate ? moment(ri.lastGeneratedDate).format("LL") : "Never"}</Text>
+          <VStack align="stretch" spacing={1} fontSize="sm">
+            {ri.poNo && (
+              <Flex justify="space-between" gap={4}>
+                <Text color="gray.500" whiteSpace="nowrap">PO #:</Text>
+                <Text fontWeight="semibold" whiteSpace="nowrap">{ri.poNo}</Text>
+              </Flex>
+            )}
+            {ri.poDate && (
+              <Flex justify="space-between" gap={4}>
+                <Text color="gray.500" whiteSpace="nowrap">PO Date:</Text>
+                <Text fontWeight="semibold" whiteSpace="nowrap">{moment(ri.poDate).format("LL")}</Text>
+              </Flex>
+            )}
+            <Flex justify="space-between" gap={4}>
+              <Text color="gray.500" whiteSpace="nowrap">Starts:</Text>
+              <Text fontWeight="semibold" whiteSpace="nowrap">{moment(ri.startDate).format("LL")}</Text>
+            </Flex>
+            <Flex justify="space-between" gap={4}>
+              <Text color="gray.500" whiteSpace="nowrap">Ends:</Text>
+              <Text fontWeight="semibold" whiteSpace="nowrap">{ri.endDate ? moment(ri.endDate).format("LL") : "Never"}</Text>
+            </Flex>
+            <Flex justify="space-between" gap={4}>
+              <Text color="gray.500" whiteSpace="nowrap">Last Run:</Text>
+              <Text fontWeight="semibold" whiteSpace="nowrap">{ri.lastGeneratedDate ? moment(ri.lastGeneratedDate).format("LL") : "Never"}</Text>
+            </Flex>
+          </VStack>
         </VStack>
       </Flex>
 
