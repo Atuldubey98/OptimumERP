@@ -1,7 +1,8 @@
 const multer = require("multer");
-const logoStorage = require("../storages/logo.storage");
-const avatarStorage = require("../storages/avatar.storage");
-const signatureStorage = require("../storages/signature.storage");
+const { storages } = require("../storages");
+const logoStorage = storages.logo;
+const avatarStorage = storages.avatar;
+const signatureStorage = storages.signature;
 const logoUploader = multer({
   storage: logoStorage,
 });

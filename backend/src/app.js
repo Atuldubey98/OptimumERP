@@ -14,16 +14,16 @@ const app = express();
 const middleware = require("i18next-http-middleware");
 const i18 = require("./i18");
 const config = require("./config");
-
+const { folders, getRouteFromFolder } = require("./storages");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 
 if (process.env.NETWORK_STORAGE_PATH) {
   logger.info(`Using network storage at ${process.env.NETWORK_STORAGE_PATH}`);
-  const folders = ["logos", "avatars", "signatures"];
-  for (let folder of folders) {
+  const storages = Object.values(folders);
+  for (let folder of storages) {
     const folderPath = path.join(process.env.NETWORK_STORAGE_PATH, folder);
-    const route = `/uploads/${folder}`;
+    const route = getRouteFromFolder(folder);
     app.use(route, express.static(folderPath));
   }
 }
