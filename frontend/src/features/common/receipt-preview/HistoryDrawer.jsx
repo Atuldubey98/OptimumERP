@@ -96,7 +96,7 @@ export default function HistoryDrawer({ isOpen, onClose }) {
                       />
                     </StepIndicator>
 
-                    <Box flexShrink="0" mb={8} ml={4} w="full">
+                    <Box flex="1" mb={8} ml={4} overflow="hidden">
                       <StepTitle>
                         <Text fontWeight="bold" color={stepTitleColor}>
                           {activity.action.charAt(0).toUpperCase() + activity.action.slice(1)}
