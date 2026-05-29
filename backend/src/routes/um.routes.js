@@ -8,7 +8,7 @@ const {
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
 } = require("../middlewares/auth.middleware");
 
 const umRouter = Router({
@@ -18,7 +18,7 @@ const umRouter = Router({
 umRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("ums"),
+  limitEntityCreation("ums"),
   requestAsyncHandler(create)
 );
 umRouter.get("/", requestAsyncHandler(listAll));

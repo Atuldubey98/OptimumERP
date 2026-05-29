@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
   checkPlan,
 } = require("../middlewares/auth.middleware");
 const {
@@ -27,7 +27,7 @@ const purchaseOrderRouter = Router({ mergeParams: true });
 purchaseOrderRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("purchaseOrders"),
+  limitEntityCreation("purchaseOrders"),
   requestAsyncHandler(create)
 );
 

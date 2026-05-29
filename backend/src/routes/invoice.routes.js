@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const {
   checkPlan,
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const {
@@ -27,7 +27,7 @@ const invoiceRouter = Router({
 invoiceRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("invoices"),
+  limitEntityCreation("invoices"),
   requestAsyncHandler(create)
 );
 

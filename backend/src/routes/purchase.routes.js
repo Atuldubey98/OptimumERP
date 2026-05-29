@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
   checkPlan,
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
@@ -27,7 +27,7 @@ const purchaseRouter = Router({
 purchaseRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("purchases"),
+  limitEntityCreation("purchases"),
   requestAsyncHandler(create)
 );
 purchaseRouter.get("/export", requestAsyncHandler(exportData));

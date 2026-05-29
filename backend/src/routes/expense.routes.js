@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const {
   authenticate,
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
 } = require("../middlewares/auth.middleware");
 const {
   checkOrgAuthorization,
@@ -26,7 +26,7 @@ expenseRouter.get("/", paginateModel, requestAsyncHandler(paginate));
 expenseRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("expenses"),
+  limitEntityCreation("expenses"),
   requestAsyncHandler(create)
 );
 

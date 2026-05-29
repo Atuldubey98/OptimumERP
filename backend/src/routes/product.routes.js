@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
 } = require("../middlewares/auth.middleware");
 const {
   paginate,
@@ -26,7 +26,7 @@ productRouter.post("/bulk", createModel, requestAsyncHandler(bulkCreate));
 productRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("products"),
+  limitEntityCreation("products"),
   requestAsyncHandler(create)
 );
 productRouter.patch("/:productId", updateModel, requestAsyncHandler(update));

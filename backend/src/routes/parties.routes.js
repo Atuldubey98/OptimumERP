@@ -11,7 +11,7 @@ const {
   importParties,
 } = require("../controllers/party.controller");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
   authenticate,
   authorize,
 } = require("../middlewares/auth.middleware");
@@ -31,7 +31,7 @@ partyRouter.get("/search", requestAsyncHandler(searchByNameOrBA));
 partyRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("parties"),
+  limitEntityCreation("parties"),
   requestAsyncHandler(create),
 );
 partyRouter.patch("/:partyId", updateModel, requestAsyncHandler(update));

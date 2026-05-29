@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
 } = require("../middlewares/auth.middleware");
 
 const {
@@ -18,7 +18,7 @@ const productCategoryRouter = Router({
 
 productCategoryRouter.post(
   "/",
-  limitFreePlanOnCreateEntityForOrganization("productCategories"),
+  limitEntityCreation("productCategories"),
   requestAsyncHandler(create)
 );
 productCategoryRouter.get("/search", requestAsyncHandler(search));

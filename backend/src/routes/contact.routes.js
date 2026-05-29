@@ -7,7 +7,7 @@ const {
   update,
 } = require("../controllers/contact.controller");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
 } = require("../middlewares/auth.middleware");
 const { createModel, updateModel } = require("../middlewares/crud.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
@@ -16,7 +16,7 @@ const contactRouter = Router({ mergeParams: true });
 contactRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("contacts"),
+  limitEntityCreation("contacts"),
   requestAsyncHandler(create)
 );
 contactRouter.get("/:id", requestAsyncHandler(read));

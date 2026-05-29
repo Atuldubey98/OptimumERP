@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
   checkPlan,
 } = require("../middlewares/auth.middleware");
 const {
@@ -34,13 +34,13 @@ proformaInvoiceRouter.get("/:id", requestAsyncHandler(read));
 
 proformaInvoiceRouter.post(
   "/:id/convertToInvoice",
-  limitFreePlanOnCreateEntityForOrganization("invoices"),
+  limitEntityCreation("invoices"),
   requestAsyncHandler(convertProformaToInvoice)
 );
 proformaInvoiceRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("proformaInvoices"),
+  limitEntityCreation("proformaInvoices"),
   requestAsyncHandler(create)
 );
 proformaInvoiceRouter.delete("/:id", requestAsyncHandler(remove));

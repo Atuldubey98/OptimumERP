@@ -5,7 +5,7 @@ const {
   paginateModel,
 } = require("../middlewares/crud.middleware");
 const {
-  limitFreePlanOnCreateEntityForOrganization,
+  limitEntityCreation,
   checkPlan,
 } = require("../middlewares/auth.middleware");
 const {
@@ -30,7 +30,7 @@ const quoteRouter = Router({
 quoteRouter.post(
   "/",
   createModel,
-  limitFreePlanOnCreateEntityForOrganization("quotes"),
+  limitEntityCreation("quotes"),
   requestAsyncHandler(create)
 );
 
@@ -40,7 +40,7 @@ quoteRouter.get("/:id", requestAsyncHandler(read));
 
 quoteRouter.post(
   "/:id/convertToInvoice",
-  limitFreePlanOnCreateEntityForOrganization("invoices"),
+  limitEntityCreation("invoices"),
   requestAsyncHandler(convertQuoteToInvoice)
 );
 quoteRouter.delete("/:id", requestAsyncHandler(remove));
