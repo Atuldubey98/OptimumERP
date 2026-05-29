@@ -1,26 +1,26 @@
 import {
+  Badge,
   Box,
   Button,
+  Flex,
   Heading,
+  Icon,
   List,
   ListIcon,
   ListItem,
   Stack,
   Text,
-  Badge,
-  Flex,
   useColorModeValue,
-  Icon,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
-import { FiCheck } from "react-icons/fi";
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { FiCheck } from "react-icons/fi";
 import AuthContext from "../../contexts/AuthContext";
 
 export default function PricingCard({ plan, planOfferings, price }) {
   const { t } = useTranslation("party");
   const auth = useContext(AuthContext);
-  
+
   const currentPlan = auth?.user?.currentPlan
     ? auth?.user?.currentPlan.plan
     : "free";
@@ -35,11 +35,11 @@ export default function PricingCard({ plan, planOfferings, price }) {
 
   const currentRank = PLAN_RANKS[currentPlan.toLowerCase()] || 1;
   const targetRank = PLAN_RANKS[plan.toLowerCase()] || 1;
-  
+
   const cardBg = useColorModeValue("white", "gray.800");
   const activeBorderColor = useColorModeValue("blue.500", "blue.400");
   const inactiveBorderColor = useColorModeValue("gray.200", "whiteAlpha.200");
-  
+
   return (
     <Flex
       direction="column"
@@ -89,7 +89,7 @@ export default function PricingCard({ plan, planOfferings, price }) {
           >
             {plan}
           </Heading>
-          
+
           <Flex align="baseline" justify="center" mt={4}>
             <Text fontSize="2xl" fontWeight="semibold" color={useColorModeValue("gray.600", "gray.300")} mr={1}>
               ₹
