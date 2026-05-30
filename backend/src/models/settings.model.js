@@ -142,12 +142,17 @@ const settingSchema = new Schema({
         },
         fields: {
           apiKey: String,
+          defaultModel: String,
         },
         name: {
           type: String,
           required: true,
         },
         isActive: {
+          type: Boolean,
+          default: false,
+        },
+        isDefault: {
           type: Boolean,
           default: false,
         },

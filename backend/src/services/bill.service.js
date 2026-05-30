@@ -17,8 +17,7 @@ const path = require("path");
 const logger = require("../logger");
 const transporter = require("../mailer");
 const smtpService = require("./smtp.service");
-const contactService = require("./contact.service");
-const { promiseQrCode, renderHtml, getPdfBufferFromDocDefinition } = require("./renderEngine.service");
+const { promiseQrCode, getPdfBufferFromDocDefinition, enrichBillDataWithImages } = require("./renderEngine.service");
 const templator = require("../views/templates/templator");
 
 const {
@@ -655,28 +654,6 @@ exports.getBillDetail = async ({ Bill, filter, NotFound, t, minimal = false }) =
   return { ...data, ...meta };
 };
 
-exports.convertBillToHtmlByTemplate = async ({
-  Bill,
-  filter,
-  NotFound,
-  template,
-  t,
-  language,
-}) => {
-  const data = await this.getBillDetail({
-    Bill,
-    filter,
-    NotFound,
-    t,
-    language,
-  });
-  const pdfTemplateLocation = path.join(
-    __dirname,
-    `../views/templates/${template}/index.ejs`,
-  );
-  const html = await renderHtml(pdfTemplateLocation, data);
-  return { html, data };
-};
 
 exports.convertBillToPdfByTemplate = async ({
   Bill,
@@ -685,6 +662,8 @@ exports.convertBillToPdfByTemplate = async ({
   template,
   t,
   language,
+  signature,
+  color,
 }) => {
   const data = await this.getBillDetail({
     Bill,
@@ -693,7 +672,9 @@ exports.convertBillToPdfByTemplate = async ({
     t,
     language,
   });
-  const docDefinition = templator(template)(data);
+  const setting = await getDetailedSettingForOrg(filter.org);
+  await enrichBillDataWithImages(data, setting, signature);
+  const docDefinition = templator(template)(data, color);
   const pdfBuffer = await getPdfBufferFromDocDefinition(docDefinition);
   return { pdfBuffer, data };
 };
@@ -763,7 +744,9 @@ exports.sendBill = async ({
   ccEmails = [],
   subject,
   body,
-  replyToMessageId
+  replyToMessageId,
+  signature,
+  color,
 }) => {
   const { pdfBuffer, data: billData } = await this.convertBillToPdfByTemplate({
     Bill,
@@ -772,6 +755,8 @@ exports.sendBill = async ({
     template,
     t,
     language,
+    signature,
+    color,
   });
 
   const pdfFileName = `${billData.title || "Bill"}-${billData.num}.pdf`;

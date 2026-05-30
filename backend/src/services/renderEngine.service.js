@@ -2,16 +2,10 @@ const ejs = require("ejs");
 const QRCode = require("qrcode");
 const PdfMake = require("pdfmake");
 const path = require("path");
+const fs = require("fs/promises");
 const i18 = require("../i18");
 const logger = require("../logger");
-exports.renderHtml = (location, data) => {
-  return new Promise((resolve, reject) => {
-    ejs.renderFile(location, data, (err, html) => {
-      if (err) reject(err);
-      resolve(html);
-    });
-  });
-};
+const { getStoragePath } = require("../storages");
 
 exports.sendHtmlToPdfResponse = async ({ html, res, pdfName }) => {
   const pdfBuffer = await this.getPdfBufferUsingHtml(html);
@@ -110,4 +104,31 @@ exports.convertPdfToImages = async (base64Content) => {
   } catch (error) {
     throw error;
   }
+};
+
+exports.getBase64Url = async (url) => {
+  if (!url) return "";
+  const filePath = getStoragePath(url);
+  const buffer = await fs.readFile(filePath);
+  const ext = url.split(".").pop() || "png";
+  return toDataUri(buffer, `image/${ext}`);
+};
+
+exports.enrichBillDataWithImages = async (data, setting, showSignature) => {
+  const orgLogoUrl = data?.entity?.org?.logo;
+  if (orgLogoUrl) {
+    try {
+      data.entity.org.logo = await exports.getBase64Url(orgLogoUrl);
+    } catch (err) {
+      logger.error("Error loading logo base64:", err);
+    }
+  }
+  if (showSignature && setting?.signature) {
+    try {
+      data.signature = await exports.getBase64Url(setting.signature);
+    } catch (err) {
+      logger.error("Error loading signature base64:", err);
+    }
+  }
+  return data;
 };

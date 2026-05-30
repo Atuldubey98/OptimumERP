@@ -389,6 +389,9 @@
     }
   },
   "errors": {
+    "ChatNotFound": "Conversa não encontrada",
+    "AiProviderNotFound": "Nenhum provedor de IA ativo encontrado. Ative um nas configurações.",
+    "AiEngineInitializationFailed": "Falha ao inicializar o motor de IA.",
     "ContactNotFound": "Contato não encontrado",
     "ExpenseNotFound": "Despesa não encontrada",
     "ExpenseCategoryNotDeleted": "{{reason}}",
@@ -411,6 +414,8 @@
     "QuoteNotFound": "Cotação não encontrada",
     "QuotationDuplicate": "Já existe uma cotação com o número: {{id}}",
     "RecurringInvoiceNotFound": "Fatura recorrente não encontrada",
+    "SettingNotFound": "Configurações da organização não encontradas",
+    "ProviderNotFound": "Provedor de IA/SMTP não encontrado",
     "InvalidRecurrenceValue": "Valor de recorrência inválido",
     "TaxNotFound": "Imposto não encontrado",
     "UserDuplicate": "Usuário já existe",

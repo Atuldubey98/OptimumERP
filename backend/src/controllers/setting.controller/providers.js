@@ -4,6 +4,7 @@ const Setting = require("../../models/settings.model");
 const { encrypt } = require("../../services/hashing.service");
 const { invalidateSettingCache } = require("../../services/setting.service");
 const { executeMongoDbTransaction } = require("../../services/crud.service");
+const { SettingNotFound, ProviderNotFound } = require("../../errors/setting.error");
 
 const create = async (req, res) => {
     const schema = Joi.object({
@@ -11,6 +12,7 @@ const create = async (req, res) => {
         provider: Joi.string().valid("grok", "ollama").required(),
         fields: Joi.object({
             apiKey: Joi.string().required(),
+            defaultModel: Joi.string().required(),
         }).required(),
     });
 
@@ -26,6 +28,8 @@ const create = async (req, res) => {
     const encryptedApiKey = encrypt(fields.apiKey);
 
     const currentSetting = await Setting.findOne({ org });
+    if (!currentSetting) throw new SettingNotFound();
+    
     const isActive = !currentSetting.aiProviders || currentSetting.aiProviders.length === 0;
 
     const result = await Setting.updateOne({ org }, {
@@ -34,15 +38,17 @@ const create = async (req, res) => {
                 name,
                 provider,
                 fields: {
-                    apiKey: encryptedApiKey
+                    apiKey: encryptedApiKey,
+                    defaultModel: fields.defaultModel
                 },
-                isActive
+                isActive,
+                isDefault: isActive
             }
         }
     });
 
     if (result.matchedCount === 0) {
-        return res.status(404).json({ success: false, message: "Organization settings not found" });
+        throw new SettingNotFound();
     }
 
     await invalidateSettingCache(org);
@@ -60,13 +66,15 @@ const remove = async (req, res) => {
     await executeMongoDbTransaction(async (session) => {
         const setting = await Setting.findOne({ org }).session(session);
         if (!setting) {
-            const error = new Error("Organization settings not found");
-            error.statusCode = 404;
-            throw error;
+            throw new SettingNotFound();
         }
 
         const providerToRemove = setting.aiProviders.find(p => p._id.toString() === providerId);
+        if (!providerToRemove) {
+            throw new ProviderNotFound();
+        }
         const wasActive = providerToRemove?.isActive;
+        const wasDefault = providerToRemove?.isDefault;
 
         await Setting.updateOne({ org }, {
             $pull: {
@@ -74,12 +82,16 @@ const remove = async (req, res) => {
             }
         }, { session });
 
-        if (wasActive) {
+        if (wasActive || wasDefault) {
             const updatedSetting = await Setting.findOne({ org }).session(session);
             if (updatedSetting.aiProviders.length > 0) {
+                const updateFields = {};
+                if (wasActive) updateFields["aiProviders.0.isActive"] = true;
+                if (wasDefault) updateFields["aiProviders.0.isDefault"] = true;
+
                 await Setting.updateOne(
                     { org, "aiProviders.0": { $exists: true } },
-                    { $set: { "aiProviders.0.isActive": true } },
+                    { $set: updateFields },
                     { session }
                 );
             }
@@ -100,12 +112,12 @@ const setActive = async (req, res) => {
 
     const setting = await Setting.findOne({ org });
     if (!setting) {
-        return res.status(404).json({ success: false, message: "Organization settings not found" });
+        throw new SettingNotFound();
     }
 
     const provider = setting.aiProviders.find(p => p._id.toString() === providerId);
     if (!provider) {
-        return res.status(404).json({ success: false, message: "Provider not found" });
+        throw new ProviderNotFound();
     }
 
     const result = await Setting.updateOne(
@@ -114,7 +126,7 @@ const setActive = async (req, res) => {
     );
 
     if (result.matchedCount === 0) {
-        return res.status(404).json({ success: false, message: "Provider not found" });
+        throw new ProviderNotFound();
     }
 
     await invalidateSettingCache(org);
@@ -146,6 +158,8 @@ const createSmtp = async (req, res) => {
     const encryptedPass = encrypt(fields.pass);
 
     const currentSetting = await Setting.findOne({ org });
+    if (!currentSetting) throw new SettingNotFound();
+    
     const isActive = !currentSetting.smtpProviders || currentSetting.smtpProviders.length === 0;
 
     const result = await Setting.updateOne({ org }, {
@@ -163,7 +177,7 @@ const createSmtp = async (req, res) => {
     });
 
     if (result.matchedCount === 0) {
-        return res.status(404).json({ success: false, message: "Organization settings not found" });
+        throw new SettingNotFound();
     }
 
     await invalidateSettingCache(org);
@@ -181,12 +195,13 @@ const removeSmtp = async (req, res) => {
     await executeMongoDbTransaction(async (session) => {
         const setting = await Setting.findOne({ org }).session(session);
         if (!setting) {
-            const error = new Error("Organization settings not found");
-            error.statusCode = 404;
-            throw error;
+            throw new SettingNotFound();
         }
 
         const providerToRemove = setting.smtpProviders.find(p => p._id.toString() === providerId);
+        if (!providerToRemove) {
+            throw new ProviderNotFound();
+        }
         const wasActive = providerToRemove?.isActive;
 
         await Setting.updateOne({ org }, {
@@ -220,6 +235,11 @@ const setActiveSmtp = async (req, res) => {
     const org = req.params.orgId;
 
     await executeMongoDbTransaction(async (session) => {
+        const setting = await Setting.findOne({ org }).session(session);
+        if (!setting) {
+            throw new SettingNotFound();
+        }
+        
         await Setting.updateOne(
             { org },
             { $set: { "smtpProviders.$[].isActive": false } },
@@ -233,9 +253,7 @@ const setActiveSmtp = async (req, res) => {
         );
 
         if (result.matchedCount === 0) {
-            const error = new Error("Provider not found");
-            error.statusCode = 404;
-            throw error;
+            throw new ProviderNotFound();
         }
     });
 
@@ -247,4 +265,60 @@ const setActiveSmtp = async (req, res) => {
     });
 };
 
-module.exports = { create, remove, setActive, createSmtp, removeSmtp, setActiveSmtp };
+const updateDefaultModel = async (req, res) => {
+    const schema = Joi.object({
+        defaultModel: Joi.string().required(),
+    });
+
+    const value = await schema.validateAsync(req.body);
+    const { providerId } = req.params;
+    const org = req.params.orgId;
+
+    const result = await Setting.updateOne(
+        { org, "aiProviders._id": providerId },
+        { $set: { "aiProviders.$.fields.defaultModel": value.defaultModel } }
+    );
+
+    if (result.matchedCount === 0) {
+        throw new ProviderNotFound();
+    }
+
+    await invalidateSettingCache(org);
+
+    return res.status(200).json({
+        success: true,
+        message: "Default model updated successfully"
+    });
+};
+
+const setDefault = async (req, res) => {
+    const { providerId } = req.params;
+    const org = req.params.orgId;
+
+    await executeMongoDbTransaction(async (session) => {
+        await Setting.updateOne(
+            { org },
+            { $set: { "aiProviders.$[].isDefault": false } },
+            { session }
+        );
+
+        const result = await Setting.updateOne(
+            { org, "aiProviders._id": providerId },
+            { $set: { "aiProviders.$.isDefault": true } },
+            { session }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new ProviderNotFound();
+        }
+    });
+
+    await invalidateSettingCache(org);
+
+    return res.status(200).json({
+        success: true,
+        message: "AI Provider set as default successfully"
+    });
+};
+
+module.exports = { create, remove, setActive, createSmtp, removeSmtp, setActiveSmtp, updateDefaultModel, setDefault };

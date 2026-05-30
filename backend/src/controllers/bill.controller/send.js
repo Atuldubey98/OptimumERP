@@ -51,6 +51,8 @@ const send = async (options = {}, req, res) => {
     org: req.params.orgId,
   };
   const template = req.query.template || "simple";
+  const color = req.query.color ? `#${req.query.color.replace(/^#/, "")}` : null;
+  const signature = req.query.signature === "true";
   const language = req.query.lng || req.language;
   const t = language && req.i18n
     ? (key, options = {}) => req.i18n.t(key, { ...options, lng: language })
@@ -71,7 +73,9 @@ const send = async (options = {}, req, res) => {
       toEmails,
       ccEmails,
       subject: body.subject,
-      body: body.body
+      body: body.body,
+      signature,
+      color,
     });
   });
 

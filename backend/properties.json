@@ -806,6 +806,10 @@
           {
             "name": "API Key",
             "label": "apiKey"
+          },
+          {
+            "name": "Default Model",
+            "label": "defaultModel"
           }
         ]
       },
@@ -816,6 +820,10 @@
           {
             "name": "API Key",
             "value": "apiKey"
+          },
+          {
+            "name": "Default Model",
+            "value": "defaultModel"
           }
         ]
       }

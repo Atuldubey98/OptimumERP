@@ -32,9 +32,27 @@ const titlePrompt = () => {
         `);
 };
 
+const generationPrompt = ({ organization, businessContext }) => {
+    const builder = createPromptBuilder();
+    return builder
+        .system("You are a professional business assistant for the ERP system.")
+        .instructions(`
+Your goal is to generate high-quality text based on the user's request (e.g. Terms and Conditions, email templates, business descriptions).
+Generate clear, precise, and professional content.
+        `)
+        .context({
+            organization: {
+                name: organization?.name,
+                alias: organization?.alias,
+            },
+            businessContext: businessContext || undefined,
+        });
+};
+
 const factory = {
     organizationPrompt,
     titlePrompt,
+    generationPrompt,
 };
 
 module.exports = factory;

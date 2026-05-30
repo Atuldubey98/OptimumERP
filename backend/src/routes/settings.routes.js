@@ -16,6 +16,8 @@ settingRouter.patch("/", requestAsyncHandler(update));
 settingRouter.post("/ai-providers", requestAsyncHandler(providers.create));
 settingRouter.delete("/ai-providers/:providerId", requestAsyncHandler(providers.remove));
 settingRouter.patch("/ai-providers/:providerId/active", requestAsyncHandler(providers.setActive));
+settingRouter.patch("/ai-providers/:providerId/model", requestAsyncHandler(providers.updateDefaultModel));
+settingRouter.patch("/ai-providers/:providerId/default", requestAsyncHandler(providers.setDefault));
 
 settingRouter.post("/smtp-providers", requestAsyncHandler(providers.createSmtp));
 settingRouter.delete("/smtp-providers/:providerId", requestAsyncHandler(providers.removeSmtp));
