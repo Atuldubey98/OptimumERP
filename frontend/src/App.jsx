@@ -64,8 +64,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
 
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        {
+          import.meta.env.VITE_SMTP_ENABLED == "true" && <>
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+          </>
+        }
         <Route path="/:orgId" element={<OrgChatbotLayout />}>
           <Route element={<ProfileSettingsPage />} path="profile-settings" />
           <Route element={<PricingPage />} path="pricings" />

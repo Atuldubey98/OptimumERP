@@ -62,13 +62,15 @@ export default function LoginPage() {
           <ChakraLink color="blue.500" as={ReactRouterLink} to={"/register"}>
             {t("user_ui.login.register_link")}
           </ChakraLink>
-          <ChakraLink
-            color="blue.500"
-            as={ReactRouterLink}
-            to={"/forgot-password"}
-          >
-            {t("user_ui.login.forgot_password_link")}
-          </ChakraLink>
+          {import.meta.env.VITE_SMTP_ENABLED === "true" && (
+            <ChakraLink
+              color="blue.500"
+              as={ReactRouterLink}
+              to={"/forgot-password"}
+            >
+              {t("user_ui.login.forgot_password_link")}
+            </ChakraLink>
+          )}
         </Grid>
       </form>
     </AuthLayout>
