@@ -66,7 +66,7 @@ export const useChatSocket = (orgId, providerId) => {
     let reconnectionTimer;
     const connect = () => {
       if (!orgId || !providerId) return;
-      const wsUrl = `ws://localhost:3000?orgId=${orgId}&providerId=${providerId}`;
+      const wsUrl = `${import.meta.env.VITE_WS_URL}?orgId=${orgId}&providerId=${providerId}`;
       socket.current = new WebSocket(wsUrl);
 
       socket.current.onopen = () => setIsConnected(true);
@@ -126,7 +126,7 @@ export const useChatSocket = (orgId, providerId) => {
   };
 
   const clearHistory = async (model, providerId) => {
-    await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, { 
+    await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, {
       model,
       chatId: activeChatId,
       providerId,
@@ -154,4 +154,4 @@ export const useChatSocket = (orgId, providerId) => {
     activeChatId,
     abortMessage,
   };
-};
+};
