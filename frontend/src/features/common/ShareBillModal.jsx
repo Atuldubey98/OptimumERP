@@ -7,11 +7,9 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  Text,
   FormControl,
   FormLabel,
   Input,
-  Textarea,
   Stack,
   useToast,
   Alert,
@@ -30,6 +28,7 @@ import { useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import AiEmailAssistant from "./AiEmailAssistant";
 export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
   const { t, i18n } = useTranslation("common");
   const defaultFields = {
@@ -79,7 +78,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
       );
       setContacts(data.data);
     })();
-  }, [bill.party._id]);
+  }, [bill.party._id, orgId]);
   const filterContactWithEmail = (contact) => contact.email;
   const contactOptions = contacts
     .filter(filterContactWithEmail)
@@ -106,6 +105,7 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
   const { user } = useAuth();
   const currentFeatures = user?.features || {};
   const isSmtpEnabled = currentFeatures?.smtp ?? false;
+
   return (
     <Modal size={"xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -160,7 +160,16 @@ export default function ShareBillModal({ onClose, isOpen, bill, billType }) {
                   <FormHelperText>{t("common_ui.share_mail.subject_help")}</FormHelperText>
                 </FormControl>
                 <FormControl>
-                  <FormLabel>{t("common_ui.share_mail.body")}</FormLabel>
+                  <AiEmailAssistant
+                    bill={bill}
+                    billType={billType}
+                    isBotEnabled={currentFeatures?.bot ?? false}
+                    recipientNames={contacts
+                      .filter((c) => formik.values.to.includes(c._id))
+                      .map((c) => c.name)
+                      .join(", ")}
+                    onApplyDraft={(content) => formik.setFieldValue("body", content)}
+                  />
                   <Box
                     className="quill-wrapper"
                     sx={{

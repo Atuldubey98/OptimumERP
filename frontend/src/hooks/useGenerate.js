@@ -8,14 +8,14 @@ export default function useGenerate() {
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
-  const generate = useCallback(async (prompt, context = "", tools = []) => {
+  const generate = useCallback(async (prompt, context = "") => {
     setStatus("loading");
     setError(null);
     setResult(null);
     try {
       const response = await instance.post(
         `/api/v1/organizations/${orgId}/chats/generate`,
-        { prompt, context, tools }
+        { prompt, context }
       );
       const data = response.data?.data;
       setResult(data?.result);
