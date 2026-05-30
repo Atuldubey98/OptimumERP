@@ -90,13 +90,15 @@ export default function RegisterPage() {
             <ChakraLink color="blue.500" as={ReactRouterLink} to={"/"}>
               {t("user_ui.register.login_link")}
             </ChakraLink>
-            <ChakraLink
-              color="blue.500"
-              as={ReactRouterLink}
-              to={"/verify-email"}
-            >
-              {t("user_ui.register.resend_otp_link")}
-            </ChakraLink>
+            {import.meta.env.VITE_SMTP_ENABLED === "true" && (
+              <ChakraLink
+                color="blue.500"
+                as={ReactRouterLink}
+                to={"/verify-email"}
+              >
+                {t("user_ui.register.resend_otp_link")}
+              </ChakraLink>
+            )}
           </Grid>
         </form>
       )}
