@@ -7,6 +7,14 @@ const i18 = require("../i18");
 const logger = require("../logger");
 const { getStoragePath } = require("../storages");
 
+exports.renderHtml = (location, data) => {
+  return new Promise((resolve, reject) => {
+    ejs.renderFile(location, data, (err, html) => {
+      if (err) reject(err);
+      resolve(html);
+    });
+  });
+};
 exports.sendHtmlToPdfResponse = async ({ html, res, pdfName }) => {
   const pdfBuffer = await this.getPdfBufferUsingHtml(html);
   res.setHeader("Content-Type", "application/pdf");
