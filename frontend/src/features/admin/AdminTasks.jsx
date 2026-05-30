@@ -188,7 +188,6 @@ export default function AdminTasks({ organization }) {
         invoice: "",
         quotation: "",
         purchaseOrder: "",
-        saleOrder: "",
         proformaInvoice: "",
       },
       financialYear: {

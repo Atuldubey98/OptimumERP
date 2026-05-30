@@ -14,7 +14,6 @@ const closeFinancialYear = async (req, res) => {
       quotation: Joi.string().allow(""),
       purchaseOrder: Joi.string().allow(""),
       proformaInvoice: Joi.string().allow(""),
-      saleOrder: Joi.string().allow(""),
       paymentVoucher: Joi.string().allow(""),
     },
   }).validateAsync(req.body);
@@ -29,7 +28,6 @@ const closeFinancialYear = async (req, res) => {
           quotation: 0,
           purchaseOrder: 0,
           proformaInvoice: 0,
-          saleOrder: 0,
           paymentVoucher: 0,
         },
       },
@@ -38,7 +36,6 @@ const closeFinancialYear = async (req, res) => {
         "prefixes.quotation": body.transactionPrefix.quotation,
         "prefixes.purchaseOrder": body.transactionPrefix.purchaseOrder,
         "prefixes.proformaInvoice": body.transactionPrefix.proformaInvoice,
-        "prefixes.saleOrder": body.transactionPrefix.saleOrder,
         "prefixes.paymentVoucher": body.transactionPrefix.paymentVoucher,
       },
     },

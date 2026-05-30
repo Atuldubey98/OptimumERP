@@ -32,7 +32,6 @@ const MODEL_NAME_TO_COUNTER_KEY = {
   quotes: "quotation",
   purchase_order: "purchaseOrder",
   proforma_invoice: "proformaInvoice",
-  sale_order: "saleOrder",
 };
 
 exports.pluckRelevantFields = (bill) => {

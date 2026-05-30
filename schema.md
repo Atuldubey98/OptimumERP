@@ -24,7 +24,6 @@ This document describes the Mongoose schemas used in the OptimumERP backend data
   - [purchase_order](#purchase_order)
   - [quotes](#quotes)
   - [recurring_invoice](#recurring_invoice)
-  - [sale_order](#sale_order)
 - [Expenses](#expenses)
   - [expense](#expense)
   - [expense_category](#expense_category)
@@ -388,44 +387,6 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
 * **Version Key:** `false`
 * **Indices:**
   * Text Index on `{ description, poNo }`
-  * `{ org: 1, createdAt: -1 }`
-  * `{ org: 1, party: 1 }`
-
-### `sale_order`
-* **File:** `saleOrder.model.js`
-* **Mongoose Model:** `sale_order`
-* **Mongoose Collection:** `sale_orders`
-* **Schema Fields:**
-  * **`party`**: `Types.ObjectId` (required, ref: `"party"`)
-  * **`billingAddress`**: `String` (required)
-  * **`discount`**: `Number` (default: `0`, min: `0`, max: `100`)
-  * **`total`**: `Number` (required, default: `0`)
-  * **`soNo`**: `Number` (required)
-  * **`date`**: `Date` (optional)
-  * **`num`**: `String` (default: `""`)
-  * **`totalTax`**: `Number` (required, default: `0`)
-  * **`sgst`**: `Number` (default: `0`, min: `0`)
-  * **`cgst`**: `Number` (default: `0`, min: `0`)
-  * **`igst`**: `Number` (default: `0`, min: `0`)
-  * **`description`**: `String` (default: `"Thanks for the business."`)
-  * **`terms`**: `String` (optional)
-  * **`org`**: `Types.ObjectId` (required, ref: `"organization"`)
-  * **`createdBy`**: `Types.ObjectId` (required, ref: `"user"`)
-  * **`updatedBy`**: `Types.ObjectId` (optional, ref: `"user"`)
-  * **`status`**: `String` (enum: `["draft", "sent", "pending-client-approval", "ready-for-invoicing", "closed"]`, default: `"draft"`)
-  * **`items`**: Array of items containing:
-    * `name`: `String` (required)
-    * `price`: `Number` (required, default: `0`)
-    * `code`: `String` (optional)
-    * `quantity`: `Number` (required, default: `0`)
-    * `um`: `String` (default: `"none"`)
-    * `gst`: `String` (default: `"none"`)
-    * `product`: `Types.ObjectId` (optional, ref: `"product"`)
-  * **`financialYear`**: `Object` containing `{ start (Date, required), end (Date, required) }` (required)
-* **Timestamps:** `true` (createdAt, updatedAt)
-* **Version Key:** `false` (Wait, versionKey: false is not explicitly false on Schema, but it is passed in the options as `{ versionKey: false, timestamps: true }`)
-* **Indices:**
-  * `{ num: 1 }`
   * `{ org: 1, createdAt: -1 }`
   * `{ org: 1, party: 1 }`
 

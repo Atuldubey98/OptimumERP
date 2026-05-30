@@ -17,7 +17,6 @@ const relatedDocsCountFields = [
   "purchaseOrders",
   "purchases",
   "quotes",
-  "saleOrders",
   "paymentVouchers",
   "recurringInvoices",
   "ums",

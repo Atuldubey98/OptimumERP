@@ -22,7 +22,6 @@ const settingSchema = new Schema({
       quotation: String,
       purchaseOrder: String,
       proformaInvoice: String,
-      saleOrder: String,
       paymentVoucher: String,
     },
     default: {
@@ -30,7 +29,6 @@ const settingSchema = new Schema({
       quotation: "",
       purchaseOrder: "",
       proformaInvoice: "",
-      saleOrder: "",
       paymentVoucher: ""
     },
   },
@@ -81,7 +79,6 @@ const settingSchema = new Schema({
       quotation: sequenceCounterSchema,
       purchaseOrder: sequenceCounterSchema,
       proformaInvoice: sequenceCounterSchema,
-      saleOrder: sequenceCounterSchema,
       paymentVoucher: sequenceCounterSchema,
       unReadNotifications: sequenceCounterSchema,
     },
@@ -90,7 +87,6 @@ const settingSchema = new Schema({
       quotation: 0,
       purchaseOrder: 0,
       proformaInvoice: 0,
-      saleOrder: 0,
       paymentVoucher: 0,
       unReadNotifications: 0,
     },

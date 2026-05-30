@@ -24,7 +24,6 @@ i18next
       "purchase",
       "purchaseOrder",
       "proformaInvoice",
-      "saleOrder",
       "expense",
       "expenseCategory",
       "product",
