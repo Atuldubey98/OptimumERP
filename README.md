@@ -6,6 +6,17 @@ OptimumERP is an all-in-one ERP platform built for modern businesses. Manage you
 
 ---
 
+## 🌐 Live Demo
+
+Try OptimumERP right now — no installation required:
+
+**👉 [https://optimumerp.onrender.com/](https://optimumerp.onrender.com/)**
+
+> [!NOTE]
+> The demo is hosted on Render's free tier. The server spins down when inactive, so **the first request may take 30–60 seconds** to respond while it wakes up. Subsequent requests will be fast.
+
+---
+
 ## ✨ What You Can Do with OptimumERP
 
 ### 🤖 AI Business Assistant (Chatbot)
