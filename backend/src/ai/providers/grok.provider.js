@@ -2,8 +2,8 @@ const Groq = require("groq-sdk");
 
 const createGrokProvider = (config) => {
   const apiKey = config.apiKey;
-  const baseURL = config.host || process.env.GROK_PROVIDER_URL;
-  
+  const baseURL = config.host;
+
   const client = new Groq({
     apiKey: apiKey,
     baseURL: baseURL || undefined,
