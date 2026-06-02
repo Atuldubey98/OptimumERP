@@ -95,7 +95,7 @@ export default function InvoicesPage() {
         `/api/v1/organizations/${orgId}/invoices/${invoice._id}`,
       );
       onCloseDeleteModal();
-      fetchInvoicess();
+      fetchInvoices();
     } catch (error) {
       toast({
         title: isAxiosError(error) ? error.response.data.name : "Error",
