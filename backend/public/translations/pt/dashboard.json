@@ -36,63 +36,84 @@
     "actions": {
       "previous": "Anterior",
       "next": "Próximo",
-      "finish": "Concluir"
+      "finish": "Concluir",
+      "skip": "Pular"
     },
     "tour": {
       "welcome_title": "Bem-vindo ao OptimumERP!",
       "image_alt": "Prévia do guia do painel",
       "tabs": {
-        "dashboard": {
-          "label": "Painel",
-          "description": "Tenha uma visão geral das métricas do seu negócio."
+        "welcome": {
+          "label": "Bem-vindo ao OptimumERP",
+          "description": "Sua suíte completa de gestão de negócios com foco em privacidade — alimentada por IA local. Gerencie faturamento, compras, estoque, despesas, contatos e relatórios financeiros em uma única interface elegante.",
+          "features": [
+            "ERP Completo: Acompanhe vendas, compras, estoque e análises em um só lugar.",
+            "IA com Foco em Privacidade: Seus dados nunca saem dos seus servidores, mantendo seus registros seguros.",
+            "Multiorganização: Gerencie facilmente várias empresas a partir de uma única conta."
+          ]
         },
-        "stats": {
-          "label": "Estatísticas",
-          "description": "Veja análises detalhadas e insights de desempenho."
+        "ai_assistant": {
+          "label": "Assistente de Negócios IA",
+          "description": "Fale com os dados do seu negócio em linguagem natural. O assistente de IA é ciente do contexto e profundamente integrado com todos os módulos.",
+          "features": [
+            "Linguagem Natural: Diga 'Criar fatura para Acme Corp de 5 unidades do Produto X'.",
+            "LLMs Locais: Integrado com Ollama local ou modelos de IA Grok na nuvem.",
+            "Multitarefa: Crie documentos, busque registros, gere relatórios e envie e-mails via chat."
+          ]
         },
-        "parties": {
-          "label": "Contatos/Partes",
-          "description": "Gerencie seus contatos comerciais e fornecedores."
+        "billing": {
+          "label": "Vendas e Faturamento",
+          "description": "Crie documentos profissionais e simplifique o ciclo de faturamento.",
+          "features": [
+            "Faturas e Orçamentos: Acompanhe os status Rascunho, Enviado, Pendente e Aceito.",
+            "Conversão em Um Clique: Converta instantaneamente orçamentos ou faturas proforma aceitos em faturas finais.",
+            "PDF/E-mail Profissional: Baixe modelos, imprima códigos QR UPI e envie e-mails diretamente aos clientes."
+          ]
         },
-        "contacts": {
-          "label": "Contatos",
-          "description": "Organize seus contatos para uma melhor comunicação."
+        "procurement": {
+          "label": "Compras e Suprimentos",
+          "description": "Gerencie registros de fornecedores, compras e fluxos de suprimentos.",
+          "features": [
+            "Pedidos de Compra: Crie e acompanhe pedidos de compra para fornecedores com descontos.",
+            "Faturas de Fornecedores: Registre compras, acompanhe contas não pagas e saldos devedores.",
+            "Vinculação de Comprovantes: Registre pagamentos e vincule-os diretamente às compras."
+          ]
         },
-        "invoices": {
-          "label": "Faturas",
-          "description": "Crie e gerencie faturas de forma eficiente."
+        "automation": {
+          "label": "Faturamento Recorrente e Comprovantes",
+          "description": "Automatize ciclos de cobrança e gerencie fluxos de caixa com comprovantes de pagamento.",
+          "features": [
+            "Assinaturas Automatizadas: Gere faturas automaticamente em cronogramas diários, semanais, mensais ou anuais.",
+            "Proteção contra Inatividade: A lógica de compensação executa automaticamente tarefas perdidas ao reiniciar o sistema.",
+            "Comprovantes de Pagamento: Registre recibos e comprovantes de pagamento com modos de pagamento personalizados."
+          ]
         },
-        "proforma_invoices": {
-          "label": "Faturas Proforma",
-          "description": "Crie e gerencie faturas proforma."
-        },
-        "purchase_orders": {
-          "label": "Pedidos de Compra",
-          "description": "Crie e acompanhe pedidos de compra."
-        },
-        "quotations": {
-          "label": "Orçamentos",
-          "description": "Gere e gerencie orçamentos."
-        },
-        "purchases": {
-          "label": "Compras",
-          "description": "Simplifique as compras e a gestão de fornecedores."
-        },
-        "expenses": {
-          "label": "Despesas",
-          "description": "Acompanhe e controle as despesas do negócio."
-        },
-        "items": {
-          "label": "Itens",
-          "description": "Organize e categorize seu inventário."
+        "inventory": {
+          "label": "Estoque e Contatos/Partes",
+          "description": "Organize seus produtos, clientes, fornecedores e contatos.",
+          "features": [
+            "Catálogo de Produtos: Acompanhe preços de custo/venda, SKUs, categorias e Unidades de Medida personalizadas.",
+            "Diretório Unificado: Fonte única de verdade para clientes e fornecedores com tags de GST/PAN.",
+            "Importações em Lote: Carregue produtos e contatos em segundo plano usando arquivos CSV."
+          ]
         },
         "reports": {
-          "label": "Relatórios",
-          "description": "Gere relatórios para decisões baseadas em dados."
+          "label": "Relatórios e Análises",
+          "description": "Obtenha insights profundos sobre o desempenho e a conformidade do seu negócio.",
+          "features": [
+            "Estatísticas em Tempo Real: Visão geral de receitas, recebíveis e atividades recentes ao fazer login.",
+            "Relatórios Detalhados: Exporte demonstrações financeiras e relatórios de atividades para auditorias.",
+            "Histórico de Alterações: Registro de atividades persistente e trilhas de auditoria rastreando cada edição."
+          ]
         },
         "admin": {
-          "label": "Admin",
-          "description": "Configure ajustes avançados e permissões de usuário."
+          "label": "Administração e Configurações",
+          "description": "Configure parâmetros avançados e permissões para sua equipe.",
+          "features": [
+            "Fechamento de Ano Fiscal: Encerre facilmente um ano fiscal e reinicie automaticamente os contadores sequenciais.",
+            "Configurações da Organização: Configure logotipos, dados bancários e termos padrão por empresa.",
+            "Prefixos Configuráveis: Defina numeração serial personalizada e conjuntos de prefixos."
+          ]
         }
       }
     }

@@ -36,63 +36,84 @@
     "actions": {
       "previous": "Previous",
       "next": "Next",
-      "finish": "Finish"
+      "finish": "Finish",
+      "skip": "Skip"
     },
     "tour": {
       "welcome_title": "Welcome to OptimumERP!",
       "image_alt": "Dashboard guide preview",
       "tabs": {
-        "dashboard": {
-          "label": "Dashboard",
-          "description": "Get an overview of your business metrics."
+        "welcome": {
+          "label": "Welcome to OptimumERP",
+          "description": "Your complete, privacy-first business management suite — powered by local AI. Manage your invoicing, purchases, inventory, expenses, contacts, and financial reporting from a single, elegant interface.",
+          "features": [
+            "All-in-One ERP: Track sales, procurement, inventory, and analytics in one place.",
+            "Privacy-First AI: Your data never leaves your servers, keeping your records secure.",
+            "Multi-Organization: Easily manage multiple companies from a single account."
+          ]
         },
-        "stats": {
-          "label": "Stats",
-          "description": "View detailed analytics and performance insights."
+        "ai_assistant": {
+          "label": "AI Business Assistant",
+          "description": "Talk to your business data in plain English. The AI assistant is context-aware and deeply integrated with every module.",
+          "features": [
+            "Natural Language: Say 'Create invoice for Acme Corp for 5 units of Product X'.",
+            "Local LLMs: Integrated with local Ollama or cloud Grok AI models.",
+            "Multi-Talented: Create documents, search logs, write reports, and send emails via chat."
+          ]
         },
-        "parties": {
-          "label": "Parties",
-          "description": "Manage your business contacts and suppliers."
+        "billing": {
+          "label": "Sales & Invoicing",
+          "description": "Create professional documents and streamline your billing lifecycle.",
+          "features": [
+            "Invoices & Quotes: Track Draft, Sent, Pending, and Accepted status.",
+            "One-Click Conversion: Instantly convert accepted quotes or proformas to final invoices.",
+            "Professional PDF/Email: Download templates, print UPI QR codes, and email clients directly."
+          ]
         },
-        "contacts": {
-          "label": "Contacts",
-          "description": "Organize your contacts for better communication."
+        "procurement": {
+          "label": "Purchasing & Procurement",
+          "description": "Manage vendor records, purchases, and procurement workflows.",
+          "features": [
+            "Purchase Orders: Raise and track POs against suppliers with discounts.",
+            "Vendor Bills: Log purchases, track unpaid bills, and outstanding balances.",
+            "Voucher Linking: Record payments and link them directly to purchases."
+          ]
         },
-        "invoices": {
-          "label": "Invoices",
-          "description": "Create and manage invoices efficiently."
+        "automation": {
+          "label": "Recurring Billing & Vouchers",
+          "description": "Automate billing cycles and manage cash flows with payment vouchers.",
+          "features": [
+            "Automated Subscriptions: Auto-generate invoices on daily, weekly, monthly, or yearly schedules.",
+            "Downtime Protection: Catch-up logic automatically runs missed jobs upon system restart.",
+            "Payment Vouchers: Record receipt and payment logs with custom payment modes."
+          ]
         },
-        "proforma_invoices": {
-          "label": "Proforma Invoices",
-          "description": "Create and manage proforma invoices."
-        },
-        "purchase_orders": {
-          "label": "Purchase Orders",
-          "description": "Create and track purchase orders."
-        },
-        "quotations": {
-          "label": "Quotations",
-          "description": "Generate and manage quotations."
-        },
-        "purchases": {
-          "label": "Purchases",
-          "description": "Simplify procurement and vendor management."
-        },
-        "expenses": {
-          "label": "Expenses",
-          "description": "Track and control business expenses."
-        },
-        "items": {
-          "label": "Items",
-          "description": "Organize and categorize your inventory."
+        "inventory": {
+          "label": "Inventory & Parties",
+          "description": "Organize your products, customers, suppliers, and contacts.",
+          "features": [
+            "Product Catalog: Track cost/selling prices, SKUs, categories, and custom Units of Measure.",
+            "Unified Directory: Single source of truth for customers and vendors with GST/PAN tags.",
+            "Bulk Imports: Load products and parties in the background via CSV files."
+          ]
         },
         "reports": {
-          "label": "Reports",
-          "description": "Generate reports for data-driven decisions."
+          "label": "Reports & Analytics",
+          "description": "Get deep insights into your business performance and compliance.",
+          "features": [
+            "Real-Time Stats: Overview of revenue, receivables, and recent activity on login.",
+            "Detailed Reporting: Export financial statements and activity reports for audits.",
+            "Change History: Persistent activity log and audit trails tracking every edit."
+          ]
         },
         "admin": {
-          "label": "Admin",
-          "description": "Configure advanced settings and user permissions."
+          "label": "Administration & Settings",
+          "description": "Configure advanced parameters and permissions for your team.",
+          "features": [
+            "Financial Year Rollover: Easily close a financial year and auto-reset sequence numbers.",
+            "Organization Settings: Setup logos, bank details, and default terms per company.",
+            "Configurable Prefixes: Define custom serial numbering and pools of prefixes."
+          ]
         }
       }
     }
