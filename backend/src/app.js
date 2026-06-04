@@ -39,22 +39,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(middleware.handle(i18));
 
 app.get("/", (req, res) => {
-  const user = req.session.user;
-  res.render("landing", {
-    title: "Optimum ERP",
-    user,
-    dashboardUrl: config.VITE_APP_URL,
-  });
-});
-app.get("/privacy", (req, res) => {
-  res.render("privacy", {
-    title: "Optimum ERP",
-  });
-});
-app.get("/terms", (req, res) => {
-  res.render("terms", {
-    title: "Optimum ERP",
-  });
+  res.redirect(config.VITE_APP_URL);
 });
 app.get("/api/v1/health", (req, res) => {
   res.status(200).send(req.t("health:health"));
