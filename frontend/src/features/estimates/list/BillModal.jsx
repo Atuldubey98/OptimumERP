@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Divider,
   Flex,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,6 +13,7 @@ import {
   Skeleton,
   Tooltip,
   Checkbox,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -61,6 +60,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
     setStatus("idle");
   };
   const isDownloading = status === "downloading";
+  const isLoading = billLoadStatus === "loading";
 
   return (
     <Modal
@@ -73,11 +73,11 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       scrollBehavior={"inside"}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mx={{ base: 2, md: "auto" }}>
         <ModalHeader>{heading}</ModalHeader>
         <ModalCloseButton />
         <ModalBody h={"100svh"}>
-          <Skeleton isLoaded={billLoadStatus === "idle"}>
+          <Skeleton isLoaded={!isLoading}>
             <iframe
               onLoad={() => {
                 setBillLoadStatus("idle");
@@ -92,60 +92,64 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
             />
           </Skeleton>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter
+          flexWrap="wrap"
+          gap={3}
+          justifyContent="flex-end"
+        >
+          <Flex
+            alignItems={"center"}
+            gap={2}
+            mr="auto"
+            flexWrap="wrap"
+            pointerEvents={isLoading ? "none" : "auto"}
+            opacity={isLoading ? 0.4 : 1}
+          >
+            {templateColors.map((templateColor) => (
+              <Tooltip key={templateColor.hex} label={templateColor.name}>
+                <Flex
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  onClick={() => {
+                    if (isLoading) return;
+                    setBillLoadStatus("loading");
+                    setColor(templateColor.hex);
+                  }}
+                  cursor={isLoading ? "not-allowed" : "pointer"}
+                  bg={templateColor.hex ? `#${templateColor.hex}` : "transparent"}
+                  border={templateColor.hex ? "none" : "1px solid"}
+                  borderColor="gray.300"
+                  w={{ base: "30px", md: "36px" }}
+                  h={{ base: "30px", md: "36px" }}
+                  borderRadius={"full"}
+                  flexShrink={0}
+                >
+                  {color === templateColor.hex && (
+                    <IoCheckmark
+                      size={16}
+                      color={templateColor.hex ? "white" : "black"}
+                    />
+                  )}
+                </Flex>
+              </Tooltip>
+            ))}
+          </Flex>
+
           <Checkbox
             colorScheme="blue"
-            mr={4}
             isChecked={signature}
-            isDisabled={billLoadStatus === "loading"}
+            isDisabled={isLoading}
             onChange={(e) => {
               setBillLoadStatus("loading");
               setSignature(e.target.checked);
             }}
+            whiteSpace="nowrap"
           >
             Apply Signature
           </Checkbox>
 
-          <Flex
-            mr={6}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={2}
-            pointerEvents={billLoadStatus === "loading" ? "none" : "auto"}
-            opacity={billLoadStatus === "loading" ? 0.4 : 1}
-          >
-            {templateColors.map((templateColor) => (
-              <Box key={templateColor.hex}>
-                <Tooltip label={templateColor.name}>
-                  <Flex
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    key={templateColor.hex}
-                    onClick={() => {
-                      if (billLoadStatus === "loading") return;
-                      setBillLoadStatus("loading");
-                      setColor(templateColor.hex);
-                    }}
-                    cursor={billLoadStatus === "loading" ? "not-allowed" : "pointer"}
-                    bg={templateColor.hex ? `#${templateColor.hex}` : "transparent"}
-                    border={templateColor.hex ? "none" : "1px solid"}
-                    borderColor="gray.300"
-                    width={"40px"}
-                    height={"40px"}
-                    borderRadius={"50%"}
-                  >
-                    {color === templateColor.hex && (
-                      <IoCheckmark size={20} color={templateColor.hex ? "white" : "black"} />
-                    )}
-                  </Flex>
-                </Tooltip>
-              </Box>
-            ))}
-          </Flex>
-          <Divider orientation="vertical" />
-          <ButtonGroup>
+          <ButtonGroup size={{ base: "sm", md: "md" }}>
             <Button onClick={onClose}>Close</Button>
-
             <Button
               leftIcon={<CiSaveDown2 />}
               isLoading={isDownloading}
