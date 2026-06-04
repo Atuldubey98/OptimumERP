@@ -3,10 +3,9 @@ import {
   Flex,
   Image
 } from "@chakra-ui/react";
-import React from "react";
 
 export default function Banner() {
-  const homePageUrl = import.meta.env.VITE_API_URL;
+  const homePageUrl = import.meta.env.VITE_HOME_PAGE;
   return (
     <Flex justifyContent={"center"} alignItems={"center"}>
       <ChakraLink href={homePageUrl}>
