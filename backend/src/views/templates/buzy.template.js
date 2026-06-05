@@ -443,10 +443,12 @@ const buzyTemplate = (data, color) => {
           body: [
             [
               {
-                stack: [
-                  { text: labels.terms_and_conditions || "Terms and conditions", style: "sectionHeader" },
-                  { text: data.entity.terms || "", style: "termsText" },
-                ],
+                stack: data?.entity?.terms && data.entity.terms.trim()
+                  ? [
+                      { text: labels.terms_and_conditions || "Terms and conditions", style: "sectionHeader" },
+                      { text: data.entity.terms, style: "termsText" },
+                    ]
+                  : [],
                 border: [false, false, false, false],
                 margin: [0, 0, 12, 0],
               },

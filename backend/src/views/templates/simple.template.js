@@ -258,10 +258,12 @@ const simpleTemplate = (data, color) => {
         columns: [
           {
             width: "*",
-            stack: [
-              { text: `${labels.terms_and_conditions || "Terms and Conditions"}:`, style: "termsHeading" },
-              { text: data.entity.terms || "", style: "terms" },
-            ],
+            stack: data?.entity?.terms && data.entity.terms.trim()
+              ? [
+                  { text: `${labels.terms_and_conditions || "Terms and Conditions"}:`, style: "termsHeading" },
+                  { text: data.entity.terms, style: "terms" },
+                ]
+              : [],
             margin: [0, 0, 16, 0],
           },
           {

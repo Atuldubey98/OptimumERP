@@ -385,15 +385,19 @@ const borderLandTemplate = (data, color) => {
         columnGap: 16,
         margin: [0, 10, 0, 12],
       },
-      {
-        text: `${labels.terms_and_conditions || "Terms and Conditions"}:`,
-        style: "notesTitle",
-      },
-      {
-        text: data.entity.terms,
-        style: "notesText",
-        margin: [0, 0, 0, 4],
-      },
+      ...(data?.entity?.terms && data.entity.terms.trim()
+        ? [
+            {
+              text: `${labels.terms_and_conditions || "Terms and Conditions"}:`,
+              style: "notesTitle",
+            },
+            {
+              text: data.entity.terms,
+              style: "notesText",
+              margin: [0, 0, 0, 4],
+            },
+          ]
+        : []),
       {
         alignment: "right",
         margin: [0, 10, 0, 0],
