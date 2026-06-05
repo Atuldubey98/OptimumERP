@@ -19,6 +19,8 @@ import {
   TagCloseButton,
   HStack,
   Tooltip,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 
 export default function PrefixForm({
@@ -73,38 +75,60 @@ export default function PrefixForm({
             </InputGroup>
             <FormErrorMessage>{error}</FormErrorMessage>
           </FormControl>
+
+          {prefixes.length > 0 && (
+            <Box mt={4} mb={2}>
+              <Text fontSize="xs" fontWeight="semibold" color="gray.500">
+                {t("common_ui.transaction_settings.prefix_instruction", "Tip: Click on any prefix below to set it as the default/active prefix.")}
+              </Text>
+            </Box>
+          )}
+
           <HStack flexWrap={"wrap"} marginBlock={2} spacing={4}>
-            {prefixes.map((prefix) => (
-              <Tooltip
-                key={prefix}
-                label={
-                  !prefix
-                    ? t("common_ui.transaction_settings.default")
-                    : prefix === selectedPrefix
-                    ? t("common_ui.transaction_settings.current_used")
-                    : undefined
-                }
-              >
-                <Tag
-                  size={"md"}
+            {prefixes.map((prefix) => {
+              const isActive = prefix === selectedPrefix;
+              return (
+                <Tooltip
                   key={prefix}
-                  variant="solid"
-                  colorScheme="blue"
+                  label={
+                    isActive
+                      ? t("common_ui.transaction_settings.current_used")
+                      : t("common_ui.transaction_settings.click_to_select", "Click to set as active default prefix")
+                  }
                 >
-                  <TagLabel>{prefix || t("common_ui.transaction_settings.none")}</TagLabel>
-                  <TagCloseButton
-                    isDisabled={!prefix || prefix === selectedPrefix}
+                  <Tag
+                    size={"md"}
+                    key={prefix}
+                    variant={isActive ? "solid" : "outline"}
+                    colorScheme={isActive ? "blue" : "gray"}
+                    cursor="pointer"
                     onClick={() => {
-                      formik.setFieldValue(
-                        `prefixes.${currentSelectedPrefix}`,
-                        prefixes.filter((item) => item !== prefix)
-                      );
-                      setError("");
+                      formik.setFieldValue(currentSelectedPrefix, prefix);
                     }}
-                  />
-                </Tag>
-              </Tooltip>
-            ))}
+                    _hover={{
+                      borderColor: "blue.500",
+                      bg: isActive ? "blue.600" : "blue.50",
+                    }}
+                    transition="all 0.2s"
+                  >
+                    <TagLabel fontWeight={isActive ? "bold" : "normal"}>
+                      {prefix || t("common_ui.transaction_settings.none")}
+                    </TagLabel>
+                    <TagCloseButton
+                      isDisabled={!prefix || isActive}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        formik.setFieldValue(
+                          `prefixes.${currentSelectedPrefix}`,
+                          prefixes.filter((item) => item !== prefix)
+                        );
+                        setError("");
+                      }}
+                    />
+                  </Tag>
+                </Tooltip>
+              );
+            })}
           </HStack>
         </ModalBody>
         <ModalFooter>
