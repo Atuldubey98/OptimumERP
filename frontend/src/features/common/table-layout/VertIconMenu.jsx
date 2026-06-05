@@ -6,6 +6,7 @@ import {
   MenuItem,
   MenuList,
   Spinner,
+  Portal,
 } from "@chakra-ui/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -58,7 +59,8 @@ export default function VertIconMenu({
         icon={<RxDotsVertical />}
         variant="outline"
       />
-      <MenuList>
+      <Portal>
+        <MenuList>
         {showExpenses ? (
           <MenuItem
             icon={<GiExpense size={20} />}
@@ -200,6 +202,7 @@ export default function VertIconMenu({
           </MenuItem>
         ) : null}
       </MenuList>
+      </Portal>
     </Menu>
   );
 }
