@@ -21,6 +21,7 @@
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
     "cron": "^4.4.0",
+    "cross-env": "^10.1.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.1",
     "ejs": "^3.1.9",
@@ -35,10 +36,8 @@
     "mongoose": "^8.1.1",
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0",
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.12",
-    "nodemon": "^3.0.3",
     "ollama": "^0.6.3",
     "pdf-to-img": "^6.0.0",
     "pdfmake": "^0.2.18",
@@ -48,7 +47,7 @@
     "ws": "^8.20.0"
   },
   "devDependencies": {
-    "cross-env": "^10.1.0",
-    "lorem-ipsum": "^2.0.8"
+    "lorem-ipsum": "^2.0.8",
+    "nodemon": "^3.1.14"
   }
 }
