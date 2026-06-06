@@ -399,6 +399,8 @@
     "InvoiceNotFound": "Fatura não encontrada",
     "InvoiceNotDelete": "Fatura não pôde ser excluída",
     "InvoiceDuplicate": "Já existe uma fatura com o número: {{id}}",
+    "InvalidFinancialYearStart": "A nova data de início do ano fiscal deve ser após a data de início do ano fiscal atual.",
+    "InvalidFinancialYearEnd": "A nova data de término do ano fiscal deve ser após a data de início.",
     "OrgNotFound": "Organização não encontrada",
     "PartyNotFound": "Contato não encontrado",
     "PartyNotDelete": "{{reason}}",

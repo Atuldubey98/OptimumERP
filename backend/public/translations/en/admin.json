@@ -88,11 +88,15 @@
       "quotation_prefix": "Quotation Prefix",
       "proforma_invoice_prefix": "Proforma Invoice Prefix",
       "purchase_order_prefix": "Purchase Order Prefix",
+      "payment_voucher_prefix": "Payment Voucher Prefix",
       "next": "Next Financial year",
       "start_date": "Start date",
       "end_date": "End date",
       "closing": "Closing",
-      "done": "Done"
+      "done": "Done",
+      "confirm_modal_header": "Close Financial Year",
+      "confirm_modal_body": "Are you sure you want to close the financial year? This action is irreversible.",
+      "confirm_modal_btn": "Close Year"
     },
     "import": {
       "title": "Import",

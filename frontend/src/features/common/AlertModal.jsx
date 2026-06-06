@@ -17,9 +17,13 @@ export default function AlertModal({
   body,
   onConfirm,
   buttonLabel,
+  colorScheme,
 }) {
   const { t } = useTranslation("common");
   const resolvedButtonLabel = buttonLabel || t("common_ui.actions.delete");
+  const resolvedColorScheme =
+    colorScheme ||
+    (resolvedButtonLabel === t("common_ui.actions.delete") ? "red" : "blue");
 
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
@@ -35,9 +39,7 @@ export default function AlertModal({
             <Button onClick={onClose}>{t("common_ui.actions.cancel")}</Button>
             <Button
               isLoading={confirmDisable}
-              colorScheme={
-                resolvedButtonLabel === t("common_ui.actions.delete") ? "red" : "blue"
-              }
+              colorScheme={resolvedColorScheme}
               onClick={onConfirm}
               ml={3}
             >

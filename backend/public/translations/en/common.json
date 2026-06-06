@@ -409,6 +409,8 @@
     "InvoiceNotFound": "Invoice does not exist",
     "InvoiceNotDelete": "Invoice could not be deleted",
     "InvoiceDuplicate": "Invoice already exists with invoice id: {{id}}",
+    "InvalidFinancialYearStart": "New financial year start date must be after the current financial year start date.",
+    "InvalidFinancialYearEnd": "New financial year end date must be after the start date.",
     "OrgNotFound": "Organization does not exist",
     "PartyNotFound": "Party does not exist",
     "PartyNotDelete": "{{reason}}",

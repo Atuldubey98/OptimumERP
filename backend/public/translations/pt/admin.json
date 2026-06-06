@@ -88,11 +88,15 @@
       "quotation_prefix": "Prefixo do Orçamento",
       "proforma_invoice_prefix": "Prefixo da Fatura Proforma",
       "purchase_order_prefix": "Prefixo do Pedido de Compra",
+      "payment_voucher_prefix": "Prefixo do Recibo de Pagamento",
       "next": "Próximo ano fiscal",
       "start_date": "Data de início",
       "end_date": "Data de término",
       "closing": "Fechamento",
-      "done": "Concluído"
+      "done": "Concluído",
+      "confirm_modal_header": "Fechar Ano Fiscal",
+      "confirm_modal_body": "Tem certeza de que deseja fechar o ano fiscal? Esta ação é irreversível.",
+      "confirm_modal_btn": "Fechar Ano"
     },
     "import": {
       "title": "Importar",
