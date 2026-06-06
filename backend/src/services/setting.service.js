@@ -39,14 +39,14 @@ const getDisplaySettingForOrg = async (orgId) => {
   );
 };
 
-const getDetailedSettingForOrg = async (orgId) => {
+const getDetailedSettingForOrg = async (orgId, select) => {
   const key = buildDetailedSettingCacheKey(orgId);
 
   return cacheService.getOrSet(
     key,
     async () => {
       logger.debug(`Detailed setting cache miss for org ${orgId}; reading from DB`);
-      const setting = await Setting.findOne({ org: orgId })
+      const setting = await Setting.findOne({ org: orgId }).select(select)
         .populate("org")
         .populate("receiptDefaults.tax")
         .populate("receiptDefaults.um")
