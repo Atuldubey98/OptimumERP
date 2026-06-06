@@ -13,8 +13,7 @@ import { useState } from "react";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import useGenerate from "../../hooks/useGenerate";
 
-export default function AiEmailAssistant({ bill, billType, isBotEnabled, recipientNames, onApplyDraft }) {
-  const [showAiAssist, setShowAiAssist] = useState(false);
+export default function AiEmailAssistant({ bill, billType, isBotEnabled, recipientNames, onApplyDraft, showAiAssist, setShowAiAssist }) {
   const [customPrompt, setCustomPrompt] = useState("");
   const { generate, status: aiStatus, error: aiError, result: aiResult, setResult: setAiResult } = useGenerate();
   const toast = useToast();
@@ -66,22 +65,6 @@ export default function AiEmailAssistant({ bill, billType, isBotEnabled, recipie
 
   return (
     <Box mb={2}>
-      <Flex justify="space-between" align="center" mb={1}>
-        <Text fontSize="sm" fontWeight="medium" color="gray.700" _dark={{ color: "gray.300" }}>
-          Message Body
-        </Text>
-        <Button
-          size="xs"
-          colorScheme="purple"
-          variant="ghost"
-          leftIcon={<HiOutlineSparkles />}
-          onClick={() => setShowAiAssist(!showAiAssist)}
-          isDisabled={!isBotEnabled}
-        >
-          {showAiAssist ? "Hide AI Assistant" : "Draft with AI"}
-        </Button>
-      </Flex>
-
       <Collapse in={showAiAssist} animateOpacity>
         <Box
           p={4}
