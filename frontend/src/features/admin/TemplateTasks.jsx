@@ -84,7 +84,10 @@ function TemplateFormModal({
                 <Select
                   name="type"
                   value={formik.values.type}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.setFieldValue("content", "");
+                  }}
                   onBlur={formik.handleBlur}
                 >
                   <option value="term">Term &amp; Conditions</option>
