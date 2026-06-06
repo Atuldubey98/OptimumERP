@@ -118,10 +118,14 @@ export default function useInvoicesForm({ saveAndNew = false }) {
   });
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/invoices/nextSequence`,
-    );
-    formik.setFieldValue("sequence", data.data);
+    try {
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/invoices/nextSequence`,
+      );
+      formik.setFieldValue("sequence", data.data);
+    } catch (error) {
+      console.error("Failed to fetch next invoice sequence", error);
+    }
     setStatus("success");
   });
   const fetchDuplicateInvoice = requestAsyncHandler(async (dupId) => {

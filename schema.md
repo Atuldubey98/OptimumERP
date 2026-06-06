@@ -38,6 +38,7 @@ This document describes the Mongoose schemas used in the OptimumERP backend data
   - [job](#job)
   - [notification](#notification)
   - [properties](#properties)
+  - [template](#template)
 
 ---
 
@@ -623,3 +624,22 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`signature`**: `String` (optional)
 * **Indices:**
   * `{ org: 1, "aiProviders.name": 1 }` (unique)
+
+### `template`
+* **File:** `template.model.js`
+* **Mongoose Model:** `template`
+* **Mongoose Collection:** `templates`
+* **Schema Fields:**
+  * **`name`**: `String` (required, trimmed)
+  * **`type`**: `String` (required, enum: `["term", "email"]`)
+  * **`content`**: `String` (required)
+  * **`org`**: `Types.ObjectId` (required, ref: `"organization"`)
+  * **`createdBy`**: `Types.ObjectId` (required, ref: `"user"`)
+  * **`updatedBy`**: `Types.ObjectId` (optional, ref: `"user"`)
+  * **`isDefault`**: `Boolean` (default: `false`)
+* **Timestamps:** `true` (createdAt, updatedAt)
+* **Version Key:** `false`
+* **Indices:**
+  * `{ org: 1, type: 1 }`
+  * `{ type: 1 }`
+  * `{ org: 1, createdAt: -1 }`

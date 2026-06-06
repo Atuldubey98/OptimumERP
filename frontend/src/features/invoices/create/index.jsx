@@ -22,6 +22,7 @@ import { invoiceStatusList } from "../../../constants/invoice";
 import useInvoicesForm from "../../../hooks/useInvoicesForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
+import useTermsTemplates from "../../../hooks/useTermsTemplates";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import PrefixFormField from "../../common/PrefixFormField";
 import MainLayout from "../../common/main-layout";
@@ -52,6 +53,7 @@ export default function CreateInvoicePage() {
   const { disable } = useLimitsInFreePlan({
     key: "invoices",
   });
+  const { templates: termsTemplates } = useTermsTemplates();
   const hasError = status === "error";
   return (
 
@@ -201,7 +203,7 @@ export default function CreateInvoicePage() {
                 }}
               />
               <DescriptionField formik={formik} />
-              <TermsAndCondtions formik={formik} />
+              <TermsAndCondtions formik={formik} templates={termsTemplates} />
             </Grid>
           </form>
         )}

@@ -28,6 +28,7 @@ import useAuth from "../../hooks/useAuth";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import instance from "../../instance";
 import ImportTasks from "./ImportTasks";
+import TemplateTasks from "./TemplateTasks";
 
 function FinancialYearCloseForm(props) {
   const { t } = useTranslation("admin");
@@ -119,7 +120,6 @@ function FinancialYearCloseForm(props) {
   );
 }
 
-
 export default function AdminTasks({ organization }) {
   const { t } = useTranslation("admin");
   const bg = useColorModeValue("gray.100", "gray.700");
@@ -172,6 +172,7 @@ export default function AdminTasks({ organization }) {
       </Box>
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
+        <TemplateTasks organization={organization} />
         {
           import_bulk && (
             <AccordionItem>

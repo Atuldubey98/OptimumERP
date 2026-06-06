@@ -20,6 +20,7 @@ module.exports = {
   CACHE_ENABLED: process.env.CACHE_ENABLED !== "false",
   SESSION_AGE: Number(process.env.SESSION_AGE) || 1000 * 60 * 60 * 24 * 5,
   DEFAULT_USER_PLAN: process.env.DEFAULT_USER_PLAN || "free",
+  TEMPLATE_CACHE_TTL_SECONDS : process.env.TEMPLATE_CACHE_TTL_SECONDS || 10 * 60,
   CACHE_DEFAULT_TTL_SECONDS: Number(process.env.CACHE_DEFAULT_TTL_SECONDS) || 300,
   CACHE_CHECK_PERIOD_SECONDS: Number(process.env.CACHE_CHECK_PERIOD_SECONDS) || 120,
   UM_CACHE_TTL_SECONDS: Number(process.env.UM_CACHE_TTL_SECONDS) || 30 * 60,

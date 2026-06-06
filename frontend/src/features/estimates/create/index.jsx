@@ -20,6 +20,7 @@ import { AiOutlineSave } from "react-icons/ai";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useEstimateForm from "../../../hooks/useEstimateForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import useTermsTemplates from "../../../hooks/useTermsTemplates";
 import MainLayout from "../../common/main-layout";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
 import DateField from "./DateField";
@@ -45,6 +46,7 @@ export default function CreateEstimatePage() {
     key: "quotes",
   });
   const { receiptDefaults } = useCurrentOrgCurrency();
+  const { templates: termsTemplates } = useTermsTemplates();
   const hasError = status === "error";
   return (
     
@@ -133,7 +135,7 @@ export default function CreateEstimatePage() {
                 />
                 <TotalsBox quoteItems={deferredItems} taxes={taxes} />
                 <DescriptionField formik={formik} />
-                <TermsAndCondtions formik={formik} />
+                <TermsAndCondtions formik={formik} templates={termsTemplates} />
               </Grid>
             </form>
           )}

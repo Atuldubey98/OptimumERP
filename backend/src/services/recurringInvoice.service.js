@@ -318,5 +318,5 @@ exports.update = async (filter, body) => {
 };
 
 exports.remove = async (filter) => {
-    return await RecurringInvoice.findOneAndDelete(filter);
+    return await RecurringInvoice.softDelete(filter);
 };

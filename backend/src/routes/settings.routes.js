@@ -2,14 +2,23 @@ const { Router } = require("express");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 const { signatureUploader } = require("../middlewares/uploader.middleware");
 
+const { limitEntityCreation } = require("../middlewares/auth.middleware");
+
 const {
   getSettingByOrg,
   update,
   providers,
+  templates,
   uploadSignature,
   removeSignature,
 } = require("../controllers/setting.controller");
 const settingRouter = Router({ mergeParams: true });
+
+settingRouter.get("/templates", requestAsyncHandler(templates.list));
+settingRouter.post("/templates", limitEntityCreation("templates"), requestAsyncHandler(templates.create));
+settingRouter.patch("/templates/default", requestAsyncHandler(templates.setDefault));
+settingRouter.patch("/templates/:id", requestAsyncHandler(templates.update));
+settingRouter.delete("/templates/:id", requestAsyncHandler(templates.remove));
 
 settingRouter.get("/", requestAsyncHandler(getSettingByOrg));
 settingRouter.patch("/", requestAsyncHandler(update));

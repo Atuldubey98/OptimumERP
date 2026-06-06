@@ -34,6 +34,7 @@ import { AiOutlineSave } from "react-icons/ai";
 import { recurringInvoiceStatusList, intervalOptions, dayOptions, dateOptions } from "../../../constants/recurringInvoice";
 import useRecurringInvoicesForm from "../../../hooks/useRecurringInvoicesForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import useTermsTemplates from "../../../hooks/useTermsTemplates";
 import MainLayout from "../../common/main-layout";
 import DescriptionField from "../../estimates/create/DescriptionField";
 import ItemsList from "../../estimates/create/ItemList";
@@ -60,6 +61,7 @@ export default function RecurringInvoiceFormPage() {
     key: "recurringInvoices",
   });
   
+  const { templates: termsTemplates } = useTermsTemplates();
   const hasError = status === "error";
   const memoizedIntervalOptions = useMemo(() => intervalOptions.map(opt => ({ label: t(opt.label), value: opt.value })), [t]);
   const memoizedDayOptions = useMemo(() => dayOptions.map(opt => ({ label: t(opt.label), value: opt.value })), [t]);
@@ -296,7 +298,7 @@ export default function RecurringInvoiceFormPage() {
                 }}
               />
               <DescriptionField formik={formik} />
-              <TermsAndCondtions formik={formik} />
+              <TermsAndCondtions formik={formik} templates={termsTemplates} />
             </Grid>
           </form>
         )}

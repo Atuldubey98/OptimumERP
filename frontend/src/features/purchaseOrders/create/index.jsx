@@ -21,6 +21,7 @@ import { invoiceStatusList } from "../../../constants/invoice";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
+import useTermsTemplates from "../../../hooks/useTermsTemplates";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import MainLayout from "../../common/main-layout";
 import DescriptionField from "../../estimates/create/DescriptionField";
@@ -53,6 +54,7 @@ export default function PurchaseOrderEditPage() {
   const { disable } = useLimitsInFreePlan({
     key: "purchaseOrders",
   });
+  const { templates: termsTemplates } = useTermsTemplates();
   const hasError = status === "error";
   return (
     
@@ -181,7 +183,7 @@ export default function PurchaseOrderEditPage() {
                   }}
                 />
                 <DescriptionField formik={formik} />
-                <TermsAndCondtions formik={formik} />
+                <TermsAndCondtions formik={formik} templates={termsTemplates} />
               </Grid>
             </form>
           )}

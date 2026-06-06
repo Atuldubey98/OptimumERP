@@ -21,6 +21,7 @@ const relatedDocsCountFields = [
   "recurringInvoices",
   "ums",
   "taxes",
+  "templates",
 ];
 
 const relatedDocsCountSchema = {};

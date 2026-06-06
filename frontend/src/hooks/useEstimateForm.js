@@ -130,10 +130,14 @@ export default function useEstimateForm() {
       }
       async function fetchSequence() {
         setStatus("loading");
-        const { data } = await instance.get(
-          `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`,
-        );
-        formik.setFieldValue("sequence", data.data);
+        try {
+          const { data } = await instance.get(
+            `/api/v1/organizations/${orgId}/quotes/nextQuoteNo`,
+          );
+          formik.setFieldValue("sequence", data.data);
+        } catch (error) {
+          console.error("Failed to fetch next quote sequence", error);
+        }
         setStatus("success");
       }
 

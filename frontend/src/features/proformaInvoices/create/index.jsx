@@ -18,6 +18,7 @@ import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useProformaInvoicesForm from "../../../hooks/useProformaInvoicesForm";
+import useTermsTemplates from "../../../hooks/useTermsTemplates";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import MainLayout from "../../common/main-layout";
 import DateField from "../../estimates/create/DateField";
@@ -46,6 +47,7 @@ export default function ProformaInvoiceFormPage() {
   const { disable } = useLimitsInFreePlan({
     key: "proformaInvoices",
   });
+  const { templates: termsTemplates } = useTermsTemplates();
   const error = status === "error";
   return (
     
@@ -168,7 +170,7 @@ export default function ProformaInvoiceFormPage() {
                   }}
                 />
                 <DescriptionField formik={formik} />
-                <TermsAndCondtions formik={formik} />
+                <TermsAndCondtions formik={formik} templates={termsTemplates} />
               </Grid>
             </form>
           )}

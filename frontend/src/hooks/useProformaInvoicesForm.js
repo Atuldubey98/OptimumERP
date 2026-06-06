@@ -104,10 +104,14 @@ export default function useProformaInvoicesForm() {
   });
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/proformaInvoices/nextProformaInvoiceNo`,
-    );
-    formik.setFieldValue("sequence", data.data);
+    try {
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/proformaInvoices/nextProformaInvoiceNo`,
+      );
+      formik.setFieldValue("sequence", data.data);
+    } catch (error) {
+      console.error("Failed to fetch next proforma invoice sequence", error);
+    }
     setStatus("success");
   });
   useEffect(() => {

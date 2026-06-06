@@ -14,4 +14,5 @@ module.exports = {
   PAYMENT_VOUCHERS: "paymentVoucher",
   NOTIFICATIONS: "notification",
   RECURRING_INVOICES: "recurringInvoice",
+  TEMPLATES: "templates",
 };

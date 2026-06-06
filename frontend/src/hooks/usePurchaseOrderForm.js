@@ -107,10 +107,14 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
   });  
   const fetchNextInvoiceNumber = requestAsyncHandler(async () => {
     setStatus("loading");
-    const { data } = await instance.get(
-      `/api/v1/organizations/${orgId}/purchaseOrders/nextPurchaseOrderNo`
-    );
-    formik.setFieldValue("sequence", data.data);
+    try {
+      const { data } = await instance.get(
+        `/api/v1/organizations/${orgId}/purchaseOrders/nextPurchaseOrderNo`
+      );
+      formik.setFieldValue("sequence", data.data);
+    } catch (error) {
+      console.error("Failed to fetch next purchase order sequence", error);
+    }
     setStatus("success");
   });
   const fetchDuplicatePurchaseOrder = requestAsyncHandler(async (dupId) => {
