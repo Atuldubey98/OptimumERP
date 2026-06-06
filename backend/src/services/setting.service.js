@@ -39,14 +39,14 @@ const getDisplaySettingForOrg = async (orgId) => {
   );
 };
 
-const getDetailedSettingForOrg = async (orgId, select) => {
+const getDetailedSettingForOrg = async (orgId) => {
   const key = buildDetailedSettingCacheKey(orgId);
 
   return cacheService.getOrSet(
     key,
     async () => {
       logger.debug(`Detailed setting cache miss for org ${orgId}; reading from DB`);
-      const setting = await Setting.findOne({ org: orgId }).select(select)
+      const setting = await Setting.findOne({ org: orgId })
         .populate("org")
         .populate("receiptDefaults.tax")
         .populate("receiptDefaults.um")
@@ -81,8 +81,32 @@ const invalidateSettingCache = (orgId) => {
   ]);
 };
 
+const sanitizeSetting = (setting) => {
+  if (!setting) return setting;
+  const sanitized = JSON.parse(JSON.stringify(setting));
+
+  if (sanitized.aiProviders) {
+    sanitized.aiProviders.forEach((p) => {
+      if (p.fields && p.fields.apiKey) {
+        p.fields.apiKey = "********";
+      }
+    });
+  }
+
+  if (sanitized.smtpProviders) {
+    sanitized.smtpProviders.forEach((p) => {
+      if (p.fields && p.fields.pass) {
+        p.fields.pass = "********";
+      }
+    });
+  }
+
+  return sanitized;
+};
+
 module.exports = {
   getDetailedSettingForOrg,
   getDisplaySettingForOrg,
   invalidateSettingCache,
+  sanitizeSetting,
 };
