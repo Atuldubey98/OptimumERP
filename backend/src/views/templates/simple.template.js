@@ -267,7 +267,7 @@ const simpleTemplate = (data, color) => {
             margin: [0, 0, 16, 0],
           },
           {
-            width: 160,
+            width: 120,
             table: {
               widths: ["*"],
               body: [
@@ -278,18 +278,18 @@ const simpleTemplate = (data, color) => {
                         text: `For ${data.entity?.org?.name || ""}`,
                         style: "signatoryBoxCompany",
                         alignment: "center",
-                        margin: [0, 0, 0, 20],
+                        margin: [0, 0, 0, 10],
                       },
                       data.signature
                         ? {
                             image: data.signature,
-                            width: 75,
+                            fit: [90, 35],
                             alignment: "center",
-                            margin: [0, 5, 0, 5],
+                            margin: [0, 4, 0, 4],
                           }
                         : {
                           text: " ",
-                          margin: [0, 15, 0, 15],
+                          margin: [0, 10, 0, 10],
                         },
                       {
                         text: labels.authorized_signatory || "Authorized Signatory",
@@ -297,7 +297,7 @@ const simpleTemplate = (data, color) => {
                         alignment: "center",
                       },
                     ],
-                    margin: [4, 10, 4, 10],
+                    margin: [4, 6, 4, 6],
                   },
                 ],
               ],
