@@ -175,7 +175,7 @@ export default function SmtpProviders({ formik }) {
       <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">
         <HStack spacing={3}>
           <FiMail size={20} />
-          <Heading fontSize={"lg"}>SMTP Providers</Heading>
+          <Heading fontSize={"lg"}>SMTP</Heading>
         </HStack>
         <Tooltip 
           label={providers.length >= 3 ? "Maximum limit of 3 SMTP providers reached" : ""}

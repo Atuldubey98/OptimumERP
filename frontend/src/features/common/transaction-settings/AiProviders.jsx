@@ -242,7 +242,7 @@ export default function AiProviders({ formik }) {
       <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">
         <HStack spacing={3}>
           <FiCpu size={20} />
-          <Heading fontSize={"lg"}>AI Providers</Heading>
+          <Heading fontSize={"lg"}>AI</Heading>
         </HStack>
         <Tooltip
           label={providers.length >= 3 ? "Maximum limit of 3 AI providers reached" : ""}
