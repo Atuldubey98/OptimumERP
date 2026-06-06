@@ -618,7 +618,6 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`receiptDefaults`**: `Object` containing:
     * `um`: `Types.ObjectId` (required, ref: `"ums"`)
     * `tax`: `Types.ObjectId` (required, ref: `"taxes"`)
-    * `terms`: `Object` containing `{ invoice, quote, purchaseOrder, proformaInvoice }` with a default string.
   * **`aiProviders`**: `[Object]` (maximum `3` allowed) containing `{ provider (enum: ["grok", "ollama"]), fields (apiKey: String), name (String, required), isActive (Boolean, default: false) }`
   * **`smtpProviders`**: `[Object]` (maximum `3` allowed) containing `{ provider (enum: ["gmail", "brevo"]), fields: { user, pass, port, secure }, name (String, required), isActive (Boolean, default: false) }`
   * **`signature`**: `String` (optional)

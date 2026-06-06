@@ -20,7 +20,6 @@
     "organization_updated": "Organization updated",
     "bank_title": "Bank",
     "financial_year_closed": "Financial year closed",
-    "terms_default_set": "Terms default set",
     "error_occurred": "Error occured"
   },
   "organization": {
@@ -94,13 +93,6 @@
       "end_date": "End date",
       "closing": "Closing",
       "done": "Done"
-    },
-    "default_terms": {
-      "title": "Default Terms & Conditions",
-      "invoice": "Invoice",
-      "quotations": "Quotations",
-      "purchase_order": "Purchase Order",
-      "proforma_invoice": "Proforma Invoice"
     },
     "import": {
       "title": "Import",

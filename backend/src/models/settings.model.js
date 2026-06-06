@@ -1,9 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
 const Property = require("./properties.model");
-const termsSchema = {
-  type: String,
-  default: "Thanks for business !",
-};
 const sequenceCounterSchema = {
   type: Number,
   min: 0,
@@ -125,12 +121,6 @@ const settingSchema = new Schema({
       type: Types.ObjectId,
       ref: "taxes",
       required: true,
-    },
-    terms: {
-      invoice: termsSchema,
-      quote: termsSchema,
-      purchaseOrder: termsSchema,
-      proformaInvoice: termsSchema,
     },
   },
   aiProviders: {

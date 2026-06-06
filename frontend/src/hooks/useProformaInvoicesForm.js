@@ -65,7 +65,7 @@ export default function useProformaInvoicesForm() {
     date: moment().format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultReceiptItem],
-    terms: receiptDefaults.terms?.proformaInvoice,
+    terms: "",
     description: "",
     poNo: "",
     billingAddress: "",

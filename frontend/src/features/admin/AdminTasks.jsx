@@ -119,61 +119,6 @@ function FinancialYearCloseForm(props) {
   );
 }
 
-function DefaultTermsForReceiptsForm({ formik }) {
-  const { t } = useTranslation("admin");
-
-  return (
-    <AccordionItem>
-      <AccordionButton>
-        <Box fontWeight={"bold"} flex="1" textAlign="left">
-          {t("tasks.default_terms.title")}
-        </Box>
-        <AccordionIcon />
-      </AccordionButton>
-      <AccordionPanel pb={4}>
-        <form onSubmit={formik.handleSubmit}>
-          <Stack spacing={1}>
-            <FormControl>
-              <FormLabel>{t("tasks.default_terms.invoice")}</FormLabel>
-              <Textarea
-                value={formik.values.terms?.invoice}
-                onChange={formik.handleChange}
-                name="terms.invoice"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>{t("tasks.default_terms.quotations")}</FormLabel>
-              <Textarea
-                value={formik.values.terms?.quote}
-                onChange={formik.handleChange}
-                name="terms.quote"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>{t("tasks.default_terms.purchase_order")}</FormLabel>
-              <Textarea
-                value={formik.values.terms?.purchaseOrder}
-                onChange={formik.handleChange}
-                name="terms.purchaseOrder"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>{t("tasks.default_terms.proforma_invoice")}</FormLabel>
-              <Textarea
-                value={formik.values.terms?.proformaInvoice}
-                onChange={formik.handleChange}
-                name="terms.proformaInvoice"
-              />
-            </FormControl>
-            <Button isLoading={formik.isSubmitting} type="submit" size={"sm"}>
-              {t("actions.save")}
-            </Button>
-          </Stack>
-        </form>
-      </AccordionPanel>
-    </AccordionItem>
-  );
-}
 
 export default function AdminTasks({ organization }) {
   const { t } = useTranslation("admin");
@@ -216,25 +161,7 @@ export default function AdminTasks({ organization }) {
       setSubmitting(false);
     },
   });
-  const termsFormik = useFormik({
-    initialValues: {
-      terms: settingContext.setting?.receiptDefaults?.terms,
-    },
-    onSubmit: async (values, { setSubmitting }) => {
-      await instance.patch(`/api/v1/organizations/${organization}/settings`, {
-        "receiptDefaults.terms": values.terms,
-      });
-      await settingContext.fetchSetting();
-      toast({
-        title: t("toasts.success_title"),
-        description: t("toasts.terms_default_set"),
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      setSubmitting(false);
-    },
-  });
+
   const { user } = useAuth();
   const currentFeatures = user?.features || {};
   const import_bulk = currentFeatures?.import_bulk ?? false;
@@ -245,7 +172,6 @@ export default function AdminTasks({ organization }) {
       </Box>
       <Accordion marginBlock={2} allowToggle>
         <FinancialYearCloseForm formik={formik} />
-        <DefaultTermsForReceiptsForm formik={termsFormik} />
         {
           import_bulk && (
             <AccordionItem>

@@ -75,7 +75,7 @@ export default function useInvoicesForm({ saveAndNew = false }) {
     date: moment().format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultReceiptItem],
-    terms: receiptDefaults?.terms?.invoice,
+    terms: "",
     prefix: "",
     description: "",
     poNo: "",

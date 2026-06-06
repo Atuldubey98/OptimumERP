@@ -66,7 +66,7 @@ export default function usePurchaseOrderForm({ saveAndNew }) {
     date: moment().format("YYYY-MM-DD"),
     status: "sent",
     items: [defaultReceiptItem],
-    terms: receiptDefaults.terms?.purchaseOrder,
+    terms: "",
     description: "",
     billingAddress: "",
     shippingCharges: 0,

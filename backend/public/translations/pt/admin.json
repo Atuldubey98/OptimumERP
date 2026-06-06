@@ -20,7 +20,6 @@
     "organization_updated": "Organização atualizada",
     "bank_title": "Banco",
     "financial_year_closed": "Ano fiscal encerrado",
-    "terms_default_set": "Termos padrão definidos",
     "error_occurred": "Ocorreu um erro"
   },
   "organization": {
@@ -94,13 +93,6 @@
       "end_date": "Data de término",
       "closing": "Fechamento",
       "done": "Concluído"
-    },
-    "default_terms": {
-      "title": "Termos e Condições Padrão",
-      "invoice": "Fatura",
-      "quotations": "Orçamentos",
-      "purchase_order": "Pedido de Compra",
-      "proforma_invoice": "Fatura Proforma"
     },
     "import": {
       "title": "Importar",

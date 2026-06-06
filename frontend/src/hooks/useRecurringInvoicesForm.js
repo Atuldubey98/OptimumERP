@@ -85,7 +85,7 @@ export default function useRecurringInvoicesForm() {
     status: "active",
     interval: "monthly",
     items: [getDefaultReceiptItem()],
-    terms: receiptDefaults?.terms?.invoice,
+    terms: "",
     description: "",
     billingAddress: "",
     shippingCharges: 0,
