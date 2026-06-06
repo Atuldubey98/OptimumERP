@@ -11,6 +11,23 @@ import {
 } from "@chakra-ui/react";
 import React, { memo } from "react";
 import HeadingButtons from "./HeadingButtons";
+
+const getTextFromReactElement = (element) => {
+  if (element === null || element === undefined) {
+    return "";
+  }
+  if (typeof element === "string" || typeof element === "number") {
+    return String(element);
+  }
+  if (typeof element === "object" && element.props && element.props.children) {
+    return getTextFromReactElement(element.props.children);
+  }
+  if (Array.isArray(element)) {
+    return element.map(getTextFromReactElement).join("");
+  }
+  return "";
+};
+
 function TableLayoutMemoized({
   heading,
   onAddNewItem,
@@ -54,13 +71,22 @@ function TableLayoutMemoized({
           <Tbody>
             {tableRows.map((tableRow, index) => (
               <Tr key={tableData[index]._id}>
-                {Object.keys(selectedKeys).map((col) => (
-                  <Td maxW={"20svw"} whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis" title={tableRow[col]} isNumeric={typeof tableRow[col] === "number"} key={col}>
-                    {tableRow[col]}
-                  </Td>
-                ))}
+                {Object.keys(selectedKeys).map((col) => {
+                  const tooltip = getTextFromReactElement(tableRow[col]);
+                  return (
+                    <Td
+                      maxW={"20svw"}
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      title={tooltip || undefined}
+                      isNumeric={typeof tableRow[col] === "number"}
+                      key={col}
+                    >
+                      {tableRow[col]}
+                    </Td>
+                  );
+                })}
                 <Td>{operations[index]}</Td>
               </Tr>
             ))}
