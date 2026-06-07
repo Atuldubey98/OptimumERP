@@ -37,10 +37,6 @@ app.use(sessionHandler);
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.use(middleware.handle(i18));
-
-app.get("/", (req, res) => {
-  res.redirect(config.VITE_APP_URL);
-});
 app.get("/api/v1/health", (req, res) => {
   res.status(200).send(req.t("health:health"));
 });
