@@ -1,7 +1,13 @@
 const chatService = require("../../services/chat.service");
+const Joi = require("joi");
 
 const clearChat = async (req, res) => {
-  const { chatId, model, providerId } = req.body;
+  const { chatId, model, providerId } = await Joi.object({
+    chatId: Joi.string().optional().allow(""),
+    model: Joi.string().optional().allow(""),
+    providerId: Joi.string().optional().allow(""),
+  }).validateAsync(req.body);
+
   const { orgId } = req.params;
   const userId = req.session.user?._id;
 
