@@ -1,8 +1,7 @@
 const Chat = require("../../models/chat.model");
-const requestAsyncHandler = require("../../handlers/requestAsync.handler");
 const crudService = require("../../services/crud.service");
 
-const paginate = requestAsyncHandler(async (req, res) => {
+const paginate = async (req, res) => {
   const { orgId } = req.params;
 
   const { filter, skip, limit: pageSize, total, totalPages } = await crudService.getPaginationParams({
@@ -28,6 +27,6 @@ const paginate = requestAsyncHandler(async (req, res) => {
       totalPages,
     },
   });
-});
+};
 
 module.exports = paginate;

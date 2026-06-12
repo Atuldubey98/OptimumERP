@@ -1,6 +1,4 @@
 const Chat = require("../models/chat.model");
-
-const crudService = require("./crud.service");
 const getOrCreateActiveChat = async (orgId, userId) => {
   return await Chat.findOneAndUpdate(
     { org: orgId, user: userId, isActive: true },
@@ -44,9 +42,7 @@ const clearChat = async (chatId, model, providerId) => {
       if (providerId) {
         ({ ai, defaultModel } = await aiFactory.getAIInstanceForProvider(orgId, providerId));
       } else {
-        // Fallback: pick first active provider for title generation
         const settingService = require("../services/setting.service");
-        const { decrypt } = require("../services/hashing.service");
         const settings = await settingService.getDetailedSettingForOrg(orgId);
         const activeProvider = settings?.aiProviders?.find((p) => p.isActive);
         if (activeProvider) {

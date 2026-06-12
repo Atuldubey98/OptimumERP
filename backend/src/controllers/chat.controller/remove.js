@@ -1,11 +1,11 @@
 const Chat = require("../../models/chat.model");
 const { ChatNotFound } = require("../../errors/chat.error");
 
-const read = async (req, res) => {
+const remove = async (req, res) => {
   const { id } = req.params;
   const { orgId } = req.params;
 
-  const chat = await Chat.findOne({ _id: id, org: orgId });
+  const chat = await Chat.softDelete({ _id: id, org: orgId });
 
   if (!chat) {
     throw new ChatNotFound();
@@ -13,8 +13,8 @@ const read = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: chat,
+    message: "Conversation deleted successfully.",
   });
 };
 
-module.exports = read;
+module.exports = remove;

@@ -1,11 +1,10 @@
 const aiFactory = require("../../ai");
 const settingService = require("../../services/setting.service");
 const factory = require("../../ai/prompts/factory");
-const requestAsyncHandler = require("../../handlers/requestAsync.handler");
 const { AiProviderNotFound, AiEngineInitializationFailed } = require("../../errors/chat.error");
 const Joi = require("joi");
 
-const generate = requestAsyncHandler(async (req, res) => {
+const generate = async (req, res) => {
   const orgId = req.params.orgId;
 
   const body = await Joi.object({
@@ -48,6 +47,6 @@ const generate = requestAsyncHandler(async (req, res) => {
       result: response.content
     }
   });
-});
+};
 
 module.exports = generate;

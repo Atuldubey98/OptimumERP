@@ -11,11 +11,10 @@ const corsHandler = require("./handlers/cors.handler");
 const { authenticate } = require("./middlewares/auth.middleware");
 const logger = require("./logger");
 const app = express();
-if (NODE_ENV === "production") app.set("trust proxy", 1);
 const middleware = require("i18next-http-middleware");
 const i18 = require("./i18");
-const config = require("./config");
 const { folders, getRouteFromFolder } = require("./storages");
+if (NODE_ENV === "production") app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 

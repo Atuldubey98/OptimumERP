@@ -10,9 +10,10 @@ import {
   Spinner,
   Avatar,
   IconButton,
+  Spacer,
 } from "@chakra-ui/react";
 import React, { useRef, useEffect } from "react";
-import { FiMessageSquare, FiChevronLeft, FiClock } from "react-icons/fi";
+import { FiMessageSquare, FiChevronLeft, FiClock, FiTrash2 } from "react-icons/fi";
 import moment from "moment";
 import MessageItem from "../bot/MessageItem";
 
@@ -22,7 +23,8 @@ const ChatWindow = ({
   loading, 
   isMobile, 
   onBack, 
-  formatTime 
+  formatTime,
+  onDelete
 }) => {
   const scrollRef = useRef(null);
   const headerBg = useColorModeValue("white", "gray.800");
@@ -94,6 +96,18 @@ const ChatWindow = ({
             <Text>Updated {moment(currentChat?.updatedAt).fromNow()}</Text>
           </HStack>
         </VStack>
+        <Spacer />
+        {onDelete && (
+          <IconButton
+            icon={<FiTrash2 size={16} />}
+            variant="ghost"
+            colorScheme="red"
+            size="sm"
+            onClick={() => onDelete(chatId)}
+            aria-label="Delete conversation"
+            borderRadius="full"
+          />
+        )}
       </Flex>
 
       <Box flex={1} overflowY="auto" p={4} ref={scrollRef} bg={messageAreaBg}>
