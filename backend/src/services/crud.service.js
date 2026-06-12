@@ -76,6 +76,7 @@ exports.getPaginationParams = async ({
   const total = shouldPaginate ? await model.countDocuments(filter) : 0;
   const totalPages = Math.ceil(total / limit);
   const hasTextSearch = !!(query.search);
+  logger.info("Filter ", filter)
   return { filter, page, limit, skip, total, totalPages, hasTextSearch };
 };
 
