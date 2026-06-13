@@ -73,7 +73,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
       scrollBehavior={"inside"}
     >
       <ModalOverlay />
-      <ModalContent mx={{ base: 2, md: "auto" }}>
+      <ModalContent>
         <ModalHeader>{heading}</ModalHeader>
         <ModalCloseButton />
         <ModalBody h={"100svh"}>
@@ -83,7 +83,7 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
                 setBillLoadStatus("idle");
               }}
               width={"100%"}
-              height={"550px"}
+              height={"450px"}
               src={
                 baseURL +
                 downloadBill +
