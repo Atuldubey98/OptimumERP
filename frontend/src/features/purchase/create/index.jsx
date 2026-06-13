@@ -115,6 +115,7 @@ export default function CreatePurchasePage() {
                 <Heading fontSize={"xl"}>{t("purchase_ui.form.purchase_details")}</Heading>
                 <SimpleGrid gap={2} minChildWidth={300}>
                   <FormControl
+                    isRequired
                     isInvalid={formik.errors.num && formik.touched.num}
                   >
                     <FormLabel>{t("purchase_ui.form.purchase_no")}</FormLabel>
