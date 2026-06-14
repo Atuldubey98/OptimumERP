@@ -390,17 +390,32 @@ const billHandler = {
         .limit(10)
         .lean();
 
-      return transactions.map((t) => ({
-        _id: t.doc?._id || t._id,
-        num: t.doc?.num || "N/A",
-        type: t.docModel,
-        date: t.date,
-        party: t.party?.name || "N/A",
-        grandTotal: fromSmallest(
-          (t.total || 0) + (t.totalTax || 0) + (t.shippingCharges || 0),
-        ),
-        status: t.doc?.status || "N/A",
-      }));
+      return transactions.map((t) => {
+        const grandTotal = (t.total || 0) + (t.totalTax || 0) + (t.shippingCharges || 0);
+
+        const res = {
+          _id: t._id,
+          docId: t.doc?._id,
+          num: t.doc?.num || "N/A",
+          type: t.docModel,
+          date: t.date,
+          party: t.party?.name || "N/A",
+          grandTotal: fromSmallest(grandTotal),
+          status: t.doc?.status || "N/A",
+        };
+
+        if (t.docModel === "purchase" || t.docModel === "invoice") {
+          const totalPaid = t.doc?.paymentVoucherBalance || 0;
+          let paymentStatus = "Unpaid";
+          if (totalPaid > 0) {
+            paymentStatus = totalPaid >= grandTotal ? "Paid" : "Partially Paid";
+          }
+          res.voucherBalance = fromSmallest(totalPaid);
+          res.paymentStatus = paymentStatus;
+        }
+
+        return res;
+      });
     } catch (error) {
       throw error;
     }
