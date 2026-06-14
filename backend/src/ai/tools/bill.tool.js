@@ -56,14 +56,7 @@ const billTools = [
             type: "string",
             description: "Filter by party name (customer or vendor).",
           },
-          minAmount: {
-            type: "number",
-            description: "Minimum total amount in decimal.",
-          },
-          maxAmount: {
-            type: "number",
-            description: "Maximum total amount in decimal.",
-          },
+
           startDate: {
             type: "string",
             description: "Start date (YYYY-MM-DD).",

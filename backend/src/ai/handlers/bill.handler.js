@@ -350,26 +350,6 @@ const billHandler = {
       const fromSmallest = (val) =>
         moneyUtils.fromSmallestUnit(val, decimalDigits);
 
-      if (params.minAmount && params.maxAmount && params.minAmount != null || params.maxAmount != null) {
-        filter.$expr = { $and: [] };
-        const sumExpr = {
-          $add: [
-            { $ifNull: ["$total", 0] },
-            { $ifNull: ["$totalTax", 0] },
-            { $ifNull: ["$shippingCharges", 0] },
-          ],
-        };
-        if (params.minAmount != null) {
-          filter.$expr.$and.push({
-            $gte: [sumExpr, toSmallest(params.minAmount)],
-          });
-        }
-        if (params.maxAmount != null) {
-          filter.$expr.$and.push({
-            $lte: [sumExpr, toSmallest(params.maxAmount)],
-          });
-        }
-      }
 
       if (params.date) {
         const start = new Date(params.date);
