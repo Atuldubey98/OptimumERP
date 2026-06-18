@@ -28,6 +28,7 @@ import useAsyncCall from "../../../hooks/useAsyncCall";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import useAuth from "../../../hooks/useAuth";
+import useSaveBill from "../../../hooks/useSaveBill";
 
 
 const getBillGrandTotal = (bill) =>
@@ -37,6 +38,7 @@ const getBillGrandTotal = (bill) =>
 
 export default function InvoicesPage() {
   const { t, i18n } = useTranslation("invoice");
+  const { saveBill, isDownloading } = useSaveBill();
   const {
     items: invoices,
     reachedLimit,
@@ -114,23 +116,11 @@ export default function InvoicesPage() {
   const onClickAddNewInvoice = () => {
     navigate(`create`);
   };
-  const { requestAsyncHandler } = useAsyncCall();
-  const onSaveBill = requestAsyncHandler(async (item) => {
+  const onSaveBill = async (item) => {
     const currentInvoice = item || invoice;
-    const language = i18n.resolvedLanguage || i18n.language || "en";
-    const downloadBill = `/api/v1/organizations/${currentInvoice.org._id
-      }/invoices/${currentInvoice._id}/download?lng=${language}`;
-    const { data } = await instance.get(downloadBill, {
-      responseType: "blob",
-    });
-    const href = URL.createObjectURL(data);
-    const link = document.createElement("a");
-    link.setAttribute("download", `Invoice-${currentInvoice.num}.pdf`);
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
-  });
-  const downloading = invoiceStatus === "downloading";
+    await saveBill(currentInvoice, "invoices");
+  };
+  const downloading = isDownloading;
   const {
     isOpen: isRecordPaymentModalOpen,
     onOpen: openRecordPaymentModal,

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import useSaveBill from "../../../hooks/useSaveBill";
 import instance from "../../../instance";
 import AlertModal from "../../common/AlertModal";
 import MainLayout from "../../common/main-layout";
@@ -24,6 +25,7 @@ import ShareBillModal from "../../common/ShareBillModal";
 export default function EstimatesPage() {
   const { t, i18n } = useTranslation("quote");
   const {  formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
+  const { saveBill } = useSaveBill();
 
   const navigate = useNavigate();
   const onClickAddNewQuote = useCallback(() => {
@@ -93,19 +95,7 @@ export default function EstimatesPage() {
   };
   const onSaveBill = async (item) => {
     const currentEstimate = quotation || item;
-    const language = i18n.resolvedLanguage || i18n.language || "en";
-    const downloadBill = `/api/v1/organizations/${
-      currentEstimate.org._id
-    }/quotes/${currentEstimate._id}/download?lng=${language}`;
-    const { data } = await instance.get(downloadBill, {
-      responseType: "blob",
-    });
-    const href = URL.createObjectURL(data);
-    const link = document.createElement("a");
-    link.setAttribute("download", `Quotation-${currentEstimate.num}.pdf`);
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
+    await saveBill(currentEstimate, "quotes");
   };
   const toast = useToast();
   const convertToInvoice = async (quote) => {

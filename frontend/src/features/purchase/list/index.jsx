@@ -29,6 +29,7 @@ import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import { useTranslation } from "react-i18next";
+import useSaveBill from "../../../hooks/useSaveBill";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -37,6 +38,7 @@ const getBillGrandTotal = (bill) =>
 
 export default function PurchasePage() {
   const { t, i18n } = useTranslation("purchase");
+  const { saveBill } = useSaveBill();
   const {
     items: purchases,
     dateFilter,
@@ -105,21 +107,12 @@ export default function PurchasePage() {
   };
   const onSaveBill = async (item) => {
     const currentPurchase = item || purchase;
-
-    if (!currentPurchase) return;
-    const language = i18n.resolvedLanguage || i18n.language || "en";
-    const downloadBill = `/api/v1/organizations/${orgId}/purchases/${
-      currentPurchase._id
-    }/download?template=${localStorage.getItem("template") || "simple"}&lng=${language}`;
-    const { data } = await instance.get(downloadBill, {
-      responseType: "blob",
+    await saveBill(currentPurchase, "purchases", {
+      orgId,
+      params: {
+        template: localStorage.getItem("template") || "simple",
+      },
     });
-    const href = URL.createObjectURL(data);
-    const link = document.createElement("a");
-    link.setAttribute("download", `Purchase-${currentPurchase.num}.pdf`);
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
   };
   const {
     isOpen: isPayoutOpen,

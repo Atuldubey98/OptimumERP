@@ -37,7 +37,7 @@ export default function useEstimateForm() {
         }),
       )
       .min(1),
-    terms: Yup.string().required(t("common_ui.validation.messages.terms_required")),
+    terms: Yup.string(),
     description: Yup.string(),
   });
   const { requestAsyncHandler } = useAsyncCall();

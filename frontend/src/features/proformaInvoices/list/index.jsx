@@ -22,6 +22,7 @@ import TableDateFilter from "../../invoices/list/TableDateFilter";
 import Status from "../../estimates/list/Status";
 import { invoiceStatusList } from "../../../constants/invoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
+import useSaveBill from "../../../hooks/useSaveBill";
 import moment from "moment";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
@@ -34,6 +35,7 @@ const getBillGrandTotal = (bill) =>
 
 export default function ProformaInvoicesPage() {
   const { t, i18n } = useTranslation(["proformaInvoice", "common"]);
+  const { saveBill } = useSaveBill();
   const resolveToastMessage = (message, fallbackKey) => {
     if (!message) return t(fallbackKey);
     return t(message, { defaultValue: message });
@@ -102,21 +104,11 @@ export default function ProformaInvoicesPage() {
 
   const onSaveBill = async (item) => {
     const currentInvoice = item || invoice;
-    const language = i18n.resolvedLanguage || i18n.language || "en";
-    const downloadBill = `/api/v1/organizations/${
-      currentInvoice.org._id
-    }/proformaInvoices/${currentInvoice._id}/download?template=${
-      localStorage.getItem("template") || "simple"
-    }&lng=${language}`;
-    const { data } = await instance.get(downloadBill, {
-      responseType: "blob",
+    await saveBill(currentInvoice, "proformaInvoices", {
+      params: {
+        template: localStorage.getItem("template") || "simple",
+      },
     });
-    const href = URL.createObjectURL(data);
-    const link = document.createElement("a");
-    link.setAttribute("download", `ProformaInvoice-${currentInvoice.num}.pdf`);
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
   };
   const {
     isOpen: isConvertToInvoiceModalOpen,

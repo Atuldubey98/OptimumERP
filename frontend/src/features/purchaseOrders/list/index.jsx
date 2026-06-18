@@ -25,6 +25,7 @@ import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import ExporterModal from "../../common/ExporterModal";
 import ShareBillModal from "../../common/ShareBillModal";
 import { useTranslation } from "react-i18next";
+import useSaveBill from "../../../hooks/useSaveBill";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -33,6 +34,7 @@ const getBillGrandTotal = (bill) =>
 
 export default function PurchaseOrderPage() {
   const { t, i18n } = useTranslation("purchaseOrder");
+  const { saveBill } = useSaveBill();
   const { orgId } = useParams();
   const {
     items: purchaseOrderItems,
@@ -101,37 +103,14 @@ export default function PurchaseOrderPage() {
     onOpen: openBillModal,
   } = useDisclosure();
   const onSaveBill = async (item) => {
-    try {
-      const currentInvoice = item || invoice;
-      const language = i18n.resolvedLanguage || i18n.language || "en";
-      const downloadBill = `/api/v1/organizations/${
-        currentInvoice.org._id
-      }/purchaseOrders/${currentInvoice._id}/download?template=${
-        localStorage.getItem("template") || "simple"
-      }&lng=${language}`;
-      const { data } = await instance.get(downloadBill, {
-        responseType: "blob",
-      });
-      const href = URL.createObjectURL(data);
-      const link = document.createElement("a");
-      link.setAttribute("download", `Invoice-${currentInvoice.num}.pdf`);
-      link.href = href;
-      link.click();
-      URL.revokeObjectURL(href);
-    } catch (error) {
-      const description = isAxiosError(error)
-        ? error.response.data.message
-        : t("purchase_order_ui.toast.error_fallback");
-      toast({
-        title: isAxiosError(error)
-          ? error.response.data.name
-          : t("purchase_order_ui.toast.error_title"),
-        description,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
+    const currentInvoice = item || invoice;
+    await saveBill(currentInvoice, "purchaseOrders", {
+      params: {
+        template: localStorage.getItem("template") || "simple",
+      },
+      errorTitle: t("purchase_order_ui.toast.error_title"),
+      errorDescription: t("purchase_order_ui.toast.error_fallback"),
+    });
   };
   const { isOpen: isShareModalOpen, onToggle: toggleShareModal } =
     useDisclosure();

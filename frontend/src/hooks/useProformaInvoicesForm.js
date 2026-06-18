@@ -50,7 +50,6 @@ export default function useProformaInvoicesForm() {
       )
       .min(1),
     terms: Yup.string()
-      .required(t("common_ui.validation.messages.terms_required"))
       .label(t("common_ui.validation.labels.terms_conditions")),
     description: Yup.string()
       .max(80, t("common_ui.validation.messages.description_max_80"))

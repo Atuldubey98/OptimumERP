@@ -21,10 +21,12 @@ import { IoCheckmark } from "react-icons/io5";
 import { CiSaveDown2 } from "react-icons/ci";
 import instance, { baseURL } from "../../../instance";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import useSaveBill from "../../../hooks/useSaveBill";
+
 export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const { i18n } = useTranslation();
-  const [status, setStatus] = useState("idle");
   const [billLoadStatus, setBillLoadStatus] = useState("loading");
+  const { saveBill, isDownloading } = useSaveBill();
   const templateColors = [
     { name: "Transparent", hex: "" },
     { name: "Indigo", hex: "3f51b5" },
@@ -37,29 +39,22 @@ export default function BillModal({ onClose, isOpen, bill, entity, heading }) {
   const [signature, setSignature] = useState(false);
   const settingContext = useCurrentOrgCurrency();
   const setting = settingContext?.setting;
+  const orgName = settingContext?.setting?.org?.alias ||  settingContext?.setting?.org.name;
   const templateName = setting?.printSettings?.defaultTemplate || "simple";
   const language = i18n.resolvedLanguage || i18n.language || "en";
   const downloadBill = `/api/v1/organizations/${bill.org._id}/${entity}/${bill._id}/download`;
-  const onSaveBill = async () => {
-    setStatus("downloading");
-    const { data } = await instance.get(downloadBill, {
-      responseType: "blob",
+
+  const onSaveBill = () => {
+    saveBill(bill, entity, {
+      fileName: `${orgName}-${heading}-${bill.num}.pdf`,
       params: {
         template: templateName,
         color,
-        lng: language,
         signature,
       },
     });
-    const href = URL.createObjectURL(data);
-    const link = document.createElement("a");
-    link.setAttribute("download", `${entity}-${bill.num}.pdf`);
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
-    setStatus("idle");
   };
-  const isDownloading = status === "downloading";
+
   const isLoading = billLoadStatus === "loading";
 
   return (
