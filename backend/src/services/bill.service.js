@@ -43,6 +43,7 @@ exports.pluckRelevantFields = (bill) => {
     items,
     party,
     date,
+    dueDate,
     num,
     financialYear,
   } = bill;
@@ -58,6 +59,7 @@ exports.pluckRelevantFields = (bill) => {
     })),
     party,
     date,
+    dueDate,
     num,
     financialYear,
   };

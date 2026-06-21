@@ -40,6 +40,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       )
       .min(1),
     description: Yup.string(),
+    dueDate: Yup.string().optional(),
   });
   const { requestAsyncHandler } = useAsyncCall();
   const { orgId, purchaseId } = useParams();
@@ -50,6 +51,7 @@ export default function usePurchaseForm({ saveAndNew }) {
       num: "",
       billingAddress: "",
       date: moment().format("YYYY-MM-DD"),
+      dueDate: "",
       status: "unpaid",
       items: [defaultReceiptItem],
       autoItems: false,
@@ -102,6 +104,7 @@ export default function usePurchaseForm({ saveAndNew }) {
           num: "",
           billingAddress: "",
           date: moment().format("YYYY-MM-DD"),
+          dueDate: "",
           status: "unpaid",
           items: [defaultInvoiceItem],
           description: "",
@@ -126,6 +129,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         num,
         date,
         status,
+        dueDate,
         items,
         description,
         poDate = "",
@@ -138,6 +142,7 @@ export default function usePurchaseForm({ saveAndNew }) {
         partyDetails: party,
         num,
         date: moment(date).format("YYYY-MM-DD"),
+        dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD") : "",
         status,
         items: items.map((item) => ({
           ...item,

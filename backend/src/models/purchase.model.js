@@ -21,6 +21,9 @@ const purchaseInvoice = new Schema(
       default: "sent",
       enum: ["paid", "unpaid"],
     },
+    dueDate: {
+      type: Date,
+    },
   },
   {
     versionKey: false,

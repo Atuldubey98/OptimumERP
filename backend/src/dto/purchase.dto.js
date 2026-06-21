@@ -21,6 +21,7 @@ const purchaseDto = Joi.object({
   createdBy: Joi.string().optional(),
   updatedBy: Joi.string().optional(),
   num: Joi.string().label("Purchase No.").required(),
+  dueDate: Joi.string().label("Due Date").allow("").optional(),
   status: Joi.string()
     .default("unpaid")
     .valid("unpaid", "paid")

@@ -133,6 +133,16 @@ export default function CreatePurchasePage() {
                     statusList={purchaseStatusList}
                     namespace="purchase"
                   />
+                  <FormControl>
+                    <FormLabel>{t("purchase_ui.form.due_date", "Due Date")}</FormLabel>
+                    <Input
+                      min={formik.values.date}
+                      value={formik.values.dueDate || ""}
+                      onChange={formik.handleChange}
+                      name="dueDate"
+                      type="date"
+                    />
+                  </FormControl>
                 </SimpleGrid>
                 <Heading fontSize={"xl"}>{t("purchase_ui.form.items_section")}</Heading>
 
