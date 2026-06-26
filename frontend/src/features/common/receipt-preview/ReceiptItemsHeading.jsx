@@ -14,21 +14,22 @@ export default function ReceiptItemsHeading(props) {
       bg={props.tableHeader}
       p={5}
       templateColumns={"4fr 1fr 1fr 1fr 1fr"}
+      display={{ base: "none", md: "grid" }}
     >
       <GridItem>
-        <Text textAlign={"center"}>{t("common_ui.receipt.product")}</Text>
+        <Text textAlign={"left"}>{t("common_ui.receipt.product")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>{t("common_ui.receipt.quantity")}</Text>
+        <Text textAlign={"right"}>{t("common_ui.receipt.quantity")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>{t("common_ui.receipt.price")}</Text>
+        <Text textAlign={"right"}>{t("common_ui.receipt.price")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>{t("common_ui.receipt.tax")}</Text>
+        <Text textAlign={"right"}>{t("common_ui.receipt.tax")}</Text>
       </GridItem>
       <GridItem>
-        <Text textAlign={"center"}>{t("common_ui.receipt.total")}</Text>
+        <Text textAlign={"right"}>{t("common_ui.receipt.total")}</Text>
       </GridItem>
     </Grid>
   );

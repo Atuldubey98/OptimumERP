@@ -1,13 +1,10 @@
 import { Box, Flex, Heading, Spinner } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { HiOutlineNewspaper } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
+import { HiOutlineNewspaper } from "react-icons/hi";
 import { useParams } from "react-router-dom";
-import instance from "../../../instance";
-import MainLayout from "../main-layout";
-import ReceiptDisplay from "./ReceiptDisplay";
-import useReceipt from "../../../hooks/useReceipt";
 import receiptMetas from "../../../constants/receiptMetas";
+import useReceipt from "../../../hooks/useReceipt";
+import ReceiptDisplay from "./ReceiptDisplay";
 
 function InvalidReceipt({ heading }) {
   return (
