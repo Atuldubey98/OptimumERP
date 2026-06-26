@@ -75,7 +75,7 @@ function TableLayoutMemoized({
                   const tooltip = getTextFromReactElement(tableRow[col]);
                   return (
                     <Td
-                      maxW={"20svw"}
+                      maxW={{ base: "none", md: "20svw" }}
                       whiteSpace="nowrap"
                       overflow="hidden"
                       textOverflow="ellipsis"
