@@ -9,7 +9,7 @@ const reportTools = [
         properties: {
           type: {
             type: "string",
-            enum: ["sale", "purchase", "transactions", "gstr1", "gstr2"],
+            enum: ["sale", "purchase", "transactions", "gstr1", "gstr2", "gstr", "profitAndLoss"],
             description: "The type of report to generate.",
           },
           startDate: {
