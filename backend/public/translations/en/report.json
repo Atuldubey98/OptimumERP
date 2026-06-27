@@ -5,14 +5,16 @@
       "transactions": "Transactions",
       "purchase": "Purchase",
       "gstr1": "GSTR1",
-      "gstr2": "GSTR2"
+      "gstr2": "GSTR2",
+      "profitAndLoss": "Profit & Loss"
     },
     "page": {
       "not_found": "Report not found"
     },
     "tabs": {
       "transaction_report": "Transaction Report",
-      "gst_reports": "GST reports"
+      "gst_reports": "GST reports",
+      "financial_reports": "Financial Reports"
     },
     "transaction_types": {
       "invoice": "Invoice",
@@ -76,6 +78,19 @@
     },
     "actions": {
       "export": "Export"
+    },
+    "pnl": {
+      "revenue": "Revenue (Sales)",
+      "purchases": "Cost of Goods Sold (Purchases)",
+      "gross_profit": "Gross Profit",
+      "expenses": "Expenses",
+      "net_profit": "Net Profit / (Loss)",
+      "total": "Total",
+      "category": "Category",
+      "count": "Count",
+      "amount": "Amount",
+      "details": "Details",
+      "no_expenses": "No expenses recorded in this period."
     }
   }
 }

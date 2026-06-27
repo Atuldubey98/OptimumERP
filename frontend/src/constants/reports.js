@@ -38,4 +38,13 @@ export const reportTypes = [
       },
     ],
   },
+  {
+    type: "report_ui.tabs.financial_reports",
+    children: [
+      {
+        tab: "profitAndLoss",
+        label: "report_ui.report_names.profitAndLoss",
+      },
+    ],
+  },
 ];

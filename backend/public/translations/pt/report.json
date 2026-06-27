@@ -5,14 +5,16 @@
       "transactions": "Transações",
       "purchase": "Compra",
       "gstr1": "GSTR1",
-      "gstr2": "GSTR2"
+      "gstr2": "GSTR2",
+      "profitAndLoss": "Lucros e Perdas (P&L)"
     },
     "page": {
       "not_found": "Relatório não encontrado"
     },
     "tabs": {
       "transaction_report": "Relatório de Transações",
-      "gst_reports": "Relatórios de Impostos (GST)"
+      "gst_reports": "Relatórios de Impostos (GST)",
+      "financial_reports": "Relatórios Financeiros"
     },
     "transaction_types": {
       "invoice": "Fatura",
@@ -76,6 +78,19 @@
     },
     "actions": {
       "export": "Exportar"
+    },
+    "pnl": {
+      "revenue": "Receita (Vendas)",
+      "purchases": "Custo das Mercadorias Vendidas (Compras)",
+      "gross_profit": "Lucro Bruto",
+      "expenses": "Despesas",
+      "net_profit": "Lucro Líquido / (Prejuízo)",
+      "total": "Total",
+      "category": "Categoria",
+      "count": "Contagem",
+      "amount": "Valor",
+      "details": "Detalhes",
+      "no_expenses": "Nenhuma despesa registrada neste período."
     }
   }
 }

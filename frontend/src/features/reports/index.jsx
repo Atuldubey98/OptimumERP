@@ -22,6 +22,7 @@ export default function Reportspage() {
     purchase: t("report_ui.report_names.purchase"),
     gstr1: t("report_ui.report_names.gstr1"),
     gstr2: t("report_ui.report_names.gstr2"),
+    profitAndLoss: t("report_ui.report_names.profitAndLoss"),
   };
   const reportName = reportTypes[reportType];
   return (

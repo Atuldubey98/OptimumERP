@@ -1,39 +1,30 @@
-const {
-  getReportForBill,
-  makeReportExcelBuffer,
-} = require("../../services/report.service");
+const reportService = require("../../services/report.service");
+const { getDisplaySettingForOrg } = require("../../services/setting.service");
+const Org = require("../../models/org.model");
+const { moneyUtils } = require("../../utils");
 
 const downloadReportByType = async (req, res) => {
   const reportType = req.params.reportType;
-  const reportData = await getReportForBill({
+  const orgId = req.params.orgId;
+  const { startDate, endDate } = req.query;
+
+  const [org, setting] = await Promise.all([
+    Org.findById(orgId),
+    getDisplaySettingForOrg(orgId),
+  ]);
+  const currencyConfig = await moneyUtils.getCurrencyConfigByCode(setting.currency);
+  const decimalDigits = currencyConfig?.decimal_digits || 2;
+
+  const excelBuffer = await reportService.exportReportToExcel({
     req,
     reportType,
-  });
-  
-  const { getDisplaySettingForOrg } = require("../../services/setting.service");
-  let decimalDigits = 2;
-  let organization = null;
-  if (reportData.length > 0) {
-    const orgId = reportData[0].org;
-    const { getDisplaySettingForOrg } = require("../../services/setting.service");
-    const Org = require("../../models/org.model");
-    const organizationPromise = Org.findById(orgId);
-    const settingPromise = getDisplaySettingForOrg(orgId);
-    
-    const [org, setting] = await Promise.all([organizationPromise, settingPromise]);
-    organization = org;
-    
-    const { moneyUtils } = require("../../utils");
-    const currencyConfig = await moneyUtils.getCurrencyConfigByCode(setting.currency);
-    decimalDigits = currencyConfig?.decimal_digits || 2;
-  }
-
-  const excelBuffer = await makeReportExcelBuffer({
-    reportData,
-    reportType,
+    orgId,
+    organization: org,
     decimalDigits,
-    organization,
+    startDate,
+    endDate,
   });
+
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -45,4 +36,5 @@ const downloadReportByType = async (req, res) => {
   res.setHeader("Content-Length", excelBuffer.length);
   return res.send(excelBuffer);
 };
+
 module.exports = downloadReportByType;

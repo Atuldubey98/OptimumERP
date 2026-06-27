@@ -1,20 +1,7 @@
 import {
   Box,
   Flex,
-  FormControl,
-  FormLabel,
-  SimpleGrid,
   Spinner,
-  Stack,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -25,6 +12,8 @@ import ReportOperation from "./ReportOperation";
 import moment from "moment";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import MonthYearFilter from "./MonthYearFilter";
+import SummaryReportRenderer from "./SummaryReportRenderer";
+import TableLayoutRenderer from "./TableLayoutRenderer";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -48,11 +37,13 @@ const getTaxCategoryAmount = (taxCategories, category) =>
 
 const getOrderedTaxCategoryKeys = (items = [], defaultCategories = []) => {
   const taxCategoryKeys = new Set(defaultCategories);
-  items.forEach((item) => {
-    Object.entries(item.taxCategories || {}).forEach(([key, amount]) => {
-      if (amount !== undefined && amount !== null) taxCategoryKeys.add(key);
+  if (Array.isArray(items)) {
+    items.forEach((item) => {
+      Object.entries(item.taxCategories || {}).forEach(([key, amount]) => {
+        if (amount !== undefined && amount !== null) taxCategoryKeys.add(key);
+      });
     });
-  });
+  }
   return Array.from(taxCategoryKeys).sort((left, right) => {
     const leftIndex = PREFERRED_TAX_CATEGORY_ORDER.indexOf(left);
     const rightIndex = PREFERRED_TAX_CATEGORY_ORDER.indexOf(right);
@@ -189,9 +180,14 @@ export default function ReportItem() {
       dateLabel: t("report_ui.table.headers.gstr.date"),
       numberLabel: t("report_ui.table.headers.gstr.num"),
     }),
+    profitAndLoss: {
+      Component: SummaryReportRenderer,
+      hasPagination: false,
+    },
   };
   const { status, totalCount, totalPages, currentPage } = response;
   const currentReport = reportDataByType[reportType];
+  const Renderer = currentReport?.Component || TableLayoutRenderer;
 
   return (
     <Box maxW="100%" overflowX="hidden">
@@ -218,40 +214,17 @@ export default function ReportItem() {
       ) : (
         <Box p={2} width="100%" overflowX="auto">
           {reportType && currentReport ? (
-            <TableContainer overflowX="auto" width="100%">
-              <Table size={"sm"} variant="simple">
-                <TableCaption>
-                  {t("report_ui.table.total_found", {
-                    reportType: t(`report_ui.report_names.${reportType}`).toUpperCase(),
-                    count: totalCount,
-                  })}
-                </TableCaption>
-                <Thead>
-                  <Tr>
-                    {Object.entries(currentReport.header).map(
-                      ([key, value]) => (
-                        <Th key={key} whiteSpace="nowrap">{value}</Th>
-                      )
-                    )}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {response.items
-                    .map(currentReport.bodyMapper)
-                    .map(({ _id, ...reportItem }) => (
-                      <Tr key={_id}>
-                        {Object.keys(currentReport.header).map((key) => (
-                          <Td key={key} whiteSpace="nowrap">{reportItem[key]}</Td>
-                        ))}
-                      </Tr>
-                    ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
+            <Renderer
+              data={response.items}
+              reportType={reportType}
+              currentReport={currentReport}
+              totalCount={totalCount}
+              items={response.items}
+            />
           ) : null}
         </Box>
       )}
-      {status === "loading" ? null : (
+      {status === "loading" || currentReport?.hasPagination === false ? null : (
         <Pagination currentPage={currentPage} total={totalPages} />
       )}
     </Box>

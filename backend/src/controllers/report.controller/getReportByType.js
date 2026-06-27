@@ -5,6 +5,7 @@ const {
   paginate: getPurchases,
 } = require("../../controllers/purchase.controller");
 const { paginate } = require("../transaction.controller");
+const profitAndLoss = require("./profitAndLoss");
 
 const getReportByType = async (req, res) => {
   const reportType = req.params.reportType;
@@ -14,6 +15,7 @@ const getReportByType = async (req, res) => {
     transactions: paginate,
     gstr1: getInvoices,
     gstr2: getPurchases,
+    profitAndLoss,
   };
   const reportHandler = reportMap[reportType];
   if (!reportHandler) throw new Error(req.t("common:common.report_type_not_found"));
