@@ -14,6 +14,10 @@ export const reportTypes = [
         tab: "transactions",
         label: "report_ui.report_names.transactions",
       },
+      {
+        tab: "profitAndLoss",
+        label: "report_ui.report_names.profitAndLoss",
+      },
     ],
   },
   // {
@@ -35,15 +39,6 @@ export const reportTypes = [
       {
         tab: "gstr2",
         label: "report_ui.report_names.gstr2",
-      },
-    ],
-  },
-  {
-    type: "report_ui.tabs.financial_reports",
-    children: [
-      {
-        tab: "profitAndLoss",
-        label: "report_ui.report_names.profitAndLoss",
       },
     ],
   },
