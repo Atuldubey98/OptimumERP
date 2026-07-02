@@ -107,7 +107,7 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`alias`**: `String` (required, max: `80`)
   * **`address`**: `String` (required)
   * **`gstNo`**: `String` (optional)
-  * **`timezone`**: `String` (required)
+  * **`timeZone`**: `String` (required)
   * **`location`**: `Object` containing `{ countryCode3, stateCode }`
   * **`createdBy`**: `Types.ObjectId` (required, ref: `"user"`, indexed)
   * **`logo`**: `String` (optional)

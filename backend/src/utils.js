@@ -72,7 +72,7 @@ const moneyUtils = {
   fromSmallestUnit: (amount, decimalDigits) => {
     return amount / Math.pow(10, decimalDigits);
   },
-  getCurrencyConfigByCode: async (code)=>{
+  getCurrencyConfigByCode: async (code) => {
     const currencyConfig = await propertyService.getCurrencyConfig();
     return currencyConfig.value[code];
   }

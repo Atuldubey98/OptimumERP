@@ -53,7 +53,7 @@ const orgSchema = new Schema(
     gstNo: {
       type: String,
     },
-    timezone: {
+    timeZone: {
       type: String,
       required: true,
     },

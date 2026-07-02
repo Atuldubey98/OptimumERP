@@ -75,12 +75,15 @@ function getWsHandlers(wss) {
       }));
 
       if (ws.history.length === 0 || ws.history[0].role !== "system") {
-        const formattedDate = dateUtils.formatterBySetting(new Date());
+        const formattedDate = dateUtils.formatterBySetting({
+          localeCode: ws?.settings?.localeCode,
+          timeZone: ws?.settings?.org?.timeZone,
+        }).format(new Date());
         const systemContent = factory.organizationPrompt({
           organization: ws.settings.org,
           preferences: {
             localeCode: ws.settings.localeCode,
-            timeZone: ws.settings.timeZone,
+            timeZone: ws.settings.org.timeZone,
             date: formattedDate,
           },
           user: request.session.user,

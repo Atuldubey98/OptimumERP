@@ -122,7 +122,7 @@ export default function NewOrgModal({
       await instance.post(`/api/v1/organizations`, {
         ...restOrg,
         financialYear: { start: financialYearStart, end: financialYearEnd },
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         location: {
           countryCode3,
           stateCode,
