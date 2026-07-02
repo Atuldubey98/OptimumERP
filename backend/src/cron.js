@@ -78,12 +78,12 @@ const importCron = new CronJob(
               org: jobDoc.org,
             }),
             frontendTitle: "Parties upload Results",
-            frontendListing: `${process.env.VITE_APP_URL}/${jobDoc.org}/parties`,
+            frontendListing: `/${jobDoc.org}/parties`,
             create: async (data) => partyService.create(data),
           },
           product: {
             frontendTitle: "Products upload Results",
-            frontendListing: `${process.env.VITE_APP_URL}/${jobDoc.org}/products`,
+            frontendListing: `/${jobDoc.org}/products`,
             mapper: (data) => {
               const umName = data["Unit"] || data["UM"];
               const matchedUm = cachedUms.find(u =>
