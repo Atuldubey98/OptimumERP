@@ -32,58 +32,60 @@ const billTools = [
     },
   },
   {
-    type: "function",
-    function: {
-      name: "find_bills",
-      description: "Search for billing documents or retrieve details of a specific bill/invoice. Supports retrieving a specific document by its billNumber or billId, or searching for multiple documents using filters like party, type, amount, and date.",
-      parameters: {
-        type: "object",
-        properties: {
-          type: {
-            type: "string",
-            enum: [
+    "type": "function",
+    "function": {
+      "name": "find_bills",
+      "description": "Search for billing documents or retrieve details of a specific bill/invoice. Supports retrieving a specific document by its billNumber or billId, or searching for multiple documents using filters like party, type, and date.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
               "invoice",
               "purchase",
               "expense",
-              "quotes",
+              "quote",
               "proforma_invoice",
               "purchase_order",
-              "payment_voucher",
+              "payment_voucher"
             ],
-            description: "Filter by document type. Required if searching by billNumber or billId.",
+            "description": "Filter by document type. Required if searching by billNumber or billId."
           },
-          partyName: {
-            type: "string",
-            description: "Filter by party name (customer or vendor).",
+          "partyName": {
+            "type": "string",
+            "description": "Filter by party name."
           },
-
-          startDate: {
-            type: "string",
-            description: "Start date (YYYY-MM-DD).",
+          "startDate": {
+            "type": "string",
+            "description": "Start date (YYYY-MM-DD)."
           },
-          endDate: {
-            type: "string",
-            description: "End date (YYYY-MM-DD).",
+          "endDate": {
+            "type": "string",
+            "description": "End date (YYYY-MM-DD)."
           },
-          date: {
-            type: "string",
-            description: "Specific date (YYYY-MM-DD).",
+          "date": {
+            "type": "string",
+            "description": "Specific date (YYYY-MM-DD)."
           },
-          partyId: {
-            type: "string",
-            description: "Filter by party ID (MongoDB _id).",
+          "partyId": {
+            "type": "string",
+            "description": "Filter by party ID (MongoDB _id)."
           },
-          billId: {
-            type: "string",
-            description: "The MongoDB _id of a specific bill to retrieve details for.",
+          "billId": {
+            "type": "string",
+            "description": "The MongoDB _id of a specific bill to retrieve details for."
           },
-          billNumber: {
-            type: "string",
-            description: "The human-readable number (e.g., 'INV-001') of a specific bill to retrieve details for.",
-          },
+          "billNumber": {
+            "type": "string",
+            "description": "The human-readable number of a specific bill to retrieve details for."
+          }
         },
-      },
-    },
+        "required": [
+          "type"
+        ]
+      }
+    }
   },
   {
     type: "function",

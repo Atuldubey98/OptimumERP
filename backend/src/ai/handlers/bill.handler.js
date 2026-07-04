@@ -73,7 +73,7 @@ const models = {
     NotFound: PurchaseOrderNotFound,
     dto: purchaseOrderDto,
   },
-  quotes: {
+  quote: {
     NotFound: QuoteNotFound,
     Duplicate: QuotationDuplicate,
     Bill: Quotes,
