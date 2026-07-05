@@ -95,7 +95,7 @@ const getLiveSettingForOrg = async (org, session) => {
       org,
     },
     null,
-    session ? { session } : undefined,
+    { session }
   );
   if (!setting) throw new OrgNotFound();
   return setting;
