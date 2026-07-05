@@ -96,7 +96,7 @@ export default function TransactionsPage() {
   const labels = {
     invoice: t("transactions_ui.types.invoice"),
     purchase: t("transactions_ui.types.purchase"),
-    quotation: t("transactions_ui.types.quotation"),
+    quotes: t("transactions_ui.types.quotation"),
     proforma_invoice: t("transactions_ui.types.proforma_invoice"),
     purchase_order: t("transactions_ui.types.purchase_order"),
     payment_voucher: t("transactions_ui.types.payment_voucher"),
