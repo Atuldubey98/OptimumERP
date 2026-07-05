@@ -102,7 +102,7 @@ const billTools = [
               "invoice",
               "purchase",
               "proforma_invoice",
-              "quotes",
+              "quote",
               "purchase_order",
             ],
           },
