@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from "axios";
 import i18n from './i18n';
 export const baseURL = import.meta.env.VITE_API_URL;
-console.log({baseURL});
+console.log({ baseURL });
 
 const instance = axios.create({
   baseURL,
@@ -20,7 +20,9 @@ instance.interceptors.response.use(
       window.location.pathname !== "/"
     )
       window.location.href = "/";
-    
+    if (isAxiosError(error) && error?.response?.data?.name === "OrgNotFound") {
+      window.location.pathname = "/"
+    }
     return Promise.reject(error);
   }
 );

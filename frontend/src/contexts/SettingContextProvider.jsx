@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import instance from "../instance";
 import SettingContext from "./SettingContext";
 export default function SettingContextProvider({ children }) {
