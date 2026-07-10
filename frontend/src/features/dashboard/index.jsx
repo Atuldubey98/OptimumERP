@@ -156,7 +156,7 @@ export default function DashboardPage() {
   });
   return (
 
-    <Box mx={4}>
+    <Box mx={4} pb={8}>
       <Stack spacing={{ base: 6, md: 8 }}>
         <DashboardPageHeader
           greetingPrefix={t("dashboard_ui.greeting.hi", {
