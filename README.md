@@ -10,7 +10,7 @@ OptimumERP is an all-in-one ERP platform built for modern businesses. Manage you
 
 Try OptimumERP right now — no installation required:
 
-**👉 [https://optimumerp.onrender.com/](https://optimumerp.onrender.com/)**
+**👉 [https://optimumerp.in/](https://optimumerp.in/)**
 
 > [!NOTE]
 > The demo is hosted on Render's free tier. The server spins down when inactive, so **the first request may take 30–60 seconds** to respond while it wakes up. Subsequent requests will be fast.
@@ -253,6 +253,66 @@ Talk to your business data in plain English. The AI assistant is context-aware a
 
 ---
 
+## 🚀 Deployment & Installation
+
+OptimumERP can be deployed either using **Docker Compose** (recommended for production and easy setup) or **manually with PM2**.
+
+### 📋 Prerequisites
+1. Copy the `.env.example` file in the root directory to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+2. Configure the variables inside `.env` (such as `MONGO_URI`, `SESSION_SECRET`, and `CRYPTO_SECRET`).
+
+---
+
+### Option A: Deployment via Docker Compose (Recommended)
+
+This is the fastest way to get the entire stack (MongoDB with Replica Set, Backend, Frontend, and Cron Scheduler) up and running.
+
+1. **Build and start all services:**
+   ```bash
+   docker-compose up -d --build
+   ```
+2. **Access the application:**
+   * **Frontend:** [http://localhost:5173](http://localhost:5173)
+   * **Backend API:** [http://localhost:3000](http://localhost:3000)
+
+> [!IMPORTANT]
+> The Docker Compose configuration automatically provisions a MongoDB instance and configures the `rs0` replica set, which is required for database transactions.
+
+---
+
+### Option B: Manual / PM2 Deployment
+
+If you prefer a bare-metal or virtual machine setup, you can deploy using Node.js and PM2.
+
+#### 1. Setup MongoDB with Replica Set
+MongoDB transactions require replica sets. You can spin up a local MongoDB replica set using the provided Makefile:
+```bash
+make mongo-up
+make mongo-init
+```
+
+#### 2. Install Dependencies & Build Frontend
+* **Backend:**
+  ```bash
+  cd backend && npm install
+  ```
+* **Frontend:**
+  ```bash
+  cd frontend && npm install && npm run build
+  ```
+
+#### 3. Start Backend & Cron via PM2
+From the root directory, run the start command to launch both the API server and the background scheduler:
+```bash
+npm start
+```
+This runs the processes defined in `ecosystem.config.js` in the background under PM2 control.
+
+---
+
 ## 🛠 Tech Stack
 
 | Layer | Technology |
@@ -279,6 +339,12 @@ Talk to your business data in plain English. The AI assistant is context-aware a
 
 ---
 
-## 📜 License
+## 📜 License & Attribution
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPLv3)**. See the [LICENSE](./LICENSE) file for details.
+
+### Attribution Requirements
+OptimumERP is open-source software. If you use, modify, or host this software (including running it as a service over a network / SaaS), you must:
+1. **Release Modifications:** Any modifications or derived works must be released under the same AGPLv3 license.
+2. **Provide Source Access:** You must prominently offer all users interacting with the software remotely through a computer network an opportunity to receive the Corresponding Source of your version at no charge.
+3. **Repository Link:** You must include a prominent link back to the original repository: [OptimumERP](https://github.com/Atuldubey98/OptimumERP).

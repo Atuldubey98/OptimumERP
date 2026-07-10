@@ -12,5 +12,5 @@
     "start": "pm2 start ecosystem.config.js --env production"
   },
   "author": "Atul Dubey",
-  "license": "ISC"
+  "license": "AGPL-3.0-only"
 }

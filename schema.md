@@ -38,6 +38,7 @@ This document describes the Mongoose schemas used in the OptimumERP backend data
   - [job](#job)
   - [notification](#notification)
   - [properties](#properties)
+  - [setting](#setting)
   - [template](#template)
 
 ---
@@ -92,7 +93,6 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`password`**: `String` (optional, select: `false`)
   * **`active`**: `Boolean` (default: `true`)
   * **`verifiedEmail`**: `Boolean` (required, default: `false`)
-  * **`googleId`**: `String` (optional)
   * **`avatar`**: `String` (optional)
   * **`attributes`**: `Object` containing `{ googleAccessToken, googleRefreshToken, picture }`
 * **Timestamps:** `true` (createdAt, updatedAt)
@@ -318,6 +318,7 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`paymentVoucherBalance`**: `Number` (default: `0`)
   * **`num`**: `String` (required)
   * **`status`**: `String` (enum: `["paid", "unpaid"]`, default: `"sent"`)
+  * **`dueDate`**: `Date` (optional)
 * **Timestamps:** `true` (createdAt, updatedAt)
 * **Version Key:** `false`
 * **Indices:**
