@@ -148,7 +148,7 @@ export default function TransactionsPage() {
   const onExportTransactions = async () => {
     try {
       setStatus("exporting");
-      const { data } = await instance.get(
+      const response = await instance.get(
         `/api/v1/organizations/${orgId}/parties/${partyId}/transactions/download`,
 
         {
@@ -160,9 +160,11 @@ export default function TransactionsPage() {
           responseType: "blob",
         }
       );
-      const href = URL.createObjectURL(data);
+      const disposition = response.headers["content-disposition"];
+      const filename = disposition?.split("filename=")[1]?.replace(/['"]/g, "") || `${partyName || "Transaction"}.xlsx`;
+      const href = URL.createObjectURL(response.data);
       const link = document.createElement("a");
-      link.setAttribute("download", partyName);
+      link.setAttribute("download", filename);
       link.href = href;
       link.click();
       URL.revokeObjectURL(href);

@@ -156,6 +156,7 @@ const downloadPartyTransactionSummary = async (req, res) => {
     "Content-Disposition",
     `attachment; filename=Transaction-${Date.now()}.xlsx`
   );
+  res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
   res.setHeader("Content-Length", excelBuffer.length);
   return res.send(excelBuffer);
 };
