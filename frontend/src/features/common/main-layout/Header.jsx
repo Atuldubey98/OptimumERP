@@ -1,27 +1,25 @@
 import {
+  Badge,
   Box,
   Button,
-  Badge,
   Flex,
   IconButton,
   Show,
-  Text,
   useColorMode,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineDashboard } from "react-icons/ai";
-import { SiQuicktime } from "react-icons/si";
 import { CiDark } from "react-icons/ci";
-import { MdMenu, MdOutlineWbSunny } from "react-icons/md";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { MdMenu, MdOutlineWbSunny } from "react-icons/md";
+import { SiQuicktime } from "react-icons/si";
+import { useNavigate, useMatch } from "react-router-dom";
 import AvatarProfileWithOptions from "../sidebar/AvatarProfileWithOptions";
 
-import QuickAccessModal from "../QuickAccessModal";
-import NotificationModal from "../NotificationModal";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
+import NotificationModal from "../NotificationModal";
+import QuickAccessModal from "../QuickAccessModal";
 
 
 export default function Header({ onSideNavOpen }) {
@@ -29,6 +27,7 @@ export default function Header({ onSideNavOpen }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { setting, fetchSetting } = useCurrentOrgCurrency();
   const navigate = useNavigate();
+  const isDashboard = useMatch("/:orgId/dashboard");
   const {
     isOpen: isQuickAccessOpen,
     onClose: closeQuickAccess,
@@ -59,6 +58,28 @@ export default function Header({ onSideNavOpen }) {
           gap={5}
           alignItems={"center"}
         >
+          {
+            isDashboard ? null : <>
+              <Show above="xl">
+                <Button
+                  leftIcon={<AiOutlineDashboard />}
+                  size={"sm"}
+                  colorScheme="blue"
+                  onClick={onClickDashboard}
+                  variant="outline"
+                >
+                  {t("common_ui.navigation.dashboard")}
+                </Button>
+              </Show>
+              <Show below="xl">
+                <IconButton
+                  size={"sm"}
+                  icon={<AiOutlineDashboard />}
+                  onClick={onClickDashboard}
+                />
+              </Show>
+            </>
+          }
           <Show above="xl">
             <Button
               leftIcon={<SiQuicktime />}
@@ -70,24 +91,7 @@ export default function Header({ onSideNavOpen }) {
               {t("common_ui.quick_access.title")}
             </Button>
           </Show>
-          <Show above="xl">
-            <Button
-              leftIcon={<AiOutlineDashboard />}
-              size={"sm"}
-              colorScheme="blue"
-              onClick={onClickDashboard}
-              variant="outline"
-            >
-              {t("common_ui.navigation.dashboard")}
-            </Button>
-          </Show>
-          <Show below="xl">
-            <IconButton
-              size={"sm"}
-              icon={<AiOutlineDashboard />}
-              onClick={onClickDashboard}
-            />
-          </Show>
+
           <Show below="xl">
             <IconButton
               size={"sm"}

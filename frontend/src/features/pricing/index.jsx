@@ -1,5 +1,5 @@
 import { Heading, Link, SimpleGrid, Text, Flex, Spinner, Box, VStack, useColorModeValue } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PricingCard from "./PricingCard";
 import instance from "../../instance";
@@ -8,6 +8,13 @@ export default function PricingPage() {
   const { t } = useTranslation("party");
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const headingColor = useColorModeValue("blue.600", "blue.400");
+  const textColor = useColorModeValue("gray.600", "gray.400");
+  const badgeBg = useColorModeValue("blue.50", "whiteAlpha.50");
+  const badgeBorder = useColorModeValue("blue.100", "whiteAlpha.100");
+  const badgeText = useColorModeValue("blue.600", "blue.300");
+  const linkColor = useColorModeValue("blue.700", "blue.200");
 
   useEffect(() => {
     (async () => {
@@ -37,14 +44,14 @@ export default function PricingPage() {
           as="h1"
           fontSize={{ base: "3xl", md: "4xl" }}
           fontWeight="extrabold"
-          color={useColorModeValue("blue.600", "blue.400")}
+          color={headingColor}
           lineHeight="1.2"
         >
           {t("pricing_ui.page.heading")}
         </Heading>
         <Text
           fontSize={{ base: "md", md: "lg" }}
-          color={useColorModeValue("gray.600", "gray.400")}
+          color={textColor}
           maxW="2xl"
           mx="auto"
         >
@@ -54,11 +61,11 @@ export default function PricingPage() {
           p={3}
           px={6}
           borderRadius="full"
-          bg={useColorModeValue("blue.50", "whiteAlpha.50")}
+          bg={badgeBg}
           borderWidth="1px"
-          borderColor={useColorModeValue("blue.100", "whiteAlpha.100")}
+          borderColor={badgeBorder}
           fontSize="sm"
-          color={useColorModeValue("blue.600", "blue.300")}
+          color={badgeText}
           fontWeight="medium"
           display="inline-flex"
           alignItems="center"
@@ -68,7 +75,7 @@ export default function PricingPage() {
           <Link
             href="mailto:optimumerp2024@gmail.com"
             fontWeight="bold"
-            color={useColorModeValue("blue.700", "blue.200")}
+            color={linkColor}
             _hover={{ textDecoration: "underline" }}
           >
             optimumerp2024@gmail.com
