@@ -37,6 +37,8 @@ function CopyableText({ value, children, ...props }) {
     <Tooltip label={copied ? "Copied!" : value} placement="top" isDisabled={!value}>
       <Box
         as="span"
+        display="inline-block"
+        maxW="100%"
         onClick={handleCopy}
         cursor={value ? "pointer" : undefined}
         {...props}

@@ -17,7 +17,7 @@ import React, { useRef } from "react";
 import { CiFilter } from "react-icons/ci";
 import { useTranslation } from "react-i18next";
 
-export default function FilterPopoverWrapper({ children, title, isFiltered }) {
+export default function FilterPopoverWrapper({ children, title, isFiltered, placement = { base: "bottom-start", sm: "bottom-end" } }) {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const filterRef = useRef(null);
   const { t } = useTranslation("common");
@@ -31,7 +31,7 @@ export default function FilterPopoverWrapper({ children, title, isFiltered }) {
     <Box ref={filterRef}>
       <Popover 
         isOpen={isOpen} 
-        placement="bottom-end" 
+        placement={placement} 
         closeOnBlur={false}
         isLazy
       >
@@ -64,8 +64,8 @@ export default function FilterPopoverWrapper({ children, title, isFiltered }) {
         <PopoverContent 
           p={0} 
           boxShadow="xl" 
-          width={{ base: "100vw", sm: "320px" }} 
-          maxW="100vw"
+          width={{ base: "calc(100vw - 32px)", sm: "320px" }} 
+          maxW={{ base: "calc(100vw - 32px)", sm: "320px" }}
           borderRadius="lg"
         >
           <FocusLock returnFocus persistentFocus={false}>

@@ -214,7 +214,7 @@ export default function ContactsPage() {
                           placeholder={t("contact_ui.page.search_contacts")}
                         />
                       </Box>
-                      <FilterPopoverWrapper>
+                      <FilterPopoverWrapper placement={{ base: "bottom-start", md: "bottom-end" }}>
                         <FormControl>
                           <FormLabel>
                             {t("contact_ui.page.contact_type")}
@@ -233,7 +233,7 @@ export default function ContactsPage() {
                         </FormControl>
                       </FilterPopoverWrapper>
                     </Flex>
-                    <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
+                    <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={3}>
                       <Card borderRadius="xl">
                         <CardBody py={4}>
                           <Text
