@@ -1,8 +1,7 @@
 import React, { memo } from "react";
-import { Text, Box, TableContainer, Table, Thead, Th, Td, Divider, Button, HStack, VStack, Flex } from "@chakra-ui/react";
+import { Text, Box, TableContainer, Table, Thead, Th, Td, Divider, VStack, Flex } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { FiDownload, FiFileText } from "react-icons/fi";
 import { baseURL } from "../../instance";
 
 const MarkdownRenderer = memo(({ content }) => {
@@ -18,34 +17,9 @@ const MarkdownRenderer = memo(({ content }) => {
       const fullHref = isDownload && !href.startsWith("http") ? `${baseURL}${href}` : href;
       if (isDownload) {
         return (
-          <HStack 
-            as="a" 
-            href={fullHref} 
-            download 
-            target="_blank"
-            rel="noopener noreferrer"
-            display="inline-flex"
-            px={3}
-            py={1.5}
-            bg="whiteAlpha.200"
-            borderRadius="full"
-            _hover={{ bg: "whiteAlpha.300", transform: "translateY(-1px)" }}
-            _light={{ 
-              bg: "gray.100", 
-              _hover: { bg: "gray.200" },
-              color: "gray.700"
-            }}
-            cursor="pointer"
-            transition="all 0.2s"
-            my={1}
-            maxW="100%"
-            verticalAlign="middle"
-          >
-            <FiFileText size={12} color="currentColor" />
-            <Text fontSize="11px" fontWeight="medium" noOfLines={1} isTruncated>
-              {children}
-            </Text>
-          </HStack>
+          <Text as="span" fontWeight="600">
+            {children}
+          </Text>
         );
       }
       return (

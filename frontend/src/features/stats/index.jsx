@@ -14,6 +14,12 @@ import {
   Card,
   CardBody,
   Divider,
+  Button,
+  Select,
+  Progress,
+  Badge,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { FaMoneyBillTrendUp, FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
@@ -84,6 +90,85 @@ const EmptyStats = ({ t }) => (
   </Flex>
 );
 
+const SalesForecastProgress = ({ data }) => {
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
+  const { history = [], forecast = [], summary = {} } = data;
+
+  const lastMonthSales = history.length > 0 ? history[history.length - 1].sales : 0;
+  const lastMonthName = history.length > 0 ? history[history.length - 1].period : "Last Month";
+
+  const totalForecastedSales = forecast.reduce((sum, item) => sum + item.salesForecast, 0);
+  const forecastPeriodLength = forecast.length;
+
+  const avgHistoricSales = summary.averageHistoricalSales || 1;
+  const avgForecastValue = forecastPeriodLength > 0 ? (totalForecastedSales / forecastPeriodLength) : 0;
+
+  const avgComparisonPercentage = Math.round((avgForecastValue / avgHistoricSales) * 100);
+
+  const growthVsLastMonth = lastMonthSales > 0
+    ? Math.round(((avgForecastValue - lastMonthSales) / lastMonthSales) * 100)
+    : 0;
+
+  return (
+    <Box pt={4} borderTop="1px solid" borderColor={useColorModeValue("gray.100", "gray.700")}>
+      <Flex justify="space-between" align="center" mb={4}>
+        <Text fontSize="sm" fontWeight="bold" color="gray.500">
+          Forecast Performance Indicators ({forecastPeriodLength} Month Projection)
+        </Text>
+        <Badge colorScheme={growthVsLastMonth >= 0 ? "green" : "orange"} px={2} py={0.5} borderRadius="md">
+          {growthVsLastMonth >= 0 ? `+${growthVsLastMonth}% growth trend` : `${growthVsLastMonth}% decline trend`}
+        </Badge>
+      </Flex>
+
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+        <VStack align="stretch" spacing={2}>
+          <Flex justify="space-between" fontSize="xs">
+            <Text fontWeight="semibold" color="gray.500">
+              Avg Forecast vs. {lastMonthName} Actual
+            </Text>
+            <Text fontWeight="bold">
+              {Math.max(0, 100 + growthVsLastMonth)}%
+            </Text>
+          </Flex>
+          <Progress
+            value={Math.min(Math.max(0, 100 + growthVsLastMonth), 100)}
+            colorScheme={growthVsLastMonth >= 0 ? "teal" : "blue"}
+            borderRadius="full"
+            height="14px"
+            hasStripe={growthVsLastMonth >= 0}
+          />
+          <Flex justify="space-between" fontSize="10px" color="gray.400">
+            <Text>Last Month Actual: {formatSmallestUnitWithSymbol(lastMonthSales)}</Text>
+            <Text fontWeight="semibold">Projected Month Avg: {formatSmallestUnitWithSymbol(avgForecastValue)}</Text>
+          </Flex>
+        </VStack>
+
+        <VStack align="stretch" spacing={2}>
+          <Flex justify="space-between" fontSize="xs">
+            <Text fontWeight="semibold" color="gray.500">
+              Avg Forecast vs. Historic Monthly Average
+            </Text>
+            <Text fontWeight="bold">
+              {avgComparisonPercentage}%
+            </Text>
+          </Flex>
+          <Progress
+            value={Math.min(avgComparisonPercentage, 100)}
+            colorScheme={avgComparisonPercentage >= 100 ? "green" : "yellow"}
+            borderRadius="full"
+            height="14px"
+            hasStripe={avgComparisonPercentage >= 100}
+          />
+          <Flex justify="space-between" fontSize="10px" color="gray.400">
+            <Text>Historic Avg Sales: {formatSmallestUnitWithSymbol(avgHistoricSales)}</Text>
+            <Text fontWeight="semibold">Projected Month Avg: {formatSmallestUnitWithSymbol(avgForecastValue)}</Text>
+          </Flex>
+        </VStack>
+      </SimpleGrid>
+    </Box>
+  );
+};
+
 export default function StatsPage() {
   const { t } = useTranslation("stats");
   const navigate = useNavigate();
@@ -98,6 +183,24 @@ export default function StatsPage() {
   });
   const [status, setStatus] = useState("idle");
   const [currentPeriod, setCurrentPeriod] = useState("thisMonth");
+
+  const [forecastData, setForecastData] = useState(null);
+  const [forecastMonths, setForecastMonths] = useState(3);
+  const [isForecasting, setIsForecasting] = useState(false);
+
+  const handleGenerateForecast = async () => {
+    setIsForecasting(true);
+    try {
+      const { data } = await instance.get(`/api/v1/organizations/${orgId}/stats/forecast`, {
+        params: { forecastMonths }
+      });
+      setForecastData(data.data);
+    } catch (error) {
+      console.error("Failed to generate forecast", error);
+    } finally {
+      setIsForecasting(false);
+    }
+  };
 
   const loading = status === "loading";
 
@@ -119,17 +222,17 @@ export default function StatsPage() {
     fetchStats();
   }, [fetchStats]);
 
-  const expensesTotal = useMemo(() => 
+  const expensesTotal = useMemo(() =>
     stats.expensesByCategory.reduce((total, prev) => prev.total + total, 0),
     [stats.expensesByCategory]
   );
 
-  const totalSales = useMemo(() => 
+  const totalSales = useMemo(() =>
     stats.invoicesTotal ? getBillGrandTotal(stats.invoicesTotal) : 0,
     [stats.invoicesTotal]
   );
 
-  const totalPurchase = useMemo(() => 
+  const totalPurchase = useMemo(() =>
     stats.purchaseTotal ? getBillGrandTotal(stats.purchaseTotal) : 0,
     [stats.purchaseTotal]
   );
@@ -140,7 +243,7 @@ export default function StatsPage() {
     { label: t("stats_ui.periods.this_year"), value: "thisYear" },
   ], [t]);
 
-  const currentPeriodLabel = useMemo(() => 
+  const currentPeriodLabel = useMemo(() =>
     periods.find((p) => p.value === currentPeriod)?.label || "",
     [periods, currentPeriod]
   );
@@ -200,7 +303,44 @@ export default function StatsPage() {
                 colorScheme="red"
               />
             </SimpleGrid>
+            <Card variant="outline" borderRadius="2xl" bg={useColorModeValue("white", "gray.800")} borderColor={useColorModeValue("gray.100", "whiteAlpha.200")} shadow="sm" p={6}>
+              <Flex align="center" justify="space-between" wrap="wrap" gap={4} mb={forecastData ? 4 : 0}>
+                <Box>
+                  <Heading size="sm" mb={1}>Sales & Revenue Projections</Heading>
+                  <Text fontSize="xs" color="gray.500">
+                    Run double-exponential smoothing calculations on your historical invoice values.
+                  </Text>
+                </Box>
+                <HStack spacing={3}>
+                  <Select
+                    value={forecastMonths}
+                    onChange={(e) => setForecastMonths(Number(e.target.value))}
+                    width="140px"
+                    size="sm"
+                    borderRadius="lg"
+                  >
+                    <option value={1}>1 Month</option>
+                    <option value={3}>3 Months</option>
+                    <option value={6}>6 Months</option>
+                    <option value={12}>12 Months</option>
+                  </Select>
+                  <Button
+                    onClick={handleGenerateForecast}
+                    isLoading={isForecasting}
+                    loadingText="Analyzing..."
+                    colorScheme="blue"
+                    size="sm"
+                    borderRadius="lg"
+                  >
+                    Generate Forecast
+                  </Button>
+                </HStack>
+              </Flex>
 
+              {forecastData && (
+                <SalesForecastProgress data={forecastData} />
+              )}
+            </Card>
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8}>
               {stats.topFiveClientTotal.length > 0 && (
                 <StatsSection title={t("stats_ui.sections.top_clients")} icon={<PiUsersThreeBold size={20} />}>
@@ -253,6 +393,8 @@ export default function StatsPage() {
                 </StatsSection>
               )}
             </SimpleGrid>
+
+
           </Stack>
         )}
       </Stack>

@@ -5,7 +5,7 @@ const Quotes = require("../models/quotes.model");
 const Party = require("../models/party.model");
 const Expense = require("../models/expense.model");
 const Purchase = require("../models/purchase.model");
-const { dateUtils } = require("../utils");
+const { dateUtils, doubleExponentialSmoothing } = require("../utils");
 const cacheService = require("./cache.service");
 const settingService = require("./setting.service");
 
@@ -289,7 +289,77 @@ const getOrgStatsData = async ({ period, orgId }) => {
   );
 };
 
+async function getSalesForecast(orgId, forecastMonths = 3) {
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 24);
+
+  const historyRaw = await Invoice.aggregate([
+    {
+      $match: {
+        org: new Types.ObjectId(orgId),
+        status: { $in: ["draft", "sent", "pending"] },
+        date: { $gte: startDate }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$date" },
+          month: { $month: "$date" }
+        },
+        totalSales: { $sum: "$total" },
+        invoiceCount: { $sum: 1 }
+      }
+    },
+    { $sort: { "_id.year": 1, "_id.month": 1 } }
+  ]);
+
+  const history = historyRaw.map(item => ({
+    period: `${item._id.year}-${String(item._id.month).padStart(2, "0")}`,
+    sales: item.totalSales,
+    invoices: item.invoiceCount
+  }));
+
+  const salesValues = history.map(h => h.sales);
+  const forecastedValues = doubleExponentialSmoothing(salesValues, forecastMonths);
+
+  const forecast = [];
+  let lastYear, lastMonth;
+  if (history.length > 0) {
+    const [y, m] = history[history.length - 1].period.split("-").map(Number);
+    lastYear = y;
+    lastMonth = m;
+  } else {
+    const now = new Date();
+    lastYear = now.getFullYear();
+    lastMonth = now.getMonth() + 1;
+  }
+
+  for (let i = 0; i < forecastMonths; i++) {
+    lastMonth++;
+    if (lastMonth > 12) {
+      lastMonth = 1;
+      lastYear++;
+    }
+    const periodStr = `${lastYear}-${String(lastMonth).padStart(2, "0")}`;
+    forecast.push({
+      period: periodStr,
+      salesForecast: Math.round(forecastedValues[i] * 100) / 100
+    });
+  }
+
+  return {
+    history,
+    forecast,
+    summary: {
+      averageHistoricalSales: salesValues.length > 0 ? (salesValues.reduce((a, b) => a + b, 0) / salesValues.length) : 0,
+      predictedGrowth: salesValues.length > 0 ? (forecastedValues[forecastMonths - 1] - salesValues[salesValues.length - 1]) : 0
+    }
+  };
+}
+
 module.exports = {
   getDashboardData,
   getOrgStatsData,
+  getSalesForecast,
 };

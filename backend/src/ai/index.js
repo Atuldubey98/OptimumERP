@@ -30,6 +30,7 @@ const executeTools = async ({ toolCalls, body, onProgress }) => {
     get_activity_log: "Fetching history...",
     get_business_stats: "Fetching business performance data...",
     list_document_vouchers: "Fetching list of vouchers...",
+    forecast_sales: "Predicting business..."
   };
 
   const toolPromises = toolCalls.map(async (tool) => {
