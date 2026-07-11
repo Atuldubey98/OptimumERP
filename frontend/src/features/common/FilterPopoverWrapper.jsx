@@ -10,6 +10,7 @@ import {
     PopoverTrigger,
     useDisclosure,
     useOutsideClick,
+    useBreakpointValue,
     Text,
     HStack,
 } from "@chakra-ui/react";
@@ -22,6 +23,11 @@ export default function FilterPopoverWrapper({ children, title, isFiltered, plac
   const filterRef = useRef(null);
   const { t } = useTranslation("common");
 
+  const placementProp = typeof placement === "object" && placement !== null
+    ? placement
+    : { base: placement };
+  const resolvedPlacement = useBreakpointValue(placementProp) || placementProp.base || "bottom-start";
+
   useOutsideClick({
     ref: filterRef,
     handler: onClose,
@@ -31,7 +37,7 @@ export default function FilterPopoverWrapper({ children, title, isFiltered, plac
     <Box ref={filterRef}>
       <Popover 
         isOpen={isOpen} 
-        placement={placement} 
+        placement={resolvedPlacement} 
         closeOnBlur={false}
         isLazy
       >
