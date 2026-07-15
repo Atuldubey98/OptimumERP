@@ -3,7 +3,7 @@ const reportTools = [
     type: "function",
     function: {
       name: "download_report",
-      description: "Generate a download link for a specific report (Sales, Purchases, Transactions, etc.) for a given date range.",
+      description: "Generate a download link for a specific report for a given date range.",
       parameters: {
         type: "object",
         properties: {
