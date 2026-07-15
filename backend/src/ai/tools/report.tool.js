@@ -9,8 +9,8 @@ const reportTools = [
         properties: {
           type: {
             type: "string",
-            enum: ["sale", "purchase", "transactions", "gstr1", "gstr2", "gstr", "profitAndLoss"],
-            description: "The type of report to generate.",
+            enum: ["sale", "purchase", "transactions", "gstr1", "gstr2", "profitAndLoss"],
+            description: "The type of report to generate. Use 'sale' for sales/invoice report, 'purchase' for purchase report, 'transactions' for payment transactions, 'gstr1' for GST sales summary, 'gstr2' for GST purchase summary, 'profitAndLoss' for profit and loss statement.",
           },
           startDate: {
             type: "string",
