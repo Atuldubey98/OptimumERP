@@ -134,13 +134,8 @@ export default function DashboardPage() {
         defaultValue: "Good afternoon",
       });
     }
-    if (currentHour < 22) {
-      return t("dashboard_ui.greeting.evening", {
-        defaultValue: "Good evening",
-      });
-    }
-    return t("dashboard_ui.greeting.night", {
-      defaultValue: "Good night",
+    return t("dashboard_ui.greeting.evening", {
+      defaultValue: "Good evening",
     });
   }, [t]);
   const auth = useAuth();
