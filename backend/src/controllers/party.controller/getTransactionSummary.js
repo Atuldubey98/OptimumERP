@@ -24,11 +24,16 @@ const getTransactionSummary = async (req, res) => {
     filter.docModel = { $in: transactionTypes.split(",") };
   if (search) filter.$text = { $search: escapeTextSearch(search) };
 
-  if (req.query.startDate && req.query.endDate) {
-    filter.date = {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    };
+  if (req.query.startDate || req.query.endDate) {
+    filter.date = {};
+    if (req.query.startDate) {
+      filter.date.$gte = new Date(req.query.startDate);
+    }
+    if (req.query.endDate) {
+      const endDate = new Date(req.query.endDate);
+      endDate.setHours(23, 59, 59, 999);
+      filter.date.$lte = endDate;
+    }
   }
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;

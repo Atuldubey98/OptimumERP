@@ -43,21 +43,22 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
         const rawDateFilter = window.localStorage.getItem(scopedStorageKey);
         if (rawDateFilter) {
           const parsedDateFilter = JSON.parse(rawDateFilter);
-          const hasValidStartDate = moment(
+          const isExplicitlyCleared = parsedDateFilter?.startDate === "" && parsedDateFilter?.endDate === "";
+          const hasValidStartDate = parsedDateFilter?.startDate === "" || moment(
             parsedDateFilter?.startDate,
             "YYYY-MM-DD",
             true,
           ).isValid();
-          const hasValidEndDate = moment(
+          const hasValidEndDate = parsedDateFilter?.endDate === "" || moment(
             parsedDateFilter?.endDate,
             "YYYY-MM-DD",
             true,
           ).isValid();
-          if (hasValidStartDate && hasValidEndDate) {
+          if (isExplicitlyCleared || (hasValidStartDate && hasValidEndDate)) {
             initialFilter = {
               ...initialFilter,
-              startDate: parsedDateFilter.startDate,
-              endDate: parsedDateFilter.endDate,
+              startDate: parsedDateFilter.startDate !== undefined ? parsedDateFilter.startDate : initialFilter.startDate,
+              endDate: parsedDateFilter.endDate !== undefined ? parsedDateFilter.endDate : initialFilter.endDate,
               num: (parsedDateFilter.num || "").trim(),
               party: parsedDateFilter.party || "",
               partyDetails: parsedDateFilter.partyDetails || null,
@@ -143,13 +144,15 @@ export default function useDateFilterFetch({ entity, storageKey, extraParams = {
   }, [searchQuery, dateFilter, page, entity, JSON.stringify(extraParams)]);
 
   const onChangeDateFilter = useCallback((e) => {
-    if (e.currentTarget) {
+    if (!e) return;
+    const target = e.target || e.currentTarget;
+    if (target?.name) {
       setDateFilter((prev) => ({
         ...prev,
-        [e.currentTarget.name]: e.currentTarget.value,
+        [target.name]: target.value,
       }));
-    } else {
-      // Handle direct value updates (like from Select components)
+    } else if (typeof e === "object") {
+      // Handle direct value updates (like from Select components or { startDate, endDate })
       setDateFilter((prev) => ({
         ...prev,
         ...e,

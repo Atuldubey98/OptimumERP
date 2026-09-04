@@ -195,7 +195,9 @@
     "date_filter": {
       "start_date": "Data de início",
       "end_date": "Data de término",
-      "placeholder": "dd-mm-aaaa"
+      "placeholder": "dd-mm-aaaa",
+      "clear_date_filter": "Limpar Filtro de Data",
+      "reset_default": "Redefinir para 30 Dias"
     },
     "main_layout": {
       "something_went_wrong": "Algo deu errado",

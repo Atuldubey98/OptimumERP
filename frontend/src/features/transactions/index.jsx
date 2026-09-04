@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  Grid,
   FormLabel,
   SimpleGrid,
   Spinner,
@@ -9,23 +8,22 @@ import {
   Tag,
   TagLabel,
   useColorModeValue,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
+import { isAxiosError } from "axios";
 import { Select } from "chakra-react-select";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 import useQuery from "../../hooks/useQuery";
 import instance from "../../instance";
-import MainLayout from "../common/main-layout";
 import Pagination from "../common/main-layout/Pagination";
 import TableLayout from "../common/table-layout";
 import DateFilter from "../estimates/list/DateFilter";
 import BalanceStats from "./BalanceStats";
 import BillStatsByStatus from "./BillStatsByStatus";
-import { isAxiosError } from "axios";
-import { useTranslation } from "react-i18next";
-import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -48,11 +46,21 @@ export default function TransactionsPage() {
   });
   const [purchasesByStatus, setPurchaseByStatus] = useState([]);
   const [invoicesByStatus, setInvoicesByStatus] = useState([]);
-  const onChangeDateFilter = (e) =>
-    setDateFilter({
-      ...dateFilter,
-      [e.currentTarget.name]: e.currentTarget.value,
-    });
+  const onChangeDateFilter = useCallback((e) => {
+    if (!e) return;
+    const target = e.target || e.currentTarget;
+    if (target?.name) {
+      setDateFilter((prev) => ({
+        ...prev,
+        [target.name]: target.value,
+      }));
+    } else if (typeof e === "object") {
+      setDateFilter((prev) => ({
+        ...prev,
+        ...e,
+      }));
+    }
+  }, []);
   const [transactionsResponse, setTransactionsResponse] = useState({
     items: [],
     page: 0,

@@ -31,12 +31,19 @@ const exportData = async (options = {}, req, res) => {
     : "excel";
   const project = await billSchema.validateAsync(req.query.select);
   const filter = {
-    date: {
-      $gte: new Date(req.query.startDate),
-      $lte: new Date(req.query.endDate),
-    },
     org: new Types.ObjectId(req.params.orgId),
   };
+  if (req.query.startDate || req.query.endDate) {
+    filter.date = {};
+    if (req.query.startDate) {
+      filter.date.$gte = new Date(req.query.startDate);
+    }
+    if (req.query.endDate) {
+      const endDate = new Date(req.query.endDate);
+      endDate.setHours(23, 59, 59, 999);
+      filter.date.$lte = endDate;
+    }
+  }
   const { getDisplaySettingForOrg } = require("../../services/setting.service");
   const { moneyUtils } = require("../../utils");
   const setting = await getDisplaySettingForOrg(req.params.orgId);

@@ -202,7 +202,9 @@
     "date_filter": {
       "start_date": "Start Date",
       "end_date": "End Date",
-      "placeholder": "dd-mm-yyyy"
+      "placeholder": "dd-mm-yyyy",
+      "clear_date_filter": "Clear Date Filter",
+      "reset_default": "Reset to 30 Days"
     },
     "main_layout": {
       "something_went_wrong": "Something went wrong",

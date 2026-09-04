@@ -56,11 +56,17 @@ exports.getPaginationParams = async ({
     case PURCHASE_ORDERS:
     case PAYMENT_VOUCHERS:
     case RECURRING_INVOICES:
-      if (query.startDate && query.endDate)
-        filter.date = {
-          $gte: new Date(query.startDate),
-          $lte: new Date(query.endDate),
-        };
+      if (query.startDate || query.endDate) {
+        filter.date = {};
+        if (query.startDate) {
+          filter.date.$gte = new Date(query.startDate);
+        }
+        if (query.endDate) {
+          const endDate = new Date(query.endDate);
+          endDate.setHours(23, 59, 59, 999);
+          filter.date.$lte = endDate;
+        }
+      }
       if (query.num) filter.num = query.num;
       if (isValidObjectId(query.refDoc)) filter.refDoc = query.refDoc;
       if (query.refDocModel) filter.refDocModel = query.refDocModel;
