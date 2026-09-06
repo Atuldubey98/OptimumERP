@@ -1,3 +1,4 @@
 .env*
 !.env.example
 nginx.conf
+GEMINI.md

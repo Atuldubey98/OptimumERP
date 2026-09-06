@@ -243,20 +243,24 @@ export default function TransactionsPage() {
                 </Box>
               </SimpleGrid>
 
-              <Flex direction={{ base: "column", lg: "row" }} gap={5} alignItems="flex-end">
+              <Flex direction={{ base: "column", lg: "row" }} gap={5} alignItems="flex-start">
                 <Box flex={1} w="full">
-                  <FormLabel fontSize="xs" fontWeight="bold" mb={1} color={labelColor}>
-                    {t("transactions_ui.filters.type_label", "Type")}
-                  </FormLabel>
+                  <Flex align="center" mb={1} minH="20px">
+                    <FormLabel fontSize="xs" fontWeight="bold" mb={0} color={labelColor}>
+                      {t("transactions_ui.filters.type_label", "Type")}
+                    </FormLabel>
+                  </Flex>
                   <Select
                     isMulti
+                    size="sm"
                     onChange={setSelectedTypeOfTransactions}
                     options={typeOfTransactions}
                     value={selectedTypeOfTransactions}
                     chakraStyles={{
                       control: (provided) => ({
                         ...provided,
-                        borderRadius: "lg",
+                        borderRadius: "md",
+                        minHeight: "32px",
                         bg: cardBg,
                         borderColor: filterBorder,
                         boxShadow: "sm",
@@ -277,6 +281,7 @@ export default function TransactionsPage() {
                   <DateFilter
                     dateFilter={dateFilter}
                     onChangeDateFilter={onChangeDateFilter}
+                    buttonPosition="header"
                   />
                 </Box>
               </Flex>

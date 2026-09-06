@@ -17,6 +17,8 @@ export default function DateFilter({
   onChangeDateFilter,
   isRequired,
   columns = { base: 1, md: 2 },
+  size = "sm",
+  buttonPosition = "bottom",
 }) {
   const { t } = useTranslation("common");
   const inputBg = useColorModeValue("white", "gray.800");
@@ -56,20 +58,68 @@ export default function DateFilter({
     }
   };
 
+  const renderActionButton = (isHeader = false) => {
+    if (hasDateFilter) {
+      return (
+        <Button
+          size="xs"
+          variant="ghost"
+          colorScheme="red"
+          h={isHeader ? "auto" : undefined}
+          py={isHeader ? 0.5 : undefined}
+          px={isHeader ? 1.5 : undefined}
+          minW="auto"
+          leftIcon={<IoCloseCircleOutline size={14} />}
+          onClick={handleClearDate}
+          fontWeight="500"
+          fontSize="xs"
+        >
+          {t("common_ui.date_filter.clear_date_filter", "Clear Date Filter")}
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        size="xs"
+        variant="ghost"
+        colorScheme="blue"
+        h={isHeader ? "auto" : undefined}
+        py={isHeader ? 0.5 : undefined}
+        px={isHeader ? 1.5 : undefined}
+        minW="auto"
+        leftIcon={<IoRefreshOutline size={14} />}
+        onClick={handleResetDefault}
+        fontWeight="500"
+        fontSize="xs"
+      >
+        {t("common_ui.date_filter.reset_default", "Reset to 30 Days")}
+      </Button>
+    );
+  };
+
   return (
     <Box w="full">
       <SimpleGrid columns={columns} spacing={4} w="full">
-        <FormControl size={"sm"} isRequired={isRequired} minW={0}>
-          <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
-            {t("common_ui.date_filter.start_date")}
-          </FormLabel>
+        <FormControl size={size} isRequired={isRequired} minW={0}>
+          {buttonPosition === "header" ? (
+            <Flex align="center" mb={1} minH="20px">
+              <FormLabel fontSize="xs" fontWeight={"bold"} mb={0} color={labelColor} whiteSpace="nowrap">
+                {t("common_ui.date_filter.start_date")}
+              </FormLabel>
+            </Flex>
+          ) : (
+            <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
+              {t("common_ui.date_filter.start_date")}
+            </FormLabel>
+          )}
           <Input
             name="startDate"
             value={dateFilter?.startDate || ""}
             onChange={onChangeDateFilter}
             placeholder={t("common_ui.date_filter.placeholder")}
             type="date"
-            size={"sm"}
+            size={size}
             borderRadius="md"
             bg={inputBg}
             borderWidth="1px"
@@ -79,15 +129,24 @@ export default function DateFilter({
             _focus={{ borderColor: focusBorderColor, boxShadow: `0 0 0 1px ${focusBorderColor}` }}
           />
         </FormControl>
-        <FormControl size={"sm"} isRequired={isRequired} minW={0}>
-          <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
-            {t("common_ui.date_filter.end_date")}
-          </FormLabel>
+        <FormControl size={size} isRequired={isRequired} minW={0}>
+          {buttonPosition === "header" ? (
+            <Flex justify="space-between" align="center" mb={1} minH="20px" gap={1}>
+              <FormLabel fontSize="xs" fontWeight={"bold"} mb={0} color={labelColor} whiteSpace="nowrap">
+                {t("common_ui.date_filter.end_date")}
+              </FormLabel>
+              {renderActionButton(true)}
+            </Flex>
+          ) : (
+            <FormLabel fontSize="xs" fontWeight={"bold"} mb={1} color={labelColor}>
+              {t("common_ui.date_filter.end_date")}
+            </FormLabel>
+          )}
           <Input
             value={dateFilter?.endDate || ""}
             placeholder={t("common_ui.date_filter.placeholder")}
             type="date"
-            size={"sm"}
+            size={size}
             name="endDate"
             onChange={onChangeDateFilter}
             borderRadius="md"
@@ -101,31 +160,11 @@ export default function DateFilter({
         </FormControl>
       </SimpleGrid>
 
-      <Flex justify="flex-end" align="center" mt={3}>
-        {hasDateFilter ? (
-          <Button
-            size="xs"
-            variant="ghost"
-            colorScheme="red"
-            leftIcon={<IoCloseCircleOutline size={14} />}
-            onClick={handleClearDate}
-            fontWeight="500"
-          >
-            {t("common_ui.date_filter.clear_date_filter", "Clear Date Filter")}
-          </Button>
-        ) : (
-          <Button
-            size="xs"
-            variant="ghost"
-            colorScheme="blue"
-            leftIcon={<IoRefreshOutline size={14} />}
-            onClick={handleResetDefault}
-            fontWeight="500"
-          >
-            {t("common_ui.date_filter.reset_default", "Reset to 30 Days")}
-          </Button>
-        )}
-      </Flex>
+      {buttonPosition === "bottom" && (
+        <Flex justify="flex-end" align="center" mt={3}>
+          {renderActionButton(false)}
+        </Flex>
+      )}
     </Box>
   );
 }
