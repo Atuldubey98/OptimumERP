@@ -103,7 +103,6 @@ const aiFactory = ({ provider, apiKey }) => {
       const allDownloads = new Map();
       let iterations = 0;
       const MAX_ITERATIONS = 10;
-      const toolCallHistory = new Set();
       const history = [...messages];
       logger.info("Sending requests to AI Provider");
       while (iterations < MAX_ITERATIONS) {
@@ -139,17 +138,6 @@ const aiFactory = ({ provider, apiKey }) => {
         history.push(aiMessage);
 
         if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
-          const currentCalls = aiMessage.tool_calls.map(tc =>
-            `${tc.function.name}:${typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments)}`
-          );
-
-          if (currentCalls.some(call => toolCallHistory.has(call))) {
-            logger.warn("Duplicate tool call loop detected.");
-            return { response: aiMessage, newMessages: history.slice(messages.length) };
-          }
-
-          currentCalls.forEach(call => toolCallHistory.add(call));
-
           const toolResults = await executeTools({
             toolCalls: aiMessage.tool_calls,
             body,
