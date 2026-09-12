@@ -38,7 +38,11 @@ purchaseOrderSchema.index({ org: 1, createdAt: -1 });
 purchaseOrderSchema.index({ org: 1, party: 1 });
 purchaseOrderSchema.index(
   { org: 1, "financialYear.start": 1, sequence: 1 },
-  { unique: true, name: "purchase_order_org_fin_year_sequence_unique" }
+  {
+    unique: true,
+    name: "purchase_order_org_fin_year_sequence_unique",
+    partialFilterExpression: { deletedAt: { $exists: false } },
+  }
 );
 
 const PurchaseOrder = model("purchase_order", purchaseOrderSchema);
