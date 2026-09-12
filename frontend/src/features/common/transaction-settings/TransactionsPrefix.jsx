@@ -2,27 +2,21 @@ import {
   Box,
   Button,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
-  IconButton,
   SimpleGrid,
   Skeleton,
   Stack,
   Text,
   useColorModeValue,
-  useDisclosure,
   useToast,
-  HStack
+  HStack,
 } from "@chakra-ui/react";
-import { Select } from "chakra-react-select";
 import { useEffect, useState, useContext } from "react";
-import { IoAdd } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { FiFileText, FiCheckCircle } from "react-icons/fi";
 import instance from "../../../instance";
 import SettingContext from "../../../contexts/SettingContext";
-import PrefixForm from "./PrefixForm";
+import TransactionPrefixItem from "./TransactionPrefixItem";
 import SequenceCounters from "./SequenceCounters";
 
 export default function TransactionPrefix({ formik, loading, printFormik }) {
@@ -178,32 +172,37 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
     }
   };
 
-  const getPrefixOptions = (prefixType) =>
-    formik.values.prefixes[prefixType].map((prefix) => ({
-      value: prefix,
-      label: prefix || t("common_ui.transaction_settings.none"),
-    }));
-
-  const invoicePrefixOptions = getPrefixOptions("invoice");
-  const quotationPrefixOptions = getPrefixOptions("quotation");
-  const proformaInvoicePrefixOptions = getPrefixOptions("proformaInvoice");
-  const purchaseOrderPrefixOptions = getPrefixOptions("purchaseOrder");
-  const paymentVoucherPrefixOptions = getPrefixOptions("paymentVoucher");
-  const [currentSelectedPrefix, setCurrentSelectedPrefix] = useState("invoice");
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const onOpenPrefixForm = (prefixType) => {
-    setCurrentSelectedPrefix(prefixType);
-    onOpen();
-  };
   const bg = useColorModeValue("gray.100", "gray.700");
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
+
+  const transactionTypes = [
+    {
+      key: "invoice",
+      label: t("common_ui.transaction_settings.invoice_prefix", "Invoice Prefix"),
+    },
+    {
+      key: "quotation",
+      label: t("common_ui.transaction_settings.quotation_prefix", "Quotation Prefix"),
+    },
+    {
+      key: "proformaInvoice",
+      label: t("common_ui.transaction_settings.proforma_invoice_prefix", "Proforma Invoice Prefix"),
+    },
+    {
+      key: "purchaseOrder",
+      label: t("common_ui.transaction_settings.purchase_order", "Purchase Order Prefix"),
+    },
+    {
+      key: "paymentVoucher",
+      label: t("common_ui.transaction_settings.payment_voucher_prefix", "Payment Voucher Prefix"),
+    },
+  ];
 
   return (
     <Stack spacing={6}>
       <Skeleton isLoaded={!loading}>
         <Stack spacing={6}>
-          {/* Prefixes Section */}
           <Stack spacing={6}>
             <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">
               <HStack spacing={3}>
@@ -241,154 +240,20 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
                 <Text fontSize="sm" color="gray.500">
                   {t(
                     "common_ui.transaction_settings.prefix_section_helper",
-                    "Select the default/active prefix to use for each transaction type. Click the '+' icon next to any field to manage, add custom prefixes, or select them from the list."
+                    "Configure transaction prefixes for your documents. Type directly into any dropdown to create a new prefix, click (x) to clear, or click the trash icon in the dropdown list to delete any typos."
                   )}
                 </Text>
 
                 <SimpleGrid minChildWidth={300} gap={4} pt={2}>
-                  <FormControl isDisabled={!formik.values.organization}>
-                    <FormLabel fontWeight="600" fontSize="sm">
-                      {t("common_ui.transaction_settings.invoice_prefix")}{" "}
-                      <IconButton
-                        icon={<IoAdd />}
-                        size={"xs"}
-                        isRound
-                        onClick={() => onOpenPrefixForm("invoice")}
-                      />
-                    </FormLabel>
-                    <Select
-                      onChange={({ value }) => {
-                        formik.setFieldValue("invoice", value);
-                      }}
-                      options={invoicePrefixOptions}
-                      value={invoicePrefixOptions.find(
-                        (prefixOption) =>
-                          prefixOption.value === formik.values.invoice
-                      )}
-                      chakraStyles={{
-                        control: (provided) => ({
-                          ...provided,
-                          borderRadius: "md",
-                          fontSize: "14px"
-                        }),
-                      }}
+                  {transactionTypes.map((type) => (
+                    <TransactionPrefixItem
+                      key={type.key}
+                      prefixKey={type.key}
+                      label={type.label}
+                      formik={formik}
+                      isDisabled={!formik.values.organization}
                     />
-                  </FormControl>
-                  <FormControl isDisabled={!formik.values.organization}>
-                    <FormLabel fontWeight="600" fontSize="sm">
-                      {t("common_ui.transaction_settings.quotation_prefix")}{" "}
-                      <IconButton
-                        icon={<IoAdd />}
-                        size={"xs"}
-                        isRound
-                        onClick={() => onOpenPrefixForm("quotation")}
-                      />
-                    </FormLabel>
-                    <Select
-                      onChange={({ value }) => {
-                        formik.setFieldValue("quotation", value);
-                      }}
-                      options={quotationPrefixOptions}
-                      value={quotationPrefixOptions.find(
-                        (prefixOption) =>
-                          prefixOption.value === formik.values.quotation
-                      )}
-                      chakraStyles={{
-                        control: (provided) => ({
-                          ...provided,
-                          borderRadius: "md",
-                          fontSize: "14px"
-                        }),
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={!formik.values.organization}>
-                    <FormLabel fontWeight="600" fontSize="sm">
-                      {t("common_ui.transaction_settings.proforma_invoice_prefix")}{" "}
-                      <IconButton
-                        icon={<IoAdd />}
-                        size={"xs"}
-                        isRound
-                        onClick={() => onOpenPrefixForm("proformaInvoice")}
-                      />
-                    </FormLabel>
-                    <Select
-                      onChange={({ value }) =>
-                        formik.setFieldValue("proformaInvoice", value)
-                      }
-                      name="proformaInvoice"
-                      options={proformaInvoicePrefixOptions}
-                      value={proformaInvoicePrefixOptions.find(
-                        (prefixOption) =>
-                          prefixOption.value === formik.values.proformaInvoice
-                      )}
-                      chakraStyles={{
-                        control: (provided) => ({
-                          ...provided,
-                          borderRadius: "md",
-                          fontSize: "14px"
-                        }),
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={!formik.values.organization}>
-                    <FormLabel fontWeight="600" fontSize="sm">
-                      {t("common_ui.transaction_settings.purchase_order")}{" "}
-                      <IconButton
-                        icon={<IoAdd />}
-                        size={"xs"}
-                        isRound
-                        onClick={() => onOpenPrefixForm("purchaseOrder")}
-                      />
-                    </FormLabel>
-                    <Select
-                      onChange={({ value }) =>
-                        formik.setFieldValue("purchaseOrder", value)
-                      }
-                      name="purchaseOrder"
-                      options={purchaseOrderPrefixOptions}
-                      value={purchaseOrderPrefixOptions.find(
-                        (prefixOption) =>
-                          prefixOption.value === formik.values.purchaseOrder
-                      )}
-                      chakraStyles={{
-                        control: (provided) => ({
-                          ...provided,
-                          borderRadius: "md",
-                          fontSize: "14px"
-                        }),
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={!formik.values.organization}>
-                    <FormLabel fontWeight="600" fontSize="sm">
-                      {t("common_ui.transaction_settings.payment_voucher_prefix")}{" "}
-                      <IconButton
-                        icon={<IoAdd />}
-                        size={"xs"}
-                        isRound
-                        onClick={() => onOpenPrefixForm("paymentVoucher")}
-                      />
-                    </FormLabel>
-                    <Select
-                      onChange={({ value }) =>
-                        formik.setFieldValue("paymentVoucher", value)
-                      }
-                      name="paymentVoucher"
-                      options={paymentVoucherPrefixOptions}
-                      value={paymentVoucherPrefixOptions.find(
-                        (prefixOption) =>
-                          prefixOption.value === formik.values.paymentVoucher
-                      )}
-                      chakraStyles={{
-                        control: (provided) => ({
-                          ...provided,
-                          borderRadius: "md",
-                          fontSize: "14px"
-                        }),
-                      }}
-                    />
-                  </FormControl>
+                  ))}
                 </SimpleGrid>
               </Stack>
             </Box>
@@ -402,12 +267,6 @@ export default function TransactionPrefix({ formik, loading, printFormik }) {
           />
         </Stack>
       </Skeleton>
-      <PrefixForm
-        isOpen={isOpen}
-        onClose={onClose}
-        formik={formik}
-        currentSelectedPrefix={currentSelectedPrefix}
-      />
     </Stack>
   );
 }

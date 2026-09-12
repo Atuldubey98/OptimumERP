@@ -115,13 +115,16 @@ export default function PrefixForm({
                       {prefix || t("common_ui.transaction_settings.none")}
                     </TagLabel>
                     <TagCloseButton
-                      isDisabled={!prefix || isActive}
+                      isDisabled={!prefix}
                       onClick={(e) => {
                         e.stopPropagation();
                         formik.setFieldValue(
                           `prefixes.${currentSelectedPrefix}`,
                           prefixes.filter((item) => item !== prefix)
                         );
+                        if (isActive) {
+                          formik.setFieldValue(currentSelectedPrefix, "");
+                        }
                         setError("");
                       }}
                     />
