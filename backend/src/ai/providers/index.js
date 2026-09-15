@@ -1,19 +1,33 @@
-const createOllamaProvider = require("./ollama.provider");
-const createGrokProvider = require("./grok.provider");
+const { createGroq } = require("@ai-sdk/groq");
+const { createOpenAI } = require("@ai-sdk/openai");
 
-const providers = {
-  ollama: createOllamaProvider,
-  grok: createGrokProvider,
+const processImage = (base64Image) => {
+  if (typeof base64Image !== "string") return base64Image;
+  if (base64Image.startsWith("data:")) return base64Image.split(",")[1];
+  return base64Image;
+};
+
+const providerConfigs = {
+  grok: ({ apiKey }) => createGroq({ apiKey }),
+
+  ollama: ({ apiKey, host }) =>
+    createOpenAI({
+      baseURL: `${host || process.env.OLLAMA_HOST || "http://localhost:11434"}/v1`,
+      apiKey,
+    }),
 };
 
 const getProvider = (providerType, config) => {
-  const createProvider = providers[providerType.toLowerCase()];
+  const factory = providerConfigs[providerType.toLowerCase()];
 
-  if (!createProvider) {
+  if (!factory) {
     throw new Error(`Unsupported AI provider: ${providerType}`);
   }
 
-  return createProvider(config);
+  return {
+    client: factory(config),
+    processImage,
+  };
 };
 
 module.exports = { getProvider };

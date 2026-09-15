@@ -54,17 +54,16 @@ const clearChat = async (chatId, model, providerId) => {
         const prompt = factory.titlePrompt().build();
         const userContent = messagesContext.map(m => m.content).join("\n");
 
-        const { response } = await ai.chat(model || defaultModel, {
+        const { text } = await ai.stream(model || defaultModel, {
           messages: [
             { role: "system", content: prompt },
             { role: "user", content: userContent || "New conversation" }
           ],
           body: { org: orgId, createdBy: userId },
-          options: { tools: [] }
         });
 
-        if (response?.content) {
-          const title = response.content.trim().replace(/^"|"$/g, "");
+        if (text) {
+          const title = text.trim().replace(/^\"|\"$/g, "");
           await Chat.findByIdAndUpdate(chat._id, { title });
         }
       }

@@ -3,7 +3,6 @@ import useAuth from "./useAuth";
 import instance from "../instance";
 import { useIndexedDB } from "./useIndexedDB";
 
-
 export const useChatSocket = (orgId, providerId) => {
   const { user } = useAuth();
   const userId = user?._id;
@@ -43,11 +42,9 @@ export const useChatSocket = (orgId, providerId) => {
 
   useEffect(() => {
     if (userId && loadedId.current === userId) {
-      saveChatHistory(userId, messages.slice(-50)); // Increased limit since IndexedDB has more space
+      saveChatHistory(userId, messages.slice(-50));
     }
   }, [messages, userId, saveChatHistory]);
-
-
 
   const processStatusQueue = () => {
     if (isProcessingQueue.current || statusQueue.current.length === 0) return;
@@ -64,17 +61,78 @@ export const useChatSocket = (orgId, providerId) => {
 
   useEffect(() => {
     let reconnectionTimer;
+    let retryDelay = 1000;
+    const MAX_RETRY_DELAY = 30000;
+
     const connect = () => {
       if (!orgId || !providerId) return;
       const wsUrl = `${import.meta.env.VITE_WS_URL}?orgId=${orgId}&providerId=${providerId}`;
       socket.current = new WebSocket(wsUrl);
 
-      socket.current.onopen = () => setIsConnected(true);
+      socket.current.onopen = () => {
+        setIsConnected(true);
+        retryDelay = 1000;
+      };
+
       socket.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+
           if (data.event === "ready" || data.event === "chat_switched") {
             setActiveChatId(data.chatId);
+
+          } else if (data.event === "stream_chunk") {
+            setIsTyping(true);
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if (last?.role === "ai" && last?.streaming) {
+                return [
+                  ...prev.slice(0, -1),
+                  { ...last, content: last.content + data.content },
+                ];
+              }
+              return [
+                ...prev,
+                {
+                  role: "ai",
+                  content: data.content,
+                  streaming: true,
+                  timestamp: new Date().toISOString(),
+                  downloads: [],
+                },
+              ];
+            });
+
+          } else if (data.event === "stream_end") {
+            statusQueue.current = [];
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if (last?.role === "ai" && last?.streaming) {
+                return [
+                  ...prev.slice(0, -1),
+                  {
+                    ...last,
+                    content: data.aborted ? "Generation stopped." : last.content,
+                    streaming: false,
+                    downloads: data.downloads || [],
+                  },
+                ];
+              }
+              if (data.aborted) return prev;
+              return [
+                ...prev,
+                {
+                  role: "ai",
+                  content: data.message || "",
+                  streaming: false,
+                  timestamp: new Date().toISOString(),
+                  downloads: data.downloads || [],
+                },
+              ];
+            });
+            setIsTyping(false);
+            setStatusMsg("Assistant is thinking...");
+
           } else if (data.event === "ai_response" || data.type === "message") {
             statusQueue.current = [];
             setMessages((prev) => [
@@ -88,6 +146,7 @@ export const useChatSocket = (orgId, providerId) => {
             ]);
             setIsTyping(false);
             setStatusMsg("Assistant is thinking...");
+
           } else if (data.type === "status" || data.event === "status") {
             statusQueue.current.push(data.message || data.content);
             processStatusQueue();
@@ -97,9 +156,13 @@ export const useChatSocket = (orgId, providerId) => {
           setStatusMsg("Assistant is thinking...");
         }
       };
+
       socket.current.onclose = () => {
         setIsConnected(false);
-        reconnectionTimer = setTimeout(connect, 3000);
+        reconnectionTimer = setTimeout(() => {
+          retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY);
+          connect();
+        }, retryDelay + Math.random() * 500);
       };
     };
 

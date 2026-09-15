@@ -11,10 +11,18 @@ const clearChat = async (req, res) => {
   const { orgId } = req.params;
   const userId = req.session.user?._id;
 
+  if (!orgId || !userId) {
+    return res.status(400).json({ success: false, message: "Organization or user context is missing." });
+  }
+
   let targetChatId = chatId;
-  if (!targetChatId && orgId && userId) {
+  if (!targetChatId) {
     const activeChat = await chatService.getOrCreateActiveChat(orgId, userId);
     targetChatId = activeChat._id;
+  }
+
+  if (!targetChatId) {
+    return res.status(400).json({ success: false, message: "No active chat found to clear." });
   }
 
   await chatService.clearChat(targetChatId, model, providerId);

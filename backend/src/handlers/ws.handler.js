@@ -164,22 +164,26 @@ function getWsHandlers(wss) {
       const aiInputHistory = isVisionEnabled ? ws.history : ws.history.map(m => ({ ...m, images: undefined }));
       const prunedInputHistory = pruneHistory(aiInputHistory, 25);
 
-      const { response, newMessages } = await ws.ai.chat(body.model, {
+      const { text, downloads, newMessages, aborted } = await ws.ai.stream(body.model, {
         messages: prunedInputHistory,
         body: { org: orgId, createdBy: userId, user: request.session.user },
         onProgress: (status) => ws.send(JSON.stringify(status)),
+        onChunk: (chunk) => ws.send(JSON.stringify({ event: "stream_chunk", content: chunk })),
         abortSignal: signal,
       });
 
-      ws.history.push(...newMessages);
+      if (newMessages.length > 0) {
+        ws.history.push(...newMessages);
+        chatService.addMessages(ws.chatId, [userMessage, ...newMessages])
+          .catch((err) => logger.error(`Failed to persist messages: ${err.message}`));
+      }
 
       ws.send(JSON.stringify({
-        event: "ai_response",
-        message: response.content,
-        downloads: response.downloads || [],
+        event: "stream_end",
+        aborted: !!aborted,
+        message: aborted ? "Generation stopped." : text,
+        downloads: downloads || [],
       }));
-      chatService.addMessages(ws.chatId, [userMessage, ...newMessages])
-        .catch((err) => logger.error(`Failed to persist messages: ${err.message}`));
     } catch (error) {
       logger.error(`WebSocket Error: ${error.message}`);
       if (config.NODE_ENV === "development") console.log(error);
