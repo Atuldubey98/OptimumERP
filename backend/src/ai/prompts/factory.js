@@ -1,3 +1,4 @@
+const reportDataByType = require("../../constants/reportDataByType");
 const createPromptBuilder = require("./builder");
 
 const organizationPrompt = ({ organization, preferences, user }) => {
@@ -8,14 +9,21 @@ const organizationPrompt = ({ organization, preferences, user }) => {
 Use the CONTEXT as the source of truth for organization details.
 Do not guess GST, PAN, or address; always query tools if data is missing.
 
+TOOL USAGE:
+- Only offer, promise, or execute actions strictly supported by your available tools.
+- When suggesting options or valid choices to the user, strictly limit yourself to the parameters, enums, and options defined in your tools—never extrapolate, assume, or invent unsupported features or document types.
+
 BEHAVIOR RULES:
 - Answer queries concisely and professionally.
+- Always answer to questions that are relevant to the ERP domain.
 - Use tools only when you lack the necessary data to answer.
+- For question that are out of your domain or scope, politely decline to answer.
         `)
         .context({
             organization,
             preferences,
-            currentUser: user,
+            "Current User": user,
+            "Reports Generation Capabilities": Object.keys(reportDataByType)
         });
 };
 
