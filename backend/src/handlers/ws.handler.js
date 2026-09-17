@@ -85,6 +85,7 @@ function getWsHandlers(wss) {
             localeCode: ws.settings.localeCode,
             timeZone: ws.settings.org.timeZone,
             date: formattedDate,
+            documentPrefixes: ws.settings.prefixes,
           },
           user: request.session.user,
         }).build();
