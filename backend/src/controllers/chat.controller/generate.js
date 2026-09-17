@@ -1,5 +1,4 @@
 const aiFactory = require("../../ai");
-const settingService = require("../../services/setting.service");
 const factory = require("../../ai/prompts/factory");
 const { AiProviderNotFound, AiEngineInitializationFailed } = require("../../errors/chat.error");
 const Joi = require("joi");
@@ -12,20 +11,10 @@ const generate = async (req, res) => {
     context: Joi.string().allow("").optional()
   }).validateAsync(req.body);
 
-  const settings = await settingService.getDetailedSettingForOrg(orgId);
-  const activeProvider = settings?.aiProviders?.find((p) => p.isDefault) || settings?.aiProviders?.find((p) => p.isActive);
-
-  if (!activeProvider) {
-    throw new AiProviderNotFound();
-  }
-
-  const { ai, defaultModel } = await aiFactory.getAIInstanceForProvider(
-    orgId,
-    activeProvider._id.toString()
-  );
+  const { ai, defaultModel, settings } = await aiFactory.getAIInstanceForProvider(orgId);
 
   if (!ai) {
-    throw new AiEngineInitializationFailed();
+    throw new AiProviderNotFound();
   }
 
   const systemPrompt = factory.generationPrompt({

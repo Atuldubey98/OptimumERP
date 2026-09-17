@@ -158,25 +158,28 @@ const aiFactory = ({ provider, apiKey }) => {
 
   const { client: aiProvider, processImage } = getProvider(provider, { apiKey, host });
 
-  const stream = async (model, { messages = [], body, onProgress, onChunk, abortSignal }) => {
+  const stream = async (model, { messages = [], body, tools: enableTools = true, maxTokens, onProgress, onChunk, abortSignal }) => {
     try {
       const allDownloads = new Map();
       const newMessages = [];
 
-      const sdkTools = buildSdkTools(body, onProgress);
+      const sdkTools = enableTools ? buildSdkTools(body, onProgress) : undefined;
       const sdkMessages = convertToSdkMessages(messages);
 
       logger.info("Sending request to AI Provider");
       if (onProgress) onProgress({ type: "status", message: "Thinking..." });
 
-      const { text: finalText } = await generateText({
+      const generateOptions = {
         model: aiProvider(model),
         messages: sdkMessages,
-        tools: sdkTools,
-        maxSteps: 10,
         abortSignal,
         temperature: 0,
-        onStepFinish: ({ toolCalls, toolResults }) => {
+      };
+
+      if (sdkTools) {
+        generateOptions.tools = sdkTools;
+        generateOptions.maxSteps = 10;
+        generateOptions.onStepFinish = ({ toolCalls, toolResults }) => {
           if (!toolCalls?.length) return;
 
           newMessages.push({
@@ -208,8 +211,14 @@ const aiFactory = ({ provider, apiKey }) => {
               });
             }
           }
-        },
-      });
+        };
+      }
+
+      if (maxTokens) {
+        generateOptions.maxTokens = maxTokens;
+      }
+
+      const { text: finalText } = await generateText(generateOptions);
 
       if (finalText) {
         newMessages.push({ role: "assistant", content: finalText });
@@ -236,19 +245,21 @@ const aiFactory = ({ provider, apiKey }) => {
   return Object.freeze({ stream, processImage });
 };
 
-aiFactory.getAIInstanceForProvider = async (orgId, providerId) => {
+aiFactory.getAIInstanceForProvider = async (orgId, providerId = null) => {
   const settingService = require("../services/setting.service");
   const { decrypt } = require("../services/hashing.service");
 
   const settings = await settingService.getDetailedSettingForOrg(orgId);
-  const provider = settings?.aiProviders?.find(
-    (p) => p._id.toString() === providerId && p.isActive
-  );
+  const providers = settings?.aiProviders || [];
+
+  const provider = providerId
+    ? providers.find((p) => p._id.toString() === providerId && p.isActive)
+    : providers.find((p) => p.isDefault && p.isActive) || providers.find((p) => p.isActive);
 
   if (!provider) return { ai: null, settings };
 
   const apiKey = decrypt(provider.fields.apiKey);
-  logger.info(`Initializing provider: ${provider.provider} (${providerId})`);
+  logger.info(`Initializing provider: ${provider.provider} (${provider._id})`);
 
   return {
     ai: aiFactory({ provider: provider.provider, apiKey }),

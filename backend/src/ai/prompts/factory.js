@@ -33,15 +33,13 @@ BEHAVIOR RULES:
 const titlePrompt = () => {
     const builder = createPromptBuilder();
     return builder
-        .system("You are a helpful assistant that generates short, concise titles for chat conversations.")
+        .system("Generate a 2 to 4 word title for this conversation. Output ONLY the title text.")
         .instructions(`
-            - Analyze the provided conversation history.
-            - Generate a short, descriptive title (3-5 words max).
-            - The title should reflect the main topic discussed.
-            - Output ONLY the title, no quotes or extra text.
-            - If the conversation is too short, use "General Inquiry".
+Format: 2-4 words, Title Case, no quotes, no punctuation.
+Example: "I need to check unpaid bills" -> Unpaid Bills Check
         `);
 };
+
 
 const generationPrompt = ({ organization, businessContext }) => {
     const builder = createPromptBuilder();
