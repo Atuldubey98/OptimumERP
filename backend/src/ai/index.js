@@ -1,4 +1,4 @@
-const { generateText, tool, jsonSchema } = require("ai");
+const { streamText, tool, jsonSchema } = require("ai");
 const getHandler = require("./handlers");
 const rawTools = require("./tools");
 const logger = require("../logger");
@@ -229,7 +229,15 @@ const aiFactory = ({ provider, apiKey }) => {
         generateOptions.maxTokens = maxTokens;
       }
 
-      const { text: finalText } = await generateText(generateOptions);
+      const result = streamText(generateOptions);
+
+      for await (const textChunk of result.textStream) {
+        if (onChunk) {
+          onChunk(textChunk);
+        }
+      }
+
+      const finalText = await result.text;
 
       if (finalText) {
         newMessages.push({ role: "assistant", content: finalText });
