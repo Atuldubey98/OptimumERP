@@ -14,12 +14,17 @@ const create = async (req, res) => {
             apiKey: Joi.string().required(),
             defaultModel: Joi.string().required(),
         }).required(),
+        iceBreakers: Joi.object({
+            enabled: Joi.boolean().default(false),
+            autogenerate: Joi.boolean().default(false),
+            defaultIceBreakers: Joi.array().items(Joi.string().allow("")).max(3).default([]),
+        }).optional(),
     });
 
     const value = await schema.validateAsync(req.body);
 
     const org = req.params.orgId;
-    const { name, provider, fields } = value;
+    const { name, provider, fields, iceBreakers } = value;
 
     const aiProvider = getProvider(provider, {
         apiKey: fields.apiKey,
@@ -40,6 +45,11 @@ const create = async (req, res) => {
                 fields: {
                     apiKey: encryptedApiKey,
                     defaultModel: fields.defaultModel
+                },
+                iceBreakers: iceBreakers || {
+                    enabled: false,
+                    autogenerate: false,
+                    defaultIceBreakers: [],
                 },
                 isActive,
                 isDefault: isActive
@@ -267,16 +277,29 @@ const setActiveSmtp = async (req, res) => {
 
 const updateDefaultModel = async (req, res) => {
     const schema = Joi.object({
-        defaultModel: Joi.string().required(),
+        defaultModel: Joi.string().optional(),
+        iceBreakers: Joi.object({
+            enabled: Joi.boolean().default(false),
+            autogenerate: Joi.boolean().default(false),
+            defaultIceBreakers: Joi.array().items(Joi.string().allow("")).max(3).default([]),
+        }).optional(),
     });
 
     const value = await schema.validateAsync(req.body);
     const { providerId } = req.params;
     const org = req.params.orgId;
 
+    const updateFields = {};
+    if (value.defaultModel) {
+        updateFields["aiProviders.$.fields.defaultModel"] = value.defaultModel;
+    }
+    if (value.iceBreakers !== undefined) {
+        updateFields["aiProviders.$.iceBreakers"] = value.iceBreakers;
+    }
+
     const result = await Setting.updateOne(
         { org, "aiProviders._id": providerId },
-        { $set: { "aiProviders.$.fields.defaultModel": value.defaultModel } }
+        { $set: updateFields }
     );
 
     if (result.matchedCount === 0) {
@@ -287,7 +310,7 @@ const updateDefaultModel = async (req, res) => {
 
     return res.status(200).json({
         success: true,
-        message: "Default model updated successfully"
+        message: "AI Provider updated successfully"
     });
 };
 

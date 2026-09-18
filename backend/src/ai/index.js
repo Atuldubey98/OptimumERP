@@ -30,6 +30,17 @@ const toolDisplayMap = {
   forecast_sales: "Predicting business...",
 };
 
+const getToolCapabilities = () => {
+  return Object.keys(toolDisplayMap).map((key) =>
+    key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase())
+  );
+};
+
+const toolCapabilityMap = Object.keys(toolDisplayMap).reduce((acc, key) => {
+  acc[key] = key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+  return acc;
+}, {});
+
 const convertToSdkMessages = (messages) => {
   const toolCallIdToName = {};
   for (const msg of messages) {
@@ -268,5 +279,9 @@ aiFactory.getAIInstanceForProvider = async (orgId, providerId = null) => {
     defaultModel: provider.fields.defaultModel,
   };
 };
+
+aiFactory.toolDisplayMap = toolDisplayMap;
+aiFactory.toolCapabilityMap = toolCapabilityMap;
+aiFactory.getToolCapabilities = getToolCapabilities;
 
 module.exports = aiFactory;

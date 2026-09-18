@@ -123,6 +123,28 @@ const settingSchema = new Schema({
       required: true,
     },
   },
+  assistant: {
+    iceBreakers: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      autogenerate: {
+        type: Boolean,
+        default: false,
+      },
+      defaultIceBreakers: {
+        type: [String],
+        default: [],
+        validate: {
+          validator: function (v) {
+            return v.length <= 3;
+          },
+          message: (props) => `${props.path} exceeds the limit of 3 ice breakers`,
+        },
+      },
+    },
+  },
   aiProviders: {
     type: [
       {
@@ -137,6 +159,26 @@ const settingSchema = new Schema({
         name: {
           type: String,
           required: true,
+        },
+        iceBreakers: {
+          enabled: {
+            type: Boolean,
+            default: false,
+          },
+          autogenerate: {
+            type: Boolean,
+            default: false,
+          },
+          defaultIceBreakers: {
+            type: [String],
+            default: [],
+            validate: {
+              validator: function (v) {
+                return v.length <= 3;
+              },
+              message: (props) => `${props.path} exceeds the limit of 3 ice breakers`,
+            },
+          },
         },
         isActive: {
           type: Boolean,

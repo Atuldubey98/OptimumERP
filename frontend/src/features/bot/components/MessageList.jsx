@@ -2,7 +2,7 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import MessageItem from "../MessageItem";
 
-const MessageList = ({ messages, formatTime }) => {
+const MessageList = ({ messages, formatTime, onSelectIceBreaker, isIcebreakersLoading }) => {
   return (
     <AnimatePresence initial={false}>
       {messages.map((msg, i) => (
@@ -12,7 +12,13 @@ const MessageList = ({ messages, formatTime }) => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
         >
-          <MessageItem msg={msg} formatTime={formatTime} />
+          <MessageItem
+            msg={msg}
+            formatTime={formatTime}
+            onSelectIceBreaker={onSelectIceBreaker}
+            isLast={i === messages.length - 1}
+            isIcebreakersLoading={isIcebreakersLoading && i === messages.length - 1}
+          />
         </motion.div>
       ))}
     </AnimatePresence>

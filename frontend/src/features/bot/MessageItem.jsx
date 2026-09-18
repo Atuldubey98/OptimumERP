@@ -1,6 +1,6 @@
 import React, { memo } from "react";
-import { Flex, Box, VStack, Text, Image, HStack, useColorModeValue } from "@chakra-ui/react";
-import { FiFileText, FiCpu, FiDownload } from "react-icons/fi";
+import { Flex, Box, VStack, Text, Image, HStack, Button, Skeleton, useColorModeValue } from "@chakra-ui/react";
+import { FiFileText, FiCpu, FiDownload, FiCornerDownRight } from "react-icons/fi";
 import MarkdownRenderer from "./MarkdownRenderer";
 
 const toolDisplayMap = {
@@ -30,7 +30,7 @@ const toolDisplayMap = {
 };
 import { baseURL } from "../../instance";
 
-const MessageItem = memo(({ msg, formatTime }) => {
+const MessageItem = memo(({ msg, formatTime, onSelectIceBreaker, isLast, isIcebreakersLoading }) => {
   const toolBg = useColorModeValue("blue.50", "whiteAlpha.100");
   const toolBorder = useColorModeValue("blue.100", "whiteAlpha.200");
   const toolIconColor = useColorModeValue("#3182ce", "#63b3ed");
@@ -146,6 +146,41 @@ const MessageItem = memo(({ msg, formatTime }) => {
               );
             })}
           </VStack>
+        )}
+        {msg.icebreakers && msg.icebreakers.length > 0 && isLast && (
+          <Flex wrap="wrap" gap={1.5} mt={1.5} width="100%">
+            {msg.icebreakers.map((prompt, idx) => (
+              <Button
+                key={idx}
+                size="xs"
+                variant="outline"
+                colorScheme="blue"
+                borderRadius="full"
+                leftIcon={<FiCornerDownRight size={11} />}
+                fontSize="11px"
+                fontWeight="500"
+                py={1}
+                px={2.5}
+                height="auto"
+                whiteSpace="normal"
+                textAlign="left"
+                onClick={() => onSelectIceBreaker && onSelectIceBreaker(prompt)}
+                _hover={{
+                  bg: "blue.50",
+                  _dark: { bg: "whiteAlpha.200" },
+                }}
+              >
+                {prompt}
+              </Button>
+            ))}
+          </Flex>
+        )}
+        {!msg.icebreakers?.length && isIcebreakersLoading && isLast && (
+          <Flex wrap="wrap" gap={1.5} mt={1.5} width="100%">
+            <Skeleton height="22px" width="115px" borderRadius="full" />
+            <Skeleton height="22px" width="145px" borderRadius="full" />
+            <Skeleton height="22px" width="95px" borderRadius="full" />
+          </Flex>
         )}
         <Text fontSize="10px" color="whiteAlpha.600" _light={{ color: "gray.500" }} px={1}>
           {formatTime(msg.timestamp || msg.createdAt)}

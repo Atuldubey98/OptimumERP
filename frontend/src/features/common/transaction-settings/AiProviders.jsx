@@ -19,6 +19,9 @@ import {
   Stack,
   Switch,
   Table,
+  Tag,
+  TagCloseButton,
+  TagLabel,
   Tbody,
   Td,
   Text,
@@ -29,15 +32,178 @@ import {
   useColorModeValue,
   useDisclosure,
   useToast,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useFormik } from "formik";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FiCpu, FiPlus, FiTrash2, FiEdit } from "react-icons/fi";
+import { RiRobot2Line } from "react-icons/ri";
 import SettingContext from "../../../contexts/SettingContext";
 import useProperty from "../../../hooks/useProperty";
 import instance from "../../../instance";
+
+const AssistantSettingsCard = ({ currentSettings, orgId, onSuccess }) => {
+  const toast = useToast();
+  const settingContext = useContext(SettingContext);
+  const [enabled, setEnabled] = useState(false);
+  const [autogenerate, setAutogenerate] = useState(false);
+  const [defaultIceBreakers, setDefaultIceBreakers] = useState([]);
+  const [newIceBreaker, setNewIceBreaker] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const cardBg = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
+
+  useEffect(() => {
+    const config = currentSettings?.setting?.assistant?.iceBreakers || {};
+    setEnabled(config.enabled || false);
+    setAutogenerate(config.autogenerate || false);
+    setDefaultIceBreakers(config.defaultIceBreakers || []);
+  }, [currentSettings]);
+
+  const handleAdd = () => {
+    const trimmed = newIceBreaker.trim();
+    if (!trimmed || defaultIceBreakers.length >= 3) return;
+    setDefaultIceBreakers([...defaultIceBreakers, trimmed]);
+    setNewIceBreaker("");
+  };
+
+  const handleRemove = (index) => {
+    setDefaultIceBreakers(defaultIceBreakers.filter((_, i) => i !== index));
+  };
+
+  const handleSave = async () => {
+    if (!orgId) return;
+    setIsSaving(true);
+    try {
+      await instance.patch(`/api/v1/organizations/${orgId}/settings`, {
+        assistant: {
+          iceBreakers: {
+            enabled,
+            autogenerate,
+            defaultIceBreakers,
+          },
+        },
+      });
+      toast({
+        title: "Success",
+        description: "Assistant settings updated successfully",
+        status: "success",
+      });
+      if (onSuccess) onSuccess();
+      if (settingContext.fetchSetting) settingContext.fetchSetting();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to update assistant settings",
+        status: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <Box borderWidth="1px" borderColor={borderColor} borderRadius="lg" bg={cardBg} p={4}>
+      <Stack spacing={4}>
+        <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
+          <Box>
+            <HStack spacing={2}>
+              <RiRobot2Line size={18} />
+              <Heading fontSize="md">OptiBot Assistant Configuration</Heading>
+            </HStack>
+            <Text fontSize="xs" color="gray.500" mt={1}>
+              Configure conversational starter prompts and dynamic suggestions for your ERP assistant.
+            </Text>
+          </Box>
+          <Button
+            size="sm"
+            colorScheme="blue"
+            isLoading={isSaving}
+            onClick={handleSave}
+            isDisabled={!orgId}
+          >
+            Save Assistant Settings
+          </Button>
+        </Flex>
+
+        <Divider />
+
+        <FormControl display="flex" alignItems="center" justifyContent="space-between">
+          <Box>
+            <FormLabel fontSize="sm" mb={0}>Enable Ice Breakers</FormLabel>
+            <Text fontSize="xs" color="gray.500">Show starter prompts and follow-up suggestions in chat</Text>
+          </Box>
+          <Switch
+            colorScheme="blue"
+            isChecked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+          />
+        </FormControl>
+
+        {enabled && (
+          <Stack spacing={3} pl={3} borderLeftWidth="2px" borderColor="blue.400">
+            <FormControl display="flex" alignItems="center" justifyContent="space-between">
+              <Box>
+                <FormLabel fontSize="sm" mb={0}>Autogenerate with AI</FormLabel>
+                <Text fontSize="xs" color="gray.500">Generate 2-3 dynamic follow-ups after each AI response</Text>
+              </Box>
+              <Switch
+                colorScheme="teal"
+                isChecked={autogenerate}
+                onChange={(e) => setAutogenerate(e.target.checked)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel fontSize="sm" mb={1}>Default Ice Breakers ({defaultIceBreakers.length}/3)</FormLabel>
+              <Text fontSize="xs" color="gray.500" mb={2}>Starter prompts shown when beginning a new chat</Text>
+              <HStack spacing={2} mb={2}>
+                <Input
+                  size="sm"
+                  placeholder="e.g. What is my sales revenue this month?"
+                  value={newIceBreaker}
+                  onChange={(e) => setNewIceBreaker(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAdd();
+                    }
+                  }}
+                  isDisabled={defaultIceBreakers.length >= 3}
+                  borderRadius="md"
+                />
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={handleAdd}
+                  isDisabled={!newIceBreaker.trim() || defaultIceBreakers.length >= 3}
+                >
+                  Add
+                </Button>
+              </HStack>
+              {defaultIceBreakers.length > 0 && (
+                <Wrap spacing={2}>
+                  {defaultIceBreakers.map((item, idx) => (
+                    <WrapItem key={idx}>
+                      <Tag size="sm" colorScheme="blue" borderRadius="full">
+                        <TagLabel maxW="280px" isTruncated>{item}</TagLabel>
+                        <TagCloseButton onClick={() => handleRemove(idx)} />
+                      </Tag>
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              )}
+            </FormControl>
+          </Stack>
+        )}
+      </Stack>
+    </Box>
+  );
+};
 
 export default function AiProviders({ formik }) {
 
@@ -181,7 +347,7 @@ export default function AiProviders({ formik }) {
         );
         toast({
           title: "Success",
-          description: "Default model updated successfully",
+          description: "AI Provider updated successfully",
           status: "success",
         });
         onEditClose();
@@ -192,7 +358,7 @@ export default function AiProviders({ formik }) {
       } catch (error) {
         toast({
           title: "Error",
-          description: error.response?.data?.message || "Failed to update default model",
+          description: error.response?.data?.message || "Failed to update AI provider",
           status: "error",
         });
       } finally {
@@ -238,12 +404,27 @@ export default function AiProviders({ formik }) {
   const providers = currentSettings?.setting?.aiProviders || [];
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={6}>
       <Flex justify="space-between" align="center" bg={bg} p={3} borderRadius="md">
         <HStack spacing={3}>
           <FiCpu size={20} />
-          <Heading fontSize={"lg"}>AI</Heading>
+          <Heading fontSize={"lg"}>AI & Assistant</Heading>
         </HStack>
+      </Flex>
+
+      <AssistantSettingsCard
+        currentSettings={currentSettings}
+        orgId={formik.values.organization}
+        onSuccess={fetchOrgSettings}
+      />
+
+      <Flex justify="space-between" align="center">
+        <Box>
+          <Heading fontSize="md">AI Providers</Heading>
+          <Text fontSize="xs" color="gray.500">
+            Configure LLM provider connections (e.g. Grok, Ollama) for OptiBot.
+          </Text>
+        </Box>
         <Tooltip
           label={providers.length >= 3 ? "Maximum limit of 3 AI providers reached" : ""}
           isDisabled={providers.length < 3}

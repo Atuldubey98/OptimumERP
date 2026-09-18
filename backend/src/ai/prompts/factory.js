@@ -58,10 +58,46 @@ Generate clear, precise, and professional content.
         });
 };
 
+const iceBreakersPrompt = ({ capabilities = [] } = {}) => {
+    const builder = createPromptBuilder();
+    const capList = Array.isArray(capabilities) && capabilities.length > 0
+        ? capabilities.map((cap) => `- ${cap}`).join("\n")
+        : "";
+
+    return builder
+        .system("Suggest 2 or 3 short, relevant follow-up prompts the user might ask next based on the recent assistant message. Output ONLY a valid JSON array of strings.")
+        .instructions(`
+${capList ? `AVAILABLE CAPABILITIES:\n${capList}\n` : ""}
+STRICT BOUNDARIES:
+- Only suggest actions from the available capabilities above.
+- NEVER suggest external integrations (Shopify, QuickBooks, Slack, etc.), HR, payroll, direct card/bank charges, or unsupported features.
+
+RULES:
+- Keep each suggestion short and specific (2 to 5 words, e.g. "Download invoice PDF", "View customer ledger", "Send via email").
+- Do not add extra details or explanations in the prompts.
+- Return ONLY the JSON array: ["Prompt 1", "Prompt 2", "Prompt 3"]
+        `);
+};
+
+const iceBreakersUserPrompt = ({ assistantMessage, userMessage, message, userPrompt } = {}) => {
+    const builder = createPromptBuilder();
+    const cleanAssistant = (assistantMessage || message || "").replace(/\s+/g, " ").trim().slice(0, 200);
+    const cleanUser = (userMessage || userPrompt || "").replace(/\s+/g, " ").trim().slice(0, 150);
+
+    const contextText = cleanUser
+        ? `User asked: "${cleanUser}"\nAssistant replied: "${cleanAssistant}"`
+        : `Assistant replied: "${cleanAssistant}"`;
+
+    return builder
+        .user(`Context:\n${contextText}\n\nSuggest 2-3 short follow-up prompts for the user:`);
+};
+
 const factory = {
     organizationPrompt,
     titlePrompt,
     generationPrompt,
+    iceBreakersPrompt,
+    iceBreakersUserPrompt,
 };
 
 module.exports = factory;

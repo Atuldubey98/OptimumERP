@@ -18,6 +18,7 @@ import { useFileUpload } from "../../hooks/useFileUpload";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
 import useProperty from "../../hooks/useProperty";
 import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
+import { useIcebreakers } from "../../hooks/useIcebreakers";
 
 // Components
 import ChatHeader from "./ChatHeader";
@@ -46,7 +47,7 @@ const ChatWidget = () => {
   const [selectedProviderId, setSelectedProviderId] = useState(() => localStorage.getItem("selected_ai_provider") || "");
   const [pendingProviderId, setPendingProviderId] = useState(null);
 
-  const { messages, isConnected, isTyping, statusMsg, sendMessage, clearHistory, abortMessage } = useChatSocket(orgId, selectedProviderId);
+  const { messages, setMessages, isConnected, isTyping, statusMsg, sendMessage, clearHistory, abortMessage } = useChatSocket(orgId, selectedProviderId);
   const { setting } = useCurrentOrgCurrency();
 
   const { value: AI_MODELS } = useProperty("AI_MODELS");
@@ -77,6 +78,25 @@ const ChatWidget = () => {
     if (!AI_MODELS || !selectedProvider) return [];
     return AI_MODELS[selectedProvider.provider] || [];
   }, [selectedProvider, AI_MODELS]);
+
+  const iceBreakersConfig = useMemo(() => {
+    return setting?.assistant?.iceBreakers || {};
+  }, [setting]);
+
+  const defaultIceBreakers = useMemo(() => {
+    if (!iceBreakersConfig?.enabled) return [];
+    return iceBreakersConfig.defaultIceBreakers || [];
+  }, [iceBreakersConfig]);
+
+  const { isLoading: isIcebreakersLoading } = useIcebreakers({
+    orgId,
+    provider: selectedProvider,
+    iceBreakers: iceBreakersConfig,
+    selectedModel,
+    messages,
+    isTyping,
+    setMessages,
+  });
 
   useEffect(() => {
     if (availableModels.length > 0) {
@@ -228,9 +248,17 @@ const ChatWidget = () => {
                         }}
                       />
                     ) : messages.length === 0 ? (
-                      <EmptyState />
+                      <EmptyState
+                        defaultIceBreakers={defaultIceBreakers}
+                        onSelectIceBreaker={handleSend}
+                      />
                     ) : (
-                      <MessageList messages={messages} formatTime={formatTime} />
+                      <MessageList
+                        messages={messages}
+                        formatTime={formatTime}
+                        onSelectIceBreaker={handleSend}
+                        isIcebreakersLoading={isIcebreakersLoading}
+                      />
                     )}
 
                     {isTyping && <TypingIndicator statusMsg={statusMsg} />}
