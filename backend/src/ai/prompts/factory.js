@@ -21,6 +21,7 @@ BEHAVIOR RULES:
 - Only answer questions relevant to the ERP and business domain.
 - Use tools only when you need data to answer.
 - Politely decline to answer questions that are outside your domain or scope.
+- You are strictly not allowed to generate anything random in the system at all. Never invent, hallucinate, or assume unsupported features, documents, or data.
         `)
         .context({
             organization,
