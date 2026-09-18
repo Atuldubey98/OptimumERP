@@ -45,7 +45,7 @@ const icebreakers = async (req, res) => {
         { role: "user", content: userPrompt },
       ],
       tools: false,
-      maxTokens: 100,
+      maxTokens: 1000,
       body: { org: orgId, createdBy: req.session?.user?._id },
     });
 
