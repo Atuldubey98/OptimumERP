@@ -34,19 +34,23 @@ export const useIcebreakers = ({
       return;
     }
 
-    const msgKey = `${lastMsg.timestamp || ""}_${lastMsg.content.slice(0, 30)}`;
-    if (
-      lastProcessedRef.current === msgKey ||
-      (lastMsg.icebreakers && lastMsg.icebreakers.length > 0)
-    ) {
+    // If message already has icebreakers data, never show loading
+    if (lastMsg.icebreakers && lastMsg.icebreakers.length > 0) {
       setIsLoading(false);
       return;
     }
 
+    const msgKey = `${lastMsg.timestamp || ""}_${lastMsg.content.slice(0, 30)}`;
+    if (lastProcessedRef.current === msgKey) {
+      return;
+    }
+    lastProcessedRef.current = msgKey;
+
     setIsLoading(true);
+    const startTime = Date.now();
+    let isCancelled = false;
 
     const timer = setTimeout(async () => {
-      lastProcessedRef.current = msgKey;
       try {
         const userMsgs = messages.filter((m) => m.role === "user");
         const lastUserPrompt =
@@ -62,26 +66,40 @@ export const useIcebreakers = ({
           }
         );
 
+        if (isCancelled) return;
+
         const prompts = data?.data?.prompts || [];
-        if (prompts.length > 0) {
-          setMessages((prev) => {
-            if (!prev.length) return prev;
-            const idx = prev.length - 1;
-            if (prev[idx]?.role === "ai") {
-              const updated = { ...prev[idx], icebreakers: prompts };
-              return [...prev.slice(0, -1), updated];
-            }
-            return prev;
-          });
-        }
+        const elapsed = Date.now() - startTime;
+        const minWait = Math.max(0, 1000 - elapsed);
+
+        setTimeout(() => {
+          if (isCancelled) return;
+          if (prompts.length > 0) {
+            setMessages((prev) => {
+              if (!prev.length) return prev;
+              const idx = prev.length - 1;
+              if (prev[idx]?.role === "ai") {
+                const updated = {
+                  ...prev[idx],
+                  icebreakersLoading: false,
+                  icebreakers: prompts,
+                };
+                return [...prev.slice(0, -1), updated];
+              }
+              return prev;
+            });
+          }
+          setIsLoading(false);
+        }, minWait);
       } catch (error) {
-        // Silently ignore if icebreakers request fails
-      } finally {
-        setIsLoading(false);
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
-    }, 400);
+    }, 200);
 
     return () => {
+      isCancelled = true;
       clearTimeout(timer);
     };
   }, [messages, isTyping, orgId, provider, selectedModel, setMessages]);

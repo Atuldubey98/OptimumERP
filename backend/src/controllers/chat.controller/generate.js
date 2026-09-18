@@ -1,6 +1,6 @@
 const aiFactory = require("../../ai");
 const factory = require("../../ai/prompts/factory");
-const { AiProviderNotFound, AiEngineInitializationFailed } = require("../../errors/chat.error");
+const { AiProviderNotFound } = require("../../errors/chat.error");
 const Joi = require("joi");
 
 const generate = async (req, res) => {

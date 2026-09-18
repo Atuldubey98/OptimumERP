@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import { Flex, Box, VStack, Text, Image, HStack, Button, Skeleton, useColorModeValue } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { FiFileText, FiCpu, FiDownload, FiCornerDownRight } from "react-icons/fi";
 import MarkdownRenderer from "./MarkdownRenderer";
 
@@ -147,40 +148,53 @@ const MessageItem = memo(({ msg, formatTime, onSelectIceBreaker, isLast, isIcebr
             })}
           </VStack>
         )}
-        {msg.icebreakers && msg.icebreakers.length > 0 && isLast && (
-          <Flex wrap="wrap" gap={1.5} mt={1.5} width="100%">
-            {msg.icebreakers.map((prompt, idx) => (
-              <Button
-                key={idx}
-                size="xs"
-                variant="outline"
-                colorScheme="blue"
-                borderRadius="full"
-                leftIcon={<FiCornerDownRight size={11} />}
-                fontSize="11px"
-                fontWeight="500"
-                py={1}
-                px={2.5}
-                height="auto"
-                whiteSpace="normal"
-                textAlign="left"
-                onClick={() => onSelectIceBreaker && onSelectIceBreaker(prompt)}
-                _hover={{
-                  bg: "blue.50",
-                  _dark: { bg: "whiteAlpha.200" },
-                }}
-              >
-                {prompt}
-              </Button>
-            ))}
-          </Flex>
-        )}
-        {!msg.icebreakers?.length && isIcebreakersLoading && isLast && (
+        {isIcebreakersLoading && !msg.icebreakers?.length && isLast && (
           <Flex wrap="wrap" gap={1.5} mt={1.5} width="100%">
             <Skeleton height="22px" width="115px" borderRadius="full" />
             <Skeleton height="22px" width="145px" borderRadius="full" />
             <Skeleton height="22px" width="95px" borderRadius="full" />
           </Flex>
+        )}
+        {msg.icebreakers && msg.icebreakers.length > 0 && isLast && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            style={{ width: "100%" }}
+          >
+            <Flex wrap="wrap" gap={1.5} mt={1.5} width="100%">
+              {msg.icebreakers.map((prompt, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, delay: idx * 0.05 }}
+                >
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    colorScheme="blue"
+                    borderRadius="full"
+                    leftIcon={<FiCornerDownRight size={11} />}
+                    fontSize="11px"
+                    fontWeight="500"
+                    py={1}
+                    px={2.5}
+                    height="auto"
+                    whiteSpace="normal"
+                    textAlign="left"
+                    onClick={() => onSelectIceBreaker && onSelectIceBreaker(prompt)}
+                    _hover={{
+                      bg: "blue.50",
+                      _dark: { bg: "whiteAlpha.200" },
+                    }}
+                  >
+                    {prompt}
+                  </Button>
+                </motion.div>
+              ))}
+            </Flex>
+          </motion.div>
         )}
         <Text fontSize="10px" color="whiteAlpha.600" _light={{ color: "gray.500" }} px={1}>
           {formatTime(msg.timestamp || msg.createdAt)}
