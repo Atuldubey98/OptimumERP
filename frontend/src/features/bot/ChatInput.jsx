@@ -194,7 +194,7 @@ const ChatInput = memo(({
                       animate={{ rotate: 360 }}
                       transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                     >
-                      <Icon as={FiCpu} size="xs" color="purple.400" />
+                      <Icon as={FiCpu} boxSize="14px" color="purple.400" />
                     </Box>
                   </Flex>
                 </Tooltip>
