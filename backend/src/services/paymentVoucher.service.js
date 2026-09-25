@@ -4,22 +4,17 @@ const Setting = require("../models/settings.model");
 const OrgModel = require("../models/org.model");
 
 const getNextSequence = async (orgId, session) => {
-  const setting = await Setting.findOne({ org: orgId }).session(session);
+  const setting = await Setting.findOneAndUpdate(
+    { org: orgId },
+    { $inc: { "sequenceCounters.paymentVoucher": 1 } },
+    { session, new: true }
+  );
   if (!setting) {
     throw new Error("Organization settings not found");
   }
 
-  const counterKey = "paymentVoucher";
-  let sequence = setting.sequenceCounters?.[counterKey] || 0;
-  sequence += 1;
-
-  await Setting.updateOne(
-    { org: orgId },
-    { $max: { [`sequenceCounters.${counterKey}`]: sequence } },
-    { session }
-  );
-
-  const prefix = setting.transactionPrefix?.[counterKey] || "";
+  const sequence = setting.sequenceCounters?.paymentVoucher || 1;
+  const prefix = setting.transactionPrefix?.paymentVoucher || "";
   const num = prefix + sequence;
   return { sequence, prefix, num, financialYear: setting.financialYear };
 };
@@ -114,7 +109,7 @@ exports.addPaymentToDoc = async ({ id, orgId, userId, body, docModel, voucherTyp
 
   await updateDocPaymentStatus({ doc });
   await doc.save({ session });
-  
+
   return voucher;
 };
 
@@ -251,7 +246,7 @@ exports.deleteManyPaymentVouchers = async ({ ids, refDoc, refDocModel, orgId, se
   const matchedIds = vouchers.map(v => v._id);
   await Transaction.softDeleteMany({ docModel: "payment_voucher", doc: { $in: matchedIds } }).session(session);
   await PaymentVoucher.softDeleteMany({ _id: { $in: matchedIds } }).session(session);
-  
+
   await OrgModel.updateOne(
     { _id: orgId },
     { $inc: { "relatedDocsCount.paymentVouchers": -vouchers.length } },
