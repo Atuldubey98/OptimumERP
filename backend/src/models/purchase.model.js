@@ -18,7 +18,7 @@ const purchaseInvoice = new Schema(
     },
     status: {
       type: String,
-      default: "sent",
+      default: "unpaid",
       enum: ["paid", "unpaid"],
     },
     dueDate: {
