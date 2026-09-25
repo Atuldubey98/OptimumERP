@@ -27,6 +27,7 @@ const create = async (options = {}, req, res) => {
     ).session(session);
 
     logger.info(`${Bill.modelName} created ${bill.id}`);
+    return bill;
   });
   const billLabel = billTypes[Bill.modelName] || Bill.modelName;
   logger.info(`${billLabel} created successfully`);

@@ -22,10 +22,7 @@ const purchaseDto = Joi.object({
   updatedBy: Joi.string().optional(),
   num: Joi.string().label("Purchase No.").required(),
   dueDate: Joi.string().label("Due Date").allow("").optional(),
-  status: Joi.string()
-    .default("unpaid")
-    .valid("unpaid", "paid")
-    .label("Status"),
+
 }).options({ stripUnknown: true });
 
 module.exports = { purchaseDto };

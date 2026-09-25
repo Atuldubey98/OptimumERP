@@ -18,25 +18,22 @@ import { FormikProvider } from "formik";
 import { useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineSave } from "react-icons/ai";
-import { invoiceStatusList } from "../../../constants/invoice";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 import useInvoicesForm from "../../../hooks/useInvoicesForm";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
+import useTaxes from "../../../hooks/useTaxes";
 import useTermsTemplates from "../../../hooks/useTermsTemplates";
+import useUms from "../../../hooks/useUms";
+import BannerWithLabel from "../../common/BannerWithLabel";
 import NumberInputInteger from "../../common/NumberInputInteger";
 import PrefixFormField from "../../common/PrefixFormField";
-import MainLayout from "../../common/main-layout";
 import DateField from "../../estimates/create/DateField";
 import DescriptionField from "../../estimates/create/DescriptionField";
 import ItemsList from "../../estimates/create/ItemList";
-import SelectStatus from "../../estimates/create/SelectStatus";
 import TermsAndCondtions from "../../estimates/create/TermsConditions";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import PartySelectBill from "./PartySelectBill";
-import useTaxes from "../../../hooks/useTaxes";
-import useUms from "../../../hooks/useUms";
-import BannerWithLabel from "../../common/BannerWithLabel";
-import { FaFileInvoiceDollar } from "react-icons/fa6";
 
 export default function CreateInvoicePage() {
   const { t } = useTranslation("invoice");
@@ -154,11 +151,6 @@ export default function CreateInvoicePage() {
                   </FormErrorMessage>
                 </FormControl>
                 <DateField formik={formik} />
-                <SelectStatus
-                  formik={formik}
-                  statusList={invoiceStatusList}
-                  namespace="invoice"
-                />
                 <FormControl>
                   <FormLabel>{t("invoice_ui.form.po_number")}</FormLabel>
                   <Input

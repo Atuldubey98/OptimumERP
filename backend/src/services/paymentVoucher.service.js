@@ -24,15 +24,11 @@ const getNextSequence = async (orgId, session) => {
   return { sequence, prefix, num, financialYear: setting.financialYear };
 };
 
-const updateDocPaymentStatus = async ({ doc, docModel }) => {
+const updateDocPaymentStatus = async ({ doc }) => {
   const grandTotal = (doc.total || 0) + (doc.totalTax || 0) + (doc.shippingCharges || 0);
   const totalPaid = doc.paymentVoucherBalance || 0;
 
-  if (docModel === "purchase") {
-    doc.status = totalPaid >= grandTotal ? "paid" : "unpaid";
-  } else if (docModel === "invoice") {
-    doc.status = "sent";
-  }
+  doc.status = totalPaid >= grandTotal ? "paid" : "unpaid";
 };
 
 exports.createPaymentVoucher = async ({ orgId, userId, body, doc, docModel, voucherType, session }) => {
@@ -116,7 +112,7 @@ exports.addPaymentToDoc = async ({ id, orgId, userId, body, docModel, voucherTyp
   doc.paymentVoucherBalance = (doc.paymentVoucherBalance || 0) + voucher.amount;
   doc.updatedBy = userId;
 
-  await updateDocPaymentStatus({ doc, docModel });
+  await updateDocPaymentStatus({ doc });
   await doc.save({ session });
   
   return voucher;
@@ -187,7 +183,7 @@ exports.updatePaymentVoucher = async ({ id, orgId, userId, body, session }) => {
     if (doc) {
       doc.paymentVoucherBalance = (doc.paymentVoucherBalance || 0) - oldAmount + voucher.amount;
       doc.updatedBy = userId;
-      await updateDocPaymentStatus({ doc, docModel: voucher.refDocModel });
+      await updateDocPaymentStatus({ doc });
       await doc.save({ session });
     }
   }
@@ -207,7 +203,7 @@ exports.deletePaymentVoucher = async ({ id, orgId, session }) => {
     if (doc && doc.paymentVouchers) {
       doc.paymentVouchers.pull(voucher._id);
       doc.paymentVoucherBalance = (doc.paymentVoucherBalance || 0) - voucher.amount;
-      await updateDocPaymentStatus({ doc, docModel: voucher.refDocModel });
+      await updateDocPaymentStatus({ doc });
       await doc.save({ session });
     }
   }
@@ -246,7 +242,7 @@ exports.deleteManyPaymentVouchers = async ({ ids, refDoc, refDocModel, orgId, se
       if (doc) {
         if (doc.paymentVouchers) doc.paymentVouchers.pull(voucher._id);
         doc.paymentVoucherBalance = (doc.paymentVoucherBalance || 0) - voucher.amount;
-        await updateDocPaymentStatus({ doc, docModel: voucher.refDocModel });
+        await updateDocPaymentStatus({ doc });
         await doc.save({ session });
       }
     }

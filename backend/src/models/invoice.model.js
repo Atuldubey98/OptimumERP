@@ -39,8 +39,8 @@ const invoiceSchema = new Schema(
     },
     status: {
       type: String,
-      default: "sent",
-      enum: ["draft", "sent", "pending"],
+      default: "unpaid",
+      enum: ["paid", "unpaid"],
     },
   },
   {

@@ -17,7 +17,6 @@ import { FormikProvider } from "formik";
 import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
-import { purchaseStatusList } from "../../../constants/purchase";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import usePurchaseForm from "../../../hooks/usePurchaseForm";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
@@ -28,7 +27,6 @@ import MainLayout from "../../common/main-layout";
 import DateField from "../../estimates/create/DateField";
 import DescriptionField from "../../estimates/create/DescriptionField";
 import ItemsList from "../../estimates/create/ItemList";
-import SelectStatus from "../../estimates/create/SelectStatus";
 import TotalsBox from "../../estimates/create/TotalsBox";
 import { defaultInvoiceItem } from "../../estimates/create/data";
 import PartySelectBill from "../../invoices/create/PartySelectBill";
@@ -128,11 +126,6 @@ export default function CreatePurchasePage() {
                     <FormErrorMessage>{formik.errors.num}</FormErrorMessage>
                   </FormControl>
                   <DateField formik={formik} />
-                  <SelectStatus
-                    formik={formik}
-                    statusList={purchaseStatusList}
-                    namespace="purchase"
-                  />
                   <FormControl>
                     <FormLabel>{t("purchase_ui.form.due_date", "Due Date")}</FormLabel>
                     <Input

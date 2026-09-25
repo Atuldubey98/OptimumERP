@@ -1,17 +1,12 @@
 export const invoiceStatusList = [
   {
-    type: "draft",
-    label: "invoice_ui.status.draft",
-    colorScheme: "blue",
+    type: "unpaid",
+    label: "invoice_ui.status.unpaid",
+    colorScheme: "red",
   },
   {
-    type: "sent",
-    label: "invoice_ui.status.sent",
-    colorScheme: "teal",
-  },
-  {
-    type: "pending",
-    label: "invoice_ui.status.pending",
-    colorScheme: "yellow",
+    type: "paid",
+    label: "invoice_ui.status.paid",
+    colorScheme: "green",
   },
 ];
