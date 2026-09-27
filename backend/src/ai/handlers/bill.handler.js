@@ -23,7 +23,7 @@ const OrgModel = require("../../models/org.model");
 const Transaction = require("../../models/transaction.model");
 const partyService = require("../../services/party.service");
 const billTypes = require("../../constants/billTypes");
-const { moneyUtils } = require("../../utils");
+const { moneyUtils, billUtils } = require("../../utils");
 const {
   ProformaInvoiceDuplicate,
   ProformaInvoiceNotFound,
@@ -371,7 +371,7 @@ const billHandler = {
         .lean();
 
       return transactions.map((t) => {
-        const grandTotal = (t.total || 0) + (t.totalTax || 0) + (t.shippingCharges || 0);
+        const grandTotal = billUtils.calculateGrandTotal(t);
 
         const res = {
           _id: t._id,

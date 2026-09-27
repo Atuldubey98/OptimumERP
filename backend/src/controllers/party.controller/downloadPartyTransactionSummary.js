@@ -20,7 +20,7 @@ const downloadPartyTransactionSummary = async (req, res) => {
   const decimalDigits = currencyConfig?.decimal_digits ?? 2;
   const precisionFactor = Math.pow(10, decimalDigits);
 
-  const { escapeTextSearch } = require("../../utils");
+  const { searchUtils, billUtils } = require("../../utils");
   const search = req.query.search;
   const party = await Party.findOne({
     _id: req.params.partyId,
@@ -28,7 +28,7 @@ const downloadPartyTransactionSummary = async (req, res) => {
   const transactionTypes = req.query.transactionTypes;
   if (transactionTypes && typeof transactionTypes === "string")
     filter.docModel = { $in: transactionTypes.split(",") };
-  if (search) filter.$text = { $search: escapeTextSearch(search) };
+  if (search) filter.$text = { $search: searchUtils.escapeTextSearch(search) };
 
   if (req.query.startDate || req.query.endDate) {
     filter.date = {};
@@ -94,11 +94,7 @@ const downloadPartyTransactionSummary = async (req, res) => {
       type: item?.docModel,
       relatedTo: item?.doc?.party?.name || item.doc?.description || "",
       totalTax: ((item.totalTax || 0) / precisionFactor).toFixed(decimalDigits),
-      amount: ((
-        Number(item.total || 0) +
-        Number(item.totalTax || 0) +
-        Number(item.shippingCharges || 0)
-      ) / precisionFactor).toFixed(decimalDigits),
+      amount: (billUtils.calculateGrandTotal(item) / precisionFactor).toFixed(decimalDigits),
       createdAt: new Date(item.createdAt).toISOString().split("T")[0],
     }),
   };

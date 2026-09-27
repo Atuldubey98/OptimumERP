@@ -1,7 +1,7 @@
 const Party = require("../../models/party.model");
 const partyService = require("../../services/party.service");
 const settingService = require("../../services/setting.service")
-const { moneyUtils, escapeTextSearch } = require("../../utils");
+const { moneyUtils, searchUtils } = require("../../utils");
 
 const { createPartyDto } = require("../../dto/party.dto");
 
@@ -146,7 +146,7 @@ const partyHandler = {
     const sort = { createdAt: -1 };
 
     if (query && query.trim()) {
-      filter.$text = { $search: escapeTextSearch(query) };
+      filter.$text = { $search: searchUtils.escapeTextSearch(query) };
       projection.score = { $meta: "textScore" };
       sort.score = { $meta: "textScore" };
     }

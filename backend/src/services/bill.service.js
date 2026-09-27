@@ -25,7 +25,7 @@ const {
   calculateTaxesForBillItemsWithCurrency,
 } = require("./taxCalculator.service");
 const { getDetailedSettingForOrg } = require("./setting.service");
-const { moneyUtils } = require("../utils");
+const { moneyUtils, billUtils } = require("../utils");
 const MODEL_NAME_TO_COUNTER_KEY = {
   invoice: "invoice",
   quotes: "quotation",
@@ -392,10 +392,7 @@ const addCurrencyToTaxCategories = (taxCategories = {}, formatCurrency) => {
   return newTaxCategories;
 };
 
-const getBillGrandTotal = (bill = {}) =>
-  Number(bill.total || 0) +
-  Number(bill.totalTax || 0) +
-  Number(bill.shippingCharges || 0);
+const getBillGrandTotal = (bill = {}) => billUtils.calculateGrandTotal(bill);
 
 const makeMetaLabels = (translateTemplateLabel) => ({
   tax_invoice: translateTemplateLabel("tax_invoice", "Tax Invoice"),

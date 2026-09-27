@@ -77,76 +77,91 @@ const moneyUtils = {
     return currencyConfig.value[code];
   }
 };
-const cleanPayloadForAi = (val) => {
-  if (val === null || val === undefined) return undefined;
+const aiUtils = {
+  cleanPayloadForAi: (val) => {
+    if (val === null || val === undefined) return undefined;
 
-  if (Array.isArray(val)) {
-    const cleaned = val.map(cleanPayloadForAi).filter(x => x !== undefined);
-    return cleaned.length > 0 ? cleaned : undefined;
-  }
-
-  if (typeof val === "object") {
-    if (val.constructor && val.constructor.name === "ObjectId") {
-      return val.toString();
-    }
-    if (typeof val.toObject === "function") {
-      val = val.toObject();
+    if (Array.isArray(val)) {
+      const cleaned = val.map(aiUtils.cleanPayloadForAi).filter(x => x !== undefined);
+      return cleaned.length > 0 ? cleaned : undefined;
     }
 
-    const cleaned = {};
-    let hasKeys = false;
-    for (const key in val) {
-      if (Object.prototype.hasOwnProperty.call(val, key)) {
-        if (["__v", "org", "createdBy", "updatedBy", "isDeleted", "deleted", "deletedAt"].includes(key)) {
-          continue;
-        }
-        const cleanedVal = cleanPayloadForAi(val[key]);
-        if (
-          cleanedVal !== undefined &&
-          cleanedVal !== "" &&
-          !(Array.isArray(cleanedVal) && cleanedVal.length === 0)
-        ) {
-          cleaned[key] = cleanedVal;
-          hasKeys = true;
+    if (typeof val === "object") {
+      if (val.constructor && val.constructor.name === "ObjectId") {
+        return val.toString();
+      }
+      if (typeof val.toObject === "function") {
+        val = val.toObject();
+      }
+
+      const cleaned = {};
+      let hasKeys = false;
+      for (const key in val) {
+        if (Object.prototype.hasOwnProperty.call(val, key)) {
+          if (["__v", "org", "createdBy", "updatedBy", "isDeleted", "deleted", "deletedAt"].includes(key)) {
+            continue;
+          }
+          const cleanedVal = aiUtils.cleanPayloadForAi(val[key]);
+          if (
+            cleanedVal !== undefined &&
+            cleanedVal !== "" &&
+            !(Array.isArray(cleanedVal) && cleanedVal.length === 0)
+          ) {
+            cleaned[key] = cleanedVal;
+            hasKeys = true;
+          }
         }
       }
+      return hasKeys ? cleaned : undefined;
     }
-    return hasKeys ? cleaned : undefined;
-  }
 
-  return val;
+    return val;
+  },
 };
 
-const escapeTextSearch = (query) => {
-  if (!query) return "";
-  const cleanQuery = query.toString().trim();
-  return cleanQuery.startsWith('"') && cleanQuery.endsWith('"')
-    ? cleanQuery
-    : `"${cleanQuery}"`;
+const searchUtils = {
+  escapeTextSearch: (query) => {
+    if (!query) return "";
+    const cleanQuery = query.toString().trim();
+    return cleanQuery.startsWith('"') && cleanQuery.endsWith('"')
+      ? cleanQuery
+      : `"${cleanQuery}"`;
+  },
 };
 
-const doubleExponentialSmoothing = (data, forecastPeriods = 3, alpha = 0.4, beta = 0.3) => {
-  if (data.length < 2) {
-    const avg = data.length === 1 ? data[0] : 0;
-    return Array(forecastPeriods).fill(avg);
-  }
+const forecastUtils = {
+  doubleExponentialSmoothing: (data, forecastPeriods = 3, alpha = 0.4, beta = 0.3) => {
+    if (data.length < 2) {
+      const avg = data.length === 1 ? data[0] : 0;
+      return Array(forecastPeriods).fill(avg);
+    }
 
-  let level = data[1];
-  let trend = data[1] - data[0];
+    let level = data[1];
+    let trend = data[1] - data[0];
 
-  for (let i = 2; i < data.length; i++) {
-    const lastLevel = level;
-    level = alpha * data[i] + (1 - alpha) * (level + trend);
-    trend = beta * (level - lastLevel) + (1 - beta) * trend;
-  }
+    for (let i = 2; i < data.length; i++) {
+      const lastLevel = level;
+      level = alpha * data[i] + (1 - alpha) * (level + trend);
+      trend = beta * (level - lastLevel) + (1 - beta) * trend;
+    }
 
-  const forecast = [];
-  for (let m = 1; m <= forecastPeriods; m++) {
-    forecast.push(level + m * trend);
-  }
+    const forecast = [];
+    for (let m = 1; m <= forecastPeriods; m++) {
+      forecast.push(level + m * trend);
+    }
 
-  return forecast;
+    return forecast;
+  },
 };
 
-module.exports = { dateUtils, moneyUtils, cleanPayloadForAi, escapeTextSearch, doubleExponentialSmoothing };
+const billUtils = {
+  calculateGrandTotal: (bill = {}) =>
+    Number(bill.total || 0) +
+    Number(bill.totalTax || 0) +
+    Number(bill.shippingCharges || 0),
+};
+
+module.exports = { dateUtils, moneyUtils, aiUtils, searchUtils, forecastUtils, billUtils };
+
+
 

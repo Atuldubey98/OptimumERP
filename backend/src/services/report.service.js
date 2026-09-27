@@ -13,7 +13,7 @@ const Transaction = require("../models/transaction.model");
 const Expense = require("../models/expense.model");
 const settingService = require("./setting.service");
 const { Types } = require("mongoose");
-const { dateUtils } = require("../utils");
+const { dateUtils, billUtils } = require("../utils");
 const { getPaginationParams } = require("./crud.service");
 
 exports.makeReportExcelBuffer = async ({
@@ -143,10 +143,7 @@ exports.makeReportExcelBuffer = async ({
         acc.totalTax += Number(item.totalTax || 0);
         acc.total += Number(item.total || 0);
         acc.shippingCharges += Number(item.shippingCharges || 0);
-        acc.grandTotal +=
-          Number(item.total || 0) +
-          Number(item.totalTax || 0) +
-          Number(item.shippingCharges || 0);
+        acc.grandTotal += billUtils.calculateGrandTotal(item);
         return acc;
       },
       { totalTax: 0, total: 0, shippingCharges: 0, grandTotal: 0 },

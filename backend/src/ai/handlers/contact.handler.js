@@ -2,7 +2,7 @@ const { isValidObjectId } = require("mongoose");
 const { contactDto } = require("../../dto/contact.dto");
 const contactService = require("../../services/contact.service");
 const { ContactNotFound } = require("../../errors/contact.error");
-const { escapeTextSearch } = require("../../utils");
+const { searchUtils } = require("../../utils");
 
 const formalizeContactForAi = (contact) => {
   return {
@@ -34,7 +34,7 @@ const contactHandler = {
       filter.party = params.party;
     }
     if (params.query && params.query.trim()) {
-      filter.$text = { $search: escapeTextSearch(params.query) };
+      filter.$text = { $search: searchUtils.escapeTextSearch(params.query) };
     }
 
     const contacts = await contactService.getAll({

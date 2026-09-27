@@ -2,6 +2,7 @@ const PaymentVoucher = require("../models/paymentVoucher.model");
 const Transaction = require("../models/transaction.model");
 const Setting = require("../models/settings.model");
 const OrgModel = require("../models/org.model");
+const { billUtils } = require("../utils");
 
 const getNextSequence = async (orgId, session) => {
   const setting = await Setting.findOneAndUpdate(
@@ -20,7 +21,7 @@ const getNextSequence = async (orgId, session) => {
 };
 
 const updateDocPaymentStatus = async ({ doc }) => {
-  const grandTotal = (doc.total || 0) + (doc.totalTax || 0) + (doc.shippingCharges || 0);
+  const grandTotal = billUtils.calculateGrandTotal(doc);
   const totalPaid = doc.paymentVoucherBalance || 0;
 
   doc.status = totalPaid >= grandTotal ? "paid" : "unpaid";

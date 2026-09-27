@@ -5,7 +5,7 @@ const Quotes = require("../models/quotes.model");
 const Party = require("../models/party.model");
 const Expense = require("../models/expense.model");
 const Purchase = require("../models/purchase.model");
-const { dateUtils, doubleExponentialSmoothing } = require("../utils");
+const { dateUtils, forecastUtils } = require("../utils");
 const cacheService = require("./cache.service");
 const settingService = require("./setting.service");
 
@@ -321,7 +321,7 @@ async function getSalesForecast(orgId, forecastMonths = 3) {
   }));
 
   const salesValues = history.map(h => h.sales);
-  const forecastedValues = doubleExponentialSmoothing(salesValues, forecastMonths);
+  const forecastedValues = forecastUtils.doubleExponentialSmoothing(salesValues, forecastMonths);
 
   const forecast = [];
   let lastYear, lastMonth;

@@ -2,7 +2,7 @@ const { streamText, tool, jsonSchema } = require("ai");
 const getHandler = require("./handlers");
 const rawTools = require("./tools");
 const logger = require("../logger");
-const { cleanPayloadForAi } = require("../utils");
+const { aiUtils } = require("../utils");
 const { getProvider } = require("./providers");
 
 const toolDisplayMap = {
@@ -146,7 +146,7 @@ const buildSdkTools = (body, onProgress) => {
 
           return {
             success: true,
-            data: cleanPayloadForAi(result) ?? {},
+            data: aiUtils.cleanPayloadForAi(result) ?? {},
             _downloads: result?.downloads || [],
           };
         } catch (error) {

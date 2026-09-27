@@ -3,7 +3,7 @@ const logger = require("../logger");
 const OrgModel = require("../models/org.model");
 const Party = require("../models/party.model");
 const { executeMongoDbTransaction } = require("./crud.service");
-const { escapeTextSearch } = require("../utils");
+const { searchUtils } = require("../utils");
 
 
 exports.create = async (body, session = null) => {
@@ -26,7 +26,7 @@ exports.findOne = async (params) => {
     const filter = { org: params.org };
     if (mongoose.Types.ObjectId.isValid(params.partyId)) filter._id = params.partyId;
     if (params.name) {
-        filter["$text"] = { $search: escapeTextSearch(params.name) };
+        filter["$text"] = { $search: searchUtils.escapeTextSearch(params.name) };
     }
     const party = await Party.findOne(filter).select(params?.select).lean().exec();
     return party;

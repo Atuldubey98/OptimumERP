@@ -1,3 +1,4 @@
+const { billUtils } = require("../utils");
 
 const DEFAULT_GSTR_TAX_CATEGORIES = [];
 const PREFERRED_TAX_CATEGORY_ORDER = [
@@ -13,10 +14,7 @@ const PREFERRED_TAX_CATEGORY_ORDER = [
 
 const formatAmount = (value = 0, decimalDigits = 2) => (Number(value || 0) / Math.pow(10, decimalDigits)).toFixed(decimalDigits);
 
-const getGrandTotal = (item = {}) =>
-  Number(item.total || 0) +
-  Number(item.totalTax || 0) +
-  Number(item.shippingCharges || 0);
+const getGrandTotal = (item = {}) => billUtils.calculateGrandTotal(item);
 
 const formatDate = (value) =>
   value
