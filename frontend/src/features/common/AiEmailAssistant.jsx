@@ -12,10 +12,12 @@ import {
 import { useState } from "react";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import useGenerate from "../../hooks/useGenerate";
+import useCurrentOrgCurrency from "../../hooks/useCurrentOrgCurrency";
 
 export default function AiEmailAssistant({ bill, billType, isBotEnabled, recipientNames, onApplyDraft, showAiAssist, setShowAiAssist }) {
   const [customPrompt, setCustomPrompt] = useState("");
   const { generate, status: aiStatus, error: aiError, result: aiResult, setResult: setAiResult } = useGenerate();
+  const { formatSmallestUnitWithSymbol } = useCurrentOrgCurrency();
   const toast = useToast();
 
   const getBillGrandTotal = () =>
@@ -24,7 +26,7 @@ export default function AiEmailAssistant({ bill, billType, isBotEnabled, recipie
     Number(bill?.shippingCharges || 0);
 
   const getBusinessContext = () => {
-    const totalAmount = getBillGrandTotal();
+    const totalAmount = formatSmallestUnitWithSymbol(getBillGrandTotal());
     return `Doc:${billType},No:${bill?.num || ''},Client:${bill?.party?.name || ''},Amt:${totalAmount},To:${recipientNames || ''}`;
   };
 

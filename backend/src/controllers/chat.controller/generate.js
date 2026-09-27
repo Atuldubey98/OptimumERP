@@ -11,7 +11,7 @@ const generate = async (req, res) => {
     context: Joi.string().allow("").optional()
   }).validateAsync(req.body);
 
-  const { ai, defaultModel, settings } = await aiFactory.getAIInstanceForProvider(orgId);
+  const { ai, defaultModel, settings } = await aiFactory.getAIInstanceForProvider(orgId, body.providerId);
 
   if (!ai) {
     throw new AiProviderNotFound();
@@ -22,18 +22,19 @@ const generate = async (req, res) => {
     businessContext: body.context
   }).build();
 
-  const { response } = await ai.chat(defaultModel, {
+  const { text } = await ai.stream(body.model || defaultModel, {
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: body.prompt }
     ],
-    options: { tools: [] }
+    tools: false,
+    body: { org: orgId, createdBy: req.session?.user?._id }
   });
 
   return res.status(200).json({
     success: true,
     data: {
-      result: response.content
+      result: text
     }
   });
 };

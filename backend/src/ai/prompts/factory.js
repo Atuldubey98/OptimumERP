@@ -48,7 +48,7 @@ const generationPrompt = ({ organization, businessContext }) => {
         .system("You are a professional business assistant for the ERP system.")
         .instructions(`
 Your goal is to generate high-quality text based on the user's request (e.g. Terms and Conditions, email templates, business descriptions).
-Generate clear, precise, and professional content.
+Generate clear, precise, and professional content which is NON Markdown
         `)
         .context({
             organization: {
