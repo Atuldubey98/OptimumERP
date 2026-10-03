@@ -4,31 +4,42 @@ const { getPaginationParams, hasUserReachedCreationLimits } = require("../../ser
 const { getTaxListForOrg } = require("../../services/tax.service");
 
 const listAll = async (req, res) => {
-  const shouldPaginate = req.params.paginate;
+  const reachedLimit = hasUserReachedCreationLimits({
+    relatedDocsCount: res.locals.organization.relatedDocsCount,
+    userLimits: req.session.user.limits,
+    key: "taxes",
+  });
+
+  if (!req.query.search) {
+    const taxes = await getTaxListForOrg(req.params.orgId);
+    return res.status(200).json({
+      data: taxes,
+      total: taxes.length,
+      limit: taxes.length,
+      page: 1,
+      skip: 0,
+      totalPages: 1,
+      reachedLimit,
+    });
+  }
+
   const { filter, total, limit, page, skip, totalPages } =
     await getPaginationParams({
       model: Tax,
       modelName: TAXES,
-     query : req.query,
-      params :req.params,
-      shouldPaginate,
+      query: req.query,
+      params: req.params,
+      shouldPaginate: req.params.paginate,
     });
-  const shouldUseCachedOrgTaxList = !req.query.search;
-  const taxes = shouldUseCachedOrgTaxList
-    ? await getTaxListForOrg(req.params.orgId)
-    : await Tax.find(filter).populate("children").lean();
+  const taxes = await Tax.find(filter).populate("children").lean();
   return res.status(200).json({
     data: taxes,
-    total: shouldUseCachedOrgTaxList ? taxes.length : total,
+    total,
     limit,
     page,
     skip,
-    totalPages: shouldUseCachedOrgTaxList ? Math.ceil(taxes.length / limit) : totalPages,
-    reachedLimit: hasUserReachedCreationLimits({
-      relatedDocsCount: res.locals.organization.relatedDocsCount,
-      userLimits: req.session.user.limits,
-      key: "taxes",
-    }),
+    totalPages,
+    reachedLimit,
   });
 };
 
