@@ -10,7 +10,6 @@ import {
   Text,
   Tooltip,
   useColorModeValue,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 

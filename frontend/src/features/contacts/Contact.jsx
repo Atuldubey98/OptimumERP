@@ -60,15 +60,13 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
       key={item._id}
       borderRadius="2xl"
       h="100%"
-      transition="all 0.2s"
-      _hover={{ shadow: "md", transform: "translateY(-2px)" }}
     >
       <CardHeader>
         <Flex justifyContent="space-between" gap={4} alignItems="flex-start">
           <HStack spacing={3} align="flex-start" minW="0" flex={1}>
             <Avatar size="md" name={item.name} />
             <Box minW="0" flex={1}>
-              <CopyableText value={item._id}>
+              <CopyableText value={item._id} display="block" pb={1}>
                 <Text
                   noOfLines={2}
                   textOverflow="ellipsis"
@@ -79,7 +77,7 @@ export default function Contact({ item, onDeleteContact, onEditContact }) {
                   {item.name}
                 </Text>
               </CopyableText>
-              <CopyableText value={item.telephone}>
+              <CopyableText value={item.telephone} display="block" pt={1}>
                 <Link noOfLines={1} href={`tel:${item.telephone}`} color={subtleTextColor}>
                   {item.telephone}
                 </Link>
