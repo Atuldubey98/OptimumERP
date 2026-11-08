@@ -129,31 +129,6 @@ const searchUtils = {
   },
 };
 
-const forecastUtils = {
-  doubleExponentialSmoothing: (data, forecastPeriods = 3, alpha = 0.4, beta = 0.3) => {
-    if (data.length < 2) {
-      const avg = data.length === 1 ? data[0] : 0;
-      return Array(forecastPeriods).fill(avg);
-    }
-
-    let level = data[1];
-    let trend = data[1] - data[0];
-
-    for (let i = 2; i < data.length; i++) {
-      const lastLevel = level;
-      level = alpha * data[i] + (1 - alpha) * (level + trend);
-      trend = beta * (level - lastLevel) + (1 - beta) * trend;
-    }
-
-    const forecast = [];
-    for (let m = 1; m <= forecastPeriods; m++) {
-      forecast.push(level + m * trend);
-    }
-
-    return forecast;
-  },
-};
-
 const billUtils = {
   calculateGrandTotal: (bill = {}) =>
     Number(bill.total || 0) +
@@ -161,7 +136,7 @@ const billUtils = {
     Number(bill.shippingCharges || 0),
 };
 
-module.exports = { dateUtils, moneyUtils, aiUtils, searchUtils, forecastUtils, billUtils };
+module.exports = { dateUtils, moneyUtils, aiUtils, searchUtils, billUtils };
 
 
 

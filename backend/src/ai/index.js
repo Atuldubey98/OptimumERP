@@ -27,7 +27,6 @@ const toolDisplayMap = {
   get_activity_log: "Fetching history...",
   get_business_stats: "Fetching business performance data...",
   list_document_vouchers: "Fetching list of vouchers...",
-  forecast_sales: "Predicting business...",
 };
 
 const getToolCapabilities = () => {
