@@ -12,10 +12,10 @@ import {
   IconButton,
   Spacer,
 } from "@chakra-ui/react";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import { FiMessageSquare, FiChevronLeft, FiClock, FiTrash2 } from "react-icons/fi";
 import moment from "moment";
-import MessageItem from "../bot/MessageItem";
+import MessageItem, { groupChatMessages } from "../bot/MessageItem";
 
 const ChatWindow = ({ 
   chatId, 
@@ -32,6 +32,11 @@ const ChatWindow = ({
   const messageAreaBg = useColorModeValue("gray.50", "#131720");
   const headerBorderColor = useColorModeValue("gray.100", "whiteAlpha.100");
 
+  const displayMessages = useMemo(
+    () => groupChatMessages(currentChat?.messages),
+    [currentChat?.messages]
+  );
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -39,7 +44,7 @@ const ChatWindow = ({
         behavior: "smooth",
       });
     }
-  }, [currentChat?.messages]);
+  }, [displayMessages]);
 
   if (!chatId) {
     return (
@@ -112,7 +117,7 @@ const ChatWindow = ({
 
       <Box flex={1} overflowY="auto" p={4} ref={scrollRef} bg={messageAreaBg}>
         <VStack align="stretch" spacing={4}>
-          {currentChat?.messages?.filter(msg=>msg.role !== "tool").map((msg, idx) => (
+          {displayMessages.map((msg, idx) => (
             <MessageItem key={idx} msg={msg} formatTime={formatTime} />
           ))}
         </VStack>

@@ -31,6 +31,70 @@ const toolDisplayMap = {
 };
 import { baseURL } from "../../instance";
 
+export const groupChatMessages = (messages = []) => {
+  if (!Array.isArray(messages)) return [];
+
+  const grouped = [];
+  let pendingToolCalls = [];
+  let pendingDownloads = [];
+
+  for (const msg of messages) {
+    if (msg.role === "tool") {
+      continue;
+    }
+
+    if (msg.role === "assistant" || msg.role === "ai") {
+      if (msg.tool_calls && msg.tool_calls.length > 0) {
+        pendingToolCalls.push(...msg.tool_calls);
+      }
+      if (msg.downloads && msg.downloads.length > 0) {
+        pendingDownloads.push(...msg.downloads);
+      }
+
+      if (!msg.content && !msg.streaming) {
+        continue;
+      }
+
+      const combinedDownloads = pendingDownloads.length > 0
+        ? [...pendingDownloads, ...(msg.downloads || [])]
+        : msg.downloads;
+
+      grouped.push({
+        ...msg,
+        tool_calls: pendingToolCalls.length > 0 ? pendingToolCalls : msg.tool_calls,
+        downloads: combinedDownloads,
+      });
+      pendingToolCalls = [];
+      pendingDownloads = [];
+      continue;
+    }
+
+    if (pendingToolCalls.length > 0) {
+      grouped.push({
+        role: "assistant",
+        content: "",
+        tool_calls: pendingToolCalls,
+        downloads: pendingDownloads.length > 0 ? pendingDownloads : undefined,
+      });
+      pendingToolCalls = [];
+      pendingDownloads = [];
+    }
+
+    grouped.push(msg);
+  }
+
+  if (pendingToolCalls.length > 0) {
+    grouped.push({
+      role: "assistant",
+      content: "",
+      tool_calls: pendingToolCalls,
+      downloads: pendingDownloads.length > 0 ? pendingDownloads : undefined,
+    });
+  }
+
+  return grouped;
+};
+
 const MessageItem = memo(({ msg, formatTime, onSelectIceBreaker, isLast, isIcebreakersLoading }) => {
   const toolBg = useColorModeValue("blue.50", "whiteAlpha.100");
   const toolBorder = useColorModeValue("blue.100", "whiteAlpha.200");
@@ -73,24 +137,29 @@ const MessageItem = memo(({ msg, formatTime, onSelectIceBreaker, isLast, isIcebr
             ))}
           </Flex>
         )}
-        <Box 
-          p={3} 
-          borderRadius="xl" 
-          bg={msg.role === "user" ? "blue.500" : "gray.700"} 
-          color="white" 
-          boxShadow="sm" 
-          _light={{ 
-            bg: msg.role === "user" ? "blue.600" : "white", 
-            color: msg.role === "user" ? "white" : "gray.800", 
-            borderWidth: msg.role !== "user" ? "1px" : "0px", 
-            borderColor: "gray.200" 
-          }}
-          maxW="100%"
-          overflow="hidden"
-        >
-          {msg.content && <MarkdownRenderer content={msg.content} />}
-          {!msg.content && msg.tool_calls && <Text fontSize="xs" fontStyle="italic" opacity={0.8}>Processing request...</Text>}
-        </Box>
+        {(msg.content || msg.streaming) && (
+          <Box 
+            p={3} 
+            borderRadius="xl" 
+            bg={msg.role === "user" ? "blue.500" : "gray.700"} 
+            color="white" 
+            boxShadow="sm" 
+            _light={{ 
+              bg: msg.role === "user" ? "blue.600" : "white", 
+              color: msg.role === "user" ? "white" : "gray.800", 
+              borderWidth: msg.role !== "user" ? "1px" : "0px", 
+              borderColor: "gray.200" 
+            }}
+            maxW="100%"
+            overflow="hidden"
+          >
+            {msg.content ? (
+              <MarkdownRenderer content={msg.content} />
+            ) : (
+              <Text fontSize="xs" fontStyle="italic" opacity={0.8}>Processing request...</Text>
+            )}
+          </Box>
+        )}
         {msg.downloads && msg.downloads.length > 0 && (
           <VStack align="stretch" spacing={2} width="100%" mt={1.5}>
             {msg.downloads.map((download, idx) => {

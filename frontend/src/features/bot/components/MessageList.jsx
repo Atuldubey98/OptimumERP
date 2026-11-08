@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import MessageItem from "../MessageItem";
+import MessageItem, { groupChatMessages } from "../MessageItem";
 
 const MessageList = ({ messages, formatTime, onSelectIceBreaker, isIcebreakersLoading }) => {
+  const displayMessages = useMemo(() => groupChatMessages(messages), [messages]);
+
   return (
     <AnimatePresence initial={false}>
-      {messages.map((msg, i) => (
+      {displayMessages.map((msg, i) => (
         <motion.div
           key={msg.id || `${i}-${msg.timestamp}`}
           initial={{ opacity: 0, y: 10 }}
@@ -16,8 +18,8 @@ const MessageList = ({ messages, formatTime, onSelectIceBreaker, isIcebreakersLo
             msg={msg}
             formatTime={formatTime}
             onSelectIceBreaker={onSelectIceBreaker}
-            isLast={i === messages.length - 1}
-            isIcebreakersLoading={isIcebreakersLoading && i === messages.length - 1}
+            isLast={i === displayMessages.length - 1}
+            isIcebreakersLoading={isIcebreakersLoading && i === displayMessages.length - 1}
           />
         </motion.div>
       ))}
