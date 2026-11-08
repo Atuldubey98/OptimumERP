@@ -48,12 +48,12 @@ const buildGstrHeader = ({ dateLabel, numberLabel, taxCategoryKeys }) => {
     partyName: "Party Name",
     date: dateLabel,
     num: numberLabel,
+    total: "Total",
   };
   taxCategoryKeys.forEach((key) => {
     header[key] = key.toUpperCase();
   });
   header.totalTax = "Total Tax";
-  header.total = "Total";
   header.shippingCharges = "Shipping Charges";
   header.grandTotal = "Grand Total";
   return header;
@@ -142,9 +142,9 @@ const reportDataByType = {
       num: item.num,
       date: formatDate(item.date),
       gstNo: item.party?.gstNo,
+      total: formatAmount(item.total, decimalDigits),
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories, decimalDigits),
       totalTax: formatAmount(item.totalTax, decimalDigits),
-      total: formatAmount(item.total, decimalDigits),
       shippingCharges: formatAmount(item.shippingCharges, decimalDigits),
       grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
     }),
@@ -186,9 +186,9 @@ const reportDataByType = {
       num: item.num,
       gstNo: item.party?.gstNo,
       date: formatDate(item.date),
+      total: formatAmount(item.total, decimalDigits),
       ...mapTaxCategoryValues(taxCategoryKeys, item.taxCategories, decimalDigits),
       totalTax: formatAmount(item.totalTax, decimalDigits),
-      total: formatAmount(item.total, decimalDigits),
       shippingCharges: formatAmount(item.shippingCharges, decimalDigits),
       grandTotal: formatAmount(getGrandTotal(item), decimalDigits),
     }),

@@ -83,6 +83,9 @@ export default function ReportItem() {
       partyName: t("report_ui.table.headers.gstr.party_name"),
       date: dateLabel,
       num: numberLabel,
+      total: t("report_ui.table.headers.gstr.total", {
+        defaultValue: "Total",
+      }),
     };
     taxCategoryKeys.forEach((key) => {
       header[key] = t(`tax_ui.category_options.${key}`, {
@@ -102,14 +105,15 @@ export default function ReportItem() {
         gstNo: item.party?.gstNo,
         date: formatReportDate(item.date),
         num: item.num,
+        total: formatSmallestUnitWithSymbol(item.total),
         ...Object.fromEntries(
           taxCategoryKeys.map((key) => [
             key,
             formatSmallestUnitWithSymbol(getTaxCategoryAmount(item.taxCategories, key)),
           ])
         ),
-        grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
         totalTax: formatSmallestUnitWithSymbol(item.totalTax),
+        grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
       }),
     };
   };

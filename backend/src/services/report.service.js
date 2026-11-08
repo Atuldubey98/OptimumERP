@@ -97,7 +97,7 @@ exports.makeReportExcelBuffer = async ({
             !isNaN(Number(value)))
         ) {
           const numValue = Number(value);
-          if (priceFields.includes(key)) {
+          if (priceFields.includes(key) || taxCategoryKeys.includes(key)) {
             cell.number(numValue).style(numberStyle);
           } else {
             cell.number(numValue); // Default formatting for other numbers (e.g. quantity)
@@ -144,6 +144,9 @@ exports.makeReportExcelBuffer = async ({
         acc.total += Number(item.total || 0);
         acc.shippingCharges += Number(item.shippingCharges || 0);
         acc.grandTotal += billUtils.calculateGrandTotal(item);
+        taxCategoryKeys.forEach((key) => {
+          acc[key] = (acc[key] || 0) + Number(item.taxCategories?.[key] || 0);
+        });
         return acc;
       },
       { totalTax: 0, total: 0, shippingCharges: 0, grandTotal: 0 },
@@ -162,7 +165,9 @@ exports.makeReportExcelBuffer = async ({
       const cell = ws.cell(summaryRowIndex, index + 1);
       if (index === 0) {
         cell.string("TOTAL").style(mergedSummaryStyle);
-      } else if (["totalTax", "total", "shippingCharges", "grandTotal"].includes(key)) {
+      } else if (
+        ["totalTax", "total", "shippingCharges", "grandTotal", ...taxCategoryKeys].includes(key)
+      ) {
         cell.number(Number(formatAmount(totals[key]))).style(mergedSummaryStyle);
       }
     });
