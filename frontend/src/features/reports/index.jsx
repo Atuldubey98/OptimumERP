@@ -1,20 +1,13 @@
-import { Box, Flex, Heading, Text, useDisclosure } from "@chakra-ui/react";
-import { RiMenuFill } from "react-icons/ri";
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import MainLayout from "../common/main-layout";
 import ReportItem from "./ReportItem";
-import SideReportDrawer from "./SideReportDrawer";
+import ReportNavPills from "./ReportNavPills";
+import BackButtonHeader from "../common/table-layout/BackButtonHeader";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
+
 export default function Reportspage() {
   const { t } = useTranslation("report");
-  const {
-    isOpen: isMenuOpen,
-    onClose: closeMenu,
-    onOpen: openMenu,
-  } = useDisclosure({
-    defaultIsOpen: false,
-  });
   const { reportType } = useParams();
   const reportTypes = {
     sale: t("report_ui.report_names.sale"),
@@ -25,32 +18,26 @@ export default function Reportspage() {
     profitAndLoss: t("report_ui.report_names.profitAndLoss"),
   };
   const reportName = reportTypes[reportType];
+
   return (
-    <>
-      <Box maxW="100vw" overflowX="hidden">
-        <Box p={3} width={"100%"}>
-          <Flex justifyContent={"flex-start"} gap={5} alignItems={"center"}>
-            <RiMenuFill size={20} onClick={openMenu} cursor={"pointer"} />
-            <Heading textTransform={"capitalize"} fontSize={"xl"}>
-              {reportName}
-            </Heading>
-          </Flex>
-        </Box>
-        {reportName ? (
-          <ReportItem />
-        ) : (
-          <Flex
-            h={"50svh"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            flexDir={"column"}
-          >
-            <HiOutlineDocumentReport size={65} />
-            <Heading fontSize={"xl"}>{t("report_ui.page.not_found")}</Heading>
-          </Flex>
-        )}
-      </Box>
-      <SideReportDrawer isOpen={isMenuOpen} onClose={closeMenu} />
-    </>
+    <Box p={4}>
+      <Flex justifyContent="flex-start" alignItems="center" mb={4}>
+        <BackButtonHeader heading={reportName} />
+      </Flex>
+      <ReportNavPills />
+      {reportName ? (
+        <ReportItem />
+      ) : (
+        <Flex
+          h="50svh"
+          justifyContent="center"
+          alignItems="center"
+          flexDir="column"
+        >
+          <HiOutlineDocumentReport size={65} />
+          <Heading fontSize="xl">{t("report_ui.page.not_found")}</Heading>
+        </Flex>
+      )}
+    </Box>
   );
 }
