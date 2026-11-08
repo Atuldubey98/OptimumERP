@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import useAuth from "./useAuth";
-import instance from "../instance";
+import instance, { baseURL } from "../instance";
 import { useIndexedDB } from "./useIndexedDB";
 
 export const useChatSocket = (orgId, providerId) => {
@@ -16,7 +16,7 @@ export const useChatSocket = (orgId, providerId) => {
   const [isTyping, setIsTyping] = useState(false);
   const [statusMsg, setStatusMsg] = useState("Assistant is thinking...");
 
-  const socket = useRef(null);
+  const abortControllerRef = useRef(null);
   const statusQueue = useRef([]);
   const isProcessingQueue = useRef(false);
 
@@ -46,7 +46,15 @@ export const useChatSocket = (orgId, providerId) => {
     }
   }, [messages, userId, saveChatHistory]);
 
-  const processStatusQueue = () => {
+  useEffect(() => {
+    if (orgId && providerId) {
+      setIsConnected(true);
+    } else {
+      setIsConnected(false);
+    }
+  }, [orgId, providerId]);
+
+  const processStatusQueue = useCallback(() => {
     if (isProcessingQueue.current || statusQueue.current.length === 0) return;
 
     isProcessingQueue.current = true;
@@ -57,154 +65,177 @@ export const useChatSocket = (orgId, providerId) => {
       isProcessingQueue.current = false;
       processStatusQueue();
     }, 800);
-  };
+  }, []);
 
-  useEffect(() => {
-    let reconnectionTimer;
-    let retryDelay = 1000;
-    const MAX_RETRY_DELAY = 30000;
+  const handleEventData = useCallback((data) => {
+    if (data.event === "ready" || data.event === "chat_switched") {
+      setActiveChatId(data.chatId);
 
-    const connect = () => {
-      if (!orgId || !providerId) return;
-      const wsUrl = `${import.meta.env.VITE_WS_URL}?orgId=${orgId}&providerId=${providerId}`;
-      socket.current = new WebSocket(wsUrl);
-
-      socket.current.onopen = () => {
-        setIsConnected(true);
-        retryDelay = 1000;
-      };
-
-      socket.current.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-
-          if (data.event === "ready" || data.event === "chat_switched") {
-            setActiveChatId(data.chatId);
-
-          } else if (data.event === "stream_chunk") {
-            setIsTyping(true);
-            setMessages((prev) => {
-              const last = prev[prev.length - 1];
-              if (last?.role === "ai" && last?.streaming) {
-                return [
-                  ...prev.slice(0, -1),
-                  { ...last, content: last.content + data.content },
-                ];
-              }
-              return [
-                ...prev,
-                {
-                  role: "ai",
-                  content: data.content,
-                  streaming: true,
-                  timestamp: new Date().toISOString(),
-                  downloads: [],
-                },
-              ];
-            });
-
-          } else if (data.event === "stream_end") {
-            statusQueue.current = [];
-            setMessages((prev) => {
-              const last = prev[prev.length - 1];
-              if (last?.role === "ai" && last?.streaming) {
-                return [
-                  ...prev.slice(0, -1),
-                  {
-                    ...last,
-                    content: data.aborted ? "Generation stopped." : last.content,
-                    streaming: false,
-                    downloads: data.downloads || [],
-                  },
-                ];
-              }
-              if (data.aborted) return prev;
-              return [
-                ...prev,
-                {
-                  role: "ai",
-                  content: data.message || "",
-                  streaming: false,
-                  timestamp: new Date().toISOString(),
-                  downloads: data.downloads || [],
-                },
-              ];
-            });
-            setIsTyping(false);
-            setStatusMsg("Assistant is thinking...");
-
-          } else if (data.event === "ai_response" || data.type === "message") {
-            statusQueue.current = [];
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: "ai",
-                content: data.message || data.content,
-                timestamp: new Date().toISOString(),
-                downloads: data.downloads || [],
-              },
-            ]);
-            setIsTyping(false);
-            setStatusMsg("Assistant is thinking...");
-
-          } else if (data.type === "status" || data.event === "status") {
-            statusQueue.current.push(data.message || data.content);
-            processStatusQueue();
-          }
-        } catch (err) {
-          setIsTyping(false);
-          setStatusMsg("Assistant is thinking...");
-        }
-      };
-
-      socket.current.onclose = () => {
-        setIsConnected(false);
-        reconnectionTimer = setTimeout(() => {
-          retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY);
-          connect();
-        }, retryDelay + Math.random() * 500);
-      };
-    };
-
-    connect();
-    return () => {
-      if (socket.current) {
-        socket.current.onclose = null;
-        socket.current.onerror = null;
-        socket.current.close();
-      }
-      clearTimeout(reconnectionTimer);
-    };
-
-  }, [orgId, providerId]);
-
-  const sendMessage = (payload, userMessage) => {
-    if (socket.current && isConnected) {
+    } else if (data.event === "stream_chunk") {
       setIsTyping(true);
-      statusQueue.current = [];
-      setStatusMsg("Assistant is thinking...");
-      socket.current.send(JSON.stringify(payload));
-      setMessages((prev) => [...prev, userMessage]);
-    }
-  };
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "ai" && last?.streaming) {
+          return [
+            ...prev.slice(0, -1),
+            { ...last, content: last.content + data.content },
+          ];
+        }
+        return [
+          ...prev,
+          {
+            role: "ai",
+            content: data.content,
+            streaming: true,
+            timestamp: new Date().toISOString(),
+            downloads: [],
+          },
+        ];
+      });
 
-  const clearHistory = async (model, providerId) => {
+    } else if (data.event === "stream_end") {
+      statusQueue.current = [];
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "ai" && last?.streaming) {
+          return [
+            ...prev.slice(0, -1),
+            {
+              ...last,
+              content: data.aborted ? "Generation stopped." : last.content,
+              streaming: false,
+              downloads: data.downloads || [],
+            },
+          ];
+        }
+        if (data.aborted) return prev;
+        return [
+          ...prev,
+          {
+            role: "ai",
+            content: data.message || "",
+            streaming: false,
+            timestamp: new Date().toISOString(),
+            downloads: data.downloads || [],
+          },
+        ];
+      });
+      setIsTyping(false);
+      setStatusMsg("Assistant is thinking...");
+
+    } else if (data.event === "ai_response" || data.type === "message") {
+      statusQueue.current = [];
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          content: data.message || data.content,
+          timestamp: new Date().toISOString(),
+          downloads: data.downloads || [],
+        },
+      ]);
+      setIsTyping(false);
+      setStatusMsg("Assistant is thinking...");
+
+    } else if (data.type === "status" || data.event === "status") {
+      statusQueue.current.push(data.message || data.content);
+      processStatusQueue();
+    }
+  }, [processStatusQueue]);
+
+  const sendMessage = useCallback((payload, userMessage) => {
+    if (!orgId || !providerId) return;
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setIsTyping(true);
+    statusQueue.current = [];
+    setStatusMsg("Assistant is thinking...");
+    setMessages((prev) => [...prev, userMessage]);
+
+    const url = `${baseURL}/api/v1/organizations/${orgId}/chats/message`;
+
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ ...payload, providerId }),
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            try {
+              const data = JSON.parse(trimmed.slice(5).trim());
+              handleEventData(data);
+            } catch {
+              // skip malformed events
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+        setIsTyping(false);
+        setStatusMsg("Assistant is thinking...");
+      })
+      .finally(() => {
+        if (abortControllerRef.current === controller) {
+          abortControllerRef.current = null;
+        }
+      });
+  }, [orgId, providerId, handleEventData]);
+
+  const clearHistory = async (model, clearProviderId) => {
     await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, {
       model,
       chatId: activeChatId,
-      providerId,
+      providerId: clearProviderId,
     });
     setMessages([]);
     await deleteChatHistory(userId);
   };
 
-  const abortMessage = () => {
-    if (socket.current && isConnected && isTyping) {
-      socket.current.send(JSON.stringify({ event: "abort" }));
+  const abortMessage = useCallback(() => {
+    if (abortControllerRef.current && isTyping) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
       setIsTyping(false);
       setStatusMsg("Generation stopped.");
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "ai" && last?.streaming) {
+          return [
+            ...prev.slice(0, -1),
+            { ...last, content: last.content || "Generation stopped.", streaming: false },
+          ];
+        }
+        return prev;
+      });
     }
-  };
+  }, [isTyping]);
 
   return {
     messages,

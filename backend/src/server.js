@@ -1,10 +1,8 @@
-require("dotenv").config({
+ require("dotenv").config({
   path: process.env.NODE_ENV === "development" ? "../.env.development" : "../.env",
 });
 const { connectDatabase, closeDBConnection } = require("./services/db.service");
 const { MONGO_URI, PORT = 3000 } = require("./config");
-const ws = require("ws");
-const getWsHandler = require("./handlers/ws.handler");
 const app = require("./app");
 const http = require("http");
 const logger = require("./logger");
@@ -13,17 +11,6 @@ const bootstrap = async () => {
   const connection = await connectDatabase(MONGO_URI);
 
   const server = http.createServer(app);
-  const wss = new ws.Server({ noServer: true });
-
-  const { onClose, onMessage, onUpgrade, onConnection } = getWsHandler(wss);
-
-  server.on("upgrade", onUpgrade);
-
-  wss.on('connection', async (socket, request) => {
-    await onConnection(socket, request);
-    socket.on("message", (data) => onMessage(socket, data, request));
-    socket.on("close", onClose);
-  });
 
   try {
     try {

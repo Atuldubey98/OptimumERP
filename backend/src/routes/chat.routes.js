@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const { clearChat, paginate, read, generate, remove, icebreakers } = require("../controllers/chat.controller");
+const { clearChat, paginate, read, generate, remove, icebreakers, sendMessage } = require("../controllers/chat.controller");
 const { checkPlan } = require("../middlewares/auth.middleware");
 const requestAsyncHandler = require("../handlers/requestAsync.handler");
 
 router.use(checkPlan(["platinum"]));
 
+router.post("/message", sendMessage);
 router.post("/clear", requestAsyncHandler(clearChat));
 router.post("/generate", requestAsyncHandler(generate));
 router.post("/icebreakers", requestAsyncHandler(icebreakers));

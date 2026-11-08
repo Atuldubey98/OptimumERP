@@ -4,6 +4,7 @@ const read = require("./read");
 const generate = require("./generate");
 const remove = require("./remove");
 const icebreakers = require("./icebreakers");
+const sendMessage = require("./sendMessage");
 
 module.exports = {
   clearChat,
@@ -12,4 +13,5 @@ module.exports = {
   generate,
   remove,
   icebreakers,
+  sendMessage,
 };
