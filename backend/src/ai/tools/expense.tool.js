@@ -11,6 +11,8 @@ const expenseTools = [
           startDate: { type: "string", description: "Filter by start date (YYYY-MM-DD)." },
           endDate: { type: "string", description: "Filter by end date (YYYY-MM-DD)." },
           date: { type: "string", description: "Filter by a specific date (YYYY-MM-DD)." },
+          page: { type: "number", description: "Page number to retrieve (default is 1)." },
+          limit: { type: "number", description: "Maximum number of results to return (default 10, max 25)." },
         },
       },
     },

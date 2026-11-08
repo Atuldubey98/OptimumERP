@@ -363,14 +363,23 @@ const billHandler = {
         if (params.endDate) filter.date.$lte = new Date(params.endDate);
       }
 
-      const transactions = await Transaction.find(filter)
-        .populate("party")
-        .populate("doc")
-        .sort({ date: -1 })
-        .limit(10)
-        .lean();
+      const page = Math.max(parseInt(params.page, 10) || 1, 1);
+      const limit = Math.min(Math.max(parseInt(params.limit, 10) || 10, 1), 25);
+      const skip = (page - 1) * limit;
 
-      return transactions.map((t) => {
+      const [total, transactions] = await Promise.all([
+        Transaction.countDocuments(filter),
+        Transaction.find(filter)
+          .select("doc docModel date party total totalTax shippingCharges")
+          .populate("party", "name")
+          .populate("doc", "num status paymentVoucherBalance")
+          .sort({ date: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+      ]);
+
+      const data = transactions.map((t) => {
         const grandTotal = billUtils.calculateGrandTotal(t);
 
         const res = {
@@ -396,6 +405,17 @@ const billHandler = {
 
         return res;
       });
+
+      return {
+        data,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+          hasMore: total > page * limit,
+        },
+      };
     } catch (error) {
       throw error;
     }

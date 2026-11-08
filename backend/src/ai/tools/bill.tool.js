@@ -79,6 +79,14 @@ const billTools = [
           "billNumber": {
             "type": "string",
             "description": "The human-readable number of a specific bill to retrieve details for."
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number to retrieve (default is 1)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results to return (default 10, max 25)."
           }
         },
         "required": [

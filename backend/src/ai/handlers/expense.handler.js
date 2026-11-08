@@ -55,13 +55,31 @@ const expenseHandlers = {
         if (params.endDate) filter.date.$lte = new Date(params.endDate);
       }
 
-      const expenses = await Expense.find(filter)
-        .populate("category")
-        .sort({ date: -1 })
-        .limit(20)
-        .lean();
+      const page = Math.max(parseInt(params.page, 10) || 1, 1);
+      const limit = Math.min(Math.max(parseInt(params.limit, 10) || 10, 1), 25);
+      const skip = (page - 1) * limit;
 
-      return expenses.map(e => formalizeExpenseForAi(e, decimalDigits));
+      const [total, expenses] = await Promise.all([
+        Expense.countDocuments(filter),
+        Expense.find(filter)
+          .select("name amount category date refNo")
+          .populate("category", "name")
+          .sort({ date: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+      ]);
+
+      return {
+        data: expenses.map(e => formalizeExpenseForAi(e, decimalDigits)),
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+          hasMore: total > page * limit,
+        },
+      };
     } catch (error) {
       throw error;
     }

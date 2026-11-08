@@ -3,6 +3,7 @@ const { contactDto } = require("../../dto/contact.dto");
 const contactService = require("../../services/contact.service");
 const { ContactNotFound } = require("../../errors/contact.error");
 const { searchUtils } = require("../../utils");
+const Contact = require("../../models/contacts.model");
 
 const formalizeContactForAi = (contact) => {
   return {
@@ -37,13 +38,31 @@ const contactHandler = {
       filter.$text = { $search: searchUtils.escapeTextSearch(params.query) };
     }
 
-    const contacts = await contactService.getAll({
-      filter,
-      limit: 10,
-      sort: params.query ? { score: { $meta: "textScore" } } : { createdAt: -1 },
-      shouldPaginate: false,
-    });
-    return contacts.map(formalizeContactForAi);
+    const page = Math.max(parseInt(params.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(params.limit, 10) || 10, 1), 25);
+    const skip = (page - 1) * limit;
+
+    const [total, contacts] = await Promise.all([
+      Contact.countDocuments(filter),
+      contactService.getAll({
+        filter,
+        skip,
+        limit,
+        sort: params.query ? { score: { $meta: "textScore" } } : { createdAt: -1 },
+        shouldPaginate: true,
+      }),
+    ]);
+
+    return {
+      data: contacts.map(formalizeContactForAi),
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        hasMore: total > page * limit,
+      },
+    };
   },
   get_contact: async (params) => {
     if (!isValidObjectId(params.contactId)) {

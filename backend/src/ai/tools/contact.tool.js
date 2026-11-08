@@ -68,6 +68,14 @@ const contactTools = [
             type: "string",
             description: "Optional unique ID (ObjectId) of a specific contact to retrieve.",
           },
+          page: {
+            type: "number",
+            description: "Page number to retrieve (default is 1).",
+          },
+          limit: {
+            type: "number",
+            description: "Maximum number of results to return (default 10, max 25).",
+          },
         },
       },
     },

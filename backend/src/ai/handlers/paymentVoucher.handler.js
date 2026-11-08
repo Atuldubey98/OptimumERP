@@ -73,7 +73,10 @@ const findPaymentVoucher = async (params) => {
   if (params.voucherId) filter._id = params.voucherId;
   if (params.voucherNumber) filter.num = params.voucherNumber;
 
-  const voucher = await PaymentVoucher.findOne(filter).populate("party", "name").lean();
+  const voucher = await PaymentVoucher.findOne(filter)
+    .select("num party amount paymentMode date voucherType description refDocModel")
+    .populate("party", "name")
+    .lean();
   if (!voucher) {
     throw new Error("Payment voucher not found");
   }
@@ -88,7 +91,7 @@ const listDocumentVouchers = async (params) => {
   const { org, docNumber, docModel } = params;
 
   const Model = docModel === "invoice" ? Invoice : Purchase;
-  const doc = await Model.findOne({ num: docNumber, org }).lean();
+  const doc = await Model.findOne({ num: docNumber, org }).select("_id").lean();
 
   if (!doc) {
     throw new Error(`${docModel} not found`);
@@ -98,7 +101,10 @@ const listDocumentVouchers = async (params) => {
     org,
     refDoc: doc._id,
     refDocModel: docModel
-  }).populate("party", "name").lean();
+  })
+    .select("num party amount paymentMode date voucherType description refDocModel")
+    .populate("party", "name")
+    .lean();
 
   const displaySetting = await settingService.getDisplaySettingForOrg(org);
   const currencyConfig = await moneyUtils.getCurrencyConfigByCode(displaySetting?.currency || "INR");

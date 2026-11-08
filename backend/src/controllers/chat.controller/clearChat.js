@@ -3,9 +3,9 @@ const Joi = require("joi");
 
 const clearChat = async (req, res) => {
   const { chatId, model, providerId } = await Joi.object({
-    chatId: Joi.string().optional().allow(""),
-    model: Joi.string().optional().allow(""),
-    providerId: Joi.string().optional().allow(""),
+    chatId: Joi.string().optional().allow("", null),
+    model: Joi.string().optional().allow("", null),
+    providerId: Joi.string().optional().allow("", null),
   }).validateAsync(req.body);
 
   const { orgId } = req.params;

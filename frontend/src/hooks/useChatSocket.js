@@ -211,7 +211,7 @@ export const useChatSocket = (orgId, providerId) => {
   const clearHistory = async (model, clearProviderId) => {
     await instance.post(`/api/v1/organizations/${orgId}/chats/clear`, {
       model,
-      chatId: activeChatId,
+      chatId: activeChatId || undefined,
       providerId: clearProviderId,
     });
     setMessages([]);
