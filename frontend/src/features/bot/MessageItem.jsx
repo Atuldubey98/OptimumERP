@@ -55,14 +55,14 @@ export const groupChatMessages = (messages = []) => {
         continue;
       }
 
-      const combinedDownloads = pendingDownloads.length > 0
-        ? [...pendingDownloads, ...(msg.downloads || [])]
-        : msg.downloads;
+      const uniqueDownloads = pendingDownloads.length > 0
+        ? Array.from(new Map(pendingDownloads.map((d) => [d.url || d.name, d])).values())
+        : undefined;
 
       grouped.push({
         ...msg,
         tool_calls: pendingToolCalls.length > 0 ? pendingToolCalls : msg.tool_calls,
-        downloads: combinedDownloads,
+        downloads: uniqueDownloads,
       });
       pendingToolCalls = [];
       pendingDownloads = [];
@@ -70,11 +70,14 @@ export const groupChatMessages = (messages = []) => {
     }
 
     if (pendingToolCalls.length > 0) {
+      const uniqueDownloads = pendingDownloads.length > 0
+        ? Array.from(new Map(pendingDownloads.map((d) => [d.url || d.name, d])).values())
+        : undefined;
       grouped.push({
         role: "assistant",
         content: "",
         tool_calls: pendingToolCalls,
-        downloads: pendingDownloads.length > 0 ? pendingDownloads : undefined,
+        downloads: uniqueDownloads,
       });
       pendingToolCalls = [];
       pendingDownloads = [];
@@ -84,11 +87,14 @@ export const groupChatMessages = (messages = []) => {
   }
 
   if (pendingToolCalls.length > 0) {
+    const uniqueDownloads = pendingDownloads.length > 0
+      ? Array.from(new Map(pendingDownloads.map((d) => [d.url || d.name, d])).values())
+      : undefined;
     grouped.push({
       role: "assistant",
       content: "",
       tool_calls: pendingToolCalls,
-      downloads: pendingDownloads.length > 0 ? pendingDownloads : undefined,
+      downloads: uniqueDownloads,
     });
   }
 
