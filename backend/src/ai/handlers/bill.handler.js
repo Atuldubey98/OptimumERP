@@ -62,6 +62,7 @@ const models = {
     Bill: ProformaInvoice,
     dto: proformaInvoiceDto,
     Duplicate: ProformaInvoiceDuplicate,
+    NotFound: ProformaInvoiceNotFound,
     prefixType: "proformaInvoice",
     relatedDocType: "proformaInvoices",
   },
