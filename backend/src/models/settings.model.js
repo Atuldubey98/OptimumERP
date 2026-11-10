@@ -124,6 +124,10 @@ const settingSchema = new Schema({
     },
   },
   assistant: {
+    enabled: {
+      type: Boolean,
+      default: true,
+    },
     iceBreakers: {
       enabled: {
         type: Boolean,

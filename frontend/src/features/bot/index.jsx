@@ -206,7 +206,8 @@ const ChatWidget = () => {
   const widgetBorder = useColorModeValue("gray.200", "whiteAlpha.200");
   const messageAreaBg = useColorModeValue("gray.50", "#131720");
 
-  if (!orgId) return null;
+  const isBotEnabled = setting?.assistant?.enabled ?? true;
+  if (!orgId || !isBotEnabled) return null;
 
   return (
     <Portal>

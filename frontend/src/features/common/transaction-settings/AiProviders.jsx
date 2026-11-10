@@ -48,6 +48,7 @@ import instance from "../../../instance";
 const AssistantSettingsCard = ({ currentSettings, orgId, onSuccess }) => {
   const toast = useToast();
   const settingContext = useContext(SettingContext);
+  const [botEnabled, setBotEnabled] = useState(true);
   const [enabled, setEnabled] = useState(false);
   const [autogenerate, setAutogenerate] = useState(false);
   const [defaultIceBreakers, setDefaultIceBreakers] = useState([]);
@@ -58,7 +59,9 @@ const AssistantSettingsCard = ({ currentSettings, orgId, onSuccess }) => {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
 
   useEffect(() => {
-    const config = currentSettings?.setting?.assistant?.iceBreakers || {};
+    const assistant = currentSettings?.setting?.assistant || {};
+    setBotEnabled(assistant.enabled ?? true);
+    const config = assistant.iceBreakers || {};
     setEnabled(config.enabled || false);
     setAutogenerate(config.autogenerate || false);
     setDefaultIceBreakers(config.defaultIceBreakers || []);
@@ -81,6 +84,7 @@ const AssistantSettingsCard = ({ currentSettings, orgId, onSuccess }) => {
     try {
       await instance.patch(`/api/v1/organizations/${orgId}/settings`, {
         assistant: {
+          enabled: botEnabled,
           iceBreakers: {
             enabled,
             autogenerate,
@@ -134,71 +138,89 @@ const AssistantSettingsCard = ({ currentSettings, orgId, onSuccess }) => {
 
         <FormControl display="flex" alignItems="center" justifyContent="space-between">
           <Box>
-            <FormLabel fontSize="sm" mb={0}>Enable Ice Breakers</FormLabel>
-            <Text fontSize="xs" color="gray.500">Show starter prompts and follow-up suggestions in chat</Text>
+            <FormLabel fontSize="sm" mb={0}>Enable Chatbot</FormLabel>
+            <Text fontSize="xs" color="gray.500">Show the AI chat assistant across this organization</Text>
           </Box>
           <Switch
             colorScheme="blue"
-            isChecked={enabled}
-            onChange={(e) => setEnabled(e.target.checked)}
+            isChecked={botEnabled}
+            onChange={(e) => setBotEnabled(e.target.checked)}
           />
         </FormControl>
 
-        {enabled && (
-          <Stack spacing={3} pl={3} borderLeftWidth="2px" borderColor="blue.400">
+        {botEnabled && (
+          <>
+            <Divider />
+
             <FormControl display="flex" alignItems="center" justifyContent="space-between">
               <Box>
-                <FormLabel fontSize="sm" mb={0}>Autogenerate with AI</FormLabel>
-                <Text fontSize="xs" color="gray.500">Generate 2-3 dynamic follow-ups after each AI response</Text>
+                <FormLabel fontSize="sm" mb={0}>Enable Ice Breakers</FormLabel>
+                <Text fontSize="xs" color="gray.500">Show starter prompts and follow-up suggestions in chat</Text>
               </Box>
               <Switch
-                colorScheme="teal"
-                isChecked={autogenerate}
-                onChange={(e) => setAutogenerate(e.target.checked)}
+                colorScheme="blue"
+                isChecked={enabled}
+                onChange={(e) => setEnabled(e.target.checked)}
               />
             </FormControl>
 
-            <FormControl>
-              <FormLabel fontSize="sm" mb={1}>Default Ice Breakers ({defaultIceBreakers.length}/3)</FormLabel>
-              <Text fontSize="xs" color="gray.500" mb={2}>Starter prompts shown when beginning a new chat</Text>
-              <HStack spacing={2} mb={2}>
-                <Input
-                  size="sm"
-                  placeholder="e.g. What is my sales revenue this month?"
-                  value={newIceBreaker}
-                  onChange={(e) => setNewIceBreaker(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAdd();
-                    }
-                  }}
-                  isDisabled={defaultIceBreakers.length >= 3}
-                  borderRadius="md"
-                />
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  onClick={handleAdd}
-                  isDisabled={!newIceBreaker.trim() || defaultIceBreakers.length >= 3}
-                >
-                  Add
-                </Button>
-              </HStack>
-              {defaultIceBreakers.length > 0 && (
-                <Wrap spacing={2}>
-                  {defaultIceBreakers.map((item, idx) => (
-                    <WrapItem key={idx}>
-                      <Tag size="sm" colorScheme="blue" borderRadius="full">
-                        <TagLabel maxW="280px" isTruncated>{item}</TagLabel>
-                        <TagCloseButton onClick={() => handleRemove(idx)} />
-                      </Tag>
-                    </WrapItem>
-                  ))}
-                </Wrap>
-              )}
-            </FormControl>
-          </Stack>
+            {enabled && (
+              <Stack spacing={3} pl={3} borderLeftWidth="2px" borderColor="blue.400">
+                <FormControl display="flex" alignItems="center" justifyContent="space-between">
+                  <Box>
+                    <FormLabel fontSize="sm" mb={0}>Autogenerate with AI</FormLabel>
+                    <Text fontSize="xs" color="gray.500">Generate 2-3 dynamic follow-ups after each AI response</Text>
+                  </Box>
+                  <Switch
+                    colorScheme="teal"
+                    isChecked={autogenerate}
+                    onChange={(e) => setAutogenerate(e.target.checked)}
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm" mb={1}>Default Ice Breakers ({defaultIceBreakers.length}/3)</FormLabel>
+                  <Text fontSize="xs" color="gray.500" mb={2}>Starter prompts shown when beginning a new chat</Text>
+                  <HStack spacing={2} mb={2}>
+                    <Input
+                      size="sm"
+                      placeholder="e.g. What is my sales revenue this month?"
+                      value={newIceBreaker}
+                      onChange={(e) => setNewIceBreaker(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAdd();
+                        }
+                      }}
+                      isDisabled={defaultIceBreakers.length >= 3}
+                      borderRadius="md"
+                    />
+                    <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={handleAdd}
+                      isDisabled={!newIceBreaker.trim() || defaultIceBreakers.length >= 3}
+                    >
+                      Add
+                    </Button>
+                  </HStack>
+                  {defaultIceBreakers.length > 0 && (
+                    <Wrap spacing={2}>
+                      {defaultIceBreakers.map((item, idx) => (
+                        <WrapItem key={idx}>
+                          <Tag size="sm" colorScheme="blue" borderRadius="full">
+                            <TagLabel maxW="280px" isTruncated>{item}</TagLabel>
+                            <TagCloseButton onClick={() => handleRemove(idx)} />
+                          </Tag>
+                        </WrapItem>
+                      ))}
+                    </Wrap>
+                  )}
+                </FormControl>
+              </Stack>
+            )}
+          </>
         )}
       </Stack>
     </Box>

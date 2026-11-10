@@ -22,7 +22,7 @@ const icebreakers = async (req, res) => {
 
   const iceBreakers = settings?.assistant?.iceBreakers;
 
-  if (!iceBreakers?.enabled || !iceBreakers?.autogenerate) {
+  if (settings?.assistant?.enabled === false || !iceBreakers?.enabled || !iceBreakers?.autogenerate) {
     return res.status(200).json({
       success: true,
       data: {

@@ -68,6 +68,11 @@ const sendMessage = async (req, res) => {
 
     const { ai, settings, providerType } = await aiFactory.getAIInstanceForProvider(orgId, providerId);
 
+    if (settings?.assistant?.enabled === false) {
+      writeEvent(res, { event: "error", message: "Assistant is disabled for this organization." });
+      return res.end();
+    }
+
     if (!ai) {
       writeEvent(res, { event: "error", message: "Selected AI provider is not available. Please check your settings." });
       return res.end();
