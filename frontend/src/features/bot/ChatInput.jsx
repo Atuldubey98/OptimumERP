@@ -67,9 +67,17 @@ const ChatInput = memo(({
             as={TextareaAutosize}
             minRows={1}
             maxRows={5}
-            placeholder={isListening ? "Listening..." : "Ask me anything..."}
+            placeholder={
+              hasNoProvider
+                ? "Configure an AI provider to start chatting..."
+                : isListening
+                ? "Listening..."
+                : "Ask me anything..."
+            }
             value={input}
+            disabled={hasNoProvider}
             onChange={(e) => {
+              if (hasNoProvider) return;
               let val = e.target.value;
               // Trim leading whitespace
               val = val.replace(/^\s+/, "");
@@ -80,7 +88,7 @@ const ChatInput = memo(({
                 setInput(val);
               }
             }}
-            onKeyDown={handleKeyDown}
+            onKeyDown={hasNoProvider ? undefined : handleKeyDown}
             fontSize="13px"
             width="100%"
             p={3}
@@ -89,6 +97,10 @@ const ChatInput = memo(({
             color="white"
             _light={{ color: "gray.800" }}
             _focus={{ outline: "none" }}
+            _disabled={{
+              cursor: "not-allowed",
+              opacity: 0.6,
+            }}
             style={{ resize: "none" }}
             maxLength={1000}
           />
@@ -106,6 +118,7 @@ const ChatInput = memo(({
                     size="sm"
                     icon={<FiMic size={16} />}
                     onClick={isListening ? stopListening : startListening}
+                    isDisabled={hasNoProvider}
                     color={isListening ? "red.400" : "whiteAlpha.600"}
                     _light={{ color: isListening ? "red.500" : "gray.400" }}
                     _hover={{ bg: "whiteAlpha.200" }}
@@ -121,6 +134,7 @@ const ChatInput = memo(({
                     size="sm"
                     icon={<FiPaperclip size={16} />}
                     onClick={() => fileInputRef.current.click()}
+                    isDisabled={hasNoProvider}
                     color="whiteAlpha.600"
                     _light={{ color: "gray.400" }}
                     _hover={{ bg: "whiteAlpha.200" }}

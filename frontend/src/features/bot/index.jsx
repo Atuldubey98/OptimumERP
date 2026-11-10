@@ -206,7 +206,7 @@ const ChatWidget = () => {
   const widgetBorder = useColorModeValue("gray.200", "whiteAlpha.200");
   const messageAreaBg = useColorModeValue("gray.50", "#131720");
 
-  if (!isConnected) return null;
+  if (!orgId) return null;
 
   return (
     <Portal>
@@ -235,7 +235,8 @@ const ChatWidget = () => {
                   isConnected={isConnected}
                   onToggle={toggleOpen}
                   onReset={onResetOpen}
-                  showReset={messages.length > 0}
+                  showReset={messages.length > 0 && activeProviders.length > 0}
+                  hasProvider={activeProviders.length > 0}
                 />
 
                 <Box flex="1" overflowY="auto" overflowX="hidden" p={4} bg={messageAreaBg} ref={scrollRef}>
