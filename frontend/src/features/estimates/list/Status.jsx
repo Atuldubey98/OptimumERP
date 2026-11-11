@@ -7,8 +7,8 @@ export default function Status({ status, statusList }) {
       size={"md"}
       variant={"solid"}
       colorScheme={
-        statusList.find((statusItem) => statusItem.type === status)
-          .colorScheme || "blue"
+        statusList?.find((statusItem) => statusItem.type === status)
+          ?.colorScheme || "blue"
       }
     >
       {status}

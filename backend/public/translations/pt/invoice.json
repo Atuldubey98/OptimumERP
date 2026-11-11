@@ -54,7 +54,9 @@
     "status": {
       "draft": "Rascunho",
       "sent": "Enviado",
-      "pending": "Pendente"
+      "pending": "Pendente",
+      "paid": "Pago",
+      "unpaid": "Não pago"
     },
     "export": {
       "default_fields": {

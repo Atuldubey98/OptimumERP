@@ -71,7 +71,15 @@
       "sequence_label": "Proforma Invoice No.",
       "po_number_label": "PO Number",
       "po_date_label": "PO Date",
+      "status": "Status",
       "items_section": "Items"
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "declined": "Declined"
     }
   }
 }

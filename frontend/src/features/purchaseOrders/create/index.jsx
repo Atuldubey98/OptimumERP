@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
-import { invoiceStatusList } from "../../../constants/invoice";
+import { purchaseOrderStatusList } from "../../../constants/purchaseOrder";
 import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import useSaveAndNewForm from "../../../hooks/useSaveAndNewForm";
@@ -154,8 +154,8 @@ export default function PurchaseOrderEditPage() {
                   </FormControl>
                   <SelectStatus
                     formik={formik}
-                    statusList={invoiceStatusList}
-                    namespace="invoice"
+                    statusList={purchaseOrderStatusList}
+                    namespace="purchaseOrder"
                   />
                   <FormControl>
                     <FormLabel>{t("purchase_order_ui.form.po_date")}</FormLabel>

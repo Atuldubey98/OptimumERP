@@ -14,7 +14,7 @@ const recurringInvoiceSchema = new Schema(
         status: {
             type: String,
             default: "active",
-            enum: ["paused", "active", "cancelled"],
+            enum: ["paused", "active", "cancelled", "completed"],
             required: true,
         },
         interval: {

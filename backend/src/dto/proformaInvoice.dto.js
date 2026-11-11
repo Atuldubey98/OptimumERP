@@ -23,7 +23,7 @@ const proformaInvoiceDto = Joi.object({
   shippingCharges: Joi.number().integer().min(0).default(0).label("Shipping Charges"),
   status: Joi.string()
     .default("draft")
-    .valid("draft", "sent", "pending")
+    .valid("draft", "pending", "sent", "accepted", "declined")
     .label("Status"),
   createdBy: Joi.string().optional().label("Created By"),
   updatedBy: Joi.string().optional().label("Updated By"),

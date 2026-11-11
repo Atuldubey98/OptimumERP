@@ -16,7 +16,7 @@ import {
 import { FormikProvider } from "formik";
 import { useDeferredValue } from "react";
 import { AiOutlineSave } from "react-icons/ai";
-import { invoiceStatusList } from "../../../constants/invoice";
+import { proformaInvoiceStatusList } from "../../../constants/proformaInvoice";
 import useProformaInvoicesForm from "../../../hooks/useProformaInvoicesForm";
 import useTermsTemplates from "../../../hooks/useTermsTemplates";
 import NumberInputInteger from "../../common/NumberInputInteger";
@@ -133,8 +133,8 @@ export default function ProformaInvoiceFormPage() {
                   <DateField formik={formik} />
                   <SelectStatus
                     formik={formik}
-                    statusList={invoiceStatusList}
-                    namespace="invoice"
+                    statusList={proformaInvoiceStatusList}
+                    namespace="proformaInvoice"
                   />
                   <FormControl>
                     <FormLabel>{t("proforma_invoice_ui.form.po_number_label")}</FormLabel>

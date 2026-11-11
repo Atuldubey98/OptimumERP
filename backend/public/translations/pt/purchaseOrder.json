@@ -61,7 +61,13 @@
       "invoice_details": "Detalhes da Fatura",
       "po_no": "Nº do Pedido",
       "po_date": "Data do Pedido",
+      "status": "Status",
       "items_section": "Itens"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "sent": "Enviado",
+      "paid": "Pago"
     },
     "toast": {
       "success_title": "Sucesso",

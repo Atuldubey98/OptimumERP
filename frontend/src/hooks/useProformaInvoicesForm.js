@@ -62,7 +62,7 @@ export default function useProformaInvoicesForm() {
   const defaultInvoice = {
     sequence: 1,
     date: moment().format("YYYY-MM-DD"),
-    status: "sent",
+    status: "draft",
     items: [defaultReceiptItem],
     terms: "",
     description: "",

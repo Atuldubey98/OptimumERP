@@ -21,7 +21,7 @@ const baseRecurringInvoiceFields = {
   poNo: Joi.string().label("PO Number").allow("").optional(),
   poDate: Joi.string().label("PO Date").allow("").optional(),
   status: Joi.string()
-    .valid("paused", "active", "cancelled")
+    .valid("paused", "active", "cancelled", "completed")
     .default("active")
     .label("Status"),
   generateInvoice: Joi.boolean().default(true).label("Generate Invoice"),

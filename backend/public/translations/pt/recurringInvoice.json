@@ -7,5 +7,77 @@
       "updated": "Fatura recorrente atualizada com sucesso",
       "deleted": "Fatura recorrente excluída com sucesso"
     }
+  },
+  "recurring_invoice_ui": {
+    "page": {
+      "heading": "Faturas Recorrentes",
+      "total_found": "Total de faturas recorrentes encontradas",
+      "not_found": "Fatura recorrente não encontrada"
+    },
+    "table": {
+      "columns": {
+        "recipient": "Destinatário",
+        "status": "Status",
+        "total": "Total",
+        "grand_total": "Total Geral",
+        "interval": "Intervalo",
+        "next_occurrence": "Próxima Ocorrência",
+        "start_date": "Data de Início",
+        "end_date": "Data de Término"
+      }
+    },
+    "form": {
+      "party_section": "Contato",
+      "bill_to": "Faturar para",
+      "billing_address": "Endereço de Cobrança",
+      "details_section": "Detalhes Recorrentes",
+      "interval": "Intervalo",
+      "start_date": "Data de Início",
+      "end_date": "Data de Término",
+      "status": "Status",
+      "items_section": "Itens",
+      "frequency_section": "Configurações de Frequência",
+      "day_of_week": "Dia da Semana",
+      "date_of_month": "Dia do Mês",
+      "save_button": "Salvar",
+      "generation_options": "Opções de Geração",
+      "generate_invoice": "Gerar Fatura",
+      "generate_proforma_invoice": "Gerar Fatura Proforma"
+    },
+    "status": {
+      "active": "Ativo",
+      "paused": "Pausado",
+      "completed": "Concluído",
+      "cancelled": "Cancelado"
+    },
+    "interval": {
+      "daily": "Diário",
+      "weekly": "Semanal",
+      "monthly": "Mensal",
+      "quarterly": "Trimestral",
+      "half_yearly": "Semestral",
+      "yearly": "Anual"
+    },
+    "days": {
+      "sunday": "Domingo",
+      "monday": "Segunda-feira",
+      "tuesday": "Terça-feira",
+      "wednesday": "Quarta-feira",
+      "thursday": "Quinta-feira",
+      "friday": "Sexta-feira",
+      "saturday": "Sábado"
+    },
+    "modal": {
+      "heading": "Fatura Recorrente",
+      "delete_header": "Excluir Fatura Recorrente",
+      "delete_body": "Tem certeza de que deseja excluir esta fatura recorrente? Isso interromperá as gerações futuras.",
+      "confirm_save_header": "Confirmar Agendamento Recorrente",
+      "summary_text": "Isso criará um total de {{count}} faturas com base na sua seleção.",
+      "dates_list_header": "Datas de Criação Agendadas:",
+      "next_badge": "Próxima",
+      "confirm_proceed_text": "Deseja prosseguir e salvar este agendamento?",
+      "cancel_button": "Cancelar",
+      "confirm_button": "Confirmar e Salvar"
+    }
   }
 }

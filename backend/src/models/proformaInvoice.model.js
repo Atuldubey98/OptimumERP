@@ -22,8 +22,8 @@ const proformaInvoiceSchema = new Schema(
     },
     status: {
       type: String,
-      default: "sent",
-      enum: ["draft", "sent", "pending"],
+      default: "draft",
+      enum: ["draft", "pending", "sent", "accepted", "declined"],
     },
     converted: {
       type: Types.ObjectId,

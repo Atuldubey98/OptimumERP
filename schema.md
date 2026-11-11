@@ -277,7 +277,7 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`poDate`**: `Date` (optional)
   * **`dueDate`**: `Date` (optional)
   * **`sequence`**: `Number` (required)
-  * **`status`**: `String` (enum: `["draft", "sent", "pending"]`, default: `"sent"`)
+  * **`status`**: `String` (enum: `["draft", "pending", "sent", "accepted", "declined"]`, default: `"draft"`)
 * **Timestamps:** `true` (createdAt, updatedAt)
 * **Version Key:** `false`
 * **Indices:**
@@ -297,7 +297,7 @@ Some schemas (Invoice, Proforma Invoice, Purchase, Purchase Order, Quotes, Recur
   * **`poDate`**: `Date` (optional)
   * **`sequence`**: `Number` (required, min: `1`)
   * **`num`**: `String` (required)
-  * **`status`**: `String` (enum: `["draft", "sent", "pending"]`, default: `"sent"`)
+  * **`status`**: `String` (enum: `["draft", "pending", "sent", "accepted", "declined"]`, default: `"draft"`)
   * **`converted`**: `Types.ObjectId` (optional, ref: `"invoice"`)
 * **Timestamps:** `true` (createdAt, updatedAt)
 * **Version Key:** `false`

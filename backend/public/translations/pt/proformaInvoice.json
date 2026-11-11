@@ -71,7 +71,15 @@
       "sequence_label": "Nº da Fatura Proforma",
       "po_number_label": "Número do Pedido",
       "po_date_label": "Data do Pedido",
+      "status": "Status",
       "items_section": "Itens"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "pending": "Pendente",
+      "sent": "Enviado",
+      "accepted": "Aceito",
+      "declined": "Recusado"
     }
   }
 }

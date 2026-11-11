@@ -8,24 +8,22 @@ import {
 } from "@chakra-ui/react";
 import { isAxiosError } from "axios";
 import moment from "moment";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { invoiceStatusList } from "../../../constants/invoice";
+import { purchaseOrderStatusList } from "../../../constants/purchaseOrder";
+import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
 import useDateFilterFetch from "../../../hooks/useDateFilterFetch";
+import useSaveBill from "../../../hooks/useSaveBill";
 import instance from "../../../instance";
 import AlertModal from "../../common/AlertModal";
-import MainLayout from "../../common/main-layout";
 import Pagination from "../../common/main-layout/Pagination";
+import ShareBillModal from "../../common/ShareBillModal";
 import TableLayout from "../../common/table-layout";
 import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import BillModal from "../../estimates/list/BillModal";
 import Status from "../../estimates/list/Status";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
-import useCurrentOrgCurrency from "../../../hooks/useCurrentOrgCurrency";
-import ExporterModal from "../../common/ExporterModal";
-import ShareBillModal from "../../common/ShareBillModal";
-import { useTranslation } from "react-i18next";
-import useSaveBill from "../../../hooks/useSaveBill";
 
 const getBillGrandTotal = (bill) =>
   Number(bill?.total || 0) +
@@ -183,7 +181,7 @@ export default function PurchaseOrderPage() {
                   </ChakraLink>
                 ),
                 status: (
-                  <Status status={item.status} statusList={invoiceStatusList} />
+                  <Status status={item.status} statusList={purchaseOrderStatusList} />
                 ),
               }))}
             />

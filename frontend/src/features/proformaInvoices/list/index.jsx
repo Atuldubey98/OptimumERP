@@ -20,7 +20,7 @@ import VertIconMenu from "../../common/table-layout/VertIconMenu";
 import BillModal from "../../estimates/list/BillModal";
 import TableDateFilter from "../../invoices/list/TableDateFilter";
 import Status from "../../estimates/list/Status";
-import { invoiceStatusList } from "../../../constants/invoice";
+import { proformaInvoiceStatusList } from "../../../constants/proformaInvoice";
 import useLimitsInFreePlan from "../../../hooks/useLimitsInFreePlan";
 import useSaveBill from "../../../hooks/useSaveBill";
 import moment from "moment";
@@ -170,7 +170,7 @@ export default function ProformaInvoicesPage() {
         {item.party.name}
       </ChakraLink>
     ),
-    status: <Status status={item.status} statusList={invoiceStatusList} />,
+    status: <Status status={item.status} statusList={proformaInvoiceStatusList} />,
     grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
   });
   return (

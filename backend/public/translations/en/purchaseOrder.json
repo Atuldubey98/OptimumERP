@@ -61,7 +61,13 @@
       "invoice_details": "Invoice Details",
       "po_no": "PO No.",
       "po_date": "PO Date",
+      "status": "Status",
       "items_section": "Items"
+    },
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "paid": "Paid"
     },
     "toast": {
       "success_title": "Success",
