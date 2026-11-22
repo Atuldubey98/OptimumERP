@@ -31,4 +31,6 @@ module.exports = {
   EXPENSE_CATEGORY_CACHE_TTL_SECONDS: Number(process.env.EXPENSE_CATEGORY_CACHE_TTL_SECONDS) || 20 * 60,
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: Number(process.env.PORT) || 3000,
+  COOKIE_SECURE: process.env.COOKIE_SECURE === "true",
+  COOKIE_SAME_SITE: process.env.COOKIE_SAME_SITE || "lax",
 };

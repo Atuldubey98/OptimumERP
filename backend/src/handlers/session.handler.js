@@ -1,6 +1,12 @@
 const { Router } = require("express");
 const session = require("express-session");
-const { SESSION_SECRET, MONGO_URI, NODE_ENV, SESSION_AGE } = require("../config");
+const {
+  SESSION_SECRET,
+  MONGO_URI,
+  SESSION_AGE,
+  COOKIE_SECURE,
+  COOKIE_SAME_SITE,
+} = require("../config");
 const MongoStore = require("connect-mongo");
 
 const sessionOptions = {
@@ -13,8 +19,8 @@ const sessionOptions = {
   }),
   cookie: {
     httpOnly: true,
-    sameSite: NODE_ENV === "production" ? "none" : "lax",
-    secure: NODE_ENV === "production",
+    sameSite: COOKIE_SAME_SITE,
+    secure: COOKIE_SECURE,
     maxAge: SESSION_AGE,
   },
 };
