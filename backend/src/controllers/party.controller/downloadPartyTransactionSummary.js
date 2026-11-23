@@ -5,6 +5,7 @@ const Party = require("../../models/party.model");
 const Purchase = require("../../models/purchase.model");
 const Transaction = require("../../models/transaction.model");
 const xl = require("excel4node");
+const partyService = require("../../services/party.service");
 
 const downloadPartyTransactionSummary = async (req, res) => {
   if (!req.params.partyId) throw PartyNotFound();
@@ -48,37 +49,11 @@ const downloadPartyTransactionSummary = async (req, res) => {
     .exec();
   const entities = [Invoice, Purchase];
 
-  const [invoiceBalanceCalculator, purchaseBalanceCalculator] =
-    await Promise.all(
-      entities.map((model) =>
-        model.aggregate([
-          {
-            $match: {
-              org: new mongoose.Types.ObjectId(req.params.orgId),
-              party: new mongoose.Types.ObjectId(req.params.partyId),
-              date: filter.date,
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              total: {
-                $sum: {
-                  $add: ["$total", "$totalTax", { $ifNull: ["$shippingCharges", 0] }],
-                },
-              },
-              payment: { $sum: "$payment.amount" },
-            },
-          },
-        ])
-      )
-    );
-  const invoiceBalance = invoiceBalanceCalculator.length
-    ? invoiceBalanceCalculator[0]
-    : { total: 0, payment: 0 };
-  const purchaseBalance = purchaseBalanceCalculator.length
-    ? purchaseBalanceCalculator[0]
-    : { total: 0, payment: 0 };
+  const { invoiceBalance, purchaseBalance } = await partyService.getLedgerTotals(
+    req.params.partyId,
+    req.params.orgId,
+    filter.date
+  );
   const transactionReportFields = {
     header: {
       type: "Type",

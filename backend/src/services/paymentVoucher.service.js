@@ -35,15 +35,19 @@ exports.createPaymentVoucher = async ({ orgId, userId, body, doc, docModel, vouc
     throw new Error("Financial year configuration is missing or invalid");
   }
 
+  const resolvedVoucherType = doc
+    ? (docModel === "invoice" ? "receipt" : "payment")
+    : (voucherType || body.voucherType);
+
   const voucherData = {
     org: orgId,
     party: doc ? doc.party : body.party,
     createdBy: userId,
     updatedBy: userId,
-    voucherType: voucherType || body.voucherType,
+    voucherType: resolvedVoucherType,
     amount: body.amount,
     paymentMode: body.paymentMode,
-    description: body.description || (doc ? `Payment for ${doc.num}` : `${(voucherType || body.voucherType) === "receipt" ? "Receipt" : "Payment"} voucher`),
+    description: body.description || (doc ? `Payment for ${doc.num}` : `${resolvedVoucherType === "receipt" ? "Receipt" : "Payment"} voucher`),
     date: body.date,
     financialYear: {
       start: fy.start,
@@ -93,13 +97,15 @@ exports.addPaymentToDoc = async ({ id, orgId, userId, body, docModel, voucherTyp
   const doc = await Model.findOne({ _id: id, org: orgId }).session(session);
   if (!doc) throw new Error(`${docModel} not found`);
 
+  const resolvedVoucherType = docModel === "invoice" ? "receipt" : docModel === "purchase" ? "payment" : (voucherType || body.voucherType);
+
   const voucher = await exports.createPaymentVoucher({
     orgId,
     userId,
     body,
     doc,
     docModel,
-    voucherType,
+    voucherType: resolvedVoucherType,
     session
   });
 
@@ -135,7 +141,7 @@ exports.createStandalonePaymentVoucher = async ({ orgId, userId, body, session }
       userId,
       body,
       docModel: body.refDocModel,
-      voucherType: body.voucherType,
+      voucherType: body.refDocModel === "invoice" ? "receipt" : body.refDocModel === "purchase" ? "payment" : body.voucherType,
       session
     });
   }
@@ -156,6 +162,13 @@ exports.updatePaymentVoucher = async ({ id, orgId, userId, body, session }) => {
   fields.forEach(field => {
     if (body[field] !== undefined) voucher[field] = body[field];
   });
+  if (voucher.refDocModel === "invoice") {
+    voucher.voucherType = "receipt";
+  } else if (voucher.refDocModel === "purchase") {
+    voucher.voucherType = "payment";
+  } else if (body.voucherType) {
+    voucher.voucherType = body.voucherType;
+  }
   voucher.updatedBy = userId;
 
   await voucher.save({ session });

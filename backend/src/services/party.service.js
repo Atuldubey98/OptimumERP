@@ -76,8 +76,26 @@ exports.getLedgerTotals = async (partyId, orgId, date) => {
         },
         {
             $addFields: {
-                vType: {
+                refDocModel: { $arrayElemAt: ["$voucherDetails.refDocModel", 0] },
+                rawVoucherType: {
                     $ifNull: ["$voucherType", { $arrayElemAt: ["$voucherDetails.voucherType", 0] }]
+                }
+            }
+        },
+        {
+            $addFields: {
+                vType: {
+                    $cond: [
+                        { $eq: ["$refDocModel", "invoice"] },
+                        "receipt",
+                        {
+                            $cond: [
+                                { $eq: ["$refDocModel", "purchase"] },
+                                "payment",
+                                "$rawVoucherType"
+                            ]
+                        }
+                    ]
                 }
             }
         },

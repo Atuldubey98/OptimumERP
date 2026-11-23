@@ -108,17 +108,21 @@ export default function TransactionsPage() {
     proforma_invoice: t("transactions_ui.types.proforma_invoice"),
     purchase_order: t("transactions_ui.types.purchase_order"),
     payment_voucher: t("transactions_ui.types.payment_voucher"),
+    receipt: "Receipt",
+    payment: "Payment",
   };
   const [selectedTypeOfTransactions, setSelectedTypeOfTransactions] = useState(
-    typeOfTransactions.slice(0, 2)
+    typeOfTransactions.filter((item) =>
+      ["invoice", "purchase", "payment_voucher"].includes(item.value)
+    )
   );
   const [invoiceBalance, setInvoiceBalance] = useState({
     total: 0,
-    amountReceived: 0,
+    payment: 0,
   });
   const [purchaseBalance, setPurchaseBalance] = useState({
     total: 0,
-    amountPaid: 0,
+    payment: 0,
   });
   const transactionTypes = selectedTypeOfTransactions
     .map((option) => option.value)
@@ -235,9 +239,8 @@ export default function TransactionsPage() {
                 <Box bg={cardBg} borderRadius="lg" boxShadow="sm" overflow="hidden" border="1px" borderColor={cardBorder}>
                   <BalanceStats
                     balance={
-                      invoiceBalance.total -
-                      invoiceBalance.payment -
-                      (purchaseBalance.total - purchaseBalance.payment)
+                      (Number(invoiceBalance?.total || 0) - Number(invoiceBalance?.payment || 0)) -
+                      (Number(purchaseBalance?.total || 0) - Number(purchaseBalance?.payment || 0))
                     }
                   />
                 </Box>
@@ -290,10 +293,10 @@ export default function TransactionsPage() {
           heading={t("transactions_ui.page.heading", { partyName })}
           tableData={transactionsResponse.items.map((item) => ({
             _id: item._id,
-            date: new Date(item.doc.date).toLocaleDateString(),
-            totalItems: item.doc.items ? item.doc.items.length : "--",
-            status: item.doc.status,
-            num: item.doc.num,
+            date: new Date(item.doc?.date || item.date).toLocaleDateString(),
+            totalItems: item.doc?.items ? item.doc.items.length : "--",
+            status: item.doc?.status || (item.doc?.voucherType ? labels[item.doc.voucherType] || item.doc.voucherType : "--"),
+            num: item.doc?.num || item.doc?.purchaseNo || "--",
             grandTotal: formatSmallestUnitWithSymbol(getBillGrandTotal(item)),
             type: (
               <Tag
@@ -302,10 +305,10 @@ export default function TransactionsPage() {
                 colorScheme={
                   typeOfTransactions.find(
                     (tranType) => tranType.value === item.docModel
-                  ).colorScheme || "cyan"
+                  )?.colorScheme || "cyan"
                 }
               >
-                <TagLabel>{labels[item.docModel]}</TagLabel>
+                <TagLabel>{labels[item.docModel] || item.docModel}</TagLabel>
               </Tag>
             ),
           }))}

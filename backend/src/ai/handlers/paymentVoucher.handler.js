@@ -35,12 +35,16 @@ const createPaymentVoucher = async (params) => {
   const currencyConfig = await moneyUtils.getCurrencyConfigByCode(displaySetting?.currency || "INR");
   const decimalDigits = currencyConfig?.decimal_digits ?? 2;
 
+  const resolvedVoucherType = body.refDocModel
+    ? (body.refDocModel === "invoice" ? "receipt" : "payment")
+    : body.voucherType;
+
   const voucherData = {
     party: party._id,
     amount: moneyUtils.toSmallestUnit(body.amount, decimalDigits),
     paymentMode: body.paymentMode,
     date: body.date || new Date().toISOString().split("T")[0],
-    voucherType: body.voucherType,
+    voucherType: resolvedVoucherType,
     description: body.description,
   };
 
@@ -52,7 +56,7 @@ const createPaymentVoucher = async (params) => {
         userId: createdBy,
         body: voucherData,
         docModel: body.refDocModel,
-        voucherType: body.voucherType,
+        voucherType: resolvedVoucherType,
         session,
       });
     }

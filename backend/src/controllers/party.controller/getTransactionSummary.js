@@ -54,7 +54,7 @@ const getTransactionSummary = async (req, res) => {
           $match: {
             org: new mongoose.Types.ObjectId(req.params.orgId),
             party: new mongoose.Types.ObjectId(req.params.partyId),
-            date: filter.date,
+            ...(filter.date ? { date: filter.date } : {}),
           },
         },
         {
