@@ -28,6 +28,8 @@ const toolDisplayMap = {
   get_activity_log: "Fetching history...",
   get_business_stats: "Fetching business performance data...",
   list_document_vouchers: "Fetching list of vouchers...",
+  get_taxes: "Fetching taxes...",
+  get_ums: "Fetching units of measure...",
 };
 import { baseURL } from "../../instance";
 

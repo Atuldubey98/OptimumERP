@@ -7,6 +7,9 @@ const expenseHandlers = require("./expense.handler");
 const reportHandlers = require("./report.handler");
 const dashboardHandlers = require("./dashboard.handler");
 const smtpHandler = require("./smtp.handler");
+const taxHandler = require("./tax.handler");
+const umHandler = require("./um.handler");
+
 const handlers = {
   ...billHandler,
   ...partyHandler,
@@ -17,6 +20,8 @@ const handlers = {
   ...reportHandlers,
   ...dashboardHandlers,
   ...smtpHandler,
+  ...taxHandler,
+  ...umHandler,
 };
 const getHandler = (handlerName) => handlers[handlerName];
 

@@ -100,7 +100,7 @@ const billTools = [
     function: {
       name: "create_bill",
       description:
-        "Create a new billing document. Use 'partyId' for existing customers or 'partyDetails' for new ones.",
+        "Create a new billing document. Use 'partyId' for existing customers or 'partyDetails' for new ones. Items require 'umId' (use 'get_ums') and 'taxId' (use 'get_taxes').",
       parameters: {
         type: "object",
         properties: {
@@ -166,37 +166,20 @@ const billTools = [
                 code: { type: "string", description: "HSN/SAC/Code of the item. GENERATE only when not provided" },
                 quantity: { type: "number" },
                 price: { type: "number" },
-                um: { type: "string" },
+                umId: {
+                  type: "string",
+                  description: "The MongoDB _id of the unit of measure (from 'get_ums') or unit symbol/name (e.g. 'NOS', 'pcs', 'kg').",
+                },
                 productId: {
                   type: "string",
                   description: "The MongoDB _id of the product if known.",
                 },
-                tax: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      type: {
-                        type: "string",
-                        enum: [
-                          "igst",
-                          "sgst",
-                          "cgst",
-                          "vat",
-                          "cess",
-                          "sal",
-                          "none",
-                          "others",
-                        ],
-                        description:
-                          "If only general GST is specified, use 'others'.",
-                      },
-                      percentage: { type: "number" },
-                    },
-                  },
+                taxId: {
+                  type: "string",
+                  description: "The MongoDB _id of the tax (retrieve via 'get_taxes').",
                 },
               },
-              required: ["name", "quantity", "price"],
+              required: ["name", "quantity", "price", "umId", "taxId"],
             },
           },
         },

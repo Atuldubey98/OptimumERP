@@ -117,57 +117,17 @@ const upsertBill = async (params) => {
       });
 
       params.items.forEach((item) => {
-        let taxId = null;
+        const matchedTax = taxes.find((t) => t._id.toString() === item.taxId);
+        const tax = matchedTax?._id?.toString() || setting?.receiptDefaults?.tax?._id?.toString();
 
-        if (item.tax?.length) {
-          let matchedTax = null;
-
-          if (item.tax.length === 1) {
-            const incomingTax = item.tax[0];
-            matchedTax = taxes.find(
-              (t) =>
-                t.type === "single" &&
-                t.category === incomingTax.type &&
-                Number(t.percentage) === Number(incomingTax.percentage),
-            );
-
-            if (
-              !matchedTax &&
-              (incomingTax.type === "others" || incomingTax.type === "none")
-            ) {
-              matchedTax = taxes.find(
-                (t) =>
-                  t.type === "grouped" &&
-                  Number(t.percentage) === Number(incomingTax.percentage),
-              );
-            }
-          } else {
-            const totalIncomingTax = item.tax.reduce(
-              (sum, t) => sum + Number(t.percentage || 0),
-              0,
-            );
-            matchedTax = taxes.find(
-              (t) =>
-                t.type === "grouped" &&
-                Number(t.percentage) === totalIncomingTax,
-            );
-          }
-
-          taxId = matchedTax?._id?.toString();
-        }
-
-        const storedUm = ums.find((um) => {
-          const searchTerm = item?.um?.toLowerCase();
-          if (!searchTerm) return false;
-          return (
-            um.name.toLowerCase().includes(searchTerm) ||
-            um.unit.toLowerCase().includes(searchTerm)
-          );
-        });
-
-        const um = storedUm
-          ? storedUm._id.toString()
-          : setting?.receiptDefaults?.um?._id?.toString();
+        const incomingUm = (item.umId || item.um || "").trim();
+        const matchedUm = ums.find(
+          (u) =>
+            u._id.toString() === incomingUm ||
+            u.unit.toLowerCase() === incomingUm.toLowerCase() ||
+            u.name.toLowerCase() === incomingUm.toLowerCase()
+        );
+        const um = matchedUm?._id?.toString() || setting?.receiptDefaults?.um?._id?.toString();
 
         items.push({
           name: item.name,
@@ -175,7 +135,7 @@ const upsertBill = async (params) => {
           quantity: item?.quantity || 1,
           code: item?.code,
           um,
-          tax: taxId || setting?.receiptDefaults?.tax?._id?.toString(),
+          tax,
           product: item.productId,
         });
       });

@@ -23,6 +23,8 @@ const toolLabelMap = {
   create_expense: "Expense Creation",
   list_expense_categories: "Expense Categories",
   create_expense_category: "Category Creation",
+  get_taxes: "Taxes List",
+  get_ums: "Units List",
 };
 
 const ConversationItem = ({ chat, isActive, onClick }) => {
